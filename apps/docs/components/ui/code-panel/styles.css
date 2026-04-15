@@ -1,4 +1,4 @@
-.hyeon-code {
+.sh-ui-code {
   position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -9,11 +9,11 @@
   margin: 1rem 0;
 }
 @media (max-width: 640px) {
-  .hyeon-code { font-size: 0.75rem; }
+  .sh-ui-code { font-size: 0.75rem; }
 }
 
 /* 헤더 (filename 있을 때) */
-.hyeon-code__header {
+.sh-ui-code__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,13 +24,13 @@
   font-size: 0.75rem;
   color: var(--foreground-muted);
 }
-.hyeon-code__filename {
+.sh-ui-code__filename {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color: var(--foreground);
 }
 
 /* 헤더 없을 때 우상단에 떠있는 복사 버튼 */
-.hyeon-code__copy-floating {
+.sh-ui-code__copy-floating {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
@@ -38,13 +38,13 @@
   opacity: 0;
   transition: opacity 120ms;
 }
-.hyeon-code:hover .hyeon-code__copy-floating,
-.hyeon-code:focus-within .hyeon-code__copy-floating {
+.sh-ui-code:hover .sh-ui-code__copy-floating,
+.sh-ui-code:focus-within .sh-ui-code__copy-floating {
   opacity: 1;
 }
 
 /* 복사 버튼 */
-.hyeon-code__copy {
+.sh-ui-code__copy {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
@@ -59,23 +59,23 @@
   transition: color 120ms, border-color 120ms, background-color 120ms;
   -webkit-tap-highlight-color: transparent;
 }
-.hyeon-code__copy:hover {
+.sh-ui-code__copy:hover {
   color: var(--foreground);
   border-color: var(--border-strong);
 }
-.hyeon-code__copy:focus-visible {
+.sh-ui-code__copy:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
 }
-.hyeon-code__copy-label {
+.sh-ui-code__copy-label {
   font-size: 0.75rem;
 }
 
 /* 코드 본문 — shiki 출력(<pre class="shiki">...) */
-.hyeon-code__body {
+.sh-ui-code__body {
   overflow-x: auto;
 }
-.hyeon-code__body pre {
+.sh-ui-code__body pre {
   margin: 0;
   padding: 0.75rem 1rem;
   background: transparent !important;
@@ -85,7 +85,7 @@
   border: none;
   border-radius: 0;
 }
-.hyeon-code__body code {
+.sh-ui-code__body code {
   background: transparent;
   padding: 0;
   font-size: inherit;
@@ -95,23 +95,23 @@
 /* shiki dual theme — 기본은 light, .dark 스코프에선 dark.
    span에는 color만 주고 background-color는 절대 강제하지 않는다.
    (강제하면 --shiki-*-bg 변수가 상속돼 라인마다 띠가 생긴다.) */
-.hyeon-code__body .shiki,
-.hyeon-code__body .shiki span {
+.sh-ui-code__body .shiki,
+.sh-ui-code__body .shiki span {
   color: var(--shiki-light) !important;
   background-color: transparent !important;
 }
-.dark .hyeon-code__body .shiki,
-.dark .hyeon-code__body .shiki span {
+.dark .sh-ui-code__body .shiki,
+.dark .sh-ui-code__body .shiki span {
   color: var(--shiki-dark) !important;
   background-color: transparent !important;
 }
 
 /* 라인 번호 */
-.hyeon-code__body[data-line-numbers] pre code {
+.sh-ui-code__body[data-line-numbers] pre code {
   counter-reset: step;
   counter-increment: step 0;
 }
-.hyeon-code__body[data-line-numbers] pre code .line::before {
+.sh-ui-code__body[data-line-numbers] pre code .line::before {
   content: counter(step);
   counter-increment: step;
   display: inline-block;

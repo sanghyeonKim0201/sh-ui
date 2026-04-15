@@ -20,12 +20,12 @@ export function SelectValue({
   "children"
 >) {
   return (
-    <BaseSelect.Value className={cx("hyeon-select__value", className)} {...props}>
+    <BaseSelect.Value className={cx("sh-ui-select__value", className)} {...props}>
       {(value) =>
         value !== null && value !== undefined && value !== "" ? (
           (value as React.ReactNode)
         ) : (
-          <span className="hyeon-select__placeholder">{placeholder}</span>
+          <span className="sh-ui-select__placeholder">{placeholder}</span>
         )
       }
     </BaseSelect.Value>
@@ -38,11 +38,11 @@ export const SelectTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Trigger
     ref={ref}
-    className={cx("hyeon-select__trigger", className)}
+    className={cx("sh-ui-select__trigger", className)}
     {...props}
   >
     {children}
-    <BaseSelect.Icon className="hyeon-select__icon" aria-hidden>
+    <BaseSelect.Icon className="sh-ui-select__icon" aria-hidden>
       <svg viewBox="0 0 16 16" width="14" height="14" fill="none">
         <path
           d="M4 6l4 4 4-4"
@@ -67,13 +67,13 @@ export const SelectContent = React.forwardRef<
 >(({ className, children, container, ...props }, ref) => (
   <BaseSelect.Portal container={container}>
     <BaseSelect.Positioner
-      className="hyeon-select__positioner"
+      className="sh-ui-select__positioner"
       sideOffset={4}
       align="start"
     >
       <BaseSelect.Popup
         ref={ref}
-        className={cx("hyeon-select__content", className)}
+        className={cx("sh-ui-select__content", className)}
         {...props}
       >
         {children}
@@ -91,7 +91,7 @@ export const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseSelect.GroupLabel
     ref={ref}
-    className={cx("hyeon-select__label", className)}
+    className={cx("sh-ui-select__label", className)}
     {...props}
   />
 ));
@@ -103,10 +103,10 @@ export const SelectItem = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Item
     ref={ref}
-    className={cx("hyeon-select__item", className)}
+    className={cx("sh-ui-select__item", className)}
     {...props}
   >
-    <BaseSelect.ItemIndicator className="hyeon-select__indicator" aria-hidden>
+    <BaseSelect.ItemIndicator className="sh-ui-select__indicator" aria-hidden>
       <svg viewBox="0 0 16 16" width="14" height="14" fill="none">
         <path
           d="M3.5 8.5l3 3 6-7"
@@ -117,7 +117,7 @@ export const SelectItem = React.forwardRef<
         />
       </svg>
     </BaseSelect.ItemIndicator>
-    <BaseSelect.ItemText className="hyeon-select__item-text">
+    <BaseSelect.ItemText className="sh-ui-select__item-text">
       {children}
     </BaseSelect.ItemText>
   </BaseSelect.Item>
@@ -130,7 +130,7 @@ export const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseSelect.Separator
     ref={ref}
-    className={cx("hyeon-select__separator", className)}
+    className={cx("sh-ui-select__separator", className)}
     {...props}
   />
 ));
@@ -178,11 +178,11 @@ export function MultiSelectValue({
   "children"
 >) {
   return (
-    <BaseSelect.Value className={cx("hyeon-select__value", className)} {...props}>
+    <BaseSelect.Value className={cx("sh-ui-select__value", className)} {...props}>
       {(value) => {
         const arr = Array.isArray(value) ? (value as string[]) : [];
         if (arr.length === 0) {
-          return <span className="hyeon-select__placeholder">{placeholder}</span>;
+          return <span className="sh-ui-select__placeholder">{placeholder}</span>;
         }
         return render ? render(arr) : arr.join(separator);
       }}

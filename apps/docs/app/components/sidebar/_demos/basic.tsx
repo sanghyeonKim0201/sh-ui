@@ -48,7 +48,7 @@ export function SidebarBasicDemo({
       <SidebarProvider embedded>
         <Sidebar collapsible={collapsible} variant={variant}>
           <SidebarHeader>
-            <div style={{ padding: "0.25rem 0.5rem", fontWeight: 600 }}>Hyeon</div>
+            <div style={{ padding: "0.25rem 0.5rem", fontWeight: 600 }}>ShUi</div>
           </SidebarHeader>
           <SidebarSeparator />
           <SidebarContent>

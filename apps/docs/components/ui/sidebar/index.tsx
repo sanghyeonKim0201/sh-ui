@@ -105,7 +105,7 @@ export function SidebarProvider({
     [state, open, setOpen, isMobile, openMobile, toggleSidebar]
   );
 
-  const classes = ["hyeon-sidebar-wrapper", className].filter(Boolean).join(" ");
+  const classes = ["sh-ui-sidebar-wrapper", className].filter(Boolean).join(" ");
 
   return (
     <SidebarContext.Provider value={value}>
@@ -135,7 +135,7 @@ export function Sidebar({
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
   if (collapsible === "none") {
-    const classes = ["hyeon-sidebar", "hyeon-sidebar--static", className].filter(Boolean).join(" ");
+    const classes = ["sh-ui-sidebar", "sh-ui-sidebar--static", className].filter(Boolean).join(" ");
     return (
       <aside className={classes} data-side={side} data-variant={variant} {...props}>
         {children}
@@ -148,13 +148,13 @@ export function Sidebar({
       <>
         {openMobile && (
           <div
-            className="hyeon-sidebar__backdrop"
+            className="sh-ui-sidebar__backdrop"
             onClick={() => setOpenMobile(false)}
             aria-hidden
           />
         )}
         <aside
-          className={["hyeon-sidebar", "hyeon-sidebar--mobile", className].filter(Boolean).join(" ")}
+          className={["sh-ui-sidebar", "sh-ui-sidebar--mobile", className].filter(Boolean).join(" ")}
           data-side={side}
           data-state={openMobile ? "open" : "closed"}
           {...props}
@@ -167,14 +167,14 @@ export function Sidebar({
 
   return (
     <aside
-      className={["hyeon-sidebar", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar", className].filter(Boolean).join(" ")}
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
       data-side={side}
       {...props}
     >
-      <div className="hyeon-sidebar__inner">{children}</div>
+      <div className="sh-ui-sidebar__inner">{children}</div>
     </aside>
   );
 }
@@ -189,7 +189,7 @@ export function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerP
     <button
       type="button"
       aria-label="Toggle Sidebar"
-      className={["hyeon-sidebar__trigger", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__trigger", className].filter(Boolean).join(" ")}
       onClick={(e) => {
         onClick?.(e);
         toggleSidebar();
@@ -206,7 +206,7 @@ export function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerP
 export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
   return (
     <main
-      className={["hyeon-sidebar-inset", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar-inset", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -217,7 +217,7 @@ export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLE
 export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["hyeon-sidebar__header", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__header", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -226,7 +226,7 @@ export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTML
 export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["hyeon-sidebar__footer", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__footer", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -235,7 +235,7 @@ export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTML
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["hyeon-sidebar__content", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__content", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -244,7 +244,7 @@ export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTM
 export function SidebarSeparator({ className, ...props }: React.HTMLAttributes<HTMLHRElement>) {
   return (
     <hr
-      className={["hyeon-sidebar__separator", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__separator", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -255,7 +255,7 @@ export function SidebarSeparator({ className, ...props }: React.HTMLAttributes<H
 export function SidebarGroup({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["hyeon-sidebar__group", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__group", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -264,7 +264,7 @@ export function SidebarGroup({ className, ...props }: React.HTMLAttributes<HTMLD
 export function SidebarGroupLabel({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["hyeon-sidebar__group-label", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__group-label", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -273,7 +273,7 @@ export function SidebarGroupLabel({ className, ...props }: React.HTMLAttributes<
 export function SidebarGroupContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["hyeon-sidebar__group-content", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__group-content", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -284,7 +284,7 @@ export function SidebarGroupContent({ className, ...props }: React.HTMLAttribute
 export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
-      className={["hyeon-sidebar__menu", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__menu", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -293,7 +293,7 @@ export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUL
 export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
-      className={["hyeon-sidebar__menu-item", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__menu-item", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -316,8 +316,8 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
     const resolvedIsActive =
       isActive ?? (sectionId != null ? tocActive === sectionId : undefined);
     const cls = [
-      "hyeon-sidebar__menu-button",
-      `hyeon-sidebar__menu-button--${size}`,
+      "sh-ui-sidebar__menu-button",
+      `sh-ui-sidebar__menu-button--${size}`,
       className,
     ]
       .filter(Boolean)
@@ -354,7 +354,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
 export function SidebarMenuSub({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
-      className={["hyeon-sidebar__menu-sub", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__menu-sub", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -363,7 +363,7 @@ export function SidebarMenuSub({ className, ...props }: React.HTMLAttributes<HTM
 export function SidebarMenuSubItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
-      className={["hyeon-sidebar__menu-sub-item", className].filter(Boolean).join(" ")}
+      className={["sh-ui-sidebar__menu-sub-item", className].filter(Boolean).join(" ")}
       {...props}
     />
   );
@@ -386,8 +386,8 @@ export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarM
     const resolvedIsActive =
       isActive ?? (sectionId != null ? tocActive === sectionId : undefined);
     const cls = [
-      "hyeon-sidebar__menu-sub-button",
-      `hyeon-sidebar__menu-sub-button--${size}`,
+      "sh-ui-sidebar__menu-sub-button",
+      `sh-ui-sidebar__menu-sub-button--${size}`,
       className,
     ]
       .filter(Boolean)
@@ -479,9 +479,9 @@ export function SidebarCollapsibleTrigger({
     <button
       type="button"
       className={[
-        "hyeon-sidebar__menu-button",
-        `hyeon-sidebar__menu-button--${size}`,
-        "hyeon-sidebar__collapsible-trigger",
+        "sh-ui-sidebar__menu-button",
+        `sh-ui-sidebar__menu-button--${size}`,
+        "sh-ui-sidebar__collapsible-trigger",
         className,
       ]
         .filter(Boolean)
@@ -495,7 +495,7 @@ export function SidebarCollapsibleTrigger({
       {...props}
     >
       {children}
-      <ChevronRightIcon className="hyeon-sidebar__chevron" aria-hidden />
+      <ChevronRightIcon className="sh-ui-sidebar__chevron" aria-hidden />
     </button>
   );
 }
@@ -503,7 +503,7 @@ export function SidebarCollapsibleTrigger({
 export function SidebarCollapsibleContent({ children }: { children: React.ReactNode }) {
   const { open } = useCollapsible();
   return (
-    <div className="hyeon-sidebar__collapsible-content" data-state={open ? "open" : "closed"} hidden={!open}>
+    <div className="sh-ui-sidebar__collapsible-content" data-state={open ? "open" : "closed"} hidden={!open}>
       {children}
     </div>
   );

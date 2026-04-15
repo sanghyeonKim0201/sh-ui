@@ -107,12 +107,12 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
     }
 
     return (
-      <div className={cx("hyeon-file-upload", className)}>
+      <div className={cx("sh-ui-file-upload", className)}>
         <label
           className={cx(
-            "hyeon-file-upload__dropzone",
-            dragging && "hyeon-file-upload__dropzone--drag",
-            disabled && "hyeon-file-upload__dropzone--disabled",
+            "sh-ui-file-upload__dropzone",
+            dragging && "sh-ui-file-upload__dropzone--drag",
+            disabled && "sh-ui-file-upload__dropzone--disabled",
           )}
           onDragOver={(e) => {
             e.preventDefault();
@@ -134,35 +134,35 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
             multiple={multiple}
             accept={accept}
             disabled={disabled}
-            className="hyeon-file-upload__input"
+            className="sh-ui-file-upload__input"
             onChange={(e) => {
               if (e.target.files) addFiles(e.target.files);
               e.target.value = ""; // 동일 파일 재선택 가능하도록 초기화
             }}
           />
           <UploadIcon />
-          <div className="hyeon-file-upload__text">
+          <div className="sh-ui-file-upload__text">
             {placeholder ?? (
               <>
                 <strong>파일을 드래그</strong>하거나 <strong>클릭해서 선택</strong>
               </>
             )}
           </div>
-          {hint && <div className="hyeon-file-upload__hint">{hint}</div>}
+          {hint && <div className="sh-ui-file-upload__hint">{hint}</div>}
         </label>
 
         {showFileList && files.length > 0 && (
-          <ul className="hyeon-file-upload__list">
+          <ul className="sh-ui-file-upload__list">
             {files.map((f, i) => (
-              <li key={`${f.name}-${i}`} className="hyeon-file-upload__item">
+              <li key={`${f.name}-${i}`} className="sh-ui-file-upload__item">
                 <FileIcon />
-                <span className="hyeon-file-upload__name" title={f.name}>
+                <span className="sh-ui-file-upload__name" title={f.name}>
                   {f.name}
                 </span>
-                <span className="hyeon-file-upload__size">{formatBytes(f.size)}</span>
+                <span className="sh-ui-file-upload__size">{formatBytes(f.size)}</span>
                 <button
                   type="button"
-                  className="hyeon-file-upload__remove"
+                  className="sh-ui-file-upload__remove"
                   onClick={() => remove(i)}
                   disabled={disabled}
                   aria-label={`${f.name} 제거`}

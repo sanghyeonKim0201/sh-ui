@@ -5,7 +5,7 @@
       "name": "button",
       "type": "widget",
       "files": [
-        { "src": "widgets/hyeon_button.dart", "dest": "{widgets}/hyeon_button.dart" }
+        { "src": "widgets/sh_ui_button.dart", "dest": "{widgets}/sh_ui_button.dart" }
       ],
       "dependencies": [],
       "registryDependencies": ["tokens"]
@@ -14,7 +14,7 @@
       "name": "card",
       "type": "widget",
       "files": [
-        { "src": "widgets/hyeon_card.dart", "dest": "{widgets}/hyeon_card.dart" }
+        { "src": "widgets/sh_ui_card.dart", "dest": "{widgets}/sh_ui_card.dart" }
       ],
       "dependencies": [],
       "registryDependencies": ["tokens"]
@@ -23,7 +23,7 @@
       "name": "input",
       "type": "widget",
       "files": [
-        { "src": "widgets/hyeon_input.dart", "dest": "{widgets}/hyeon_input.dart" }
+        { "src": "widgets/sh_ui_input.dart", "dest": "{widgets}/sh_ui_input.dart" }
       ],
       "dependencies": [],
       "registryDependencies": ["tokens"]
@@ -32,7 +32,7 @@
       "name": "tokens",
       "type": "foundation",
       "files": [
-        { "src": "foundation/hyeon_tokens.dart", "dest": "{foundation}/hyeon_tokens.dart" }
+        { "src": "foundation/sh_ui_tokens.dart", "dest": "{foundation}/sh_ui_tokens.dart" }
       ]
     }
   }

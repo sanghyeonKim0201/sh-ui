@@ -13,8 +13,8 @@ export function Demo() {
   );
 }`;
 
-const bashExample = `npx hyeon init
-npx hyeon add tokens button`;
+const bashExample = `npx sh-ui init
+npx sh-ui add tokens button`;
 
 const jsonExample = `{
   "platform": "react",
@@ -54,7 +54,7 @@ export default function CodePanelPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon add code-panel`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add code-panel`} />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -98,12 +98,12 @@ export default function CodePanelPage() {
       <Preview>
         <Preview.Demo>
           <div style={{ width: "100%" }}>
-            <CodePanel code={jsonExample} language="json" filename="hyeon.config.json" />
+            <CodePanel code={jsonExample} language="json" filename="sh-ui.config.json" />
           </div>
         </Preview.Demo>
         <CodePanel
           language="tsx"
-          code={`<CodePanel code={json} language="json" filename="hyeon.config.json" />`}
+          code={`<CodePanel code={json} language="json" filename="sh-ui.config.json" />`}
         />
       </Preview>
 

@@ -4,23 +4,23 @@ export default function GettingStarted() {
   return (
     <main className="container">
       <h1>시작하기</h1>
-      <p className="muted">프로젝트에 Hyeon을 도입하는 3단계.</p>
+      <p className="muted">프로젝트에 ShUi을 도입하는 3단계.</p>
 
       <h2>1. 설정 파일 생성</h2>
       <p>프로젝트 루트에서:</p>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon init`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui init`} />
       <p>
-        대화형 프롬프트로 <code>platform</code>(react/flutter), <code>base</code>(neutral/zinc/slate), <code>radius</code>, <code>mode</code>를 선택하면 <code>hyeon.config.json</code>이 만들어진다.
+        대화형 프롬프트로 <code>platform</code>(react/flutter), <code>base</code>(neutral/zinc/slate), <code>radius</code>, <code>mode</code>를 선택하면 <code>sh-ui.config.json</code>이 만들어진다.
       </p>
 
       <h2>2. 토큰 설치</h2>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon add tokens`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add tokens`} />
       <p>
-        설정 값으로 치환된 토큰 파일이 생성된다. React는 CSS 변수(<code>tokens.css</code>), Flutter는 Dart 상수(<code>hyeon_tokens.dart</code>).
+        설정 값으로 치환된 토큰 파일이 생성된다. React는 CSS 변수(<code>tokens.css</code>), Flutter는 Dart 상수(<code>sh_ui_tokens.dart</code>).
       </p>
 
       <h2>3. 컴포넌트 설치</h2>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon add button`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add button`} />
       <p>
         컴포넌트 소스가 <code>paths.components</code>로 복사된다. 이 시점부터 <strong>그 코드는 당신의 것</strong>이다 — 자유롭게 수정 가능.
       </p>
@@ -28,7 +28,7 @@ export default function GettingStarted() {
       <h2>React 설정 예시</h2>
       <CodePanel
         language="json"
-        filename="hyeon.config.json"
+        filename="sh-ui.config.json"
         code={`{
   "platform": "react",
   "theme": { "base": "neutral", "radius": "md", "mode": "light-dark" },

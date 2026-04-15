@@ -1,4 +1,4 @@
-.hyeon-preview {
+.sh-ui-preview {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--background-subtle);
@@ -6,7 +6,7 @@
   margin: 1rem 0;
 }
 
-.hyeon-preview__demo {
+.sh-ui-preview__demo {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,7 +17,7 @@
   background: var(--background);
 }
 @media (max-width: 640px) {
-  .hyeon-preview__demo {
+  .sh-ui-preview__demo {
     padding: 1.5rem 1rem;
     min-height: 8rem;
   }
@@ -25,7 +25,7 @@
 
 /* Preview 내부의 CodePanel은 외곽 보더/라운드/마진을 무력화하고
    상단 구분선으로 Demo와 시각적으로 결합한다. */
-.hyeon-preview .hyeon-code {
+.sh-ui-preview .sh-ui-code {
   border: none;
   border-top: 1px solid var(--border);
   border-radius: 0;

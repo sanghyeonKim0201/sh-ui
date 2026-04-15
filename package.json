@@ -1,8 +1,8 @@
 {
-  "name": "hyeon-design-system",
+  "name": "sh-ui-design-system",
   "version": "0.0.0",
   "private": true,
-  "description": "Hyeon (玄) — 검고 그윽한, 멀티 플랫폼 디자인 시스템",
+  "description": "ShUi (玄) — 검고 그윽한, 멀티 플랫폼 디자인 시스템",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",

@@ -1,5 +1,5 @@
 /* ───────────── Tokens ───────────── */
-.hyeon-sidebar-wrapper {
+.sh-ui-sidebar-wrapper {
   --sidebar-width: 16rem;
   --sidebar-width-icon: 3rem;
   --sidebar-width-mobile: 18rem;
@@ -15,25 +15,25 @@
 }
 
 /* embedded: 문서 데모용 */
-.hyeon-sidebar-wrapper[data-embedded] {
+.sh-ui-sidebar-wrapper[data-embedded] {
   min-height: 0;
   height: 100%;
 }
-.hyeon-sidebar-wrapper[data-embedded] .hyeon-sidebar__inner,
-.hyeon-sidebar-wrapper[data-embedded] .hyeon-sidebar--static {
+.sh-ui-sidebar-wrapper[data-embedded] .sh-ui-sidebar__inner,
+.sh-ui-sidebar-wrapper[data-embedded] .sh-ui-sidebar--static {
   height: 100%;
   position: relative;
   top: 0;
 }
-.hyeon-sidebar-wrapper[data-embedded] .hyeon-sidebar--mobile {
+.sh-ui-sidebar-wrapper[data-embedded] .sh-ui-sidebar--mobile {
   position: absolute;
 }
-.hyeon-sidebar-wrapper[data-embedded] .hyeon-sidebar__backdrop {
+.sh-ui-sidebar-wrapper[data-embedded] .sh-ui-sidebar__backdrop {
   position: absolute;
 }
 
 /* ───────────── Sidebar (desktop) ───────────── */
-.hyeon-sidebar {
+.sh-ui-sidebar {
   display: flex;
   flex-direction: column;
   width: var(--sidebar-width);
@@ -46,13 +46,13 @@
   z-index: 5;
 }
 
-.hyeon-sidebar[data-side="right"] {
+.sh-ui-sidebar[data-side="right"] {
   border-right: none;
   border-left: 1px solid var(--sidebar-border);
   order: 1;
 }
 
-.hyeon-sidebar__inner {
+.sh-ui-sidebar__inner {
   display: flex;
   flex-direction: column;
   height: 100svh;
@@ -62,7 +62,7 @@
 }
 
 /* collapsed: offcanvas → 0 폭 */
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="offcanvas"] {
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="offcanvas"] {
   width: 0;
   border-right-width: 0;
   border-left-width: 0;
@@ -70,26 +70,26 @@
 }
 
 /* collapsed: icon → 아이콘만 */
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] {
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] {
   width: var(--sidebar-width-icon);
 }
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] .hyeon-sidebar__group-label,
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] .hyeon-sidebar__menu-button > span,
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] .hyeon-sidebar__menu-sub {
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__group-label,
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__menu-button > span,
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__menu-sub {
   display: none;
 }
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] .hyeon-sidebar__menu-button {
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__menu-button {
   justify-content: center;
   padding: 0.5rem;
 }
 
 /* variant: floating */
-.hyeon-sidebar[data-variant="floating"] {
+.sh-ui-sidebar[data-variant="floating"] {
   border: none;
   padding: 0.5rem;
   background: transparent;
 }
-.hyeon-sidebar[data-variant="floating"] .hyeon-sidebar__inner {
+.sh-ui-sidebar[data-variant="floating"] .sh-ui-sidebar__inner {
   border: 1px solid var(--sidebar-border);
   border-radius: var(--radius);
   background: var(--sidebar-bg);
@@ -98,20 +98,20 @@
 }
 
 /* variant: inset (메인 영역이 카드 형태) */
-.hyeon-sidebar[data-variant="inset"] {
+.sh-ui-sidebar[data-variant="inset"] {
   background: transparent;
   border: none;
 }
 
 /* static (collapsible=none) */
-.hyeon-sidebar--static {
+.sh-ui-sidebar--static {
   height: 100svh;
   position: sticky;
   top: 0;
 }
 
 /* ───────────── Mobile drawer ───────────── */
-.hyeon-sidebar--mobile {
+.sh-ui-sidebar--mobile {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -120,21 +120,21 @@
   transition: transform 200ms ease;
   border-right: 1px solid var(--sidebar-border);
 }
-.hyeon-sidebar--mobile[data-side="left"] {
+.sh-ui-sidebar--mobile[data-side="left"] {
   left: 0;
   transform: translateX(-100%);
 }
-.hyeon-sidebar--mobile[data-side="right"] {
+.sh-ui-sidebar--mobile[data-side="right"] {
   right: 0;
   transform: translateX(100%);
   border-right: none;
   border-left: 1px solid var(--sidebar-border);
 }
-.hyeon-sidebar--mobile[data-state="open"] {
+.sh-ui-sidebar--mobile[data-state="open"] {
   transform: translateX(0);
 }
 
-.hyeon-sidebar__backdrop {
+.sh-ui-sidebar__backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
@@ -142,7 +142,7 @@
 }
 
 /* ───────────── Trigger ───────────── */
-.hyeon-sidebar__trigger {
+.sh-ui-sidebar__trigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -155,17 +155,17 @@
   cursor: pointer;
   transition: background-color 120ms, color 120ms, border-color 120ms;
 }
-.hyeon-sidebar__trigger:hover {
+.sh-ui-sidebar__trigger:hover {
   background: var(--sidebar-accent);
   color: var(--foreground);
 }
-.hyeon-sidebar__trigger:focus-visible {
+.sh-ui-sidebar__trigger:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
 }
 
 /* ───────────── Inset (main) ───────────── */
-.hyeon-sidebar-inset {
+.sh-ui-sidebar-inset {
   flex: 1 1 0%;
   min-width: 0;
   background: var(--background);
@@ -177,8 +177,8 @@
    :has() 없이도 동작하게 사용자가 직접 클래스 조정 가능. 기본은 평면. */
 
 /* ───────────── Header / Footer / Content / Separator ───────────── */
-.hyeon-sidebar__header,
-.hyeon-sidebar__footer {
+.sh-ui-sidebar__header,
+.sh-ui-sidebar__footer {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -186,7 +186,7 @@
   overflow: hidden;
 }
 
-.hyeon-sidebar__content {
+.sh-ui-sidebar__content {
   display: flex;
   flex-direction: column;
   flex: 1 1 0%;
@@ -195,7 +195,7 @@
   gap: 0;
 }
 
-.hyeon-sidebar__separator {
+.sh-ui-sidebar__separator {
   margin: 0.25rem 0.5rem;
   border: none;
   border-top: 1px solid var(--sidebar-border);
@@ -203,14 +203,14 @@
 }
 
 /* ───────────── Group ───────────── */
-.hyeon-sidebar__group {
+.sh-ui-sidebar__group {
   display: flex;
   flex-direction: column;
   padding: 0.5rem;
   min-width: 0;
 }
 
-.hyeon-sidebar__group-label {
+.sh-ui-sidebar__group-label {
   display: flex;
   align-items: center;
   height: 2rem;
@@ -221,13 +221,13 @@
   border-radius: calc(var(--radius) - 2px);
 }
 
-.hyeon-sidebar__group-content {
+.sh-ui-sidebar__group-content {
   width: 100%;
   font-size: 0.875rem;
 }
 
 /* ───────────── Menu ───────────── */
-.hyeon-sidebar__menu {
+.sh-ui-sidebar__menu {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -237,12 +237,12 @@
   gap: 0;
 }
 
-.hyeon-sidebar__menu-item {
+.sh-ui-sidebar__menu-item {
   position: relative;
   margin: 0;
 }
 
-.hyeon-sidebar__menu-button {
+.sh-ui-sidebar__menu-button {
   display: flex;
   width: 100%;
   align-items: center;
@@ -260,56 +260,56 @@
   font-family: inherit;
   line-height: 1.4;
 }
-.hyeon-sidebar__menu-button > svg {
+.sh-ui-sidebar__menu-button > svg {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
 }
-.hyeon-sidebar__menu-button > span {
+.sh-ui-sidebar__menu-button > span {
   flex: 1 1 0%;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.hyeon-sidebar__menu-button:hover {
+.sh-ui-sidebar__menu-button:hover {
   background: var(--sidebar-accent);
   color: var(--sidebar-accent-fg);
 }
-.hyeon-sidebar__menu-button:focus-visible {
+.sh-ui-sidebar__menu-button:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: -2px;
 }
-.hyeon-sidebar__menu-button[data-active] {
+.sh-ui-sidebar__menu-button[data-active] {
   background: var(--primary);
   color: var(--primary-foreground);
   font-weight: 600;
 }
-.hyeon-sidebar__menu-button[data-active]:hover {
+.sh-ui-sidebar__menu-button[data-active]:hover {
   background: var(--primary-hover);
   color: var(--primary-foreground);
 }
-.hyeon-sidebar__menu-button:disabled,
-.hyeon-sidebar__menu-button[aria-disabled="true"] {
+.sh-ui-sidebar__menu-button:disabled,
+.sh-ui-sidebar__menu-button[aria-disabled="true"] {
   opacity: 0.5;
   pointer-events: none;
 }
 
-.hyeon-sidebar__menu-button--sm {
+.sh-ui-sidebar__menu-button--sm {
   height: 1.75rem;
   padding: 0.25rem 0.5rem;
   font-size: 0.8125rem;
 }
-.hyeon-sidebar__menu-button--md {
+.sh-ui-sidebar__menu-button--md {
   /* default */
 }
-.hyeon-sidebar__menu-button--lg {
+.sh-ui-sidebar__menu-button--lg {
   padding: 0.75rem;
   font-size: 0.9375rem;
 }
 
 /* ───────────── Sub menu ───────────── */
-.hyeon-sidebar__menu-sub {
+.sh-ui-sidebar__menu-sub {
   list-style: none;
   margin: 0.125rem 0 0;
   padding: 0.125rem 0 0.125rem 0.625rem;
@@ -321,11 +321,11 @@
   min-width: 0;
 }
 
-.hyeon-sidebar__menu-sub-item {
+.sh-ui-sidebar__menu-sub-item {
   position: relative;
 }
 
-.hyeon-sidebar__menu-sub-button {
+.sh-ui-sidebar__menu-sub-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -338,32 +338,32 @@
   transition: background-color 120ms, color 120ms;
   min-width: 0;
 }
-.hyeon-sidebar__menu-sub-button > span {
+.sh-ui-sidebar__menu-sub-button > span {
   flex: 1 1 0%;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.hyeon-sidebar__menu-sub-button:hover {
+.sh-ui-sidebar__menu-sub-button:hover {
   background: var(--sidebar-accent);
   color: var(--sidebar-accent-fg);
 }
-.hyeon-sidebar__menu-sub-button[data-active] {
+.sh-ui-sidebar__menu-sub-button[data-active] {
   background: var(--primary);
   color: var(--primary-foreground);
   font-weight: 600;
 }
-.hyeon-sidebar__menu-sub-button[data-active]:hover {
+.sh-ui-sidebar__menu-sub-button[data-active]:hover {
   background: var(--primary-hover);
   color: var(--primary-foreground);
 }
-.hyeon-sidebar__menu-sub-button--sm {
+.sh-ui-sidebar__menu-sub-button--sm {
   font-size: 0.75rem;
 }
 
 /* ───────────── Collapsible ───────────── */
-.hyeon-sidebar__chevron {
+.sh-ui-sidebar__chevron {
   width: 0.875rem !important;
   height: 0.875rem !important;
   margin-left: auto;
@@ -371,16 +371,16 @@
   transition: transform 150ms ease;
   color: var(--foreground-muted);
 }
-.hyeon-sidebar__collapsible-trigger[data-state="open"] .hyeon-sidebar__chevron {
+.sh-ui-sidebar__collapsible-trigger[data-state="open"] .sh-ui-sidebar__chevron {
   transform: rotate(90deg);
 }
 
-.hyeon-sidebar__collapsible-content[data-state="closed"] {
+.sh-ui-sidebar__collapsible-content[data-state="closed"] {
   display: none;
 }
 
 /* collapsed=icon 상태에서는 chevron 숨기고 content도 숨김 */
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] .hyeon-sidebar__chevron,
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] .hyeon-sidebar__collapsible-content {
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__chevron,
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__collapsible-content {
   display: none;
 }

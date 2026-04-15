@@ -65,11 +65,11 @@ export function AppShell({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <Sidebar collapsible="icon">
         <SidebarHeader>
-          <Link href="/" className="hyeon-brand">
-            <span className="hyeon-brand__mark" aria-hidden>
+          <Link href="/" className="sh-ui-brand">
+            <span className="sh-ui-brand__mark" aria-hidden>
               H
             </span>
-            <span className="hyeon-brand__name">Hyeon</span>
+            <span className="sh-ui-brand__name">ShUi</span>
           </Link>
         </SidebarHeader>
         <SidebarSeparator />

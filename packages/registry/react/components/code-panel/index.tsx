@@ -31,24 +31,24 @@ export async function CodePanel({
     defaultColor: false, // CSS 변수만 생성 → .dark 클래스로 토글
   });
 
-  const classes = ["hyeon-code", className].filter(Boolean).join(" ");
+  const classes = ["sh-ui-code", className].filter(Boolean).join(" ");
 
   return (
     <div className={classes}>
       {filename ? (
-        <div className="hyeon-code__header">
-          <span className="hyeon-code__filename">{filename}</span>
+        <div className="sh-ui-code__header">
+          <span className="sh-ui-code__filename">{filename}</span>
           {!hideCopy && <CodePanelCopyButton code={trimmed} />}
         </div>
       ) : (
         !hideCopy && (
-          <div className="hyeon-code__copy-floating">
+          <div className="sh-ui-code__copy-floating">
             <CodePanelCopyButton code={trimmed} />
           </div>
         )
       )}
       <div
-        className="hyeon-code__body"
+        className="sh-ui-code__body"
         data-line-numbers={showLineNumbers || undefined}
         dangerouslySetInnerHTML={{ __html: html }}
       />

@@ -50,7 +50,7 @@ export default function SidebarPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon add sidebar`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add sidebar`} />
 
       <h3>Manual</h3>
       <p className="muted">

@@ -10,7 +10,7 @@ const REPO_ROOT = resolve(__dirname, "../../..");
 function resolveDest(template, config) {
   return template.replace(/\{([a-zA-Z0-9_]+)\}/g, (m, key) => {
     const v = config.paths?.[key];
-    if (!v) throw new Error(`paths.${key} 가 hyeon.config.json에 없습니다.`);
+    if (!v) throw new Error(`paths.${key} 가 sh-ui.config.json에 없습니다.`);
     return v;
   });
 }
@@ -71,13 +71,13 @@ async function addComponent(name, config, cwd, installed) {
 }
 
 export async function add({ cwd, names }) {
-  const configPath = resolve(cwd, "hyeon.config.json");
+  const configPath = resolve(cwd, "sh-ui.config.json");
   let config;
   try {
     config = JSON.parse(await readFile(configPath, "utf8"));
   } catch {
     throw new Error(
-      "hyeon.config.json을 찾을 수 없습니다. 먼저 `hyeon init`을 실행하세요.",
+      "sh-ui.config.json을 찾을 수 없습니다. 먼저 `sh-ui init`을 실행하세요.",
     );
   }
 

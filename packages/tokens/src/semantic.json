@@ -1,5 +1,5 @@
 {
-  "$description": "의미 토큰 — primitive 참조. 컴포넌트는 오직 이 계층만 사용한다. {base}, {primary} 등은 hyeon.config.json의 theme 설정으로 치환된다.",
+  "$description": "의미 토큰 — primitive 참조. 컴포넌트는 오직 이 계층만 사용한다. {base}, {primary} 등은 sh-ui.config.json의 theme 설정으로 치환된다.",
 
   "light": {
     "background": {

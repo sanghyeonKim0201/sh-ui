@@ -114,17 +114,17 @@ export function Slider({
   return (
     <div
       {...rest}
-      className={["hyeon-slider", disabled && "hyeon-slider--disabled", className]
+      className={["sh-ui-slider", disabled && "sh-ui-slider--disabled", className]
         .filter(Boolean)
         .join(" ")}
       data-disabled={disabled || undefined}
     >
       <div
         ref={trackRef}
-        className="hyeon-slider__track"
+        className="sh-ui-slider__track"
         onPointerDown={onPointerDown}
       >
-        <div className="hyeon-slider__range" style={{ width: percent }} />
+        <div className="sh-ui-slider__range" style={{ width: percent }} />
         <div
           role="slider"
           tabIndex={disabled ? -1 : 0}
@@ -134,7 +134,7 @@ export function Slider({
           aria-valuenow={value}
           aria-disabled={disabled || undefined}
           onKeyDown={onKeyDown}
-          className="hyeon-slider__thumb"
+          className="sh-ui-slider__thumb"
           style={{ left: percent }}
         />
       </div>

@@ -1,5 +1,5 @@
 {
-  "$schema": "./hyeon.schema.json",
+  "$schema": "./sh-ui.schema.json",
   "platform": "react",
   "style": "default",
   "theme": {

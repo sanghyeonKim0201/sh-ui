@@ -112,7 +112,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .muted { color: var(--foreground-muted); }
 
 /* docs 사이드바 브랜드 */
-.hyeon-brand {
+.sh-ui-brand {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -121,7 +121,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   text-decoration: none;
   min-width: 0;
 }
-.hyeon-brand__mark {
+.sh-ui-brand__mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -134,13 +134,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   font-weight: 700;
   font-size: 0.875rem;
 }
-.hyeon-brand__name {
+.sh-ui-brand__name {
   font-weight: 700;
   font-size: 0.9375rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.hyeon-sidebar[data-state="collapsed"][data-collapsible="icon"] .hyeon-brand__name {
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-brand__name {
   display: none;
 }

@@ -1,8 +1,8 @@
-/* Hyeon focus ring — 모든 인터랙티브 요소에 일관된 키보드 포커스 스타일.
+/* ShUi focus ring — 모든 인터랙티브 요소에 일관된 키보드 포커스 스타일.
  *
  * 사용 예:
  *   .my-button:focus-visible { @apply ... }   // (Tailwind 미사용 시 직접 outline 지정)
- *   또는 .hyeon-focus 클래스를 컴포넌트에 부착.
+ *   또는 .sh-ui-focus 클래스를 컴포넌트에 부착.
  */
 
 :root {
@@ -11,13 +11,13 @@
   --focus-ring-offset: 2px;
 }
 
-.hyeon-focus:focus-visible,
+.sh-ui-focus:focus-visible,
 [data-focus-ring]:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
 }
 
 /* 음수 offset이 필요한 경우(예: 메뉴 아이템처럼 부모 안쪽으로) */
-.hyeon-focus--inset:focus-visible {
+.sh-ui-focus--inset:focus-visible {
   outline-offset: calc(-1 * var(--focus-ring-offset));
 }

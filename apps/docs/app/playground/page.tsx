@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const STORAGE_KEY = "hyeon-playground-tokens";
+const STORAGE_KEY = "sh-ui-playground-tokens";
 
 type TokenKey =
   | "background"

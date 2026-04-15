@@ -8,8 +8,8 @@ export interface SubComponentRow {
 
 export function SubComponents({ rows }: { rows: SubComponentRow[] }) {
   return (
-    <div className="hyeon-props">
-      <table className="hyeon-props__table">
+    <div className="sh-ui-props">
+      <table className="sh-ui-props__table">
         <thead>
           <tr>
             <th>Component</th>
@@ -20,9 +20,9 @@ export function SubComponents({ rows }: { rows: SubComponentRow[] }) {
           {rows.map((r) => (
             <tr key={r.name}>
               <td>
-                <code className="hyeon-props__name">{r.name}</code>
+                <code className="sh-ui-props__name">{r.name}</code>
               </td>
-              <td className="hyeon-props__desc">{r.description ?? null}</td>
+              <td className="sh-ui-props__desc">{r.description ?? null}</td>
             </tr>
           ))}
         </tbody>

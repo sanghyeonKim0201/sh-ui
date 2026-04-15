@@ -1,4 +1,4 @@
-.hyeon-color-picker {
+.sh-ui-color-picker {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
@@ -8,7 +8,7 @@
 }
 
 /* ───────────── SV 영역 ───────────── */
-.hyeon-color-picker__sv {
+.sh-ui-color-picker__sv {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -19,20 +19,20 @@
 }
 
 /* 좌→우 흰색 그라데이션 (saturation) */
-.hyeon-color-picker__sv-saturation {
+.sh-ui-color-picker__sv-saturation {
   position: absolute;
   inset: 0;
   background: linear-gradient(to right, #fff, transparent);
 }
 
 /* 위→아래 검정 그라데이션 (value) */
-.hyeon-color-picker__sv-value {
+.sh-ui-color-picker__sv-value {
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, #000, transparent);
 }
 
-.hyeon-color-picker__sv-thumb {
+.sh-ui-color-picker__sv-thumb {
   position: absolute;
   width: 0.875rem;
   height: 0.875rem;
@@ -45,7 +45,7 @@
 }
 
 /* ───────────── Hue 슬라이더 ───────────── */
-.hyeon-color-picker__hue {
+.sh-ui-color-picker__hue {
   position: relative;
   width: 100%;
   height: 0.875rem;
@@ -64,7 +64,7 @@
   );
 }
 
-.hyeon-color-picker__hue-thumb {
+.sh-ui-color-picker__hue-thumb {
   position: absolute;
   top: 50%;
   width: 0.875rem;
@@ -78,13 +78,13 @@
 }
 
 /* ───────────── Hex 인풋 ───────────── */
-.hyeon-color-picker__row {
+.sh-ui-color-picker__row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.hyeon-color-picker__swatch {
+.sh-ui-color-picker__swatch {
   width: 1.75rem;
   height: 1.75rem;
   border-radius: calc(var(--radius) - 2px);
@@ -92,7 +92,7 @@
   flex-shrink: 0;
 }
 
-.hyeon-color-picker__hex {
+.sh-ui-color-picker__hex {
   flex: 1;
   min-width: 0;
   height: 1.75rem;
@@ -105,7 +105,7 @@
   font-size: 0.8125rem;
   text-transform: uppercase;
 }
-.hyeon-color-picker__hex:focus {
+.sh-ui-color-picker__hex:focus {
   outline: none;
   border-color: var(--foreground);
   box-shadow: 0 0 0 1px var(--foreground);

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
-const STORAGE_KEY = "hyeon-docs-theme";
+const STORAGE_KEY = "sh-ui-docs-theme";
 
 export function DarkModeToggle() {
   const [dark, setDark] = useState(false);

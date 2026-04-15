@@ -1,4 +1,4 @@
-/* Hyeon z-index 스케일 — 레이어 충돌을 방지하기 위한 의미적 z-index 토큰.
+/* ShUi z-index 스케일 — 레이어 충돌을 방지하기 위한 의미적 z-index 토큰.
  *
  * 사용 예:
  *   .my-dropdown { z-index: var(--z-dropdown); }
