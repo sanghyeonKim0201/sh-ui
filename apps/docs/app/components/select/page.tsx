@@ -21,7 +21,7 @@ export default function SelectPage() {
     <main className="container">
       <h1>Select</h1>
       <p className="muted">
-        단일 선택 드롭다운. <a href="https://base-ui.com/react/components/select" target="_blank" rel="noreferrer">Base UI</a>의 headless primitive 위에 ShUi 토큰 스타일을 입혔다.
+        단일 선택 드롭다운. <a href="https://base-ui.com/react/components/select" target="_blank" rel="noreferrer">Base UI</a>의 headless primitive 위에 sh-ui 토큰 스타일을 입혔다.
       </p>
 
       <Preview>

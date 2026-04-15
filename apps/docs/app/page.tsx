@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   return (
     <main className="container">
-      <h1>ShUi Design System</h1>
+      <h1>sh-ui</h1>
       <p className="muted">
-        <strong>玄</strong> — 검고 그윽하다. 블랙 &amp; 화이트를 기본으로, 설정대로 벼려져 내려받는 멀티 플랫폼 디자인 시스템.
+        <strong>짧은 이름, 단단한 기본기</strong> — 담백하게 설계된 멀티 플랫폼 디자인 시스템. 블랙 &amp; 화이트를 기본으로, 설정대로 벼려져 내려받는다.
       </p>
 
       <div style={{ display: "flex", gap: "0.75rem", margin: "1.5rem 0 2rem" }}>

@@ -1,8 +1,8 @@
 {
-  "name": "sh-ui-design-system",
+  "name": "sh-ui",
   "version": "0.0.0",
   "private": true,
-  "description": "ShUi (玄) — 검고 그윽한, 멀티 플랫폼 디자인 시스템",
+  "description": "sh-ui — 짧은 이름, 단단한 기본기. 담백하게 설계된 멀티 플랫폼 디자인 시스템.",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",

@@ -4,7 +4,7 @@ export default function GettingStarted() {
   return (
     <main className="container">
       <h1>시작하기</h1>
-      <p className="muted">프로젝트에 ShUi을 도입하는 3단계.</p>
+      <p className="muted">프로젝트에 sh-ui을 도입하는 3단계.</p>
 
       <h2>1. 설정 파일 생성</h2>
       <p>프로젝트 루트에서:</p>

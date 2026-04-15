@@ -1,4 +1,4 @@
-/* ShUi breakpoints — 참조용 토큰 + @media 사용 가이드
+/* sh-ui breakpoints — 참조용 토큰 + @media 사용 가이드
  *
  * CSS @media 쿼리는 var()를 받지 못한다. 따라서 변수는 "문서/계산용"이고,
  * 실제 미디어 쿼리에는 동일한 값을 직접 적는다.

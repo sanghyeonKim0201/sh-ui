@@ -2,7 +2,7 @@
   "name": "@sh-ui/cli",
   "version": "0.0.0",
   "private": true,
-  "description": "ShUi CLI — sh-ui init / sh-ui add",
+  "description": "sh-ui CLI — sh-ui init / sh-ui add",
   "type": "module",
   "bin": {
     "sh-ui": "./bin/sh-ui.mjs"

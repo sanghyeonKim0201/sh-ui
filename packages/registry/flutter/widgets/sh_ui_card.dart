@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../foundation/sh_ui_tokens.dart';
 
-/// ShUi Card — 컴파운드 스타일.
+/// sh-ui Card — 컴파운드 스타일.
 ///
 /// React 쪽 compound children API와 달리 Flutter는 named params가 관용적이라
 /// 동일한 의미 구조를 다음과 같이 표현한다:

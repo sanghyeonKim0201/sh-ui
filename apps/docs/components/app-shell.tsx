@@ -69,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="sh-ui-brand__mark" aria-hidden>
               H
             </span>
-            <span className="sh-ui-brand__name">ShUi</span>
+            <span className="sh-ui-brand__name">sh-ui</span>
           </Link>
         </SidebarHeader>
         <SidebarSeparator />

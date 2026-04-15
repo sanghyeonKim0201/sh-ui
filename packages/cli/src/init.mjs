@@ -106,7 +106,7 @@ async function resolveAnswers(flags) {
 
   const rl = createInterface({ input: stdin, output: stdout });
   try {
-    console.log("ShUi Design System 설정을 시작합니다. (Enter = 기본값)\n");
+    console.log("sh-ui Design System 설정을 시작합니다. (Enter = 기본값)\n");
     for (const key of missingKeys) {
       answers[key] = await prompt(rl, labelFor(key), CHOICES[key], answers[key]);
     }

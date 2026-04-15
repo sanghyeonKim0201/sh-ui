@@ -1,4 +1,4 @@
-/* ShUi focus ring — 모든 인터랙티브 요소에 일관된 키보드 포커스 스타일.
+/* sh-ui focus ring — 모든 인터랙티브 요소에 일관된 키보드 포커스 스타일.
  *
  * 사용 예:
  *   .my-button:focus-visible { @apply ... }   // (Tailwind 미사용 시 직접 outline 지정)

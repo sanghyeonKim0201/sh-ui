@@ -1,4 +1,4 @@
-/* ShUi 공용 애니메이션 — Sidebar drawer, Dialog, Toast 등에서 재사용한다.
+/* sh-ui 공용 애니메이션 — Sidebar drawer, Dialog, Toast 등에서 재사용한다.
  *
  * 사용 예:
  *   .my-sheet[data-state="open"] {

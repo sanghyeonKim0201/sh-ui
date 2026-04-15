@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../foundation/sh_ui_tokens.dart';
 
-/// ShUi 텍스트 입력 필드.
+/// sh-ui 텍스트 입력 필드.
 /// Material TextField를 기반으로 토큰 스타일을 입힌다.
 class ShUiInput extends StatefulWidget {
   final TextEditingController? controller;

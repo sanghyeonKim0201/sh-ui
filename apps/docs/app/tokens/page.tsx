@@ -13,7 +13,7 @@ export default function TokensPage() {
     <main className="container">
       <h1>토큰</h1>
       <p className="muted">
-        ShUi은 <strong>primitive → semantic → component</strong> 3계층을 가진다.
+        sh-ui은 <strong>primitive → semantic → component</strong> 3계층을 가진다.
         컴포넌트는 오직 semantic 계층만 참조한다.
       </p>
 

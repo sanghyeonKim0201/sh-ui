@@ -1,6 +1,6 @@
 # @sh-ui/tokens
 
-ShUi 디자인 시스템의 **원시(primitive)** 및 **의미(semantic)** 토큰 정의.
+sh-ui 디자인 시스템의 **원시(primitive)** 및 **의미(semantic)** 토큰 정의.
 
 ## 파일
 

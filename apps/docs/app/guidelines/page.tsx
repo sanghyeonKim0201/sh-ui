@@ -4,7 +4,7 @@ export default function Guidelines() {
   return (
     <main className="container">
       <h1>가이드라인</h1>
-      <p className="muted">ShUi을 만들고 확장할 때의 원칙.</p>
+      <p className="muted">sh-ui을 만들고 확장할 때의 원칙.</p>
 
       <h2>토큰 사용 규칙</h2>
       <ol>
