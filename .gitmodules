@@ -1,0 +1,6 @@
+[submodule ".claude/rules/common"]
+	path = .claude/rules/common
+	url = https://github.com/sanghyeonKim0201/claude-rules-common.git
+[submodule ".claude/rules/nextjs"]
+	path = .claude/rules/nextjs
+	url = https://github.com/sanghyeonKim0201/claude-rules-nextjs.git
