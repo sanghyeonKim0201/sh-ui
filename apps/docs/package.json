@@ -1,0 +1,27 @@
+{
+  "name": "@hyeon/docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "hyeon:install": "node ../../packages/cli/bin/hyeon.mjs add tokens button"
+  },
+  "dependencies": {
+    "@base-ui-components/react": "latest",
+    "lucide-react": "^1.8.0",
+    "next": "^16.2.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "shiki": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5.9.0"
+  }
+}

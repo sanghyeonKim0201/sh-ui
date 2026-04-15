@@ -1,0 +1,83 @@
+.hyeon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 120ms, color 120ms, border-color 120ms,
+    transform 80ms ease-out, filter 80ms;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hyeon-button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hyeon-button:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.hyeon-button:active:not(:disabled) {
+  transform: scale(0.97);
+  filter: brightness(0.92);
+  transition-duration: 40ms;
+}
+
+/* sizes */
+.hyeon-button--sm { height: 2rem;    padding: 0 0.75rem; font-size: 0.875rem; }
+.hyeon-button--md { height: 2.5rem;  padding: 0 1rem;    font-size: 0.875rem; }
+.hyeon-button--lg { height: 3rem;    padding: 0 1.25rem; font-size: 1rem; }
+
+/* 모바일/터치 디바이스: 최소 탭 영역 보장 */
+@media (hover: none) and (pointer: coarse) {
+  .hyeon-button--sm { height: 2.25rem; }
+  .hyeon-button--md { height: 2.75rem; }
+}
+
+/* variants */
+.hyeon-button--primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.hyeon-button--primary:hover { background-color: var(--primary-hover); }
+
+.hyeon-button--secondary {
+  background-color: var(--background-muted);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.hyeon-button--secondary:hover { background-color: var(--background-subtle); }
+
+.hyeon-button--ghost {
+  background-color: transparent;
+  color: var(--foreground);
+}
+.hyeon-button--ghost:hover { background-color: var(--background-muted); }
+
+.hyeon-button--danger {
+  background-color: var(--danger);
+  color: var(--danger-foreground);
+}
+
+/* link — 배경/테두리 없이 밑줄. size는 font-size만 유지, height/padding 제거 */
+.hyeon-button--link {
+  background-color: transparent;
+  color: var(--foreground);
+  border-color: transparent;
+  height: auto;
+  padding: 0;
+  text-underline-offset: 3px;
+}
+.hyeon-button--link:hover { text-decoration: underline; }
+.hyeon-button--link:active:not(:disabled) {
+  transform: none;
+  filter: none;
+  color: var(--foreground-muted);
+}

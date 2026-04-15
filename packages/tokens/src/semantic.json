@@ -1,0 +1,63 @@
+{
+  "$description": "의미 토큰 — primitive 참조. 컴포넌트는 오직 이 계층만 사용한다. {base}, {primary} 등은 hyeon.config.json의 theme 설정으로 치환된다.",
+
+  "light": {
+    "background": {
+      "default": { "$value": "{color.white}", "$type": "color" },
+      "subtle":   { "$value": "{color.{base}.50}", "$type": "color" },
+      "muted":    { "$value": "{color.{base}.100}", "$type": "color" },
+      "inverse":  { "$value": "{color.{base}.950}", "$type": "color" }
+    },
+    "foreground": {
+      "default": { "$value": "{color.{base}.950}", "$type": "color" },
+      "muted":   { "$value": "{color.{base}.500}", "$type": "color" },
+      "subtle":  { "$value": "{color.{base}.400}", "$type": "color" },
+      "inverse": { "$value": "{color.white}", "$type": "color" }
+    },
+    "border": {
+      "default": { "$value": "{color.{base}.200}", "$type": "color" },
+      "strong":  { "$value": "{color.{base}.300}", "$type": "color" }
+    },
+    "primary": {
+      "default":    { "$value": "{color.{base}.900}", "$type": "color" },
+      "foreground": { "$value": "{color.{base}.50}", "$type": "color" },
+      "hover":      { "$value": "{color.{base}.800}", "$type": "color" }
+    },
+    "danger": {
+      "default":    { "$value": "{color.red.500}", "$type": "color" },
+      "foreground": { "$value": "{color.white}", "$type": "color" }
+    }
+  },
+
+  "dark": {
+    "background": {
+      "default": { "$value": "{color.{base}.950}", "$type": "color" },
+      "subtle":  { "$value": "{color.{base}.900}", "$type": "color" },
+      "muted":   { "$value": "{color.{base}.800}", "$type": "color" },
+      "inverse": { "$value": "{color.white}", "$type": "color" }
+    },
+    "foreground": {
+      "default": { "$value": "{color.{base}.50}", "$type": "color" },
+      "muted":   { "$value": "{color.{base}.400}", "$type": "color" },
+      "subtle":  { "$value": "{color.{base}.500}", "$type": "color" },
+      "inverse": { "$value": "{color.{base}.950}", "$type": "color" }
+    },
+    "border": {
+      "default": { "$value": "{color.{base}.800}", "$type": "color" },
+      "strong":  { "$value": "{color.{base}.700}", "$type": "color" }
+    },
+    "primary": {
+      "default":    { "$value": "{color.{base}.50}", "$type": "color" },
+      "foreground": { "$value": "{color.{base}.900}", "$type": "color" },
+      "hover":      { "$value": "{color.{base}.200}", "$type": "color" }
+    },
+    "danger": {
+      "default":    { "$value": "{color.red.600}", "$type": "color" },
+      "foreground": { "$value": "{color.white}", "$type": "color" }
+    }
+  },
+
+  "radius": {
+    "default": { "$value": "{radius.{radius}}", "$type": "dimension" }
+  }
+}

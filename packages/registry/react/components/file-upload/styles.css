@@ -1,0 +1,141 @@
+.hyeon-file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hyeon-file-upload__dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem 1.5rem;
+  min-height: 10rem;
+  background: var(--background-subtle);
+  color: var(--foreground-muted);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 120ms, background-color 120ms, color 120ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hyeon-file-upload__dropzone:hover {
+  border-color: var(--border-strong);
+  color: var(--foreground);
+}
+
+.hyeon-file-upload__dropzone:focus-within {
+  border-color: var(--foreground);
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.hyeon-file-upload__dropzone--drag {
+  border-color: var(--foreground);
+  background: var(--background-muted);
+  color: var(--foreground);
+}
+
+.hyeon-file-upload__dropzone--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* 네이티브 input을 시각적으로 숨기되 접근 가능하게 유지 */
+.hyeon-file-upload__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hyeon-file-upload__text {
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+.hyeon-file-upload__text strong {
+  font-weight: 600;
+}
+
+.hyeon-file-upload__hint {
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+}
+
+/* 파일 목록 */
+.hyeon-file-upload__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.hyeon-file-upload__item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.hyeon-file-upload__item > svg {
+  color: var(--foreground-muted);
+  flex-shrink: 0;
+}
+
+.hyeon-file-upload__name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hyeon-file-upload__size {
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  flex-shrink: 0;
+}
+
+.hyeon-file-upload__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius) - 4px);
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: color 120ms, background-color 120ms;
+  flex-shrink: 0;
+}
+.hyeon-file-upload__remove:hover:not(:disabled) {
+  color: var(--foreground);
+  background: var(--background-muted);
+}
+.hyeon-file-upload__remove:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+.hyeon-file-upload__remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

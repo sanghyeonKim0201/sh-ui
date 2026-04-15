@@ -1,0 +1,20 @@
+{
+  "$schema": "../../hyeon.schema.json",
+  "platform": "react",
+  "style": "default",
+  "theme": {
+    "base": "neutral",
+    "radius": "md",
+    "mode": "light-dark"
+  },
+  "paths": {
+    "tokens": "app/styles/tokens.css",
+    "components": "components/ui",
+    "utils": "lib/utils.ts"
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui"
+  }
+}

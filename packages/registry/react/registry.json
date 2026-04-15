@@ -1,0 +1,159 @@
+{
+  "$description": "React 레지스트리 매니페스트 — CLI가 각 컴포넌트 name으로 조회해 files를 사용자 프로젝트로 복사한다.",
+  "components": {
+    "button": {
+      "name": "button",
+      "type": "component",
+      "files": [
+        { "src": "components/button/index.tsx", "dest": "{components}/button/index.tsx" },
+        { "src": "components/button/styles.css", "dest": "{components}/button/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "card": {
+      "name": "card",
+      "type": "component",
+      "files": [
+        { "src": "components/card/index.tsx", "dest": "{components}/card/index.tsx" },
+        { "src": "components/card/styles.css", "dest": "{components}/card/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "input": {
+      "name": "input",
+      "type": "component",
+      "files": [
+        { "src": "components/input/index.tsx", "dest": "{components}/input/index.tsx" },
+        { "src": "components/input/styles.css", "dest": "{components}/input/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "file-upload": {
+      "name": "file-upload",
+      "type": "component",
+      "files": [
+        { "src": "components/file-upload/index.tsx", "dest": "{components}/file-upload/index.tsx" },
+        { "src": "components/file-upload/styles.css", "dest": "{components}/file-upload/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "code-panel": {
+      "name": "code-panel",
+      "type": "component",
+      "files": [
+        { "src": "components/code-panel/index.tsx", "dest": "{components}/code-panel/index.tsx" },
+        { "src": "components/code-panel/copy.tsx", "dest": "{components}/code-panel/copy.tsx" },
+        { "src": "components/code-panel/styles.css", "dest": "{components}/code-panel/styles.css" }
+      ],
+      "dependencies": ["shiki"],
+      "registryDependencies": []
+    },
+    "select": {
+      "name": "select",
+      "type": "component",
+      "files": [
+        { "src": "components/select/index.tsx", "dest": "{components}/select/index.tsx" },
+        { "src": "components/select/styles.css", "dest": "{components}/select/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "sidebar": {
+      "name": "sidebar",
+      "type": "component",
+      "files": [
+        { "src": "components/sidebar/index.tsx", "dest": "{components}/sidebar/index.tsx" },
+        { "src": "components/sidebar/styles.css", "dest": "{components}/sidebar/styles.css" }
+      ],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": []
+    },
+    "breakpoints": {
+      "name": "breakpoints",
+      "type": "utility",
+      "files": [
+        { "src": "components/breakpoints/breakpoints.css", "dest": "{styles}/breakpoints.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "focus-ring": {
+      "name": "focus-ring",
+      "type": "utility",
+      "files": [
+        { "src": "components/focus-ring/focus-ring.css", "dest": "{styles}/focus-ring.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "z-index": {
+      "name": "z-index",
+      "type": "utility",
+      "files": [
+        { "src": "components/z-index/z-index.css", "dest": "{styles}/z-index.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "animations": {
+      "name": "animations",
+      "type": "utility",
+      "files": [
+        { "src": "components/animations/animations.css", "dest": "{styles}/animations.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "cn": {
+      "name": "cn",
+      "type": "lib",
+      "files": [
+        { "src": "lib/cn.ts", "dest": "{lib}/cn.ts" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "use-media-query": {
+      "name": "use-media-query",
+      "type": "hook",
+      "files": [
+        { "src": "hooks/use-media-query.ts", "dest": "{hooks}/use-media-query.ts" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "use-active-section": {
+      "name": "use-active-section",
+      "type": "hook",
+      "files": [
+        { "src": "hooks/use-active-section.ts", "dest": "{hooks}/use-active-section.ts" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "color-picker": {
+      "name": "color-picker",
+      "type": "component",
+      "files": [
+        { "src": "components/color-picker/index.tsx", "dest": "{components}/color-picker/index.tsx" },
+        { "src": "components/color-picker/styles.css", "dest": "{components}/color-picker/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "slider": {
+      "name": "slider",
+      "type": "component",
+      "files": [
+        { "src": "components/slider/index.tsx", "dest": "{components}/slider/index.tsx" },
+        { "src": "components/slider/styles.css", "dest": "{components}/slider/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    }
+  }
+}

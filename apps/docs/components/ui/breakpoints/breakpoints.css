@@ -1,0 +1,17 @@
+/* Hyeon breakpoints — 참조용 토큰 + @media 사용 가이드
+ *
+ * CSS @media 쿼리는 var()를 받지 못한다. 따라서 변수는 "문서/계산용"이고,
+ * 실제 미디어 쿼리에는 동일한 값을 직접 적는다.
+ *
+ *   @media (max-width: 40rem)  { ... }   // sm 이하 (모바일)
+ *   @media (min-width: 48rem)  { ... }   // md 이상 (태블릿+)
+ *   @media (min-width: 64rem)  { ... }   // lg 이상 (데스크탑)
+ *   @media (min-width: 80rem)  { ... }   // xl 이상
+ */
+
+:root {
+  --bp-sm: 40rem;   /* 640px  — 모바일 경계 */
+  --bp-md: 48rem;   /* 768px  — 태블릿 경계 */
+  --bp-lg: 64rem;   /* 1024px — 데스크탑 경계 */
+  --bp-xl: 80rem;   /* 1280px — 와이드 경계 */
+}

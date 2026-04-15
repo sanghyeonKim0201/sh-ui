@@ -1,0 +1,11 @@
+{
+  "name": "@hyeon/cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Hyeon CLI — hyeon init / hyeon add",
+  "type": "module",
+  "bin": {
+    "hyeon": "./bin/hyeon.mjs"
+  },
+  "files": ["bin", "src"]
+}

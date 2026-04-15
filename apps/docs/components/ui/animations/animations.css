@@ -1,0 +1,51 @@
+/* Hyeon 공용 애니메이션 — Sidebar drawer, Dialog, Toast 등에서 재사용한다.
+ *
+ * 사용 예:
+ *   .my-sheet[data-state="open"] {
+ *     animation: hyeon-slide-in-from-left var(--ease-duration) var(--ease-out);
+ *   }
+ */
+
+:root {
+  --ease-duration: 200ms;
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* fade */
+@keyframes hyeon-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes hyeon-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* slide from edges */
+@keyframes hyeon-slide-in-from-left {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes hyeon-slide-in-from-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes hyeon-slide-in-from-top {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes hyeon-slide-in-from-bottom {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* zoom (Dialog/Popover에 어울림) */
+@keyframes hyeon-zoom-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes hyeon-zoom-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.95); }
+}

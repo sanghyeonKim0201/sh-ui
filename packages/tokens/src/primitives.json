@@ -1,0 +1,95 @@
+{
+  "$description": "원시 토큰 — 실제 값. 플랫폼/테마 무관. W3C Design Tokens 포맷 준수.",
+  "color": {
+    "white": { "$value": "#FFFFFF", "$type": "color" },
+    "black": { "$value": "#000000", "$type": "color" },
+
+    "neutral": {
+      "50":  { "$value": "#FAFAFA", "$type": "color" },
+      "100": { "$value": "#F5F5F5", "$type": "color" },
+      "200": { "$value": "#E5E5E5", "$type": "color" },
+      "300": { "$value": "#D4D4D4", "$type": "color" },
+      "400": { "$value": "#A3A3A3", "$type": "color" },
+      "500": { "$value": "#737373", "$type": "color" },
+      "600": { "$value": "#525252", "$type": "color" },
+      "700": { "$value": "#404040", "$type": "color" },
+      "800": { "$value": "#262626", "$type": "color" },
+      "900": { "$value": "#171717", "$type": "color" },
+      "950": { "$value": "#0A0A0A", "$type": "color" }
+    },
+
+    "zinc": {
+      "50":  { "$value": "#FAFAFA", "$type": "color" },
+      "100": { "$value": "#F4F4F5", "$type": "color" },
+      "200": { "$value": "#E4E4E7", "$type": "color" },
+      "300": { "$value": "#D4D4D8", "$type": "color" },
+      "400": { "$value": "#A1A1AA", "$type": "color" },
+      "500": { "$value": "#71717A", "$type": "color" },
+      "600": { "$value": "#52525B", "$type": "color" },
+      "700": { "$value": "#3F3F46", "$type": "color" },
+      "800": { "$value": "#27272A", "$type": "color" },
+      "900": { "$value": "#18181B", "$type": "color" },
+      "950": { "$value": "#09090B", "$type": "color" }
+    },
+
+    "slate": {
+      "50":  { "$value": "#F8FAFC", "$type": "color" },
+      "100": { "$value": "#F1F5F9", "$type": "color" },
+      "200": { "$value": "#E2E8F0", "$type": "color" },
+      "300": { "$value": "#CBD5E1", "$type": "color" },
+      "400": { "$value": "#94A3B8", "$type": "color" },
+      "500": { "$value": "#64748B", "$type": "color" },
+      "600": { "$value": "#475569", "$type": "color" },
+      "700": { "$value": "#334155", "$type": "color" },
+      "800": { "$value": "#1E293B", "$type": "color" },
+      "900": { "$value": "#0F172A", "$type": "color" },
+      "950": { "$value": "#020617", "$type": "color" }
+    },
+
+    "red": {
+      "500": { "$value": "#EF4444", "$type": "color" },
+      "600": { "$value": "#DC2626", "$type": "color" }
+    }
+  },
+
+  "spacing": {
+    "0":  { "$value": "0px",   "$type": "dimension" },
+    "1":  { "$value": "4px",   "$type": "dimension" },
+    "2":  { "$value": "8px",   "$type": "dimension" },
+    "3":  { "$value": "12px",  "$type": "dimension" },
+    "4":  { "$value": "16px",  "$type": "dimension" },
+    "5":  { "$value": "20px",  "$type": "dimension" },
+    "6":  { "$value": "24px",  "$type": "dimension" },
+    "8":  { "$value": "32px",  "$type": "dimension" },
+    "10": { "$value": "40px",  "$type": "dimension" },
+    "12": { "$value": "48px",  "$type": "dimension" },
+    "16": { "$value": "64px",  "$type": "dimension" }
+  },
+
+  "radius": {
+    "none": { "$value": "0px",    "$type": "dimension" },
+    "sm":   { "$value": "0.25rem","$type": "dimension" },
+    "md":   { "$value": "0.5rem", "$type": "dimension" },
+    "lg":   { "$value": "0.75rem","$type": "dimension" },
+    "xl":   { "$value": "1rem",   "$type": "dimension" },
+    "full": { "$value": "9999px", "$type": "dimension" }
+  },
+
+  "fontSize": {
+    "xs":  { "$value": "12px", "$type": "dimension" },
+    "sm":  { "$value": "14px", "$type": "dimension" },
+    "base":{ "$value": "16px", "$type": "dimension" },
+    "lg":  { "$value": "18px", "$type": "dimension" },
+    "xl":  { "$value": "20px", "$type": "dimension" },
+    "2xl": { "$value": "24px", "$type": "dimension" },
+    "3xl": { "$value": "30px", "$type": "dimension" },
+    "4xl": { "$value": "36px", "$type": "dimension" }
+  },
+
+  "fontWeight": {
+    "regular":  { "$value": 400, "$type": "fontWeight" },
+    "medium":   { "$value": 500, "$type": "fontWeight" },
+    "semibold": { "$value": 600, "$type": "fontWeight" },
+    "bold":     { "$value": 700, "$type": "fontWeight" }
+  }
+}

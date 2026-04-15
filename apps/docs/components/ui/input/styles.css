@@ -1,0 +1,114 @@
+.hyeon-input {
+  display: block;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1;
+  transition: border-color 120ms, box-shadow 120ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 모바일/터치: 최소 탭 영역 + iOS 자동 줌 방지(16px) */
+@media (hover: none) and (pointer: coarse) {
+  .hyeon-input {
+    height: 2.75rem;
+    font-size: 1rem;
+  }
+}
+
+.hyeon-input::placeholder {
+  color: var(--foreground-muted);
+}
+
+.hyeon-input:hover:not(:disabled):not(:focus) {
+  border-color: var(--border-strong);
+}
+
+.hyeon-input:focus {
+  outline: none;
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+.hyeon-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--background-subtle);
+}
+
+.hyeon-input:read-only {
+  background: var(--background-subtle);
+}
+
+/* 숫자 input 화살표 제거 (원하는 경우) */
+.hyeon-input[type="number"]::-webkit-outer-spin-button,
+.hyeon-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.hyeon-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ───────── prefix / suffix ───────── */
+
+.hyeon-input-wrap {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+.hyeon-input--with-prefix { padding-left: 2.5rem; }
+.hyeon-input--with-suffix { padding-right: 2.5rem; }
+
+.hyeon-input__affix {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-muted);
+  pointer-events: none;
+}
+.hyeon-input__affix--prefix { left: 0.75rem; }
+.hyeon-input__affix--suffix { right: 0.25rem; }
+
+/* suffix 내부 클릭 가능한 요소(버튼 등)는 pointer-events 복원 */
+.hyeon-input__affix > * { pointer-events: auto; }
+
+/* 비밀번호 토글 버튼 */
+.hyeon-input__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: color 120ms, background-color 120ms;
+  -webkit-tap-highlight-color: transparent;
+}
+.hyeon-input__toggle:hover { color: var(--foreground); background: var(--background-muted); }
+.hyeon-input__toggle:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* 에러 상태 — aria-invalid="true" 기반 */
+.hyeon-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.hyeon-input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 1px var(--danger);
+}

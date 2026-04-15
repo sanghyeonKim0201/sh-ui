@@ -1,0 +1,16 @@
+/* Hyeon z-index 스케일 — 레이어 충돌을 방지하기 위한 의미적 z-index 토큰.
+ *
+ * 사용 예:
+ *   .my-dropdown { z-index: var(--z-dropdown); }
+ */
+
+:root {
+  --z-base:      0;
+  --z-sticky:    100;   /* sticky header, sidebar 등 */
+  --z-dropdown:  200;   /* select/menu 팝업 */
+  --z-overlay:   300;   /* modal/sheet 배경 dimmer */
+  --z-modal:     400;   /* modal/dialog/sheet 본체 */
+  --z-popover:   500;   /* popover, tooltip의 컨테이너 */
+  --z-toast:     600;   /* 항상 최상단 알림 */
+  --z-tooltip:   700;
+}
