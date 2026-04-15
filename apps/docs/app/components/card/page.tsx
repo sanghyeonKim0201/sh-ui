@@ -57,7 +57,7 @@ export default function CardPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon add card`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add card`} />
 
       <h3>Manual</h3>
       <p className="muted">

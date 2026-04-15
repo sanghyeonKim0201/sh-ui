@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../foundation/hyeon_tokens.dart';
+import '../foundation/sh_ui_tokens.dart';
 
-/// Hyeon 텍스트 입력 필드.
+/// sh-ui 텍스트 입력 필드.
 /// Material TextField를 기반으로 토큰 스타일을 입힌다.
-class HyeonInput extends StatefulWidget {
+class ShUiInput extends StatefulWidget {
   final TextEditingController? controller;
   final String? placeholder;
   final String? initialValue;
@@ -21,7 +21,7 @@ class HyeonInput extends StatefulWidget {
   final Widget? prefix;
   final Widget? suffix;
 
-  const HyeonInput({
+  const ShUiInput({
     super.key,
     this.controller,
     this.placeholder,
@@ -41,10 +41,10 @@ class HyeonInput extends StatefulWidget {
   });
 
   @override
-  State<HyeonInput> createState() => _HyeonInputState();
+  State<ShUiInput> createState() => _ShUiInputState();
 }
 
-class _HyeonInputState extends State<HyeonInput> {
+class _ShUiInputState extends State<ShUiInput> {
   late final FocusNode _focusNode;
   bool _ownsFocusNode = false;
   bool _hover = false;
@@ -66,7 +66,7 @@ class _HyeonInputState extends State<HyeonInput> {
 
   void _onFocusChange() => setState(() {});
 
-  Color _borderColor(HyeonColorTokens colors) {
+  Color _borderColor(ShUiColorTokens colors) {
     if (widget.invalid) return colors.danger;
     if (_focusNode.hasFocus) return colors.foreground;
     if (_hover && widget.enabled && !widget.readOnly) return colors.borderStrong;
@@ -75,8 +75,8 @@ class _HyeonInputState extends State<HyeonInput> {
 
   @override
   Widget build(BuildContext context) {
-    final hyeon = Theme.of(context).extension<HyeonTheme>() ?? HyeonTheme.light;
-    final colors = hyeon.colors;
+    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final colors = sh-ui.colors;
     final focused = _focusNode.hasFocus;
 
     final bg = (!widget.enabled || widget.readOnly)
@@ -129,7 +129,7 @@ class _HyeonInputState extends State<HyeonInput> {
             color: _borderColor(colors),
             width: focused ? 2 : 1,
           ),
-          borderRadius: BorderRadius.circular(hyeon.radius.defaultRadius),
+          borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius),
         ),
         child: Opacity(
           opacity: widget.enabled ? 1 : 0.5,
@@ -158,9 +158,9 @@ class _HyeonInputState extends State<HyeonInput> {
   }
 }
 
-/* ───────── HyeonPasswordInput ───────── */
+/* ───────── ShUiPasswordInput ───────── */
 
-class HyeonPasswordInput extends StatefulWidget {
+class ShUiPasswordInput extends StatefulWidget {
   final TextEditingController? controller;
   final String? placeholder;
   final bool enabled;
@@ -170,7 +170,7 @@ class HyeonPasswordInput extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
   final FocusNode? focusNode;
 
-  const HyeonPasswordInput({
+  const ShUiPasswordInput({
     super.key,
     this.controller,
     this.placeholder,
@@ -183,15 +183,15 @@ class HyeonPasswordInput extends StatefulWidget {
   });
 
   @override
-  State<HyeonPasswordInput> createState() => _HyeonPasswordInputState();
+  State<ShUiPasswordInput> createState() => _ShUiPasswordInputState();
 }
 
-class _HyeonPasswordInputState extends State<HyeonPasswordInput> {
+class _ShUiPasswordInputState extends State<ShUiPasswordInput> {
   bool _visible = false;
 
   @override
   Widget build(BuildContext context) {
-    return HyeonInput(
+    return ShUiInput(
       controller: widget.controller,
       placeholder: widget.placeholder,
       enabled: widget.enabled,
@@ -217,19 +217,19 @@ class _ToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hyeon = Theme.of(context).extension<HyeonTheme>() ?? HyeonTheme.light;
+    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Semantics(
       button: true,
       label: visible ? '비밀번호 숨기기' : '비밀번호 표시',
       child: InkWell(
         onTap: onToggle,
-        borderRadius: BorderRadius.circular(hyeon.radius.defaultRadius - 2),
+        borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius - 2),
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Icon(
             visible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
             size: 18,
-            color: hyeon.colors.foregroundMuted,
+            color: sh-ui.colors.foregroundMuted,
           ),
         ),
       ),

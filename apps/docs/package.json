@@ -1,5 +1,5 @@
 {
-  "name": "@hyeon/docs",
+  "name": "@sh-ui/docs",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "hyeon:install": "node ../../packages/cli/bin/hyeon.mjs add tokens button"
+    "sh-ui:install": "node ../../packages/cli/bin/sh-ui.mjs add tokens button"
   },
   "dependencies": {
     "@base-ui-components/react": "latest",

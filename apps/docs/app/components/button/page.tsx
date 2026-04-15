@@ -29,7 +29,7 @@ export default function ButtonPage() {
       <CodePanel
         language="bash"
         showLineNumbers={false}
-        code={`npx hyeon add button`}
+        code={`npx sh-ui add button`}
       />
 
       <h3>Manual</h3>

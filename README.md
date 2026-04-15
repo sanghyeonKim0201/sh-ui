@@ -1,23 +1,23 @@
-# Hyeon Design System
+# sh-ui
 
-**Hyeon (玄)** — 검고 그윽하다.
+**짧은 이름, 단단한 기본기** — 담백하게 설계된 멀티 플랫폼 디자인 시스템.
 
-블랙 & 화이트를 기본으로, 당신의 설정대로 벼려져 내려받는 멀티 플랫폼 디자인 시스템.
+블랙 & 화이트를 기본으로, 당신의 설정대로 벼려져 내려받는다.
 
 ## 철학
 
 - **코드 소유권은 사용자에게** — shadcn처럼 컴포넌트 소스를 프로젝트로 복사하는 방식
 - **하나의 토큰, 여러 플랫폼** — React(Next.js), Flutter, 그 이상
-- **설정 파일 기반 변환** — `hyeon.config.json`에 정의한 테마/radius/스타일로 복사 시점에 변환
+- **설정 파일 기반 변환** — `sh-ui.config.json`에 정의한 테마/radius/스타일로 복사 시점에 변환
 
 ## 구조
 
 ```
-hyeon-design-system/
+sh-ui-design-system/
 ├── packages/
 │   ├── tokens/       # 디자인 토큰 (primitive / semantic)
 │   ├── registry/     # 플랫폼별 컴포넌트 소스 (복사 대상)
-│   └── cli/          # `hyeon` CLI
+│   └── cli/          # `sh-ui` CLI
 └── apps/
     └── docs/         # 문서 사이트
 ```

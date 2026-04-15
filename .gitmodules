@@ -1,0 +1,3 @@
+[submodule ".claude/rules"]
+	path = .claude/rules
+	url = https://github.com/sanghyeonKim0201/claude-rules.git

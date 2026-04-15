@@ -1,59 +1,59 @@
 import 'package:flutter/material.dart';
-import '../foundation/hyeon_tokens.dart';
+import '../foundation/sh_ui_tokens.dart';
 
-enum HyeonButtonVariant { primary, secondary, ghost, danger, link }
+enum ShUiButtonVariant { primary, secondary, ghost, danger, link }
 
-enum HyeonButtonSize { sm, md, lg }
+enum ShUiButtonSize { sm, md, lg }
 
-class HyeonButton extends StatefulWidget {
+class ShUiButton extends StatefulWidget {
   final Widget child;
   final VoidCallback? onPressed;
-  final HyeonButtonVariant variant;
-  final HyeonButtonSize size;
+  final ShUiButtonVariant variant;
+  final ShUiButtonSize size;
 
-  const HyeonButton({
+  const ShUiButton({
     super.key,
     required this.child,
     this.onPressed,
-    this.variant = HyeonButtonVariant.primary,
-    this.size = HyeonButtonSize.md,
+    this.variant = ShUiButtonVariant.primary,
+    this.size = ShUiButtonSize.md,
   });
 
   @override
-  State<HyeonButton> createState() => _HyeonButtonState();
+  State<ShUiButton> createState() => _ShUiButtonState();
 }
 
-class _HyeonButtonState extends State<HyeonButton> {
+class _ShUiButtonState extends State<ShUiButton> {
   bool _hover = false;
   bool _pressed = false;
 
-  _Colors _resolveColors(HyeonColorTokens t) {
+  _Colors _resolveColors(ShUiColorTokens t) {
     switch (widget.variant) {
-      case HyeonButtonVariant.primary:
+      case ShUiButtonVariant.primary:
         return _Colors(
           bg: _hover ? t.primaryHover : t.primary,
           fg: t.primaryForeground,
           border: Colors.transparent,
         );
-      case HyeonButtonVariant.secondary:
+      case ShUiButtonVariant.secondary:
         return _Colors(
           bg: _hover ? t.backgroundSubtle : t.backgroundMuted,
           fg: t.foreground,
           border: t.border,
         );
-      case HyeonButtonVariant.ghost:
+      case ShUiButtonVariant.ghost:
         return _Colors(
           bg: _hover ? t.backgroundMuted : Colors.transparent,
           fg: t.foreground,
           border: Colors.transparent,
         );
-      case HyeonButtonVariant.danger:
+      case ShUiButtonVariant.danger:
         return _Colors(
           bg: t.danger,
           fg: t.dangerForeground,
           border: Colors.transparent,
         );
-      case HyeonButtonVariant.link:
+      case ShUiButtonVariant.link:
         return _Colors(
           bg: Colors.transparent,
           fg: _pressed ? t.foregroundMuted : t.foreground,
@@ -63,24 +63,24 @@ class _HyeonButtonState extends State<HyeonButton> {
   }
 
   EdgeInsets get _padding => switch (widget.size) {
-        HyeonButtonSize.sm => const EdgeInsets.symmetric(horizontal: 12),
-        HyeonButtonSize.md => const EdgeInsets.symmetric(horizontal: 16),
-        HyeonButtonSize.lg => const EdgeInsets.symmetric(horizontal: 20),
+        ShUiButtonSize.sm => const EdgeInsets.symmetric(horizontal: 12),
+        ShUiButtonSize.md => const EdgeInsets.symmetric(horizontal: 16),
+        ShUiButtonSize.lg => const EdgeInsets.symmetric(horizontal: 20),
       };
 
   double get _height => switch (widget.size) {
-        HyeonButtonSize.sm => 32,
-        HyeonButtonSize.md => 40,
-        HyeonButtonSize.lg => 48,
+        ShUiButtonSize.sm => 32,
+        ShUiButtonSize.md => 40,
+        ShUiButtonSize.lg => 48,
       };
 
   double get _fontSize => switch (widget.size) {
-        HyeonButtonSize.sm => 14,
-        HyeonButtonSize.md => 14,
-        HyeonButtonSize.lg => 16,
+        ShUiButtonSize.sm => 14,
+        ShUiButtonSize.md => 14,
+        ShUiButtonSize.lg => 16,
       };
 
-  Widget _buildLink(HyeonTheme hyeon, _Colors colors, bool disabled) {
+  Widget _buildLink(ShUiTheme sh-ui, _Colors colors, bool disabled) {
     return MouseRegion(
       cursor: disabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
@@ -107,14 +107,14 @@ class _HyeonButtonState extends State<HyeonButton> {
 
   @override
   Widget build(BuildContext context) {
-    final hyeon = Theme.of(context).extension<HyeonTheme>() ?? HyeonTheme.light;
-    final colors = _resolveColors(hyeon.colors);
+    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final colors = _resolveColors(sh-ui.colors);
     final disabled = widget.onPressed == null;
 
-    if (widget.variant == HyeonButtonVariant.link) {
+    if (widget.variant == ShUiButtonVariant.link) {
       return Opacity(
         opacity: disabled ? 0.5 : 1,
-        child: _buildLink(hyeon, colors, disabled),
+        child: _buildLink(sh-ui, colors, disabled),
       );
     }
 
@@ -142,7 +142,7 @@ class _HyeonButtonState extends State<HyeonButton> {
                     ? Color.lerp(colors.bg, Colors.black, 0.08)!
                     : colors.bg,
                 border: Border.all(color: colors.border),
-                borderRadius: BorderRadius.circular(hyeon.radius.defaultRadius),
+                borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius),
               ),
               alignment: Alignment.center,
               child: DefaultTextStyle(

@@ -1,11 +1,11 @@
 {
-  "name": "@hyeon/cli",
+  "name": "@sh-ui/cli",
   "version": "0.0.0",
   "private": true,
-  "description": "Hyeon CLI — hyeon init / hyeon add",
+  "description": "sh-ui CLI — sh-ui init / sh-ui add",
   "type": "module",
   "bin": {
-    "hyeon": "./bin/hyeon.mjs"
+    "sh-ui": "./bin/sh-ui.mjs"
   },
   "files": ["bin", "src"]
 }

@@ -13,7 +13,7 @@ export default function TokensPage() {
     <main className="container">
       <h1>토큰</h1>
       <p className="muted">
-        Hyeon은 <strong>primitive → semantic → component</strong> 3계층을 가진다.
+        sh-ui은 <strong>primitive → semantic → component</strong> 3계층을 가진다.
         컴포넌트는 오직 semantic 계층만 참조한다.
       </p>
 
@@ -94,11 +94,11 @@ export default function TokensPage() {
 }`}
       />
 
-      <h3>Flutter — <code>hyeon_tokens.dart</code></h3>
+      <h3>Flutter — <code>sh_ui_tokens.dart</code></h3>
       <CodePanel
         language="dart"
-        filename="hyeon_tokens.dart"
-        code={`HyeonColorTokens.light = HyeonColorTokens(
+        filename="sh_ui_tokens.dart"
+        code={`ShUiColorTokens.light = ShUiColorTokens(
   background: Color(0xFFFFFFFF),
   foreground: Color(0xFF0A0A0A),
   primary: Color(0xFF171717),

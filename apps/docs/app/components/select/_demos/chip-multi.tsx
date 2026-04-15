@@ -15,9 +15,9 @@ export function ChipMultiSelectDemo() {
         <MultiSelectValue
           placeholder="과일 선택"
           render={(arr) => (
-            <span className="hyeon-select__chips">
+            <span className="sh-ui-select__chips">
               {arr.map((v) => (
-                <span key={v} className="hyeon-select__chip">{v}</span>
+                <span key={v} className="sh-ui-select__chip">{v}</span>
               ))}
             </span>
           )}

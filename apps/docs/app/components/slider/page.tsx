@@ -27,7 +27,7 @@ export default function SliderPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon add slider`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add slider`} />
 
       <h3>Manual</h3>
       <p className="muted">

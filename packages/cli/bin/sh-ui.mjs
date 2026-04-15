@@ -5,8 +5,8 @@ import { add } from "../src/add.mjs";
 const [, , cmd, ...rest] = process.argv;
 
 const usage = `사용법:
-  hyeon init                설정 파일(hyeon.config.json) 생성
-  hyeon add <component...>  컴포넌트 소스를 프로젝트로 복사
+  sh-ui init                설정 파일(sh-ui.config.json) 생성
+  sh-ui add <component...>  컴포넌트 소스를 프로젝트로 복사
                             특수값: tokens → 설정 기반 토큰 파일 생성
 `;
 

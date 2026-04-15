@@ -4,7 +4,7 @@ export default function Guidelines() {
   return (
     <main className="container">
       <h1>가이드라인</h1>
-      <p className="muted">Hyeon을 만들고 확장할 때의 원칙.</p>
+      <p className="muted">sh-ui을 만들고 확장할 때의 원칙.</p>
 
       <h2>토큰 사용 규칙</h2>
       <ol>
@@ -26,7 +26,7 @@ export default function Guidelines() {
         <li><code>packages/registry/&lt;platform&gt;/</code>에 소스 추가</li>
         <li>해당 플랫폼의 <code>registry.json</code>에 항목 등록 (files, registryDependencies)</li>
         <li>이 문서 사이트(<code>apps/docs/app/components/&lt;name&gt;/page.tsx</code>)에 데모 페이지 작성</li>
-        <li>CLI로 dogfooding: <code>apps/docs</code>에서 <code>hyeon add &lt;name&gt;</code> 실행 → 정상 설치 확인</li>
+        <li>CLI로 dogfooding: <code>apps/docs</code>에서 <code>sh-ui add &lt;name&gt;</code> 실행 → 정상 설치 확인</li>
       </ol>
 
       <h2>브레이킹 체인지</h2>
@@ -39,13 +39,13 @@ export default function Guidelines() {
       <CodePanel
         language="text"
         showLineNumbers={false}
-        code={`hyeon-design-system/
+        code={`sh-ui-design-system/
 ├── packages/
 │   ├── tokens/     # primitive + semantic 정의, CSS/Dart 빌드
 │   ├── registry/   # 플랫폼별 컴포넌트 소스 (복사 대상)
 │   │   ├── react/
 │   │   └── flutter/
-│   └── cli/        # hyeon init / hyeon add
+│   └── cli/        # sh-ui init / sh-ui add
 └── apps/
     └── docs/       # 이 문서 사이트 (CLI dogfooding 겸)`}
       />

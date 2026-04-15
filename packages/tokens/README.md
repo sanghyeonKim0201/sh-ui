@@ -1,11 +1,11 @@
-# @hyeon/tokens
+# @sh-ui/tokens
 
-Hyeon 디자인 시스템의 **원시(primitive)** 및 **의미(semantic)** 토큰 정의.
+sh-ui 디자인 시스템의 **원시(primitive)** 및 **의미(semantic)** 토큰 정의.
 
 ## 파일
 
 - `src/primitives.json` — 실제 값. 플랫폼/테마 무관. (colors, spacing, radius, typography)
-- `src/semantic.json` — primitive 참조 + `light`/`dark` 분기. `{base}`, `{radius}` 등 자리표시자는 CLI가 `hyeon.config.json`으로 치환한다.
+- `src/semantic.json` — primitive 참조 + `light`/`dark` 분기. `{base}`, `{radius}` 등 자리표시자는 CLI가 `sh-ui.config.json`으로 치환한다.
 
 ## 계층 규칙
 
@@ -15,7 +15,7 @@ Hyeon 디자인 시스템의 **원시(primitive)** 및 **의미(semantic)** 토�
 
 ## 치환 예시
 
-`hyeon.config.json`:
+`sh-ui.config.json`:
 ```json
 { "theme": { "base": "neutral", "radius": "md" } }
 ```

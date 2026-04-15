@@ -170,10 +170,10 @@ export function ColorPicker({
   const pureHueHex = hsvToHex({ h: hsv.h, s: 1, v: 1 });
 
   return (
-    <div className={["hyeon-color-picker", className].filter(Boolean).join(" ")}>
+    <div className={["sh-ui-color-picker", className].filter(Boolean).join(" ")}>
       {/* SV 영역 */}
       <div
-        className="hyeon-color-picker__sv"
+        className="sh-ui-color-picker__sv"
         ref={sv.ref}
         onPointerDown={sv.onPointerDown}
         style={{ background: pureHueHex }}
@@ -183,10 +183,10 @@ export function ColorPicker({
         aria-valuemax={100}
         aria-valuenow={Math.round(hsv.s * 100)}
       >
-        <div className="hyeon-color-picker__sv-saturation" />
-        <div className="hyeon-color-picker__sv-value" />
+        <div className="sh-ui-color-picker__sv-saturation" />
+        <div className="sh-ui-color-picker__sv-value" />
         <div
-          className="hyeon-color-picker__sv-thumb"
+          className="sh-ui-color-picker__sv-thumb"
           style={{
             left: `${hsv.s * 100}%`,
             top: `${(1 - hsv.v) * 100}%`,
@@ -197,7 +197,7 @@ export function ColorPicker({
 
       {/* Hue 슬라이더 */}
       <div
-        className="hyeon-color-picker__hue"
+        className="sh-ui-color-picker__hue"
         ref={hue.ref}
         onPointerDown={hue.onPointerDown}
         role="slider"
@@ -207,21 +207,21 @@ export function ColorPicker({
         aria-valuenow={Math.round(hsv.h)}
       >
         <div
-          className="hyeon-color-picker__hue-thumb"
+          className="sh-ui-color-picker__hue-thumb"
           style={{ left: `${(hsv.h / 360) * 100}%` }}
         />
       </div>
 
       {/* Hex 인풋 + 미리보기 */}
-      <div className="hyeon-color-picker__row">
+      <div className="sh-ui-color-picker__row">
         <div
-          className="hyeon-color-picker__swatch"
+          className="sh-ui-color-picker__swatch"
           style={{ background: value }}
           aria-hidden
         />
         <input
           type="text"
-          className="hyeon-color-picker__hex"
+          className="sh-ui-color-picker__hex"
           value={hexInput}
           onChange={(e) => setHexInput(e.target.value)}
           onBlur={onHexCommit}

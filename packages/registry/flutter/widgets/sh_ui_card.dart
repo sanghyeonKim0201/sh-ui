@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
-import '../foundation/hyeon_tokens.dart';
+import '../foundation/sh_ui_tokens.dart';
 
-/// Hyeon Card — 컴파운드 스타일.
+/// sh-ui Card — 컴파운드 스타일.
 ///
 /// React 쪽 compound children API와 달리 Flutter는 named params가 관용적이라
 /// 동일한 의미 구조를 다음과 같이 표현한다:
 ///
-/// HyeonCard(children: [
-///   HyeonCardHeader(
-///     title: HyeonCardTitle('Card Title'),
-///     description: HyeonCardDescription('Card Description'),
-///     action: HyeonButton(
-///       variant: HyeonButtonVariant.link,
+/// ShUiCard(children: [
+///   ShUiCardHeader(
+///     title: ShUiCardTitle('Card Title'),
+///     description: ShUiCardDescription('Card Description'),
+///     action: ShUiButton(
+///       variant: ShUiButtonVariant.link,
 ///       onPressed: () {},
 ///       child: Text('액션'),
 ///     ),
 ///   ),
-///   HyeonCardContent(child: Text('본문')),
-///   HyeonCardFooter(children: [Text('푸터')]),
+///   ShUiCardContent(child: Text('본문')),
+///   ShUiCardFooter(children: [Text('푸터')]),
 /// ])
-class HyeonCard extends StatelessWidget {
+class ShUiCard extends StatelessWidget {
   final List<Widget> children;
 
-  const HyeonCard({super.key, required this.children});
+  const ShUiCard({super.key, required this.children});
 
   @override
   Widget build(BuildContext context) {
-    final hyeon = Theme.of(context).extension<HyeonTheme>() ?? HyeonTheme.light;
+    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Container(
       decoration: BoxDecoration(
-        color: hyeon.colors.background,
-        border: Border.all(color: hyeon.colors.border),
-        borderRadius: BorderRadius.circular(hyeon.radius.defaultRadius),
+        color: sh-ui.colors.background,
+        border: Border.all(color: sh-ui.colors.border),
+        borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius),
       ),
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
@@ -53,12 +53,12 @@ List<Widget> _withGaps(List<Widget> children, double gap) {
   return out;
 }
 
-class HyeonCardHeader extends StatelessWidget {
+class ShUiCardHeader extends StatelessWidget {
   final Widget? title;
   final Widget? description;
   final Widget? action;
 
-  const HyeonCardHeader({super.key, this.title, this.description, this.action});
+  const ShUiCardHeader({super.key, this.title, this.description, this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -88,17 +88,17 @@ class HyeonCardHeader extends StatelessWidget {
   }
 }
 
-class HyeonCardTitle extends StatelessWidget {
+class ShUiCardTitle extends StatelessWidget {
   final String text;
-  const HyeonCardTitle(this.text, {super.key});
+  const ShUiCardTitle(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final hyeon = Theme.of(context).extension<HyeonTheme>() ?? HyeonTheme.light;
+    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Text(
       text,
       style: TextStyle(
-        color: hyeon.colors.foreground,
+        color: sh-ui.colors.foreground,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         height: 1.25,
@@ -108,17 +108,17 @@ class HyeonCardTitle extends StatelessWidget {
   }
 }
 
-class HyeonCardDescription extends StatelessWidget {
+class ShUiCardDescription extends StatelessWidget {
   final String text;
-  const HyeonCardDescription(this.text, {super.key});
+  const ShUiCardDescription(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final hyeon = Theme.of(context).extension<HyeonTheme>() ?? HyeonTheme.light;
+    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Text(
       text,
       style: TextStyle(
-        color: hyeon.colors.foregroundMuted,
+        color: sh-ui.colors.foregroundMuted,
         fontSize: 14,
         height: 1.5,
       ),
@@ -126,9 +126,9 @@ class HyeonCardDescription extends StatelessWidget {
   }
 }
 
-class HyeonCardContent extends StatelessWidget {
+class ShUiCardContent extends StatelessWidget {
   final Widget child;
-  const HyeonCardContent({super.key, required this.child});
+  const ShUiCardContent({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -139,9 +139,9 @@ class HyeonCardContent extends StatelessWidget {
   }
 }
 
-class HyeonCardFooter extends StatelessWidget {
+class ShUiCardFooter extends StatelessWidget {
   final List<Widget> children;
-  const HyeonCardFooter({super.key, required this.children});
+  const ShUiCardFooter({super.key, required this.children});
 
   @override
   Widget build(BuildContext context) {

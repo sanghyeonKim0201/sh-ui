@@ -24,10 +24,10 @@ const PATHS = {
     utils: "src/lib/utils.ts",
   },
   flutter: {
-    tokens: "lib/hyeon/foundation/hyeon_tokens.dart",
-    components: "lib/hyeon/widgets",
-    foundation: "lib/hyeon/foundation",
-    widgets: "lib/hyeon/widgets",
+    tokens: "lib/sh_ui/foundation/sh_ui_tokens.dart",
+    components: "lib/sh_ui/widgets",
+    foundation: "lib/sh_ui/foundation",
+    widgets: "lib/sh_ui/widgets",
   },
 };
 
@@ -100,13 +100,13 @@ async function resolveAnswers(flags) {
   if (!stdin.isTTY) {
     throw new Error(
       `비-TTY 환경에서는 프롬프트를 쓸 수 없습니다. --yes 또는 플래그로 값을 지정하세요.\n` +
-        `예: hyeon init --platform react --base neutral --radius md --mode light-dark`,
+        `예: sh-ui init --platform react --base neutral --radius md --mode light-dark`,
     );
   }
 
   const rl = createInterface({ input: stdin, output: stdout });
   try {
-    console.log("Hyeon Design System 설정을 시작합니다. (Enter = 기본값)\n");
+    console.log("sh-ui Design System 설정을 시작합니다. (Enter = 기본값)\n");
     for (const key of missingKeys) {
       answers[key] = await prompt(rl, labelFor(key), CHOICES[key], answers[key]);
     }
@@ -127,7 +127,7 @@ function labelFor(key) {
 
 function buildConfig({ platform, base, radius, mode }) {
   return {
-    $schema: "https://your-ds.dev/hyeon.schema.json",
+    $schema: "https://your-ds.dev/sh-ui.schema.json",
     platform,
     style: "default",
     theme: { base, radius, mode },
@@ -138,10 +138,10 @@ function buildConfig({ platform, base, radius, mode }) {
 
 export async function init({ cwd, args }) {
   const flags = parseFlags(args);
-  const configPath = resolve(cwd, "hyeon.config.json");
+  const configPath = resolve(cwd, "sh-ui.config.json");
 
   if ((await exists(configPath)) && !flags.force) {
-    throw new Error("hyeon.config.json이 이미 존재합니다. --force로 덮어쓰기 가능.");
+    throw new Error("sh-ui.config.json이 이미 존재합니다. --force로 덮어쓰기 가능.");
   }
 
   const answers = await resolveAnswers(flags);
@@ -149,8 +149,8 @@ export async function init({ cwd, args }) {
 
   await writeFile(configPath, JSON.stringify(config, null, 2) + "\n", "utf8");
 
-  console.log(`\n✓ hyeon.config.json 생성 완료`);
+  console.log(`\n✓ sh-ui.config.json 생성 완료`);
   console.log(`  platform: ${answers.platform}`);
   console.log(`  theme:    base=${answers.base}, radius=${answers.radius}, mode=${answers.mode}`);
-  console.log(`\n다음 단계:  hyeon add tokens button`);
+  console.log(`\n다음 단계:  sh-ui add tokens button`);
 }

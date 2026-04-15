@@ -1,8 +1,8 @@
 {
-  "name": "@hyeon/tokens",
+  "name": "@sh-ui/tokens",
   "version": "0.0.0",
   "private": true,
-  "description": "Hyeon 디자인 토큰 — primitive / semantic 정의",
+  "description": "sh-ui 디자인 토큰 — primitive / semantic 정의",
   "type": "module",
   "exports": {
     "./primitives": "./src/primitives.json",

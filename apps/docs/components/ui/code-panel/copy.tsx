@@ -18,12 +18,12 @@ export function CodePanelCopyButton({ code }: { code: string }) {
   return (
     <button
       type="button"
-      className="hyeon-code__copy"
+      className="sh-ui-code__copy"
       onClick={onClick}
       aria-label="코드 복사"
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
-      <span className="hyeon-code__copy-label">{copied ? "복사됨" : "복사"}</span>
+      <span className="sh-ui-code__copy-label">{copied ? "복사됨" : "복사"}</span>
     </button>
   );
 }

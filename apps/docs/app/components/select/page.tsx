@@ -21,7 +21,7 @@ export default function SelectPage() {
     <main className="container">
       <h1>Select</h1>
       <p className="muted">
-        단일 선택 드롭다운. <a href="https://base-ui.com/react/components/select" target="_blank" rel="noreferrer">Base UI</a>의 headless primitive 위에 Hyeon 토큰 스타일을 입혔다.
+        단일 선택 드롭다운. <a href="https://base-ui.com/react/components/select" target="_blank" rel="noreferrer">Base UI</a>의 headless primitive 위에 sh-ui 토큰 스타일을 입혔다.
       </p>
 
       <Preview>
@@ -61,7 +61,7 @@ export default function SelectPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx hyeon add select`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add select`} />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -216,9 +216,9 @@ export default function SelectPage() {
     <MultiSelectValue
       placeholder="과일 선택"
       render={(arr) => (
-        <span className="hyeon-select__chips">
+        <span className="sh-ui-select__chips">
           {arr.map((v) => (
-            <span key={v} className="hyeon-select__chip">{v}</span>
+            <span key={v} className="sh-ui-select__chip">{v}</span>
           ))}
         </span>
       )}

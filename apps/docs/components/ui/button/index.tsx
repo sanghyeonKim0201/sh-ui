@@ -12,9 +12,9 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", className, ...props }, ref) => {
     const classes = [
-      "hyeon-button",
-      `hyeon-button--${variant}`,
-      `hyeon-button--${size}`,
+      "sh-ui-button",
+      `sh-ui-button--${variant}`,
+      `sh-ui-button--${size}`,
       className,
     ]
       .filter(Boolean)

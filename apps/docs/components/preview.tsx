@@ -7,7 +7,7 @@ export interface PreviewProps {
 }
 
 export function Preview({ children, className }: PreviewProps) {
-  const classes = ["hyeon-preview", className].filter(Boolean).join(" ");
+  const classes = ["sh-ui-preview", className].filter(Boolean).join(" ");
   return <div className={classes}>{children}</div>;
 }
 
@@ -17,7 +17,7 @@ export interface PreviewDemoProps {
 }
 
 function PreviewDemo({ children, className }: PreviewDemoProps) {
-  const classes = ["hyeon-preview__demo", className].filter(Boolean).join(" ");
+  const classes = ["sh-ui-preview__demo", className].filter(Boolean).join(" ");
   return <div className={classes}>{children}</div>;
 }
 

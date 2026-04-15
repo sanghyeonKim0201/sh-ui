@@ -22,9 +22,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         type={type}
         className={cx(
-          "hyeon-input",
-          prefix && "hyeon-input--with-prefix",
-          suffix && "hyeon-input--with-suffix",
+          "sh-ui-input",
+          prefix && "sh-ui-input--with-prefix",
+          suffix && "sh-ui-input--with-suffix",
           className,
         )}
         {...props}
@@ -34,10 +34,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     if (!hasAffix) return input;
 
     return (
-      <div className="hyeon-input-wrap">
-        {prefix && <span className="hyeon-input__affix hyeon-input__affix--prefix">{prefix}</span>}
+      <div className="sh-ui-input-wrap">
+        {prefix && <span className="sh-ui-input__affix sh-ui-input__affix--prefix">{prefix}</span>}
         {input}
-        {suffix && <span className="hyeon-input__affix hyeon-input__affix--suffix">{suffix}</span>}
+        {suffix && <span className="sh-ui-input__affix sh-ui-input__affix--suffix">{suffix}</span>}
       </div>
     );
   },
@@ -84,7 +84,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
     const toggle = hideToggle ? undefined : (
       <button
         type="button"
-        className="hyeon-input__toggle"
+        className="sh-ui-input__toggle"
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? "비밀번호 숨기기" : "비밀번호 표시"}
         aria-pressed={visible}

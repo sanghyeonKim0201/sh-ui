@@ -1,4 +1,4 @@
-.hyeon-select__trigger {
+.sh-ui-select__trigger {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -18,25 +18,25 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.hyeon-select__trigger:hover:not(:disabled) {
+.sh-ui-select__trigger:hover:not(:disabled) {
   border-color: var(--border-strong);
 }
 
-.hyeon-select__trigger:focus-visible {
+.sh-ui-select__trigger:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
 }
 
-.hyeon-select__trigger[data-popup-open] {
+.sh-ui-select__trigger[data-popup-open] {
   border-color: var(--border-strong);
 }
 
-.hyeon-select__trigger:disabled {
+.sh-ui-select__trigger:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
 
-.hyeon-select__value {
+.sh-ui-select__value {
   flex: 1 1 auto;
   text-align: left;
   overflow: hidden;
@@ -44,11 +44,11 @@
   white-space: nowrap;
 }
 
-.hyeon-select__placeholder {
+.sh-ui-select__placeholder {
   color: var(--foreground-muted);
 }
 
-.hyeon-select__icon {
+.sh-ui-select__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -57,17 +57,17 @@
   transition: transform 120ms;
 }
 
-.hyeon-select__trigger[data-popup-open] .hyeon-select__icon {
+.sh-ui-select__trigger[data-popup-open] .sh-ui-select__icon {
   transform: rotate(180deg);
 }
 
 /* 팝업 */
-.hyeon-select__positioner {
+.sh-ui-select__positioner {
   outline: none;
   z-index: 50;
 }
 
-.hyeon-select__content {
+.sh-ui-select__content {
   min-width: var(--anchor-width, 10rem);
   max-height: min(24rem, var(--available-height, 24rem));
   overflow-y: auto;
@@ -81,23 +81,23 @@
     0 2px 4px -2px rgba(0, 0, 0, 0.05);
   font-size: 0.875rem;
   transform-origin: var(--transform-origin);
-  animation: hyeon-select-in 140ms ease-out;
+  animation: sh-ui-select-in 140ms ease-out;
 }
 
-.hyeon-select__content[data-ending-style] {
-  animation: hyeon-select-out 100ms ease-in forwards;
+.sh-ui-select__content[data-ending-style] {
+  animation: sh-ui-select-out 100ms ease-in forwards;
 }
 
-@keyframes hyeon-select-in {
+@keyframes sh-ui-select-in {
   from { opacity: 0; transform: scale(0.96); }
   to   { opacity: 1; transform: scale(1); }
 }
-@keyframes hyeon-select-out {
+@keyframes sh-ui-select-out {
   from { opacity: 1; transform: scale(1); }
   to   { opacity: 0; transform: scale(0.96); }
 }
 
-.hyeon-select__label {
+.sh-ui-select__label {
   padding: 0.5rem 0.5rem 0.25rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -106,7 +106,7 @@
   letter-spacing: 0.04em;
 }
 
-.hyeon-select__item {
+.sh-ui-select__item {
   position: relative;
   display: flex;
   align-items: center;
@@ -119,21 +119,21 @@
   transition: background-color 80ms;
 }
 
-.hyeon-select__item[data-highlighted],
-.hyeon-select__item:hover {
+.sh-ui-select__item[data-highlighted],
+.sh-ui-select__item:hover {
   background: var(--background-muted);
 }
 
-.hyeon-select__item[data-disabled] {
+.sh-ui-select__item[data-disabled] {
   opacity: 0.5;
   pointer-events: none;
 }
 
-.hyeon-select__item-text {
+.sh-ui-select__item-text {
   flex: 1;
 }
 
-.hyeon-select__indicator {
+.sh-ui-select__indicator {
   position: absolute;
   left: 0.5rem;
   top: 50%;
@@ -144,21 +144,21 @@
   color: var(--foreground);
 }
 
-.hyeon-select__separator {
+.sh-ui-select__separator {
   height: 1px;
   background: var(--border);
   margin: 0.25rem 0;
 }
 
 /* 멀티 셀렉트 값 칩 (MultiSelectValue의 render prop에서 사용) */
-.hyeon-select__chips {
+.sh-ui-select__chips {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   flex-wrap: nowrap;
   overflow: hidden;
 }
-.hyeon-select__chip {
+.sh-ui-select__chip {
   display: inline-flex;
   align-items: center;
   padding: 0.125rem 0.5rem;

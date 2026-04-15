@@ -14,8 +14,8 @@ export interface PropsTableProps {
 
 export function PropsTable({ rows }: PropsTableProps) {
   return (
-    <div className="hyeon-props">
-      <table className="hyeon-props__table">
+    <div className="sh-ui-props">
+      <table className="sh-ui-props__table">
         <thead>
           <tr>
             <th>Prop</th>
@@ -28,19 +28,19 @@ export function PropsTable({ rows }: PropsTableProps) {
           {rows.map((r) => (
             <tr key={r.prop}>
               <td>
-                <code className="hyeon-props__name">{r.prop}</code>
+                <code className="sh-ui-props__name">{r.prop}</code>
               </td>
               <td>
-                <code className="hyeon-props__type">{r.type}</code>
+                <code className="sh-ui-props__type">{r.type}</code>
               </td>
               <td>
                 {r.default ? (
-                  <code className="hyeon-props__default">{r.default}</code>
+                  <code className="sh-ui-props__default">{r.default}</code>
                 ) : (
-                  <span className="hyeon-props__dash">—</span>
+                  <span className="sh-ui-props__dash">—</span>
                 )}
               </td>
-              <td className="hyeon-props__desc">{r.description ?? null}</td>
+              <td className="sh-ui-props__desc">{r.description ?? null}</td>
             </tr>
           ))}
         </tbody>

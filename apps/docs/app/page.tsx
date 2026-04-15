@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   return (
     <main className="container">
-      <h1>Hyeon Design System</h1>
+      <h1>sh-ui</h1>
       <p className="muted">
-        <strong>玄</strong> — 검고 그윽하다. 블랙 &amp; 화이트를 기본으로, 설정대로 벼려져 내려받는 멀티 플랫폼 디자인 시스템.
+        <strong>짧은 이름, 단단한 기본기</strong> — 담백하게 설계된 멀티 플랫폼 디자인 시스템. 블랙 &amp; 화이트를 기본으로, 설정대로 벼려져 내려받는다.
       </p>
 
       <div style={{ display: "flex", gap: "0.75rem", margin: "1.5rem 0 2rem" }}>
@@ -22,7 +22,7 @@ export default function Home() {
       <ul>
         <li><strong>코드 소유권은 사용자에게</strong> — 패키지로 묶지 않고 소스를 프로젝트로 복사한다 (shadcn 방식).</li>
         <li><strong>하나의 토큰, 여러 플랫폼</strong> — 같은 semantic 토큰에서 React의 CSS 변수와 Flutter의 Dart 상수를 동시에 생성.</li>
-        <li><strong>설정으로 변환</strong> — <code>hyeon.config.json</code>의 테마/radius가 복사 시점에 토큰 값으로 치환된다.</li>
+        <li><strong>설정으로 변환</strong> — <code>sh-ui.config.json</code>의 테마/radius가 복사 시점에 토큰 값으로 치환된다.</li>
       </ul>
 
       <h2>지원 플랫폼</h2>
