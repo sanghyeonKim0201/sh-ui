@@ -38,7 +38,7 @@ export function SidebarBasicDemo({
     <div
       style={{
         width: "100%",
-        height: 360,
+        height: 280,
         border: "1px solid var(--border)",
         borderRadius: "var(--radius)",
         overflow: "hidden",

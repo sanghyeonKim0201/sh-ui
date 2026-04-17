@@ -31,7 +31,7 @@ export function SidebarTOCDemo() {
     <div
       style={{
         width: "100%",
-        height: 420,
+        height: 360,
         border: "1px solid var(--border)",
         borderRadius: "var(--radius)",
         overflow: "hidden",

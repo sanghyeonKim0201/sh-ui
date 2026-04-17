@@ -137,7 +137,10 @@
 .sh-ui-sidebar__backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.25);
+  /* unprefixed 속성만 사용 — 최신 브라우저(Chrome/Firefox/Safari 18+)는 prefix 불필요.
+     일부 CSS 트랜스포머가 prefix 중복 선언을 드롭하는 이슈를 피하기 위해 단일 선언 유지. */
+  backdrop-filter: blur(8px);
   z-index: 40;
 }
 
@@ -162,6 +165,90 @@
 .sh-ui-sidebar__trigger:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
+}
+
+/* ───────────── Panel (보조 확장 패널) ─────────────
+ * 레일(사이드바)과 Inset 사이에 위치. 활성 시 너비를 차지해 Inset을 밀어냄.
+ * 모바일에서는 드로어 형태로 오버레이. */
+.sh-ui-sidebar__panel {
+  --sidebar-panel-width: 20rem;
+
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-panel-width);
+  flex-shrink: 0;
+  background: var(--background);
+  border-right: 1px solid var(--sidebar-border);
+  position: relative;
+  z-index: 4;
+  overflow: hidden;
+  animation: sh-ui-sidebar-panel-in 180ms ease;
+}
+
+.sh-ui-sidebar__panel[data-state="closed"] {
+  display: none;
+}
+
+@keyframes sh-ui-sidebar-panel-in {
+  from { transform: translateX(-8px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.sh-ui-sidebar__panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--sidebar-border);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.sh-ui-sidebar__panel-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.75rem 1rem 1rem;
+}
+
+.sh-ui-sidebar__panel-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground-muted);
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 120ms, color 120ms;
+}
+.sh-ui-sidebar__panel-close:hover {
+  background: var(--sidebar-accent);
+  color: var(--foreground);
+}
+
+/* 모바일: 패널은 드로어 위에 오버레이 */
+@media (max-width: 47.9375rem) {
+  .sh-ui-sidebar__panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(var(--sidebar-panel-width), 90vw);
+    z-index: 51;
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+}
+.sh-ui-sidebar-wrapper[data-embedded] .sh-ui-sidebar__panel {
+  position: relative;
 }
 
 /* ───────────── Inset (main) ───────────── */
@@ -377,6 +464,20 @@
 
 .sh-ui-sidebar__collapsible-content[data-state="closed"] {
   display: none;
+}
+
+/* ───── Flyout (collapsed=icon 상태의 서브메뉴) ─────
+ * 실제 포지셔닝·보더·쉐도우는 Popover가 담당. 여기서는 내부 서브메뉴만 정돈. */
+.sh-ui-sidebar__collapsible-flyout .sh-ui-sidebar__menu-sub {
+  display: flex !important;  /* collapsed 상태 전역 숨김 규칙 override */
+  flex-direction: column;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  border-left: 0;
+}
+.sh-ui-sidebar__collapsible-flyout .sh-ui-sidebar__menu-sub-button {
+  padding-left: 0.625rem;
 }
 
 /* collapsed=icon 상태에서는 chevron 숨기고 content도 숨김 */

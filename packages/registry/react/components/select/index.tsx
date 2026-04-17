@@ -143,6 +143,20 @@ SelectSeparator.displayName = "SelectSeparator";
  */
 
 type BaseRootProps = React.ComponentPropsWithoutRef<typeof BaseSelect.Root>;
+
+/** 칩 X 버튼 등에서 개별 항목을 제거할 수 있도록 MultiSelect 내부 상태를 expose한다. */
+type MultiSelectCtx = {
+  values: string[];
+  remove: (value: string) => void;
+  clear: () => void;
+};
+const MultiSelectContext = React.createContext<MultiSelectCtx | null>(null);
+export const useMultiSelect = () => {
+  const ctx = React.useContext(MultiSelectContext);
+  if (!ctx) throw new Error("useMultiSelect는 MultiSelect 하위에서만 사용할 수 있습니다.");
+  return ctx;
+};
+
 export const MultiSelect = React.forwardRef<
   HTMLDivElement,
   Omit<BaseRootProps, "multiple" | "value" | "defaultValue" | "onValueChange"> & {
@@ -150,9 +164,36 @@ export const MultiSelect = React.forwardRef<
     defaultValue?: string[];
     onValueChange?: (value: string[]) => void;
   }
->(({ ...props }, _ref) => {
-  // @ts-expect-error — Base UI의 multiple 모드에서 value/onValueChange가 배열 타입
-  return <BaseSelect.Root multiple {...props} />;
+>(({ value: valueProp, defaultValue, onValueChange, children, ...props }, _ref) => {
+  const isControlled = valueProp !== undefined;
+  const [internal, setInternal] = React.useState<string[]>(defaultValue ?? []);
+  const values = isControlled ? valueProp! : internal;
+
+  const commit = React.useCallback(
+    (next: string[]) => {
+      if (!isControlled) setInternal(next);
+      onValueChange?.(next);
+    },
+    [isControlled, onValueChange],
+  );
+
+  const ctx = React.useMemo<MultiSelectCtx>(
+    () => ({
+      values,
+      remove: (v) => commit(values.filter((x) => x !== v)),
+      clear: () => commit([]),
+    }),
+    [values, commit],
+  );
+
+  return (
+    <MultiSelectContext.Provider value={ctx}>
+      {/* @ts-expect-error — Base UI의 multiple 모드에서 value/onValueChange가 배열 타입 */}
+      <BaseSelect.Root multiple value={values} onValueChange={commit} {...props}>
+        {children}
+      </BaseSelect.Root>
+    </MultiSelectContext.Provider>
+  );
 });
 MultiSelect.displayName = "MultiSelect";
 
@@ -170,13 +211,17 @@ export function MultiSelectValue({
   ...props
 }: {
   placeholder?: string;
-  render?: (values: string[]) => React.ReactNode;
+  render?: (
+    values: string[],
+    handlers: { remove: (value: string) => void; clear: () => void },
+  ) => React.ReactNode;
   separator?: string;
   className?: string;
 } & Omit<
   React.ComponentPropsWithoutRef<typeof BaseSelect.Value>,
-  "children"
+  "children" | "render"
 >) {
+  const { remove, clear } = useMultiSelect();
   return (
     <BaseSelect.Value className={cx("sh-ui-select__value", className)} {...props}>
       {(value) => {
@@ -184,7 +229,7 @@ export function MultiSelectValue({
         if (arr.length === 0) {
           return <span className="sh-ui-select__placeholder">{placeholder}</span>;
         }
-        return render ? render(arr) : arr.join(separator);
+        return render ? render(arr, { remove, clear }) : arr.join(separator);
       }}
     </BaseSelect.Value>
   );
