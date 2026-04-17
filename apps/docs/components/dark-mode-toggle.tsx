@@ -1,22 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "sh-ui-docs-theme";
 
-export function DarkModeToggle() {
-  const [dark, setDark] = useState(false);
+const readInitialDark = () => {
+  if (typeof document === "undefined") return false;
+  return document.documentElement.classList.contains("dark");
+};
 
-  // 초기 마운트: localStorage 또는 현재 html.classList 상태로 동기화
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const initial = saved
-      ? saved === "dark"
-      : document.documentElement.classList.contains("dark");
-    setDark(initial);
-    document.documentElement.classList.toggle("dark", initial);
-  }, []);
+export function DarkModeToggle() {
+  const [dark, setDark] = useState(readInitialDark);
 
   const toggle = () => {
     const next = !dark;

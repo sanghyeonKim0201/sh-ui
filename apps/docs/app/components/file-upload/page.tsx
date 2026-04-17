@@ -1,5 +1,8 @@
+export const dynamic = "force-static";
+
 import { FileUpload } from "@/components/ui/file-upload";
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { MultiValidateDemo } from "./_demos/multi-validate";
@@ -19,7 +22,94 @@ export default function FileUploadPage() {
             <FileUpload hint="PNG, JPG · 최대 5MB" />
           </div>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<FileUpload hint="PNG, JPG · 최대 5MB" />`} />
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<FileUpload hint="PNG, JPG · 최대 5MB" />`,
+            },
+            {
+              value: "impl",
+              label: "구현",
+              language: "tsx",
+              filename: "components/ui/file-upload/index.tsx",
+              code: `function formatBytes(bytes: number): string {
+  if (bytes < 1024) return \`\${bytes} B\`;
+  if (bytes < 1024 ** 2) return \`\${(bytes / 1024).toFixed(1)} KB\`;
+  if (bytes < 1024 ** 3) return \`\${(bytes / 1024 / 1024).toFixed(1)} MB\`;
+  return \`\${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB\`;
+}
+
+export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
+  ({ value, defaultValue, onValueChange, multiple, accept, maxSize, maxFiles,
+     disabled, onError, placeholder, hint, showFileList = true, ...rest }, ref) => {
+    const isControlled = value !== undefined;
+    const [internal, setInternal] = React.useState<File[]>(defaultValue ?? []);
+    const files = isControlled ? value! : internal;
+    const [dragging, setDragging] = React.useState(false);
+
+    const update = (next: File[]) => {
+      if (!isControlled) setInternal(next);
+      onValueChange?.(next);
+    };
+
+    // 파일당 maxSize 검증 → 실패 메시지는 onError로 위임(UI는 부모 책임)
+    const validate = (file: File): string | null =>
+      maxSize && file.size > maxSize
+        ? \`\${file.name}: 최대 \${formatBytes(maxSize)}까지 업로드 가능합니다.\`
+        : null;
+
+    const addFiles = (incoming: FileList | File[]) => {
+      const accepted: File[] = [];
+      for (const f of Array.from(incoming)) {
+        const err = validate(f);
+        if (err) { onError?.(err); continue; }
+        accepted.push(f);
+      }
+      if (accepted.length === 0) return;
+
+      // multiple=false면 마지막 파일만 유지 (네이티브 input 동작과 동일)
+      let next = multiple ? [...files, ...accepted] : [accepted[accepted.length - 1]];
+      if (maxFiles && next.length > maxFiles) {
+        onError?.(\`최대 \${maxFiles}개까지 업로드 가능합니다.\`);
+        next = next.slice(0, maxFiles);
+      }
+      update(next);
+    };
+
+    return (
+      <div className="sh-ui-file-upload">
+        <label
+          className={cx("sh-ui-file-upload__dropzone",
+            dragging && "sh-ui-file-upload__dropzone--drag",
+            disabled && "sh-ui-file-upload__dropzone--disabled")}
+          onDragOver={(e) => { e.preventDefault(); if (!disabled) setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragging(false);
+            if (!disabled) addFiles(e.dataTransfer.files);
+          }}
+        >
+          <input
+            type="file" multiple={multiple} accept={accept} disabled={disabled}
+            className="sh-ui-file-upload__input"
+            onChange={(e) => {
+              if (e.target.files) addFiles(e.target.files);
+              e.target.value = ""; // 동일 파일 재선택 가능하도록 초기화
+            }}
+          />
+          {/* 드롭존 UI · 파일 리스트 (생략) */}
+        </label>
+      </div>
+    );
+  },
+);`,
+            },
+          ]}
+        />
       </Preview>
 
       <h2>Installation</h2>

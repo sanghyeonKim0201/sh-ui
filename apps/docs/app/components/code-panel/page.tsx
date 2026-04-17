@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import { CodePanel } from "@/components/ui/code-panel";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";

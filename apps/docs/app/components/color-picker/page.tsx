@@ -1,5 +1,8 @@
+export const dynamic = "force-static";
+
 import { ColorPicker } from "@/components/ui/color-picker";
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { ControlledColorPickerDemo } from "./_demos/controlled";
@@ -18,9 +21,116 @@ export default function ColorPickerPage() {
             <ColorPicker defaultValue="#3B82F6" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<ColorPicker defaultValue="#3B82F6" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<ColorPicker defaultValue="#3B82F6" />`,
+            },
+            {
+              value: "impl",
+              label: "구현",
+              language: "tsx",
+              filename: "components/ui/color-picker/index.tsx",
+              code: `/* ───── color math ───── */
+
+function hexToRgb(hex: string): [number, number, number] {
+  const m = hex.replace("#", "");
+  const full = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
+  const n = parseInt(full, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function rgbToHsv(r: number, g: number, b: number): HSV {
+  const rn = r / 255, gn = g / 255, bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const d = max - Math.min(rn, gn, bn);
+  let h = 0;
+  if (d !== 0) {
+    if (max === rn) h = ((gn - bn) / d) % 6;
+    else if (max === gn) h = (bn - rn) / d + 2;
+    else h = (rn - gn) / d + 4;
+    h = (h * 60 + 360) % 360;
+  }
+  return { h, s: max === 0 ? 0 : d / max, v: max };
+}
+
+function hsvToRgb({ h, s, v }: HSV): [number, number, number] {
+  const c = v * s;
+  const hh = h / 60;
+  const x = c * (1 - Math.abs((hh % 2) - 1));
+  const [r, g, b] =
+    hh < 1 ? [c, x, 0] : hh < 2 ? [x, c, 0] :
+    hh < 3 ? [0, c, x] : hh < 4 ? [0, x, c] :
+    hh < 5 ? [x, 0, c] : [c, 0, x];
+  const m = v - c;
+  return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
+}
+
+/* ───── pointer drag hook (SV / Hue 공용) ───── */
+
+function useDrag(onMove: (e: PointerEvent, el: HTMLElement) => void) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    el.setPointerCapture(e.pointerId);
+    onMove(e.nativeEvent, el);
+    const move = (ev: PointerEvent) => onMove(ev, el);
+    const up = (ev: PointerEvent) => {
+      el.releasePointerCapture(ev.pointerId);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+    };
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+  };
+  return { ref, onPointerDown };
+}
+
+/* ───── component ─────
+ * HSV 내부 상태로 드래그 정밀도 유지.
+ * 외부 value 변경 시 hsv/hexInput 동기화하되, 우리가 emit한 hex는 무시해 무한루프 방지. */
+
+export function ColorPicker({ value: valueProp, onChange, defaultValue = "#000000" }: ColorPickerProps) {
+  const isControlled = valueProp !== undefined;
+  const [internal, setInternal] = React.useState(defaultValue);
+  const value = isControlled ? valueProp! : internal;
+
+  const [hsv, setHsv] = React.useState<HSV>(() => hexToHsv(value));
+  const lastEmittedRef = React.useRef(value);
+
+  React.useEffect(() => {
+    if (value === lastEmittedRef.current) return;
+    setHsv(hexToHsv(value));
+  }, [value]);
+
+  const emit = (nextHsv: HSV) => {
+    const hex = hsvToHex(nextHsv);
+    lastEmittedRef.current = hex;
+    setHsv(nextHsv);
+    if (!isControlled) setInternal(hex);
+    onChange?.(hex);
+  };
+
+  const sv = useDrag((e, el) => {
+    const r = el.getBoundingClientRect();
+    const s = clamp((e.clientX - r.left) / r.width, 0, 1);
+    const v = 1 - clamp((e.clientY - r.top) / r.height, 0, 1);
+    emit({ ...hsv, s, v });
+  });
+  const hue = useDrag((e, el) => {
+    const r = el.getBoundingClientRect();
+    emit({ ...hsv, h: clamp((e.clientX - r.left) / r.width, 0, 1) * 360 });
+  });
+
+  // 렌더: SV 영역 / Hue 슬라이더 / Hex 인풋 (생략)
+  return (/* ... */);
+}`,
+            },
+          ]}
         />
       </Preview>
 

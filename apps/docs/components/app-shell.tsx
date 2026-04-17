@@ -1,123 +1,28 @@
-"use client";
-
 import type { ReactNode } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { cookies } from "next/headers";
+import { AppSidebar } from "@/components/app-sidebar";
+import { TocSlot } from "@/components/toc-slot";
 import {
-  BookOpenIcon,
-  BoxesIcon,
-  PaletteIcon,
-  RocketIcon,
-  SlidersHorizontalIcon,
-  type LucideIcon,
-} from "lucide-react";
-import { DarkModeToggle } from "@/components/dark-mode-toggle";
-import {
-  Sidebar,
-  SidebarCollapsible,
-  SidebarCollapsibleContent,
-  SidebarCollapsibleTrigger,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
   SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarProvider,
-  SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
-  { title: "시작하기", href: "/getting-started", icon: RocketIcon },
-  { title: "토큰", href: "/tokens", icon: PaletteIcon },
-  { title: "Playground", href: "/playground", icon: SlidersHorizontalIcon },
-  { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
-];
-
-const components: { title: string; href: string }[] = [
-  { title: "Button", href: "/components/button" },
-  { title: "Card", href: "/components/card" },
-  { title: "Input", href: "/components/input" },
-  { title: "Select", href: "/components/select" },
-  { title: "FileUpload", href: "/components/file-upload" },
-  { title: "CodePanel", href: "/components/code-panel" },
-  { title: "Sidebar", href: "/components/sidebar" },
-  { title: "ColorPicker", href: "/components/color-picker" },
-  { title: "Slider", href: "/components/slider" },
-];
-
-export function AppShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const componentsActive = pathname.startsWith("/components/");
-
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
+export async function AppShell({ children }: { children: ReactNode }) {
+  // 사이드바 열림 상태를 SSR에서 쿠키로 복원 → 하이드레이션 이후 레이아웃 시프트 방지.
+  // force-static 페이지에서는 cookies()가 없으므로 기본값(true) 사용.
+  let defaultOpen = true;
+  try {
+    const cookieStore = await cookies();
+    const sidebarState = cookieStore.get("sidebar_state")?.value;
+    defaultOpen = sidebarState !== "false";
+  } catch {
+    // static generation — 쿠키 없음, 기본값 사용
+  }
 
   return (
-    <SidebarProvider>
-      <Sidebar collapsible="icon">
-        <SidebarHeader>
-          <Link href="/" className="sh-ui-brand">
-            <span className="sh-ui-brand__mark" aria-hidden>
-              H
-            </span>
-            <span className="sh-ui-brand__name">sh-ui</span>
-          </Link>
-        </SidebarHeader>
-        <SidebarSeparator />
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Docs</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {topLinks.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={isActive(item.href)}>
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-
-                <SidebarMenuItem>
-                  <SidebarCollapsible defaultOpen={componentsActive}>
-                    <SidebarCollapsibleTrigger>
-                      <BoxesIcon />
-                      <span>Components</span>
-                    </SidebarCollapsibleTrigger>
-                    <SidebarCollapsibleContent>
-                      <SidebarMenuSub>
-                        {components.map((c) => (
-                          <SidebarMenuSubItem key={c.href}>
-                            <SidebarMenuSubButton asChild isActive={isActive(c.href)}>
-                              <Link href={c.href}>
-                                <span>{c.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </SidebarCollapsibleContent>
-                  </SidebarCollapsible>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter>
-          <DarkModeToggle />
-        </SidebarFooter>
-      </Sidebar>
+    <SidebarProvider defaultOpen={defaultOpen}>
+      <AppSidebar />
       <SidebarInset>
         <header
           style={{
@@ -135,6 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <SidebarTrigger />
         </header>
         {children}
+        <TocSlot />
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,4 +1,7 @@
+export const dynamic = "force-static";
+
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 
 export default function TokensPage() {
   const semanticColors = [
@@ -95,15 +98,46 @@ export default function TokensPage() {
       />
 
       <h3>Flutter — <code>sh_ui_tokens.dart</code></h3>
-      <CodePanel
-        language="dart"
-        filename="sh_ui_tokens.dart"
-        code={`ShUiColorTokens.light = ShUiColorTokens(
+      <CodeTabs
+        items={[
+          {
+            value: "highlight",
+            label: "강조",
+            language: "dart",
+            filename: "sh_ui_tokens.dart",
+            code: `ShUiColorTokens.light = ShUiColorTokens(
   background: Color(0xFFFFFFFF),
   foreground: Color(0xFF0A0A0A),
   primary: Color(0xFF171717),
   ...
-);`}
+);`,
+          },
+          {
+            value: "full",
+            label: "전체",
+            language: "dart",
+            filename: "sh_ui_tokens.dart",
+            code: `ShUiColorTokens.light = ShUiColorTokens(
+  background: Color(0xFFFFFFFF),
+  foregroundSubtle: Color(0xFF737373),
+  foregroundMuted: Color(0xFF404040),
+  foreground: Color(0xFF0A0A0A),
+  border: Color(0xFFE5E5E5),
+  borderStrong: Color(0xFFA3A3A3),
+  primary: Color(0xFF171717),
+  primaryForeground: Color(0xFFFAFAFA),
+  danger: Color(0xFFDC2626),
+  dangerForeground: Color(0xFFFAFAFA),
+);
+
+ShUiColorTokens.dark = ShUiColorTokens(
+  background: Color(0xFF0A0A0A),
+  foreground: Color(0xFFFAFAFA),
+  primary: Color(0xFFFAFAFA),
+  // ...
+);`,
+          },
+        ]}
       />
     </main>
   );

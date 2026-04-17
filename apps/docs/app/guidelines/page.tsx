@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import { CodePanel } from "@/components/ui/code-panel";
 
 export default function Guidelines() {

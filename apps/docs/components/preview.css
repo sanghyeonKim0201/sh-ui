@@ -32,3 +32,19 @@
   margin: 0;
   background: transparent;
 }
+
+/* Preview 안의 CodeTabs: demo → 탭 줄 → 코드가 한 패널처럼 붙어 보이도록. */
+.sh-ui-preview .sh-ui-tabs {
+  gap: 0;
+}
+
+.sh-ui-preview .sh-ui-tabs[data-variant="underline"] > .sh-ui-tabs__list {
+  padding: 0 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+/* 탭 하단 언더라인이 코드 패널의 상단 구분선 역할을 하므로
+   안쪽 CodePanel의 border-top은 제거해 이중선을 방지. */
+.sh-ui-preview .sh-ui-tabs__content .sh-ui-code {
+  border-top: 0;
+}

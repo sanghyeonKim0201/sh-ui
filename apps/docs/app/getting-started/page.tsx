@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import { CodePanel } from "@/components/ui/code-panel";
 
 export default function GettingStarted() {
@@ -13,11 +15,19 @@ export default function GettingStarted() {
         대화형 프롬프트로 <code>platform</code>(react/flutter), <code>base</code>(neutral/zinc/slate), <code>radius</code>, <code>mode</code>를 선택하면 <code>sh-ui.config.json</code>이 만들어진다.
       </p>
 
-      <h2>2. 토큰 설치</h2>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add tokens`} />
+      <h2>2. 토큰 + 기본 리셋 설치</h2>
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add tokens base`} />
       <p>
-        설정 값으로 치환된 토큰 파일이 생성된다. React는 CSS 변수(<code>tokens.css</code>), Flutter는 Dart 상수(<code>sh_ui_tokens.dart</code>).
+        설정 값으로 치환된 토큰 파일과 모바일-안전 리셋이 생성된다. React는 CSS 변수(<code>tokens.css</code>)와 <code>base.css</code>, Flutter는 Dart 상수(<code>sh_ui_tokens.dart</code>).
       </p>
+      <p className="muted">
+        <strong>base.css</strong>는 box-sizing·overflow·min-width 등 모바일에서 자주 발생하는 레이아웃 사고(자식 min-content가 뷰포트를 밀어 가로 스크롤이 생기는 현상 등)를 미연에 방지한다. tokens.css 바로 뒤에 import.
+      </p>
+      <CodePanel
+        language="css"
+        code={`@import "./styles/tokens.css";
+@import "./styles/base.css";`}
+      />
 
       <h2>3. 컴포넌트 설치</h2>
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add button`} />
