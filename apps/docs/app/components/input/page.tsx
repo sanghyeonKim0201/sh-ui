@@ -1,6 +1,7 @@
 export const dynamic = "force-static";
 
 import { Input, PasswordInput } from "@/components/ui/input";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
@@ -66,7 +67,7 @@ export default function InputPage() {
             <PasswordInput placeholder="비밀번호 (토글 가능)" />
             <Input type="password" placeholder="type=password (토글 없음)" />
             <Input type="number" placeholder="0" />
-            <Input type="date" />
+            <DatePicker placeholder="날짜 선택" />
           </div>
         </Preview.Demo>
         <CodePanel
@@ -75,7 +76,7 @@ export default function InputPage() {
 <PasswordInput placeholder="비밀번호 (토글 가능)" />
 <Input type="password" placeholder="type=password (토글 없음)" />
 <Input type="number" placeholder="0" />
-<Input type="date" />`}
+<DatePicker placeholder="날짜 선택" />`}
         />
       </Preview>
 
