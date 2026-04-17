@@ -2,6 +2,7 @@ import "./globals.css";
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { AppShell } from "@/components/app-shell";
+import { Toaster } from "@/components/ui/toast";
 
 export const metadata = {
   title: "sh-ui",
@@ -23,6 +24,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <AppShell defaultTheme={isDark ? "dark" : "light"}>
           {children}
         </AppShell>
+        <Toaster />
       </body>
     </html>
   );
