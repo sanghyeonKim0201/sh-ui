@@ -70,6 +70,15 @@
         { "src": "components/sidebar/styles.css", "dest": "{components}/sidebar/styles.css" }
       ],
       "dependencies": ["lucide-react"],
+      "registryDependencies": ["popover"]
+    },
+    "base": {
+      "name": "base",
+      "type": "utility",
+      "files": [
+        { "src": "components/base/base.css", "dest": "{styles}/base.css" }
+      ],
+      "dependencies": [],
       "registryDependencies": []
     },
     "breakpoints": {
@@ -135,6 +144,16 @@
       "dependencies": [],
       "registryDependencies": []
     },
+    "label": {
+      "name": "label",
+      "type": "component",
+      "files": [
+        { "src": "components/label/index.tsx", "dest": "{components}/label/index.tsx" },
+        { "src": "components/label/styles.css", "dest": "{components}/label/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "color-picker": {
       "name": "color-picker",
       "type": "component",
@@ -153,6 +172,46 @@
         { "src": "components/slider/styles.css", "dest": "{components}/slider/styles.css" }
       ],
       "dependencies": [],
+      "registryDependencies": []
+    },
+    "tabs": {
+      "name": "tabs",
+      "type": "component",
+      "files": [
+        { "src": "components/tabs/index.tsx", "dest": "{components}/tabs/index.tsx" },
+        { "src": "components/tabs/styles.css", "dest": "{components}/tabs/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "combobox": {
+      "name": "combobox",
+      "type": "component",
+      "files": [
+        { "src": "components/combobox/index.tsx", "dest": "{components}/combobox/index.tsx" },
+        { "src": "components/combobox/styles.css", "dest": "{components}/combobox/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "popover": {
+      "name": "popover",
+      "type": "component",
+      "files": [
+        { "src": "components/popover/index.tsx", "dest": "{components}/popover/index.tsx" },
+        { "src": "components/popover/styles.css", "dest": "{components}/popover/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "dialog": {
+      "name": "dialog",
+      "type": "component",
+      "files": [
+        { "src": "components/dialog/index.tsx", "dest": "{components}/dialog/index.tsx" },
+        { "src": "components/dialog/styles.css", "dest": "{components}/dialog/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
       "registryDependencies": []
     }
   }
