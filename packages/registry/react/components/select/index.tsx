@@ -34,7 +34,7 @@ export function SelectValue({
 
 export const SelectTrigger = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.Trigger>
+  Omit<React.ComponentPropsWithoutRef<typeof BaseSelect.Trigger>, "className"> & { className?: string }
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Trigger
     ref={ref}
@@ -61,7 +61,8 @@ SelectTrigger.displayName = "SelectTrigger";
  *  container: portal이 마운트될 DOM 노드. 기본 body. 토큰 스코프 안에 띄우려면 해당 컨테이너 ref 전달. */
 export const SelectContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.Popup> & {
+  Omit<React.ComponentPropsWithoutRef<typeof BaseSelect.Popup>, "className"> & {
+    className?: string;
     container?: React.ComponentPropsWithoutRef<typeof BaseSelect.Portal>["container"];
   }
 >(({ className, children, container, ...props }, ref) => (
@@ -87,7 +88,7 @@ export const SelectGroup = BaseSelect.Group;
 
 export const SelectLabel = React.forwardRef<
   HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.GroupLabel>
+  Omit<React.ComponentPropsWithoutRef<typeof BaseSelect.GroupLabel>, "className"> & { className?: string }
 >(({ className, ...props }, ref) => (
   <BaseSelect.GroupLabel
     ref={ref}
@@ -99,7 +100,7 @@ SelectLabel.displayName = "SelectLabel";
 
 export const SelectItem = React.forwardRef<
   HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.Item>
+  Omit<React.ComponentPropsWithoutRef<typeof BaseSelect.Item>, "className"> & { className?: string }
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Item
     ref={ref}
@@ -126,7 +127,7 @@ SelectItem.displayName = "SelectItem";
 
 export const SelectSeparator = React.forwardRef<
   HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseSelect.Separator>
+  Omit<React.ComponentPropsWithoutRef<typeof BaseSelect.Separator>, "className"> & { className?: string }
 >(({ className, ...props }, ref) => (
   <BaseSelect.Separator
     ref={ref}
@@ -188,7 +189,6 @@ export const MultiSelect = React.forwardRef<
 
   return (
     <MultiSelectContext.Provider value={ctx}>
-      {/* @ts-expect-error — Base UI의 multiple 모드에서 value/onValueChange가 배열 타입 */}
       <BaseSelect.Root multiple value={values} onValueChange={commit} {...props}>
         {children}
       </BaseSelect.Root>

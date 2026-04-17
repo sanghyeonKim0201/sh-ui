@@ -3,14 +3,12 @@
 import * as React from "react";
 import "./styles.css";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  /** 입력 필드 오른쪽에 붙는 요소 (아이콘/버튼). 있으면 우측 padding이 자동으로 늘어남. */
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
   suffix?: React.ReactNode;
-  /** 입력 필드 왼쪽에 붙는 요소. 있으면 좌측 padding이 자동으로 늘어남. */
   prefix?: React.ReactNode;
 }
 
-function cx(...args: (string | undefined | false)[]) {
+function cx(...args: (string | undefined | null | false)[]) {
   return args.filter(Boolean).join(" ");
 }
 
@@ -23,8 +21,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         type={type}
         className={cx(
           "sh-ui-input",
-          prefix && "sh-ui-input--with-prefix",
-          suffix && "sh-ui-input--with-suffix",
+          !!prefix && "sh-ui-input--with-prefix",
+          !!suffix && "sh-ui-input--with-suffix",
           className,
         )}
         {...props}
@@ -73,7 +71,7 @@ function EyeOffIcon() {
 }
 
 export interface PasswordInputProps extends Omit<InputProps, "type" | "suffix"> {
-  /** 토글 아이콘을 숨기고 싶을 때 */
+
   hideToggle?: boolean;
 }
 
@@ -115,11 +113,11 @@ export interface NumberInputProps
   value?: number;
   defaultValue?: number;
   onValueChange?: (value: number | undefined) => void;
-  /** 천 단위 콤마 표시 (기본 true). */
+
   thousandsSeparator?: boolean;
   min?: number;
   max?: number;
-  /** 음수 허용 (기본 true). */
+
   allowNegative?: boolean;
 }
 
@@ -235,10 +233,10 @@ const formatPhoneKR = (digits: string): string => {
 
 export interface PhoneInputProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "type"> {
-  /** 숫자만의 문자열 (예: "01012345678"). */
+
   value?: string;
   defaultValue?: string;
-  /** 숫자만의 문자열로 콜백. */
+
   onValueChange?: (digits: string) => void;
 }
 
@@ -284,7 +282,7 @@ const formatBRN = (digits: string): string => {
   return `${d.slice(0, 3)}-${d.slice(3, 5)}-${d.slice(5)}`;
 };
 
-/** 한국 사업자등록번호 체크섬 검증. 10자리 입력만 유효. */
+
 export function isValidBRN(digits: string): boolean {
   const d = digits.replace(/\D/g, "");
   if (d.length !== 10) return false;
@@ -301,7 +299,7 @@ export interface BusinessNumberInputProps
   value?: string;
   defaultValue?: string;
   onValueChange?: (digits: string) => void;
-  /** 10자리 입력 시 체크섬 검증 → 실패 시 aria-invalid 자동 부착. */
+
   validateChecksum?: boolean;
 }
 
