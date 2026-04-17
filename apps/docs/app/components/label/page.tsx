@@ -174,15 +174,83 @@ import { Input } from "@/components/ui/input";
         ]}
       />
 
+      <h2>자동 감지 지원 범위</h2>
+      <p className="muted">
+        Label은 인접한 폼 컴포넌트의 <code>required</code>·<code>disabled</code> 상태를 CSS <code>:has()</code>로 자동 감지한다.
+        자동 감지가 안 되는 컴포넌트는 <code>isRequired</code> prop을 수동으로 지정하면 된다.
+      </p>
+
+      <div className="sh-ui-props">
+        <table className="sh-ui-props__table">
+          <thead>
+            <tr>
+              <th>컴포넌트</th>
+              <th>required 자동 감지</th>
+              <th>disabled 자동 감지</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code className="sh-ui-props__name">Input</code></td>
+              <td>✓</td>
+              <td>✓</td>
+              <td className="sh-ui-props__desc">prefix/suffix 래퍼 포함</td>
+            </tr>
+            <tr>
+              <td><code className="sh-ui-props__name">Textarea</code></td>
+              <td>✓</td>
+              <td>✓</td>
+              <td className="sh-ui-props__desc"></td>
+            </tr>
+            <tr>
+              <td><code className="sh-ui-props__name">Combobox</code></td>
+              <td>✓</td>
+              <td>✓</td>
+              <td className="sh-ui-props__desc"></td>
+            </tr>
+            <tr>
+              <td><code className="sh-ui-props__name">Select</code></td>
+              <td>—</td>
+              <td>✓</td>
+              <td className="sh-ui-props__desc"><code>isRequired</code> 수동 지정</td>
+            </tr>
+            <tr>
+              <td><code className="sh-ui-props__name">DatePicker</code></td>
+              <td>—</td>
+              <td>✓</td>
+              <td className="sh-ui-props__desc"><code>isRequired</code> 수동 지정</td>
+            </tr>
+            <tr>
+              <td><code className="sh-ui-props__name">DateRangePicker</code></td>
+              <td>—</td>
+              <td>✓</td>
+              <td className="sh-ui-props__desc"><code>isRequired</code> 수동 지정</td>
+            </tr>
+            <tr>
+              <td><code className="sh-ui-props__name">FileUpload</code></td>
+              <td>—</td>
+              <td>✓</td>
+              <td className="sh-ui-props__desc"><code>isRequired</code> 수동 지정</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p className="muted">
+        <strong>required 자동 감지</strong>는 네이티브 <code>&lt;input&gt;</code>/<code>&lt;textarea&gt;</code> 요소의 <code>:required</code> CSS 의사 클래스를 사용하므로, <code>&lt;button&gt;</code>/<code>&lt;div&gt;</code> 기반 컴포넌트(Select, DatePicker, FileUpload)에서는 동작하지 않는다.
+        이 경우 <code>&lt;Label isRequired&gt;</code>를 사용한다.
+      </p>
+
       <h2>API Reference</h2>
 
       <h3>Label</h3>
       <p className="muted">
-        네이티브 <code>&lt;label&gt;</code> 모든 속성을 그대로 받는다. Input에 <code>required</code>가 있으면 CSS <code>:has()</code>로 자동 감지해 * 표시.
+        네이티브 <code>&lt;label&gt;</code> 모든 속성을 그대로 받는다.
       </p>
       <PropsTable
         rows={[
-          { prop: "isRequired", type: "boolean", description: ":has() 미지원 환경 대비 수동 * 표시. Input required 자동감지가 기본." },
+          { prop: "isRequired", type: "boolean", description: "필수 표시(* 마크)를 수동 지정. Input/Textarea/Combobox는 required 자동 감지가 되므로 보통 불필요." },
           { prop: "htmlFor", type: "string", description: "연결할 input의 id." },
         ]}
       />

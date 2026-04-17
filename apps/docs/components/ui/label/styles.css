@@ -10,6 +10,10 @@
   user-select: none;
 }
 
+.sh-ui-label:not(:has(.sh-ui-label__title, .sh-ui-label__subtitle, .sh-ui-label__description, .sh-ui-label__caption)) {
+  display: block;
+}
+
 /* ───── 텍스트 계층 ───── */
 
 /* Title — 주 라벨 텍스트 (기본). Label에 서브컴포넌트 없이 텍스트만 넣으면 이 스타일. */
@@ -47,29 +51,40 @@
 
 /* ───── 필수 표시 (* 마크) ─────
  * 1) isRequired prop (data-required) — 명시적 수동 지정
- * 2) 연결 Input에 required 속성 — CSS :has()로 자동 감지
+ * 2) 인접 폼 컴포넌트에 required 속성 — CSS :has()로 자동 감지
  * ::after는 Label의 첫 번째 인라인 자식(타이틀) 뒤에 표시. */
+
+/* LabelTitle sub-component가 있는 경우 */
 .sh-ui-label[data-required] > .sh-ui-label__title::after,
 .sh-ui-label:has(+ .sh-ui-input:required) > .sh-ui-label__title::after,
-.sh-ui-label:has(+ .sh-ui-input-wrap .sh-ui-input:required) > .sh-ui-label__title::after {
+.sh-ui-label:has(+ .sh-ui-input-wrap .sh-ui-input:required) > .sh-ui-label__title::after,
+.sh-ui-label:has(+ .sh-ui-textarea:required) > .sh-ui-label__title::after,
+.sh-ui-label:has(+ .sh-ui-combobox__input:required) > .sh-ui-label__title::after {
   content: " *";
   color: var(--danger);
   font-weight: 600;
 }
 
-/* Title 없이 Label에 직접 텍스트를 넣은 경우 — Label 자체의 ::after */
+/* Title 없이 Label에 직접 텍스트를 넣은 경우 */
 .sh-ui-label[data-required]:not(:has(.sh-ui-label__title))::after,
 .sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-input:required)::after,
-.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-input-wrap .sh-ui-input:required)::after {
+.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-input-wrap .sh-ui-input:required)::after,
+.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-textarea:required)::after,
+.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-combobox__input:required)::after {
   content: " *";
   color: var(--danger);
   font-weight: 600;
-  margin-left: 0.125rem;
 }
 
-/* ───── disabled 자동 감지 ───── */
+/* ───── disabled 자동 감지 ─────
+ * 인접 폼 컴포넌트가 disabled이면 Label도 흐리게. */
 .sh-ui-label:has(+ .sh-ui-input:disabled),
-.sh-ui-label:has(+ .sh-ui-input-wrap .sh-ui-input:disabled) {
+.sh-ui-label:has(+ .sh-ui-input-wrap .sh-ui-input:disabled),
+.sh-ui-label:has(+ .sh-ui-textarea:disabled),
+.sh-ui-label:has(+ .sh-ui-select__trigger:disabled),
+.sh-ui-label:has(+ .sh-ui-combobox__input:disabled),
+.sh-ui-label:has(+ .sh-ui-date-picker__trigger:disabled),
+.sh-ui-label:has(+ .sh-ui-file-upload .sh-ui-file-upload__dropzone--disabled) {
   opacity: 0.5;
   cursor: not-allowed;
 }
