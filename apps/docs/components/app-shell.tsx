@@ -7,10 +7,15 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/ui/theme";
 
-export async function AppShell({ children }: { children: ReactNode }) {
-  // 사이드바 열림 상태를 SSR에서 쿠키로 복원 → 하이드레이션 이후 레이아웃 시프트 방지.
-  // force-static 페이지에서는 cookies()가 없으므로 기본값(true) 사용.
+export async function AppShell({
+  defaultTheme = "light",
+  children,
+}: {
+  defaultTheme?: "light" | "dark";
+  children: ReactNode;
+}) {
   let defaultOpen = true;
   try {
     const cookieStore = await cookies();
@@ -21,27 +26,29 @@ export async function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar />
-      <SidebarInset>
-        <header
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.625rem 1rem",
-            borderBottom: "1px solid var(--border)",
-            position: "sticky",
-            top: 0,
-            background: "var(--background)",
-            zIndex: 10,
-          }}
-        >
-          <SidebarTrigger />
-        </header>
-        {children}
-        <TocSlot />
-      </SidebarInset>
-    </SidebarProvider>
+    <ThemeProvider defaultTheme={defaultTheme}>
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <AppSidebar />
+        <SidebarInset>
+          <header
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.625rem 1rem",
+              borderBottom: "1px solid var(--border)",
+              position: "sticky",
+              top: 0,
+              background: "var(--background)",
+              zIndex: 10,
+            }}
+          >
+            <SidebarTrigger />
+          </header>
+          {children}
+          <TocSlot />
+        </SidebarInset>
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }

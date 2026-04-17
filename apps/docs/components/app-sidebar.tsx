@@ -53,6 +53,7 @@ const components: { title: string; href: string }[] = [
   { title: "ColorPicker", href: "/components/color-picker" },
   { title: "Slider", href: "/components/slider" },
   { title: "Tabs", href: "/components/tabs" },
+  { title: "Theme", href: "/components/theme" },
 ];
 
 export function AppSidebar() {

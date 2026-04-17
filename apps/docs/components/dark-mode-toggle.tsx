@@ -1,28 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-
-const STORAGE_KEY = "sh-ui-docs-theme";
-
-const readInitialDark = () => {
-  if (typeof document === "undefined") return false;
-  return document.documentElement.classList.contains("dark");
-};
+import { useTheme } from "@/components/ui/theme";
 
 export function DarkModeToggle() {
-  const [dark, setDark] = useState(readInitialDark);
-
-  const toggle = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem(STORAGE_KEY, next ? "dark" : "light");
-  };
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <Button variant="ghost" size="sm" onClick={toggle} aria-label="다크 모드 토글" aria-pressed={dark}>
-      {dark ? "☀" : "🌙"}
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={toggleTheme}
+      aria-label="다크 모드 토글"
+      aria-pressed={isDark}
+    >
+      {isDark ? "☀" : "🌙"}
     </Button>
   );
 }

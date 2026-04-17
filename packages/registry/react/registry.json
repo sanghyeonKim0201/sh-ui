@@ -213,6 +213,15 @@
       ],
       "dependencies": ["@base-ui-components/react"],
       "registryDependencies": []
+    },
+    "theme": {
+      "name": "theme",
+      "type": "component",
+      "files": [
+        { "src": "components/theme/index.tsx", "dest": "{components}/theme/index.tsx" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
     }
   }
 }
