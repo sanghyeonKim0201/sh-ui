@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BookOpenIcon,
   BoxesIcon,
+  BrushIcon,
   PaletteIcon,
   RocketIcon,
   SlidersHorizontalIcon,
@@ -34,6 +35,7 @@ import {
 const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "시작하기", href: "/getting-started", icon: RocketIcon },
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
+  { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
   { title: "Playground", href: "/playground", icon: SlidersHorizontalIcon },
   { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
 ];
