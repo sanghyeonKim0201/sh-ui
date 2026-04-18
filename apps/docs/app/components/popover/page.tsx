@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -18,9 +18,13 @@ export default function PopoverPage() {
         <Preview.Demo>
           <PopoverBasicDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Popover>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Popover>
   <PopoverTrigger>
     <Button variant="secondary">팝오버 열기</Button>
   </PopoverTrigger>
@@ -30,20 +34,84 @@ export default function PopoverPage() {
       여기서 알림 수신 방법을 변경할 수 있습니다.
     </PopoverDescription>
   </PopoverContent>
-</Popover>`}
+</Popover>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiPopover(
+  trigger: (show) => ShUiButton(
+    variant: ShUiButtonVariant.secondary,
+    onPressed: show,
+    child: const Text('팝오버 열기'),
+  ),
+  content: (close) => const Padding(
+    padding: EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ShUiPopoverTitle('알림 설정'),
+        SizedBox(height: 4),
+        ShUiPopoverDescription('여기서 알림 수신 방법을 변경할 수 있습니다.'),
+      ],
+    ),
+  ),
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add popover`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add popover`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add popover
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_popover.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
         registry에서 아래 파일을 <code>components/ui/popover/</code>로 복사하고 Base UI를 설치한다.
       </p>
-      <CodePanel language="bash" showLineNumbers={false} code={`pnpm add @base-ui-components/react`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `pnpm add @base-ui-components/react`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `# 추가 의존성 없음 — Flutter 표준 위젯만 사용
+# packages/registry/flutter/widgets/sh_ui_popover.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h2>Examples</h2>
 
@@ -51,26 +119,76 @@ export default function PopoverPage() {
       <p className="muted">
         <code>side</code>와 <code>align</code>으로 트리거 기준 팝오버 위치를 제어.
       </p>
-      <CodePanel
-        language="tsx"
-        code={`<PopoverContent side="right" align="start">
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `<PopoverContent side="right" align="start">
   ...
 </PopoverContent>
 
 <PopoverContent side="top" align="center">
   ...
-</PopoverContent>`}
+</PopoverContent>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `ShUiPopover(
+  side: ShUiPopoverSide.right,
+  align: ShUiPopoverAlign.start,
+  trigger: (show) => ShUiButton(onPressed: show, child: const Text('열기')),
+  content: (close) => const Padding(padding: EdgeInsets.all(16), child: Text('...')),
+)
+
+ShUiPopover(
+  side: ShUiPopoverSide.top,
+  align: ShUiPopoverAlign.center,
+  trigger: (show) => ShUiButton(onPressed: show, child: const Text('열기')),
+  content: (close) => const Padding(padding: EdgeInsets.all(16), child: Text('...')),
+)`,
+          },
+        ]}
       />
 
       <h3>제어 모드</h3>
-      <CodePanel
-        language="tsx"
-        code={`const [open, setOpen] = useState(false);
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `const [open, setOpen] = useState(false);
 
 <Popover open={open} onOpenChange={setOpen}>
   <PopoverTrigger>열기</PopoverTrigger>
   <PopoverContent>내용</PopoverContent>
-</Popover>`}
+</Popover>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// Flutter에서는 trigger/content 빌더 콜백(show/close)으로 제어한다.
+ShUiPopover(
+  trigger: (show) => ShUiButton(onPressed: show, child: const Text('열기')),
+  content: (close) => Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('내용'),
+        const SizedBox(height: 8),
+        ShUiButton(onPressed: close, child: const Text('닫기')),
+      ],
+    ),
+  ),
+)`,
+          },
+        ]}
       />
 
       <h2>구성 요소</h2>

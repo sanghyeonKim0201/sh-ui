@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -43,9 +42,13 @@ export default function SelectPage() {
             </SelectContent>
           </Select>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Select>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Select>
   <SelectTrigger>
     <SelectValue placeholder="과일 선택" />
   </SelectTrigger>
@@ -57,29 +60,90 @@ export default function SelectPage() {
       <SelectItem value="grapes">Grapes</SelectItem>
     </SelectGroup>
   </SelectContent>
-</Select>`}
+</Select>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `String? _selected;
+
+ShUiSelect<String>(
+  value: _selected,
+  onChanged: (v) => setState(() => _selected = v),
+  placeholder: '과일 선택',
+  items: const [
+    ShUiSelectItem(value: 'apple', child: Text('Apple')),
+    ShUiSelectItem(value: 'banana', child: Text('Banana')),
+    ShUiSelectItem(value: 'grapes', child: Text('Grapes')),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add select`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add select`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add select
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_select.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
         registry에서 아래 파일을 <code>components/ui/select/</code>로 복사하고, Base UI를 설치한다.
       </p>
-      <CodePanel language="bash" showLineNumbers={false} code={`pnpm add @base-ui-components/react`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `pnpm add @base-ui-components/react`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `# 추가 의존성 없음
+# packages/registry/flutter/widgets/sh_ui_select.dart → lib/widgets/`,
+          },
+        ]}
+      />
       <ul>
         <li><code>index.tsx</code></li>
         <li><code>styles.css</code></li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`// 단일 선택
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `// 단일 선택
 <Select value={value} onValueChange={setValue}>
   <SelectTrigger>
     <SelectValue placeholder="선택하세요" />
@@ -97,7 +161,25 @@ export default function SelectPage() {
   <SelectContent>
     <SelectItem value="apple">Apple</SelectItem>
   </SelectContent>
-</MultiSelect>`}
+</MultiSelect>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// 단일 선택 (Flutter는 기본적으로 단일 선택만 제공)
+String? value;
+
+ShUiSelect<String>(
+  value: value,
+  onChanged: (v) => setState(() => value = v),
+  placeholder: '선택하세요',
+  items: const [
+    ShUiSelectItem(value: 'apple', child: Text('Apple')),
+  ],
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -126,9 +208,13 @@ export default function SelectPage() {
             </SelectContent>
           </Select>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Select>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Select>
   <SelectTrigger><SelectValue placeholder="국가 선택" /></SelectTrigger>
   <SelectContent>
     <SelectGroup>
@@ -141,7 +227,27 @@ export default function SelectPage() {
       <SelectItem value="de">독일</SelectItem>
     </SelectGroup>
   </SelectContent>
-</Select>`}
+</Select>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSelect는 그룹/라벨/구분선을 직접 지원하지 않는다.
+// 단순한 items 배열을 사용한다.
+ShUiSelect<String>(
+  value: _country,
+  onChanged: (v) => setState(() => _country = v),
+  placeholder: '국가 선택',
+  items: const [
+    ShUiSelectItem(value: 'kr', child: Text('대한민국')),
+    ShUiSelectItem(value: 'jp', child: Text('일본')),
+    ShUiSelectItem(value: 'de', child: Text('독일')),
+    ShUiSelectItem(value: 'fr', child: Text('프랑스')),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -172,16 +278,8 @@ export default function SelectPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
-              language: "tsx",
-              code: `<SelectItem value="team" disabled>Team (준비중)</SelectItem>
-
-<Select disabled>...</Select>`,
-            },
-            {
-              value: "full",
-              label: "전체",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `{/* 항목 단위 비활성 */}
 <Select>
@@ -205,6 +303,33 @@ export default function SelectPage() {
   </SelectContent>
 </Select>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// 항목 단위 비활성
+ShUiSelect<String>(
+  value: _plan,
+  onChanged: (v) => setState(() => _plan = v),
+  placeholder: '플랜 선택',
+  items: const [
+    ShUiSelectItem(value: 'free', child: Text('Free')),
+    ShUiSelectItem(value: 'pro', child: Text('Pro')),
+    ShUiSelectItem(value: 'team', enabled: false, child: Text('Team (준비중)')),
+  ],
+)
+
+// 전체 비활성
+ShUiSelect<String>(
+  value: null,
+  onChanged: null,
+  enabled: false,
+  placeholder: '선택 불가',
+  items: const [
+    ShUiSelectItem(value: 'a', child: Text('A')),
+  ],
+)`,
+            },
           ]}
         />
       </Preview>
@@ -223,16 +348,29 @@ export default function SelectPage() {
             </SelectContent>
           </MultiSelect>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<MultiSelect>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<MultiSelect>
   <SelectTrigger>
     <MultiSelectValue placeholder="과일을 여러 개 선택" />
   </SelectTrigger>
   <SelectContent>
     <SelectItem value="apple">Apple</SelectItem>
   </SelectContent>
-</MultiSelect>`}
+</MultiSelect>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSelect는 아직 다중 선택(MultiSelect)을 지원하지 않는다.
+// 단일 선택만 제공.`,
+            },
+          ]}
         />
       </Preview>
 
@@ -247,45 +385,8 @@ export default function SelectPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
-              language: "tsx",
-              code: `<MultiSelect defaultValue={["apple", "grapes"]}>
-  <SelectTrigger>
-    <MultiSelectValue
-      placeholder="과일 선택"
-      render={(arr, { remove }) => (
-        <span className="sh-ui-select__chips">
-          {arr.map((v) => (
-            <span key={v} className="sh-ui-select__chip">
-              {v}
-              <span
-                role="button"
-                tabIndex={0}
-                aria-label={\`\${v} 제거\`}
-                className="sh-ui-select__chip-remove"
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); remove(v); }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    remove(v);
-                  }
-                }}
-              >×</span>
-            </span>
-          ))}
-        </span>
-      )}
-    />
-  </SelectTrigger>
-  <SelectContent>...</SelectContent>
-</MultiSelect>`,
-            },
-            {
-              value: "full",
-              label: "전체",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<MultiSelect defaultValue={["apple", "grapes"]}>
   <SelectTrigger>
@@ -323,6 +424,12 @@ export default function SelectPage() {
     <SelectItem value="grapes">Grapes</SelectItem>
   </SelectContent>
 </MultiSelect>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSelect는 MultiSelect / chip 커스텀 렌더를 아직 지원하지 않는다.`,
             },
           ]}
         />

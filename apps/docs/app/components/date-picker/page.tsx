@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -27,27 +27,51 @@ export default function DatePickerPage() {
         <Preview.Demo>
           <BasicDemo />
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<DatePicker placeholder="날짜를 선택하세요" />`} />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<DatePicker placeholder="날짜를 선택하세요" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiDatePicker(placeholder: '날짜를 선택하세요')`,
+            },
+          ]}
+        />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add date-picker`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add date-picker` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add date-picker` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/date-picker/</code>로 복사한다.
+        registry에서 아래 파일을 복사한다.
       </p>
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li>React: <code>components/ui/date-picker/index.tsx</code>, <code>styles.css</code></li>
+        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_date_picker.dart</code> → <code>lib/widgets/</code></li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { DatePicker, DateRangePicker } from "@/components/ui/date-picker";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { DatePicker, DateRangePicker } from "@/components/ui/date-picker";
 import type { DateRange } from "@/components/ui/date-picker";
 
 // 단일 날짜
@@ -59,7 +83,34 @@ const [date, setDate] = useState<Date | undefined>(new Date());
 
 // 범위 선택
 const [range, setRange] = useState<DateRange | undefined>();
-<DateRangePicker value={range} onValueChange={setRange} />`}
+<DateRangePicker value={range} onValueChange={setRange} />`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import 'widgets/sh_ui_date_picker.dart';
+
+// 단일 날짜
+const ShUiDatePicker(placeholder: '날짜 선택'),
+
+// Controlled (StatefulWidget 내부)
+DateTime? _date;
+
+ShUiDatePicker(
+  value: _date,
+  onValueChange: (d) => setState(() => _date = d),
+),
+
+// 범위 선택
+DateTimeRange? _range;
+
+ShUiDateRangePicker(
+  value: _range,
+  onValueChange: (r) => setState(() => _range = r),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -69,12 +120,30 @@ const [range, setRange] = useState<DateRange | undefined>();
         <Preview.Demo>
           <ControlledDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [date, setDate] = useState<Date | undefined>(new Date());
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [date, setDate] = useState<Date | undefined>(new Date());
 
 <DatePicker value={date} onValueChange={setDate} />
-<p>선택: {date ? date.toLocaleDateString("ko-KR") : "없음"}</p>`}
+<p>선택: {date ? date.toLocaleDateString("ko-KR") : "없음"}</p>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `DateTime? _date = DateTime.now();
+
+ShUiDatePicker(
+  value: _date,
+  onValueChange: (d) => setState(() => _date = d),
+),
+Text('선택: \${_date != null ? _date!.toString().split(' ')[0] : '없음'}'),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -83,12 +152,26 @@ const [range, setRange] = useState<DateRange | undefined>();
         <Preview.Demo>
           <StatesDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<DatePicker defaultValue={new Date()} />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<DatePicker defaultValue={new Date()} />
 <DatePicker placeholder="disabled" disabled />
 <DatePicker defaultValue={new Date()} readOnly />
-<DatePicker placeholder="invalid" aria-invalid />`}
+<DatePicker placeholder="invalid" aria-invalid />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter ShUiDatePicker는 enabled만 지원 (readOnly / invalid 상태는 미구현).
+ShUiDatePicker(value: DateTime.now()),
+const ShUiDatePicker(placeholder: 'disabled', enabled: false),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -97,13 +180,31 @@ const [range, setRange] = useState<DateRange | undefined>();
         <Preview.Demo>
           <MinMaxDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const today = new Date();
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const today = new Date();
 const min = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
 const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
 
-<DatePicker min={min} max={max} placeholder="오늘 기준 -7일 ~ +30일" />`}
+<DatePicker min={min} max={max} placeholder="오늘 기준 -7일 ~ +30일" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `final now = DateTime.now();
+
+ShUiDatePicker(
+  min: now.subtract(const Duration(days: 7)),
+  max: now.add(const Duration(days: 30)),
+  placeholder: '오늘 기준 -7일 ~ +30일',
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -112,10 +213,27 @@ const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30
         <Preview.Demo>
           <WithLabelDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Label htmlFor="birth" isRequired>생년월일</Label>
-<DatePicker placeholder="YYYY-MM-DD" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Label htmlFor="birth" isRequired>생년월일</Label>
+<DatePicker placeholder="YYYY-MM-DD" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiLabel(
+  isRequired: true,
+  child: ShUiLabelTitle('생년월일'),
+),
+const SizedBox(height: 4),
+const ShUiDatePicker(placeholder: 'YYYY-MM-DD'),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -129,9 +247,21 @@ const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30
         <Preview.Demo>
           <RangeBasicDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<DateRangePicker placeholder="시작일 ~ 종료일" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<DateRangePicker placeholder="시작일 ~ 종료일" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiDateRangePicker(placeholder: '시작일 ~ 종료일')`,
+            },
+          ]}
         />
       </Preview>
 
@@ -140,14 +270,34 @@ const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30
         <Preview.Demo>
           <RangeControlledDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [range, setRange] = useState<DateRange | undefined>();
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [range, setRange] = useState<DateRange | undefined>();
 
 <DateRangePicker value={range} onValueChange={setRange} />
 <p>{range
   ? \`\${range.from.toLocaleDateString("ko-KR")} ~ \${range.to.toLocaleDateString("ko-KR")}\`
-  : "미선택"}</p>`}
+  : "미선택"}</p>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `DateTimeRange? _range;
+
+ShUiDateRangePicker(
+  value: _range,
+  onValueChange: (r) => setState(() => _range = r),
+),
+Text(_range != null
+    ? '\${_range!.start.toString().split(' ')[0]} ~ \${_range!.end.toString().split(' ')[0]}'
+    : '미선택'),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -156,10 +306,30 @@ const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30
         <Preview.Demo>
           <RangeWithLabelDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Label isRequired>투숙 기간</Label>
-<DateRangePicker min={new Date()} placeholder="체크인 ~ 체크아웃" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Label isRequired>투숙 기간</Label>
+<DateRangePicker min={new Date()} placeholder="체크인 ~ 체크아웃" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiLabel(
+  isRequired: true,
+  child: ShUiLabelTitle('투숙 기간'),
+),
+const SizedBox(height: 4),
+ShUiDateRangePicker(
+  min: DateTime.now(),
+  placeholder: '체크인 ~ 체크아웃',
+),`,
+            },
+          ]}
         />
       </Preview>
 

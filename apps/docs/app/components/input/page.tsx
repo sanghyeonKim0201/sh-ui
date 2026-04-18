@@ -4,7 +4,6 @@ import { Input, PasswordInput } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -29,32 +28,72 @@ export default function InputPage() {
             <Input placeholder="이름을 입력하세요" />
           </div>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<Input placeholder="이름을 입력하세요" />`} />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Input placeholder="이름을 입력하세요" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiInput(placeholder: '이름을 입력하세요')`,
+            },
+          ]}
+        />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add input`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add input` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add input` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/input/</code>로 복사한다.
+        registry에서 아래 파일을 복사한다.
       </p>
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li>React: <code>components/ui/input/index.tsx</code>, <code>styles.css</code></li>
+        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_input.dart</code> → <code>lib/widgets/</code></li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Input, PasswordInput } from "@/components/ui/input";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Input, PasswordInput } from "@/components/ui/input";
 
 <Input placeholder="이름" />
 <Input type="email" value={email} onChange={e => setEmail(e.target.value)} />
 <Input aria-invalid={hasError} />
-<PasswordInput placeholder="비밀번호" />`}
+<PasswordInput placeholder="비밀번호" />`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import 'widgets/sh_ui_input.dart';
+
+const ShUiInput(placeholder: '이름'),
+ShUiInput(
+  keyboardType: TextInputType.emailAddress,
+  onChanged: (v) => setState(() => email = v),
+),
+ShUiInput(invalid: hasError),
+const ShUiPasswordInput(placeholder: '비밀번호'),`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -70,13 +109,38 @@ export default function InputPage() {
             <DatePicker placeholder="날짜 선택" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Input type="email" placeholder="email@example.com" />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Input type="email" placeholder="email@example.com" />
 <PasswordInput placeholder="비밀번호 (토글 가능)" />
 <Input type="password" placeholder="type=password (토글 없음)" />
 <Input type="number" placeholder="0" />
-<DatePicker placeholder="날짜 선택" />`}
+<DatePicker placeholder="날짜 선택" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiInput(
+  placeholder: 'email@example.com',
+  keyboardType: TextInputType.emailAddress,
+),
+const ShUiPasswordInput(placeholder: '비밀번호 (토글 가능)'),
+const ShUiPasswordInput(
+  placeholder: '토글 없음',
+  hideToggle: true,
+),
+const ShUiInput(
+  placeholder: '0',
+  keyboardType: TextInputType.number,
+),
+const ShUiDatePicker(placeholder: '날짜 선택'),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -90,12 +154,30 @@ export default function InputPage() {
             <Input placeholder="invalid" aria-invalid />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Input defaultValue="값이 있는 상태" />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Input defaultValue="값이 있는 상태" />
 <Input placeholder="disabled" disabled />
 <Input defaultValue="readonly" readOnly />
-<Input placeholder="invalid" aria-invalid />`}
+<Input placeholder="invalid" aria-invalid />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiInput(initialValue: '값이 있는 상태'),
+const ShUiInput(placeholder: 'disabled', enabled: false),
+ShUiInput(
+  readOnly: true,
+  controller: TextEditingController(text: 'readonly'),
+),
+const ShUiInput(placeholder: 'invalid', invalid: true),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -116,14 +198,41 @@ export default function InputPage() {
             </div>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Label htmlFor="name" isRequired>이름</Label>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Label htmlFor="name" isRequired>이름</Label>
 <Input id="name" placeholder="홍길동" required />
 
 {/* invalid 상태와 함께 — 보더가 danger 색 */}
 <Label htmlFor="email" isRequired>이메일</Label>
-<Input id="email" type="email" required aria-invalid />`}
+<Input id="email" type="email" required aria-invalid />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter에는 required accent border 구현이 없으며, isRequired는 Label의 * 마크 용도.
+const ShUiLabel(
+  isRequired: true,
+  child: ShUiLabelTitle('이름'),
+),
+const ShUiInput(placeholder: '홍길동'),
+
+// invalid 상태
+const ShUiLabel(
+  isRequired: true,
+  child: ShUiLabelTitle('이메일'),
+),
+const ShUiInput(
+  keyboardType: TextInputType.emailAddress,
+  invalid: true,
+),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -132,9 +241,13 @@ export default function InputPage() {
         <Preview.Demo>
           <EmailValidationDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [email, setEmail] = useState("");
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [email, setEmail] = useState("");
 const invalid = email.length > 0 && !email.includes("@");
 
 <Input
@@ -142,7 +255,24 @@ const invalid = email.length > 0 && !email.includes("@");
   value={email}
   onChange={(e) => setEmail(e.target.value)}
   aria-invalid={invalid || undefined}
-/>`}
+/>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// StatefulWidget 내부
+String _email = '';
+bool get _invalid => _email.isNotEmpty && !_email.contains('@');
+
+ShUiInput(
+  placeholder: 'email@example.com',
+  keyboardType: TextInputType.emailAddress,
+  invalid: _invalid,
+  onChanged: (v) => setState(() => _email = v),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -437,9 +567,13 @@ export const BusinessNumberInput = React.forwardRef<HTMLInputElement, BusinessNu
         <Preview.Demo>
           <FormLayoutDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<form onSubmit={(e) => e.preventDefault()}>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<form onSubmit={(e) => e.preventDefault()}>
   <Label htmlFor="name" isRequired>이름</Label>
   <Input id="name" placeholder="홍길동" required />
 
@@ -447,7 +581,40 @@ export const BusinessNumberInput = React.forwardRef<HTMLInputElement, BusinessNu
   <Input id="email" type="email" placeholder="you@example.com" required />
 
   <Button type="submit">저장</Button>
-</form>`}
+</form>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `Column(
+  crossAxisAlignment: CrossAxisAlignment.stretch,
+  children: [
+    const ShUiLabel(
+      isRequired: true,
+      child: ShUiLabelTitle('이름'),
+    ),
+    const SizedBox(height: 4),
+    const ShUiInput(placeholder: '홍길동'),
+    const SizedBox(height: 12),
+    const ShUiLabel(
+      isRequired: true,
+      child: ShUiLabelTitle('이메일'),
+    ),
+    const SizedBox(height: 4),
+    const ShUiInput(
+      placeholder: 'you@example.com',
+      keyboardType: TextInputType.emailAddress,
+    ),
+    const SizedBox(height: 16),
+    ShUiButton(
+      onPressed: () {},
+      child: const Text('저장'),
+    ),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 

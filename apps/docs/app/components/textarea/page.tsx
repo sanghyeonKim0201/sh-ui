@@ -2,7 +2,7 @@ export const dynamic = "force-static";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { CharCountDemo } from "./_demos/char-count";
@@ -19,31 +19,58 @@ export default function TextareaPage() {
             <Textarea placeholder="내용을 입력하세요" />
           </div>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<Textarea placeholder="내용을 입력하세요" />`} />
+        <CodeTabs
+          items={[
+            { value: "react", label: "React", language: "tsx", code: `<Textarea placeholder="내용을 입력하세요" />` },
+            { value: "flutter", label: "Flutter", language: "dart", code: `ShUiTextarea(placeholder: '내용을 입력하세요')` },
+          ]}
+        />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add textarea`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add textarea` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add textarea` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/textarea/</code>로 복사한다.
+        React: registry의 <code>components/ui/textarea/</code> 파일을 복사.
+        Flutter: <code>packages/registry/flutter/widgets/sh_ui_textarea.dart</code>를 <code>lib/widgets/</code>로 복사.
       </p>
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li><code>index.tsx</code> / <code>styles.css</code> (React)</li>
+        <li><code>sh_ui_textarea.dart</code> (Flutter)</li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Textarea } from "@/components/ui/textarea";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Textarea } from "@/components/ui/textarea";
 
 <Textarea placeholder="메모" />
 <Textarea rows={6} defaultValue="기본값" />
-<Textarea aria-invalid={hasError} />`}
+<Textarea aria-invalid={hasError} />`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import 'package:your_app/widgets/sh_ui_textarea.dart';
+
+ShUiTextarea(placeholder: '메모')
+ShUiTextarea(minLines: 6, controller: _controller)
+ShUiTextarea(invalid: hasError)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -58,12 +85,27 @@ export default function TextareaPage() {
             <Textarea placeholder="invalid" aria-invalid />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Textarea defaultValue="값이 있는 상태" />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Textarea defaultValue="값이 있는 상태" />
 <Textarea placeholder="disabled" disabled />
 <Textarea defaultValue="readonly" readOnly />
-<Textarea placeholder="invalid" aria-invalid />`}
+<Textarea placeholder="invalid" aria-invalid />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiTextarea(controller: TextEditingController(text: '값이 있는 상태'))
+ShUiTextarea(placeholder: 'disabled', enabled: false)
+ShUiTextarea(readOnly: true, controller: TextEditingController(text: 'readonly'))
+ShUiTextarea(placeholder: 'invalid', invalid: true)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -75,10 +117,35 @@ export default function TextareaPage() {
             <Textarea id="demo-bio" placeholder="자기소개를 입력하세요" required rows={4} />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Label htmlFor="bio" isRequired>소개</Label>
-<Textarea id="bio" placeholder="자기소개를 입력하세요" required rows={4} />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Label htmlFor="bio" isRequired>소개</Label>
+<Textarea id="bio" placeholder="자기소개를 입력하세요" required rows={4} />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    const ShUiLabel(
+      isRequired: true,
+      child: ShUiLabelTitle('소개'),
+    ),
+    const SizedBox(height: 4),
+    ShUiTextarea(
+      placeholder: '자기소개를 입력하세요',
+      minLines: 4,
+    ),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -87,9 +154,13 @@ export default function TextareaPage() {
         <Preview.Demo>
           <CharCountDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [value, setValue] = useState("");
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [value, setValue] = useState("");
 const isOver = value.length > MAX_LENGTH;
 
 <Textarea
@@ -98,7 +169,24 @@ const isOver = value.length > MAX_LENGTH;
   placeholder="최대 200자까지 입력 가능합니다"
   aria-invalid={isOver || undefined}
 />
-<p>{value.length} / {MAX_LENGTH}</p>`}
+<p>{value.length} / {MAX_LENGTH}</p>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `String _value = '';
+const maxLength = 200;
+final isOver = _value.length > maxLength;
+
+ShUiTextarea(
+  placeholder: '최대 200자까지 입력 가능합니다',
+  invalid: isOver,
+  onChanged: (v) => setState(() => _value = v),
+)
+Text('\${_value.length} / $maxLength')`,
+            },
+          ]}
         />
       </Preview>
 
@@ -111,11 +199,25 @@ const isOver = value.length > MAX_LENGTH;
             <Textarea rows={10} placeholder="rows=10" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Textarea rows={2} placeholder="rows=2" />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Textarea rows={2} placeholder="rows=2" />
 <Textarea rows={6} placeholder="rows=6" />
-<Textarea rows={10} placeholder="rows=10" />`}
+<Textarea rows={10} placeholder="rows=10" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiTextarea(minLines: 2, placeholder: 'minLines=2')
+ShUiTextarea(minLines: 6, placeholder: 'minLines=6')
+ShUiTextarea(minLines: 10, placeholder: 'minLines=10')`,
+            },
+          ]}
         />
       </Preview>
 

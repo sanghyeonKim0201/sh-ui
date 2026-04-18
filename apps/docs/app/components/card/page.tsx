@@ -10,7 +10,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
@@ -44,24 +43,8 @@ export default function CardPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
-              language: "tsx",
-              code: `<Card>
-  <CardHeader>
-    <CardTitle>알림 설정</CardTitle>
-    <CardDescription>...</CardDescription>
-  </CardHeader>
-  <CardContent>...</CardContent>
-  <CardFooter>
-    <Button variant="secondary">나중에</Button>
-    <Button>설정하기</Button>
-  </CardFooter>
-</Card>`,
-            },
-            {
-              value: "full",
-              label: "전체",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<Card>
   <CardHeader>
@@ -77,6 +60,35 @@ export default function CardPage() {
   </CardFooter>
 </Card>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiCard(
+  children: [
+    const ShUiCardHeader(
+      title: ShUiCardTitle('알림 설정'),
+      description: ShUiCardDescription('이메일과 푸시 알림을 받을지 선택하세요.'),
+    ),
+    const ShUiCardContent(
+      child: Text('현재 모든 알림이 꺼져 있습니다. 언제든 다시 켤 수 있습니다.'),
+    ),
+    ShUiCardFooter(
+      children: [
+        ShUiButton(
+          variant: ShUiButtonVariant.secondary,
+          onPressed: () {},
+          child: const Text('나중에'),
+        ),
+        ShUiButton(
+          onPressed: () {},
+          child: const Text('설정하기'),
+        ),
+      ],
+    ),
+  ],
+)`,
+            },
           ]}
         />
       </Preview>
@@ -84,7 +96,27 @@ export default function CardPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add card`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add card`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add card
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_card.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -96,9 +128,13 @@ export default function CardPage() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import {
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import {
   Card, CardHeader, CardTitle, CardDescription,
   CardAction, CardContent, CardFooter,
 } from "@/components/ui/card";
@@ -112,7 +148,34 @@ export default function CardPage() {
   <CardFooter>
     <Button>확인</Button>
   </CardFooter>
-</Card>`}
+</Card>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_card.dart';
+import '../widgets/sh_ui_button.dart';
+
+ShUiCard(
+  children: [
+    const ShUiCardHeader(
+      title: ShUiCardTitle('제목'),
+      description: ShUiCardDescription('설명'),
+    ),
+    const ShUiCardContent(child: Text('본문')),
+    ShUiCardFooter(
+      children: [
+        ShUiButton(
+          onPressed: () {},
+          child: const Text('확인'),
+        ),
+      ],
+    ),
+  ],
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -138,9 +201,13 @@ export default function CardPage() {
             </Card>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Card>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Card>
   <CardHeader>
     <CardTitle>프로젝트 A</CardTitle>
     <CardDescription>마지막 업데이트: 3일 전</CardDescription>
@@ -151,7 +218,31 @@ export default function CardPage() {
   <CardContent>
     <p>현재 3개의 작업이 진행 중입니다.</p>
   </CardContent>
-</Card>`}
+</Card>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// ShUiCardHeader는 action 슬롯을 named parameter로 받는다.
+ShUiCard(
+  children: [
+    ShUiCardHeader(
+      title: const ShUiCardTitle('프로젝트 A'),
+      description: const ShUiCardDescription('마지막 업데이트: 3일 전'),
+      action: ShUiButton(
+        variant: ShUiButtonVariant.link,
+        onPressed: () {},
+        child: const Text('자세히'),
+      ),
+    ),
+    const ShUiCardContent(
+      child: Text('현재 3개의 작업이 진행 중입니다.'),
+    ),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -166,13 +257,31 @@ export default function CardPage() {
             </Card>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Card>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Card>
   <CardContent>
     <p>헤더/푸터 없이 본문만 있는 카드.</p>
   </CardContent>
-</Card>`}
+</Card>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiCard(
+  children: [
+    ShUiCardContent(
+      child: Text('헤더/푸터 없이 본문만 있는 카드.'),
+    ),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 

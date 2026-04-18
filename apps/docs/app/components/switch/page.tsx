@@ -1,6 +1,5 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -21,27 +20,31 @@ export default function SwitchPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
-              code: `<Switch id="airplane" />
-<Label htmlFor="airplane">비행기 모드</Label>`,
+              code: `<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+  <Switch id="airplane" />
+  <Label htmlFor="airplane">비행기 모드</Label>
+</div>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// StatefulWidget 내부에서 사용
+bool _checked = false;
 
-export function AirplaneMode() {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-      <Switch id="airplane" />
-      <Label htmlFor="airplane">비행기 모드</Label>
-    </div>
-  );
-}`,
+Row(
+  children: [
+    ShUiSwitch(
+      checked: _checked,
+      onChanged: (v) => setState(() => _checked = v),
+    ),
+    const SizedBox(width: 8),
+    const Text('비행기 모드'),
+  ],
+)`,
             },
           ]}
         />
@@ -50,26 +53,48 @@ export function AirplaneMode() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add switch`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add switch` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add switch` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/switch/</code>로 복사한다.
+        React: registry의 <code>components/ui/switch/</code> 파일을 복사. Flutter: <code>packages/registry/flutter/widgets/sh_ui_switch.dart</code>를 <code>lib/widgets/</code>로 복사.
       </p>
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li><code>index.tsx</code> / <code>styles.css</code> (React)</li>
+        <li><code>sh_ui_switch.dart</code> (Flutter)</li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Switch } from "@/components/ui/switch";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Switch } from "@/components/ui/switch";
 
 <Switch
   defaultChecked
   onCheckedChange={(checked) => console.log(checked)}
-/>`}
+/>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import 'package:your_app/widgets/sh_ui_switch.dart';
+
+ShUiSwitch(
+  checked: _checked,
+  onChanged: (v) => setState(() => _checked = v),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -79,10 +104,23 @@ export function AirplaneMode() {
         <Preview.Demo>
           <SwitchSizeDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Switch size="sm" />
-<Switch size="md" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Switch size="sm" />
+<Switch size="md" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiSwitch(size: ShUiSwitchSize.sm, checked: true, onChanged: (_) {})
+ShUiSwitch(size: ShUiSwitchSize.md, checked: true, onChanged: (_) {})`,
+            },
+          ]}
         />
       </Preview>
 
@@ -91,10 +129,23 @@ export function AirplaneMode() {
         <Preview.Demo>
           <SwitchDisabledDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Switch disabled />
-<Switch disabled defaultChecked />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Switch disabled />
+<Switch disabled defaultChecked />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiSwitch(enabled: false, checked: false)
+const ShUiSwitch(enabled: false, checked: true)`,
+            },
+          ]}
         />
       </Preview>
 

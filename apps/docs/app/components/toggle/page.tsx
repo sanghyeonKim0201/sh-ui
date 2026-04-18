@@ -1,6 +1,5 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -26,16 +25,8 @@ export default function TogglePage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
-              language: "tsx",
-              code: `<Toggle aria-label="Bold">
-  <BoldIcon />
-</Toggle>`,
-            },
-            {
-              value: "full",
-              label: "전체",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `import { Toggle } from "@/components/ui/toggle";
 
@@ -47,6 +38,19 @@ export function BoldToggle() {
   );
 }`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// StatefulWidget 내부에서 사용
+bool _pressed = false;
+
+ShUiToggle(
+  pressed: _pressed,
+  onPressedChange: (p) => setState(() => _pressed = p),
+  child: const Icon(Icons.format_bold),
+)`,
+            },
           ]}
         />
       </Preview>
@@ -54,21 +58,31 @@ export function BoldToggle() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add toggle`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add toggle` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add toggle` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/toggle/</code>로 복사한다.
+        React: registry의 <code>components/ui/toggle/</code> 파일을 복사.
+        Flutter: <code>packages/registry/flutter/widgets/sh_ui_toggle.dart</code>를 <code>lib/widgets/</code>로 복사.
       </p>
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li><code>index.tsx</code> / <code>styles.css</code> (React)</li>
+        <li><code>sh_ui_toggle.dart</code> (Flutter)</li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Toggle, ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Toggle, ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
 
 // 단일 토글
 <Toggle pressed onPressedChange={(p) => console.log(p)}>Bold</Toggle>
@@ -77,7 +91,30 @@ export function BoldToggle() {
 <ToggleGroup>
   <ToggleGroupItem value="bold">B</ToggleGroupItem>
   <ToggleGroupItem value="italic">I</ToggleGroupItem>
-</ToggleGroup>`}
+</ToggleGroup>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// 단일 토글
+ShUiToggle(
+  pressed: _pressed,
+  onPressedChange: (p) => setState(() => _pressed = p),
+  child: const Text('Bold'),
+)
+
+// 토글 그룹
+ShUiToggleGroup<String>(
+  value: _value,
+  onValueChange: (v) => setState(() => _value = v),
+  children: const [
+    ShUiToggleGroupItem(value: 'bold', child: Text('B')),
+    ShUiToggleGroupItem(value: 'italic', child: Text('I')),
+  ],
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -87,10 +124,31 @@ export function BoldToggle() {
         <Preview.Demo>
           <ToggleVariantDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Toggle variant="ghost">Ghost</Toggle>
-<Toggle variant="outline">Outline</Toggle>`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Toggle variant="ghost">Ghost</Toggle>
+<Toggle variant="outline">Outline</Toggle>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiToggle(
+  variant: ShUiToggleVariant.ghost,
+  onPressedChange: (_) {},
+  child: const Text('Ghost'),
+)
+ShUiToggle(
+  variant: ShUiToggleVariant.outline,
+  onPressedChange: (_) {},
+  child: const Text('Outline'),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -102,13 +160,37 @@ export function BoldToggle() {
         <Preview.Demo>
           <ToggleGroupSingleDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<ToggleGroup variant="outline">
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<ToggleGroup variant="outline">
   <ToggleGroupItem value="bold"><BoldIcon /></ToggleGroupItem>
   <ToggleGroupItem value="italic"><ItalicIcon /></ToggleGroupItem>
   <ToggleGroupItem value="underline"><UnderlineIcon /></ToggleGroupItem>
-</ToggleGroup>`}
+</ToggleGroup>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// 단일 선택 (multiple: false, 기본값)
+Set<String> _value = {};
+
+ShUiToggleGroup<String>(
+  variant: ShUiToggleVariant.outline,
+  value: _value,
+  onValueChange: (v) => setState(() => _value = v),
+  children: const [
+    ShUiToggleGroupItem(value: 'bold', child: Icon(Icons.format_bold)),
+    ShUiToggleGroupItem(value: 'italic', child: Icon(Icons.format_italic)),
+    ShUiToggleGroupItem(value: 'underline', child: Icon(Icons.format_underline)),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -120,13 +202,37 @@ export function BoldToggle() {
         <Preview.Demo>
           <ToggleGroupMultipleDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<ToggleGroup variant="outline" multiple defaultValue={["bold", "italic"]}>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<ToggleGroup variant="outline" multiple defaultValue={["bold", "italic"]}>
   <ToggleGroupItem value="bold"><BoldIcon /></ToggleGroupItem>
   <ToggleGroupItem value="italic"><ItalicIcon /></ToggleGroupItem>
   <ToggleGroupItem value="underline"><UnderlineIcon /></ToggleGroupItem>
-</ToggleGroup>`}
+</ToggleGroup>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `Set<String> _value = {'bold', 'italic'};
+
+ShUiToggleGroup<String>(
+  variant: ShUiToggleVariant.outline,
+  multiple: true,
+  value: _value,
+  onValueChange: (v) => setState(() => _value = v),
+  children: const [
+    ShUiToggleGroupItem(value: 'bold', child: Icon(Icons.format_bold)),
+    ShUiToggleGroupItem(value: 'italic', child: Icon(Icons.format_italic)),
+    ShUiToggleGroupItem(value: 'underline', child: Icon(Icons.format_underline)),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 

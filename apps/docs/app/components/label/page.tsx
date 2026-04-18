@@ -2,7 +2,7 @@ export const dynamic = "force-static";
 
 import { Input } from "@/components/ui/input";
 import { Label, LabelTitle, LabelSubtitle, LabelDescription, LabelCaption } from "@/components/ui/label";
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -28,39 +28,81 @@ export default function LabelPage() {
             </div>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`{/* 일반 필드 */}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `{/* 일반 필드 */}
 <Label htmlFor="name">이름</Label>
 <Input id="name" placeholder="홍길동" />
 
 {/* required 자동 감지 — isRequired 없이도 * 표시 */}
 <Label htmlFor="email">이메일</Label>
-<Input id="email" type="email" placeholder="you@example.com" required />`}
+<Input id="email" type="email" placeholder="you@example.com" required />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// 일반 필드
+const ShUiLabel(child: ShUiLabelTitle('이름')),
+const ShUiInput(placeholder: '홍길동'),
+
+// 필수 필드 — isRequired로 * 표시
+const ShUiLabel(
+  isRequired: true,
+  child: ShUiLabelTitle('이메일'),
+),
+const ShUiInput(placeholder: 'you@example.com'),`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add label`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add label`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add label`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/label/</code>로 복사한다.
+        registry에서 아래 파일을 복사한다. (React: <code>components/ui/label/</code>, Flutter: <code>lib/widgets/sh_ui_label.dart</code>)
       </p>
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li>React: <code>index.tsx</code>, <code>styles.css</code></li>
+        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_label.dart</code></li>
       </ul>
 
       <h2>Usage</h2>
       <p className="muted">
-        <code>Label</code>과 <code>Input</code>을 <code>htmlFor</code>/<code>id</code>로 연결하면, Input에 <code>required</code>·<code>disabled</code> 속성이 있을 때 CSS <code>:has()</code>로 자동 감지해 Label 표시를 바꿔줍니다.
+        <code>Label</code>과 <code>Input</code>을 <code>htmlFor</code>/<code>id</code>로 연결하면, Input에 <code>required</code>·<code>disabled</code> 속성이 있을 때 CSS <code>:has()</code>로 자동 감지해 Label 표시를 바꿔줍니다. (Flutter는 <code>isRequired</code> prop을 명시적으로 지정.)
       </p>
-      <CodePanel
-        language="tsx"
-        code={`import { Label } from "@/components/ui/label";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 {/* 기본 */}
@@ -73,7 +115,27 @@ import { Input } from "@/components/ui/input";
 
 {/* :has() 미지원 환경 대비 수동 지정도 가능 */}
 <Label htmlFor="email" isRequired>이메일</Label>
-<Input id="email" type="email" required />`}
+<Input id="email" type="email" required />`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import 'widgets/sh_ui_label.dart';
+import 'widgets/sh_ui_input.dart';
+
+// 기본
+const ShUiLabel(child: ShUiLabelTitle('사용자 이름')),
+const ShUiInput(placeholder: '...'),
+
+// 필수 필드는 isRequired로 명시
+const ShUiLabel(
+  isRequired: true,
+  child: ShUiLabelTitle('비밀번호'),
+),
+const ShUiPasswordInput(),`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -103,9 +165,13 @@ import { Input } from "@/components/ui/input";
             </div>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Label htmlFor="name">
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Label htmlFor="name">
   <LabelTitle>프로젝트 이름</LabelTitle>
   <LabelDescription>다른 팀원에게 보이는 이름입니다.</LabelDescription>
 </Label>
@@ -117,7 +183,43 @@ import { Input } from "@/components/ui/input";
   <LabelDescription>영문 소문자, 숫자, 하이픈만 가능.</LabelDescription>
   <LabelCaption>변경 시 기존 링크가 깨질 수 있습니다.</LabelCaption>
 </Label>
-<Input id="slug" placeholder="my-project" required />`}
+<Input id="slug" placeholder="my-project" required />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiLabel(
+  isRequired: true,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ShUiLabelTitle('프로젝트 이름'),
+      SizedBox(height: 2),
+      ShUiLabelDescription('다른 팀원에게 보이는 이름입니다.'),
+    ],
+  ),
+),
+ShUiInput(placeholder: 'my-project'),
+
+ShUiLabel(
+  isRequired: true,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ShUiLabelTitle('슬러그'),
+      SizedBox(height: 2),
+      ShUiLabelSubtitle('URL에 사용'),
+      SizedBox(height: 4),
+      ShUiLabelDescription('영문 소문자, 숫자, 하이픈만 가능.'),
+      SizedBox(height: 8),
+      ShUiLabelCaption('변경 시 기존 링크가 깨질 수 있습니다.'),
+    ],
+  ),
+),
+ShUiInput(placeholder: 'my-project'),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -136,12 +238,27 @@ import { Input } from "@/components/ui/input";
             <LabelCaption>설정은 즉시 반영됩니다.</LabelCaption>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`{/* Label 없이 — 순수 시각 계층으로만 사용 */}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `{/* Label 없이 — 순수 시각 계층으로만 사용 */}
 <LabelTitle>알림 설정</LabelTitle>
 <LabelDescription>이메일과 푸시 알림을 받을지 선택하세요.</LabelDescription>
-<LabelCaption>설정은 즉시 반영됩니다.</LabelCaption>`}
+<LabelCaption>설정은 즉시 반영됩니다.</LabelCaption>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// ShUiLabel 없이 — 순수 시각 계층으로만 사용
+const ShUiLabelTitle('알림 설정'),
+const ShUiLabelDescription('이메일과 푸시 알림을 받을지 선택하세요.'),
+const ShUiLabelCaption('설정은 즉시 반영됩니다.'),`,
+            },
+          ]}
         />
       </Preview>
 
@@ -156,10 +273,24 @@ import { Input } from "@/components/ui/input";
             <Input id="label-demo-dis" placeholder="수정 불가" disabled />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Label htmlFor="field">비활성 필드</Label>
-<Input id="field" disabled />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Label htmlFor="field">비활성 필드</Label>
+<Input id="field" disabled />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter는 자동 감지가 없으므로 enabled를 함께 지정
+const ShUiLabel(child: ShUiLabelTitle('비활성 필드')),
+const ShUiInput(placeholder: '수정 불가', enabled: false),`,
+            },
+          ]}
         />
       </Preview>
 

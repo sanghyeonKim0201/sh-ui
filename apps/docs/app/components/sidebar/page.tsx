@@ -1,6 +1,5 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -29,8 +28,8 @@ export default function SidebarPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<SidebarProvider>
   <Sidebar>
@@ -59,52 +58,45 @@ export default function SidebarPage() {
 </SidebarProvider>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `import { HomeIcon } from "lucide-react";
-import {
-  Sidebar, SidebarContent, SidebarFooter, SidebarGroup,
-  SidebarGroupContent, SidebarGroupLabel, SidebarHeader,
-  SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
-  SidebarProvider, SidebarTrigger,
-} from "@/components/ui/sidebar";
-
-export function AppLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <div className="px-2 font-semibold">sh-ui</div>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton isActive>
-                    <HomeIcon />
-                    <span>Home</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter>
-          <div className="px-2 text-xs text-muted">v0.1.0</div>
-        </SidebarFooter>
-      </Sidebar>
-      <SidebarInset>
-        <header className="flex items-center gap-2 border-b px-3 py-2">
-          <SidebarTrigger />
-        </header>
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
-  );
-}`,
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiSidebarProvider(
+  child: Row(
+    children: [
+      ShUiSidebar(
+        header: ShUiSidebarHeader(
+          child: Builder(
+            builder: (context) {
+              final isOpen = useSidebar(context)?.open ?? true;
+              if (!isOpen) return const Center(child: ShUiSidebarTrigger());
+              return Row(children: const [
+                Text('sh-ui'),
+                Spacer(),
+                ShUiSidebarTrigger(),
+              ]);
+            },
+          ),
+        ),
+        footer: const ShUiSidebarFooter(child: Text('v0.1.0')),
+        children: [
+          ShUiSidebarGroup(
+            label: 'Application',
+            children: [
+              ShUiSidebarItem(
+                icon: Icons.home,
+                label: 'Home',
+                isActive: true,
+                onTap: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
+      Expanded(child: mainContent),
+    ],
+  ),
+)`,
             },
           ]}
         />
@@ -113,22 +105,64 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add sidebar`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add sidebar`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add sidebar
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_sidebar.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
         registry에서 아래 파일을 <code>components/ui/sidebar/</code>로 복사하고, 아이콘 의존성을 설치한다.
       </p>
-      <CodePanel language="bash" showLineNumbers={false} code={`pnpm add lucide-react`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `pnpm add lucide-react`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `# Flutter는 Material 아이콘(Icons.*)을 기본 제공 — 별도 의존성 없음
+# packages/registry/flutter/widgets/sh_ui_sidebar.dart → lib/widgets/`,
+          },
+        ]}
+      />
       <ul>
         <li><code>index.tsx</code></li>
         <li><code>styles.css</code></li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`// app/layout.tsx
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `// app/layout.tsx
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 
@@ -142,12 +176,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </SidebarInset>
     </SidebarProvider>
   );
-}`}
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// main_layout.dart
+Scaffold(
+  body: ShUiSidebarProvider(
+    child: Row(
+      children: [
+        const AppSidebar(),
+        Expanded(child: body),
+      ],
+    ),
+  ),
+)`,
+          },
+        ]}
       />
 
-      <CodePanel
-        language="tsx"
-        code={`// components/app-sidebar.tsx
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `// components/app-sidebar.tsx
 import {
   Sidebar, SidebarContent, SidebarFooter,
   SidebarGroup, SidebarHeader,
@@ -163,7 +219,34 @@ export function AppSidebar() {
       <SidebarFooter />
     </Sidebar>
   );
-}`}
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// app_sidebar.dart
+class AppSidebar extends StatelessWidget {
+  const AppSidebar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShUiSidebar(
+      header: const ShUiSidebarHeader(child: Text('sh-ui')),
+      footer: const ShUiSidebarFooter(child: Text('v0.1.0')),
+      children: [
+        ShUiSidebarGroup(
+          label: '메뉴',
+          children: [
+            ShUiSidebarItem(icon: Icons.home, label: '홈', onTap: () {}),
+          ],
+        ),
+      ],
+    );
+  }
+}`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -176,9 +259,31 @@ export function AppSidebar() {
         <Preview.Demo>
           <SidebarBasicDemo collapsible="icon" />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Sidebar collapsible="icon">...</Sidebar>`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Sidebar collapsible="icon">...</Sidebar>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSidebar는 Provider의 open 상태에 따라 자동으로
+// collapsedWidth(기본 56)까지 폭을 줄이고 아이콘만 표시한다.
+ShUiSidebarProvider(
+  defaultOpen: false,
+  collapsedWidth: 56,
+  child: ShUiSidebar(
+    children: [
+      ShUiSidebarItem(icon: Icons.home, label: '홈', onTap: () {}),
+    ],
+  ),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -187,9 +292,22 @@ export function AppSidebar() {
         <Preview.Demo>
           <SidebarBasicDemo variant="floating" />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Sidebar variant="floating">...</Sidebar>`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Sidebar variant="floating">...</Sidebar>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSidebar는 variant 파라미터를 제공하지 않는다.
+// 플로팅 스타일이 필요하면 Container/decoration 으로 감싸 커스터마이즈한다.`,
+            },
+          ]}
         />
       </Preview>
 
@@ -205,8 +323,8 @@ export function AppSidebar() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<SidebarTOC sectionIds={["intro", "install", "usage"]}>
   <SidebarMenu>
@@ -229,60 +347,27 @@ export function AppSidebar() {
 </SidebarTOC>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `// sectionIds의 각 id가 본문의 <section id="..."> 와 매칭되어야 한다.
-export function DocsPage() {
-  return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>On this page</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarTOC sectionIds={["intro", "install", "usage"]}>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton sectionId="intro" asChild>
-                      <a href="#intro">Intro</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton sectionId="install" asChild>
-                      <a href="#install">Install</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton sectionId="usage" asChild>
-                      <a href="#usage">Usage</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarTOC>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-      <SidebarInset>
-        <article>
-          <section id="intro">
-            <h2>Intro</h2>
-            {/* ... */}
-          </section>
-          <section id="install">
-            <h2>Install</h2>
-            {/* ... */}
-          </section>
-          <section id="usage">
-            <h2>Usage</h2>
-            {/* ... */}
-          </section>
-        </article>
-      </SidebarInset>
-    </SidebarProvider>
-  );
-}`,
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSidebar는 TOC(스크롤 기반 자동 활성화)를 기본 제공하지 않는다.
+// ScrollController + VisibilityDetector로 직접 활성 섹션을 추적해
+// ShUiSidebarItem(isActive: ...) 에 반영한다.
+ShUiSidebarGroup(
+  label: 'On this page',
+  children: [
+    ShUiSidebarItem(
+      label: 'Intro',
+      isActive: _activeId == 'intro',
+      onTap: () => _scrollTo('intro'),
+    ),
+    ShUiSidebarItem(
+      label: 'Install',
+      isActive: _activeId == 'install',
+      onTap: () => _scrollTo('install'),
+    ),
+  ],
+)`,
             },
           ]}
         />
@@ -304,8 +389,8 @@ export function DocsPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<Sidebar>
   <SidebarHeader>
@@ -322,47 +407,26 @@ export function DocsPage() {
 </SidebarInset>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `function OpenTrigger() {
-  const { open } = useSidebar();
-  if (open) return null;
-  return (
-    <div className="absolute top-2 left-2 z-10">
-      <SidebarTrigger />
-    </div>
-  );
-}
-
-export function AppLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <div className="flex items-center justify-between px-2">
-            <span className="font-semibold">sh-ui</span>
-            <SidebarTrigger />
-          </div>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {/* menu items */}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-      <SidebarInset>
-        <OpenTrigger />
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
-  );
-}`,
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// useSidebar(context).open 으로 상태를 확인해 열림/닫힘 UI를 분기.
+ShUiSidebar(
+  header: ShUiSidebarHeader(
+    child: Builder(
+      builder: (context) {
+        final isOpen = useSidebar(context)?.open ?? true;
+        if (!isOpen) return const Center(child: ShUiSidebarTrigger());
+        return Row(children: const [
+          Text('sh-ui'),
+          Spacer(),
+          ShUiSidebarTrigger(),
+        ]);
+      },
+    ),
+  ),
+  children: const [/* ... */],
+)`,
             },
           ]}
         />
@@ -379,8 +443,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `// 닫힘: Inset 좌상단 floating / 열림: 사이드바 헤더 안의 트리거로 닫기
 <Sidebar>
@@ -395,43 +459,35 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 </SidebarInset>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `function OpenTrigger() {
-  const { open } = useSidebar();
-  if (open) return null;
-  return (
-    <div className="absolute top-2 left-2 z-10">
-      <SidebarTrigger />
-    </div>
-  );
-}
-
-export function AppLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider defaultOpen={false}>
-      <Sidebar>
-        <SidebarHeader>
-          <SidebarTrigger />
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {/* menu items */}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-      <SidebarInset>
-        <OpenTrigger />
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
-  );
-}`,
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Stack으로 메인 영역 좌상단에 트리거를 플로팅으로 올린다.
+ShUiSidebarProvider(
+  defaultOpen: false,
+  child: Row(children: [
+    ShUiSidebar(
+      header: const ShUiSidebarHeader(child: ShUiSidebarTrigger()),
+      children: const [/* ... */],
+    ),
+    Expanded(
+      child: Stack(children: [
+        mainContent,
+        Positioned(
+          top: 8,
+          left: 8,
+          child: Builder(
+            builder: (context) {
+              final isOpen = useSidebar(context)?.open ?? false;
+              if (isOpen) return const SizedBox.shrink();
+              return const ShUiSidebarTrigger();
+            },
+          ),
+        ),
+      ]),
+    ),
+  ]),
+)`,
             },
           ]}
         />
@@ -448,8 +504,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<Sidebar collapsible="icon">
   <SidebarHeader>
@@ -459,30 +515,21 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 </Sidebar>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `export function AppLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider defaultOpen={false}>
-      <Sidebar collapsible="icon">
-        <SidebarHeader>
-          <SidebarTrigger />
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {/* menu items (아이콘 + span) */}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-      <SidebarInset>{children}</SidebarInset>
-    </SidebarProvider>
-  );
-}`,
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter에서는 Provider의 collapsedWidth가 기본 아이콘 레일 역할.
+ShUiSidebarProvider(
+  defaultOpen: false,
+  collapsedWidth: 56,
+  child: ShUiSidebar(
+    header: const ShUiSidebarHeader(child: ShUiSidebarTrigger()),
+    children: [
+      ShUiSidebarItem(icon: Icons.home, label: '홈', onTap: () {}),
+      ShUiSidebarItem(icon: Icons.settings, label: '설정', onTap: () {}),
+    ],
+  ),
+)`,
             },
           ]}
         />
@@ -499,8 +546,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<Sidebar collapsible="icon">
   <SidebarMenu>
@@ -520,67 +567,30 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 <SidebarInset>{children}</SidebarInset>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `import { SearchIcon, StarIcon, SettingsIcon } from "lucide-react";
-import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
-  SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
-  SidebarPanel, SidebarPanelContent, SidebarPanelHeader,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSidebar는 panelId / SidebarPanel을 기본 제공하지 않는다.
+// 직접 상태(activePanel)를 관리해 Row에 추가 패널 위젯을 렌더한다.
+String? _activePanel;
 
-export function MapLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider defaultOpen={false}>
-      <Sidebar collapsible="icon">
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton panelId="search">
-                    <SearchIcon /><span>검색</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton panelId="favorites">
-                    <StarIcon /><span>즐겨찾기</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton panelId="settings">
-                    <SettingsIcon /><span>설정</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-
-      <SidebarPanel id="search">
-        <SidebarPanelHeader>검색</SidebarPanelHeader>
-        <SidebarPanelContent>
-          {/* 검색 UI */}
-        </SidebarPanelContent>
-      </SidebarPanel>
-
-      <SidebarPanel id="favorites">
-        <SidebarPanelHeader>즐겨찾기</SidebarPanelHeader>
-        <SidebarPanelContent>{/* 즐겨찾기 목록 */}</SidebarPanelContent>
-      </SidebarPanel>
-
-      <SidebarPanel id="settings">
-        <SidebarPanelHeader>설정</SidebarPanelHeader>
-        <SidebarPanelContent>{/* 설정 폼 */}</SidebarPanelContent>
-      </SidebarPanel>
-
-      <SidebarInset>{children}</SidebarInset>
-    </SidebarProvider>
-  );
-}`,
+Row(children: [
+  ShUiSidebar(
+    children: [
+      ShUiSidebarItem(
+        icon: Icons.search,
+        label: '검색',
+        isActive: _activePanel == 'search',
+        onTap: () => setState(() {
+          _activePanel = _activePanel == 'search' ? null : 'search';
+        }),
+      ),
+    ],
+  ),
+  if (_activePanel == 'search')
+    SizedBox(width: 280, child: SearchPanel(onClose: () => setState(() => _activePanel = null))),
+  Expanded(child: mainContent),
+])`,
             },
           ]}
         />
@@ -597,8 +607,8 @@ export function MapLayout({ children }: { children: React.ReactNode }) {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<SidebarMenu>
   {/* 라우팅 */}
@@ -619,86 +629,29 @@ export function MapLayout({ children }: { children: React.ReactNode }) {
 <SidebarPanel id="search">...</SidebarPanel>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { HomeIcon, LayoutDashboardIcon, UsersIcon, SearchIcon, SettingsIcon } from "lucide-react";
-import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
-  SidebarPanel, SidebarPanelContent, SidebarPanelHeader,
-  SidebarProvider, SidebarSeparator,
-} from "@/components/ui/sidebar";
-
-export function AppShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
-
-  return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>탐색</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isActive("/")}>
-                    <Link href="/"><HomeIcon /><span>홈</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isActive("/dashboard")}>
-                    <Link href="/dashboard"><LayoutDashboardIcon /><span>대시보드</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={isActive("/team")}>
-                    <Link href="/team"><UsersIcon /><span>팀</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-
-          <SidebarSeparator />
-
-          <SidebarGroup>
-            <SidebarGroupLabel>도구</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton panelId="search">
-                    <SearchIcon /><span>검색</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton panelId="settings">
-                    <SettingsIcon /><span>설정</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-
-      <SidebarPanel id="search">
-        <SidebarPanelHeader>검색</SidebarPanelHeader>
-        <SidebarPanelContent>{/* 검색 UI */}</SidebarPanelContent>
-      </SidebarPanel>
-
-      <SidebarPanel id="settings">
-        <SidebarPanelHeader>설정</SidebarPanelHeader>
-        <SidebarPanelContent>{/* 설정 폼 */}</SidebarPanelContent>
-      </SidebarPanel>
-
-      <SidebarInset>{children}</SidebarInset>
-    </SidebarProvider>
-  );
-}`,
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// 라우팅 항목과 패널 트리거를 한 그룹에 섞어 배치.
+ShUiSidebarGroup(
+  label: '탐색',
+  children: [
+    ShUiSidebarItem(
+      icon: Icons.home,
+      label: '홈',
+      isActive: _route == '/',
+      onTap: () => context.go('/'),
+    ),
+    ShUiSidebarItem(
+      icon: Icons.search,
+      label: '검색',
+      isActive: _activePanel == 'search',
+      onTap: () => setState(() {
+        _activePanel = _activePanel == 'search' ? null : 'search';
+      }),
+    ),
+  ],
+)`,
             },
           ]}
         />
@@ -709,9 +662,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Preview.Demo>
           <SidebarBasicDemo collapsible="none" />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Sidebar collapsible="none">...</Sidebar>`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Sidebar collapsible="none">...</Sidebar>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// 토글을 노출하지 않으면 사이드바는 항상 열린 상태로 유지된다.
+ShUiSidebarProvider(
+  defaultOpen: true,
+  child: Row(children: [
+    ShUiSidebar(children: const [/* ... */]),
+    Expanded(child: mainContent),
+  ]),
+)`,
+            },
+          ]}
         />
       </Preview>
 

@@ -1,6 +1,5 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -21,8 +20,8 @@ export default function RadioPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<RadioGroup defaultValue="banana">
   <Radio value="apple" id="apple" />
@@ -33,30 +32,34 @@ export default function RadioPage() {
 </RadioGroup>`,
             },
             {
-              value: "full",
-              label: "전체",
-              language: "tsx",
-              code: `import { Radio, RadioGroup } from "@/components/ui/radio";
-import { Label } from "@/components/ui/label";
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// StatefulWidget 안에서
+String? _value = 'banana';
 
-export function FruitPicker() {
-  return (
-    <RadioGroup defaultValue="banana">
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Radio value="apple" id="apple" />
-        <Label htmlFor="apple">Apple</Label>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Radio value="banana" id="banana" />
-        <Label htmlFor="banana">Banana</Label>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Radio value="cherry" id="cherry" />
-        <Label htmlFor="cherry">Cherry</Label>
-      </div>
-    </RadioGroup>
-  );
-}`,
+ShUiRadioGroup(
+  children: [
+    Row(mainAxisSize: MainAxisSize.min, children: [
+      ShUiRadio<String>(
+        value: 'apple',
+        groupValue: _value,
+        onChanged: (v) => setState(() => _value = v),
+      ),
+      const SizedBox(width: 8),
+      const Text('Apple'),
+    ]),
+    Row(mainAxisSize: MainAxisSize.min, children: [
+      ShUiRadio<String>(
+        value: 'banana',
+        groupValue: _value,
+        onChanged: (v) => setState(() => _value = v),
+      ),
+      const SizedBox(width: 8),
+      const Text('Banana'),
+    ]),
+  ],
+)`,
             },
           ]}
         />
@@ -65,7 +68,27 @@ export function FruitPicker() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add radio`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add radio`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add radio
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_radio.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -77,14 +100,43 @@ export function FruitPicker() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Radio, RadioGroup } from "@/components/ui/radio";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Radio, RadioGroup } from "@/components/ui/radio";
 
 <RadioGroup defaultValue="option1" onValueChange={(v) => console.log(v)}>
   <Radio value="option1" />
   <Radio value="option2" />
-</RadioGroup>`}
+</RadioGroup>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_radio.dart';
+
+String? _value = 'option1';
+
+ShUiRadioGroup(
+  children: [
+    ShUiRadio<String>(
+      value: 'option1',
+      groupValue: _value,
+      onChanged: (v) => setState(() => _value = v),
+    ),
+    ShUiRadio<String>(
+      value: 'option2',
+      groupValue: _value,
+      onChanged: (v) => setState(() => _value = v),
+    ),
+  ],
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -94,13 +146,40 @@ export function FruitPicker() {
         <Preview.Demo>
           <RadioHorizontalDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<RadioGroup orientation="horizontal" defaultValue="md">
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<RadioGroup orientation="horizontal" defaultValue="md">
   <Radio value="sm" /> Small
   <Radio value="md" /> Medium
   <Radio value="lg" /> Large
-</RadioGroup>`}
+</RadioGroup>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiRadioGroup(
+  orientation: ShUiRadioGroupOrientation.horizontal,
+  gap: 24,
+  children: [
+    for (final size in ['sm', 'md', 'lg'])
+      Row(mainAxisSize: MainAxisSize.min, children: [
+        ShUiRadio<String>(
+          value: size,
+          groupValue: _value,
+          onChanged: (v) => setState(() => _value = v),
+        ),
+        const SizedBox(width: 8),
+        Text(size.toUpperCase()),
+      ]),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -109,12 +188,34 @@ export function FruitPicker() {
         <Preview.Demo>
           <RadioDisabledDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<RadioGroup disabled defaultValue="on">
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<RadioGroup disabled defaultValue="on">
   <Radio value="on" /> 선택됨
   <Radio value="off" /> 미선택
-</RadioGroup>`}
+</RadioGroup>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// enabled: false 로 비활성화 (onChanged: null 도 동일 효과)
+const ShUiRadio<String>(
+  value: 'on',
+  groupValue: 'on',
+  enabled: false,
+)
+const ShUiRadio<String>(
+  value: 'off',
+  groupValue: 'on',
+  enabled: false,
+)`,
+            },
+          ]}
         />
       </Preview>
 

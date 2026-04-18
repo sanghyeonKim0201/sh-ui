@@ -3,6 +3,7 @@ export const dynamic = "force-static";
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 
@@ -19,19 +20,50 @@ export default function ButtonPage() {
         <Preview.Demo>
           <Button>저장</Button>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Button>저장</Button>`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Button>저장</Button>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiButton(
+  onPressed: () {},
+  child: const Text('저장'),
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel
-        language="bash"
-        showLineNumbers={false}
-        code={`npx sh-ui add button`}
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add button`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add button
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_button.dart → lib/widgets/`,
+          },
+        ]}
       />
 
       <h3>Manual</h3>
@@ -44,13 +76,32 @@ export default function ButtonPage() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Button } from "@/components/ui/button";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Button } from "@/components/ui/button";
 
 <Button variant="primary" size="md" onClick={handleClick}>
   저장
-</Button>`}
+</Button>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_button.dart';
+
+ShUiButton(
+  variant: ShUiButtonVariant.primary,
+  size: ShUiButtonSize.md,
+  onPressed: handlePressed,
+  child: const Text('저장'),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -64,13 +115,49 @@ export default function ButtonPage() {
             </Button>
           ))}
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Button variant="primary">primary</Button>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Button variant="primary">primary</Button>
 <Button variant="secondary">secondary</Button>
 <Button variant="ghost">ghost</Button>
 <Button variant="danger">danger</Button>
-<Button variant="link">link</Button>`}
+<Button variant="link">link</Button>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiButton(
+  variant: ShUiButtonVariant.primary,
+  onPressed: () {},
+  child: const Text('primary'),
+)
+ShUiButton(
+  variant: ShUiButtonVariant.secondary,
+  onPressed: () {},
+  child: const Text('secondary'),
+)
+ShUiButton(
+  variant: ShUiButtonVariant.ghost,
+  onPressed: () {},
+  child: const Text('ghost'),
+)
+ShUiButton(
+  variant: ShUiButtonVariant.danger,
+  onPressed: () {},
+  child: const Text('danger'),
+)
+ShUiButton(
+  variant: ShUiButtonVariant.link,
+  onPressed: () {},
+  child: const Text('link'),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -83,11 +170,37 @@ export default function ButtonPage() {
             </Button>
           ))}
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Button size="sm">size = sm</Button>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Button size="sm">size = sm</Button>
 <Button size="md">size = md</Button>
-<Button size="lg">size = lg</Button>`}
+<Button size="lg">size = lg</Button>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiButton(
+  size: ShUiButtonSize.sm,
+  onPressed: () {},
+  child: const Text('size = sm'),
+)
+ShUiButton(
+  size: ShUiButtonSize.md,
+  onPressed: () {},
+  child: const Text('size = md'),
+)
+ShUiButton(
+  size: ShUiButtonSize.lg,
+  onPressed: () {},
+  child: const Text('size = lg'),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -99,12 +212,40 @@ export default function ButtonPage() {
           <Button variant="ghost" disabled>ghost</Button>
           <Button variant="danger" disabled>danger</Button>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Button disabled>primary</Button>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Button disabled>primary</Button>
 <Button variant="secondary" disabled>secondary</Button>
 <Button variant="ghost" disabled>ghost</Button>
-<Button variant="danger" disabled>danger</Button>`}
+<Button variant="danger" disabled>danger</Button>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter에서는 onPressed: null 로 비활성 처리
+const ShUiButton(
+  variant: ShUiButtonVariant.primary,
+  child: Text('primary'),
+)
+const ShUiButton(
+  variant: ShUiButtonVariant.secondary,
+  child: Text('secondary'),
+)
+const ShUiButton(
+  variant: ShUiButtonVariant.ghost,
+  child: Text('ghost'),
+)
+const ShUiButton(
+  variant: ShUiButtonVariant.danger,
+  child: Text('danger'),
+)`,
+            },
+          ]}
         />
       </Preview>
 

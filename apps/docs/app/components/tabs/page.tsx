@@ -7,7 +7,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -38,24 +37,8 @@ export default function TabsPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
-              language: "tsx",
-              code: `<Tabs defaultValue="overview">
-  <TabsList>
-    <TabsIndicator />
-    <TabsTrigger value="overview">Overview</TabsTrigger>
-    <TabsTrigger value="usage">Usage</TabsTrigger>
-    <TabsTrigger value="api">API</TabsTrigger>
-  </TabsList>
-  <TabsContent value="overview">...</TabsContent>
-  <TabsContent value="usage">...</TabsContent>
-  <TabsContent value="api">...</TabsContent>
-</Tabs>`,
-            },
-            {
-              value: "full",
-              label: "전체",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<Tabs defaultValue="overview">
   <TabsList>
@@ -69,6 +52,18 @@ export default function TabsPage() {
   <TabsContent value="api">TabsTrigger의 value로 TabsContent와 매칭.</TabsContent>
 </Tabs>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiTabs(
+  tabs: const [
+    ShUiTab(label: 'Overview', child: Text('패널 전환 컴포넌트입니다.')),
+    ShUiTab(label: 'Usage', child: Text('initialIndex / onChanged.')),
+    ShUiTab(label: 'API', child: Text('label + child로 구성.')),
+  ],
+)`,
+            },
           ]}
         />
       </Preview>
@@ -76,16 +71,27 @@ export default function TabsPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add tabs`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add tabs` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add tabs` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/tabs/</code>로 복사하고, Base UI를 설치한다.
+        React: registry의 <code>components/ui/tabs/</code> 파일을 복사하고 Base UI를 설치.
+        Flutter: <code>packages/registry/flutter/widgets/sh_ui_tabs.dart</code>를 <code>lib/widgets/</code>로 복사.
       </p>
-      <CodePanel language="bash" showLineNumbers={false} code={`pnpm add @base-ui-components/react`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui-components/react` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `# 별도 의존성 없음 (sh_ui_tokens.dart 필요)` },
+        ]}
+      />
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li><code>index.tsx</code> / <code>styles.css</code> (React)</li>
+        <li><code>sh_ui_tabs.dart</code> (Flutter)</li>
       </ul>
 
       <h2>Examples</h2>
@@ -97,24 +103,8 @@ export default function TabsPage() {
       <CodeTabs
         items={[
           {
-            value: "highlight",
-            label: "강조",
-            language: "tsx",
-            code: `const [tab, setTab] = useState("a");
-
-<Tabs value={tab} onValueChange={setTab}>
-  <TabsList>
-    <TabsIndicator />
-    <TabsTrigger value="a">A</TabsTrigger>
-    <TabsTrigger value="b">B</TabsTrigger>
-  </TabsList>
-  <TabsContent value="a">...</TabsContent>
-  <TabsContent value="b">...</TabsContent>
-</Tabs>`,
-          },
-          {
-            value: "full",
-            label: "전체",
+            value: "react",
+            label: "React",
             language: "tsx",
             code: `"use client";
 
@@ -135,6 +125,22 @@ export function ControlledTabs() {
     </Tabs>
   );
 }`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// initialIndex + onChanged로 외부 상태와 동기화
+int _index = 0;
+
+ShUiTabs(
+  initialIndex: _index,
+  onChanged: (i) => setState(() => _index = i),
+  tabs: const [
+    ShUiTab(label: 'A', child: Text('패널 A')),
+    ShUiTab(label: 'B', child: Text('패널 B')),
+  ],
+)`,
           },
         ]}
       />
@@ -159,7 +165,12 @@ export function ControlledTabs() {
             <TabsContent value="c">문서형 UI에 적합</TabsContent>
           </Tabs>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<Tabs variant="underline">...</Tabs>`} />
+        <CodeTabs
+          items={[
+            { value: "react", label: "React", language: "tsx", code: `<Tabs variant="underline">...</Tabs>` },
+            { value: "flutter", label: "Flutter", language: "dart", code: `ShUiTabs(variant: ShUiTabsVariant.underline, tabs: [...])` },
+          ]}
+        />
       </Preview>
 
       <h4>pill (세그먼트)</h4>
@@ -177,7 +188,12 @@ export function ControlledTabs() {
             <TabsContent value="c">설정 패널 등에 적합</TabsContent>
           </Tabs>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<Tabs variant="pill">...</Tabs>`} />
+        <CodeTabs
+          items={[
+            { value: "react", label: "React", language: "tsx", code: `<Tabs variant="pill">...</Tabs>` },
+            { value: "flutter", label: "Flutter", language: "dart", code: `ShUiTabs(variant: ShUiTabsVariant.pill, tabs: [...])` },
+          ]}
+        />
       </Preview>
 
       <h4>plain (컨테이너 없음)</h4>
@@ -194,7 +210,12 @@ export function ControlledTabs() {
             <TabsContent value="c">툴바나 조밀한 영역에 적합</TabsContent>
           </Tabs>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<Tabs variant="plain">...</Tabs>`} />
+        <CodeTabs
+          items={[
+            { value: "react", label: "React", language: "tsx", code: `<Tabs variant="plain">...</Tabs>` },
+            { value: "flutter", label: "Flutter", language: "dart", code: `ShUiTabs(variant: ShUiTabsVariant.plain, tabs: [...])` },
+          ]}
+        />
       </Preview>
 
       <h3>Vertical</h3>
@@ -212,9 +233,22 @@ export function ControlledTabs() {
             <TabsContent value="three">세로 배치 탭 3</TabsContent>
           </Tabs>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Tabs defaultValue="one" orientation="vertical">...</Tabs>`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Tabs defaultValue="one" orientation="vertical">...</Tabs>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter 위젯은 현재 수평 배치만 지원합니다.
+// 수직 배치가 필요하면 위젯을 래핑해 커스텀 레이아웃을 구성하세요.`,
+            },
+          ]}
         />
       </Preview>
 

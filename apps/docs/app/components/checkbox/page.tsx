@@ -1,6 +1,5 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -26,15 +25,8 @@ export default function CheckboxPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
-              language: "tsx",
-              code: `<Checkbox id="terms" />
-<Label htmlFor="terms">이용약관에 동의합니다</Label>`,
-            },
-            {
-              value: "full",
-              label: "전체",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -48,6 +40,37 @@ export function TermsCheckbox() {
   );
 }`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter는 제어 모드가 기본 — 부모 StatefulWidget에서 상태를 들고 있는다.
+class TermsCheckbox extends StatefulWidget {
+  const TermsCheckbox({super.key});
+
+  @override
+  State<TermsCheckbox> createState() => _TermsCheckboxState();
+}
+
+class _TermsCheckboxState extends State<TermsCheckbox> {
+  bool _agreed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ShUiCheckbox(
+          checked: _agreed,
+          onChanged: (v) => setState(() => _agreed = v),
+        ),
+        const SizedBox(width: 8),
+        const Text('이용약관에 동의합니다'),
+      ],
+    );
+  }
+}`,
+            },
           ]}
         />
       </Preview>
@@ -55,7 +78,27 @@ export function TermsCheckbox() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add checkbox`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add checkbox`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add checkbox
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_checkbox.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -67,13 +110,30 @@ export function TermsCheckbox() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Checkbox, CheckboxGroup } from "@/components/ui/checkbox";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Checkbox, CheckboxGroup } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
 <Checkbox id="agree" onCheckedChange={(checked) => console.log(checked)} />
-<Label htmlFor="agree">동의</Label>`}
+<Label htmlFor="agree">동의</Label>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_checkbox.dart';
+
+ShUiCheckbox(
+  checked: agreed,
+  onChanged: (v) => setState(() => agreed = v),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -86,15 +146,57 @@ import { Label } from "@/components/ui/label";
         <Preview.Demo>
           <CheckboxGroupDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<CheckboxGroup defaultValue={["apple"]}>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<CheckboxGroup defaultValue={["apple"]}>
   <Checkbox value="apple" id="apple" />
   <Label htmlFor="apple">Apple</Label>
 
   <Checkbox value="banana" id="banana" />
   <Label htmlFor="banana">Banana</Label>
-</CheckboxGroup>`}
+</CheckboxGroup>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter 쪽은 선택값 배열을 직접 state로 관리한다.
+final values = [true, false]; // [apple, banana]
+
+ShUiCheckboxGroup(
+  orientation: ShUiCheckboxGroupOrientation.vertical,
+  gap: 12,
+  children: [
+    Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ShUiCheckbox(
+          checked: values[0],
+          onChanged: (v) => setState(() => values[0] = v),
+        ),
+        const SizedBox(width: 8),
+        const Text('Apple'),
+      ],
+    ),
+    Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ShUiCheckbox(
+          checked: values[1],
+          onChanged: (v) => setState(() => values[1] = v),
+        ),
+        const SizedBox(width: 8),
+        const Text('Banana'),
+      ],
+    ),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -106,9 +208,24 @@ import { Label } from "@/components/ui/label";
         <Preview.Demo>
           <CheckboxIndeterminateDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Checkbox indeterminate />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Checkbox indeterminate />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiCheckbox(
+  indeterminate: true,
+  onChanged: (v) {},
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -117,10 +234,23 @@ import { Label } from "@/components/ui/label";
         <Preview.Demo>
           <CheckboxDisabledDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Checkbox disabled />
-<Checkbox disabled defaultChecked />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Checkbox disabled />
+<Checkbox disabled defaultChecked />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiCheckbox(enabled: false)
+const ShUiCheckbox(checked: true, enabled: false)`,
+            },
+          ]}
         />
       </Preview>
 

@@ -39,8 +39,10 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
 ];
 
 const components: { title: string; href: string }[] = [
+  { title: "Accordion", href: "/components/accordion" },
   { title: "Button", href: "/components/button" },
   { title: "Card", href: "/components/card" },
+  { title: "Carousel", href: "/components/carousel" },
   { title: "Checkbox", href: "/components/checkbox" },
   { title: "CodePanel", href: "/components/code-panel" },
   { title: "ColorPicker", href: "/components/color-picker" },
@@ -54,6 +56,7 @@ const components: { title: string; href: string }[] = [
   { title: "Radio", href: "/components/radio" },
   { title: "Select", href: "/components/select" },
   { title: "Sidebar", href: "/components/sidebar" },
+  { title: "Skeleton", href: "/components/skeleton" },
   { title: "Slider", href: "/components/slider" },
   { title: "Switch", href: "/components/switch" },
   { title: "Tabs", href: "/components/tabs" },

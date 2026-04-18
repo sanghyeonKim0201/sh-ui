@@ -1,7 +1,6 @@
 export const dynamic = "force-static";
 
 import { Slider } from "@/components/ui/slider";
-import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -24,91 +23,21 @@ export default function SliderPage() {
         <CodeTabs
           items={[
             {
-              value: "highlight",
-              label: "강조",
+              value: "react",
+              label: "React",
               language: "tsx",
               code: `<Slider defaultValue={50} aria-label="기본" />`,
             },
             {
-              value: "impl",
-              label: "구현",
-              language: "tsx",
-              filename: "components/ui/slider/index.tsx",
-              code: `const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
-const snap = (v: number, step: number, min: number) =>
-  step <= 0 ? v : min + Math.round((v - min) / step) * step;
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `double _value = 50;
 
-export function Slider({
-  value: valueProp, defaultValue = 0, onValueChange,
-  min = 0, max = 100, step = 1, disabled,
-  "aria-label": ariaLabel,
-}: SliderProps) {
-  const isControlled = valueProp !== undefined;
-  const [internal, setInternal] = React.useState(defaultValue);
-  const value = clamp(isControlled ? valueProp! : internal, min, max);
-
-  const trackRef = React.useRef<HTMLDivElement>(null);
-
-  const setValue = (next: number) => {
-    const snapped = clamp(snap(next, step, min), min, max);
-    if (snapped === value) return;
-    if (!isControlled) setInternal(snapped);
-    onValueChange?.(snapped);
-  };
-
-  // 포인터 좌표 → 값 매핑 (트랙 기준)
-  const moveToClient = (clientX: number) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const ratio = clamp((clientX - r.left) / r.width, 0, 1);
-    setValue(min + ratio * (max - min));
-  };
-
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (disabled) return;
-    const el = trackRef.current!;
-    el.setPointerCapture(e.pointerId);
-    moveToClient(e.clientX);
-    const move = (ev: PointerEvent) => moveToClient(ev.clientX);
-    const up = (ev: PointerEvent) => {
-      el.releasePointerCapture(ev.pointerId);
-      el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerup", up);
-    };
-    el.addEventListener("pointermove", move);
-    el.addEventListener("pointerup", up);
-  };
-
-  // 키보드: ±step / Shift·Page ±step×10 / Home·End
-  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (disabled) return;
-    const big = e.shiftKey ? step * 10 : step;
-    switch (e.key) {
-      case "ArrowRight": case "ArrowUp":   e.preventDefault(); setValue(value + big); break;
-      case "ArrowLeft":  case "ArrowDown": e.preventDefault(); setValue(value - big); break;
-      case "Home":      e.preventDefault(); setValue(min); break;
-      case "End":       e.preventDefault(); setValue(max); break;
-      case "PageUp":    e.preventDefault(); setValue(value + step * 10); break;
-      case "PageDown":  e.preventDefault(); setValue(value - step * 10); break;
-    }
-  };
-
-  const percent = \`\${max === min ? 0 : ((value - min) / (max - min)) * 100}%\`;
-  return (
-    <div className="sh-ui-slider" data-disabled={disabled || undefined}>
-      <div ref={trackRef} className="sh-ui-slider__track" onPointerDown={onPointerDown}>
-        <div className="sh-ui-slider__range" style={{ width: percent }} />
-        <div
-          role="slider" tabIndex={disabled ? -1 : 0}
-          aria-label={ariaLabel} aria-valuemin={min} aria-valuemax={max} aria-valuenow={value}
-          onKeyDown={onKeyDown}
-          className="sh-ui-slider__thumb" style={{ left: percent }}
-        />
-      </div>
-    </div>
-  );
-}`,
+ShUiSlider(
+  value: _value,
+  onChanged: (v) => setState(() => _value = v),
+)`,
             },
           ]}
         />
@@ -117,7 +46,27 @@ export function Slider({
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add slider`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add slider`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add slider
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_slider.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -129,13 +78,32 @@ export function Slider({
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Slider } from "@/components/ui/slider";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Slider } from "@/components/ui/slider";
 
 const [value, setValue] = useState(40);
 
-<Slider value={value} onValueChange={setValue} aria-label="볼륨" />`}
+<Slider value={value} onValueChange={setValue} aria-label="볼륨" />`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_slider.dart';
+
+double _value = 40;
+
+ShUiSlider(
+  value: _value,
+  onChanged: (v) => setState(() => _value = v),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -145,11 +113,29 @@ const [value, setValue] = useState(40);
         <Preview.Demo>
           <ControlledSliderDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [v, setV] = useState(40);
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [v, setV] = useState(40);
 
-<Slider value={v} onValueChange={setV} aria-label="볼륨" />`}
+<Slider value={v} onValueChange={setV} aria-label="볼륨" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSlider는 항상 제어 모드로 동작한다.
+double _v = 40;
+
+ShUiSlider(
+  value: _v,
+  onChanged: (next) => setState(() => _v = next),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -160,9 +146,29 @@ const [value, setValue] = useState(40);
             <Slider defaultValue={2.5} min={0} max={5} step={0.1} aria-label="별점" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Slider defaultValue={2.5} min={0} max={5} step={0.1} />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Slider defaultValue={2.5} min={0} max={5} step={0.1} />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `double _rating = 2.5;
+
+ShUiSlider(
+  value: _rating,
+  min: 0,
+  max: 5,
+  step: 0.1,
+  onChanged: (v) => setState(() => _rating = v),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -173,9 +179,24 @@ const [value, setValue] = useState(40);
             <Slider defaultValue={30} disabled aria-label="비활성" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Slider defaultValue={30} disabled />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Slider defaultValue={30} disabled />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiSlider(
+  value: 30,
+  enabled: false,
+)`,
+            },
+          ]}
         />
       </Preview>
 

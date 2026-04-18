@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -19,9 +19,13 @@ export default function ComboboxPage() {
         <Preview.Demo>
           <ComboboxBasicDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Combobox items={fruits}>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Combobox items={fruits}>
   <ComboboxInput placeholder="과일 검색..." />
   <ComboboxContent>
     <ComboboxList>
@@ -33,20 +37,49 @@ export default function ComboboxPage() {
     </ComboboxList>
     <ComboboxEmpty>일치하는 항목이 없습니다.</ComboboxEmpty>
   </ComboboxContent>
-</Combobox>`}
+</Combobox>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// StatefulWidget 내부
+String? _selected;
+
+ShUiCombobox<String>(
+  value: _selected,
+  onChanged: (v) => setState(() => _selected = v),
+  items: fruits
+      .map((f) => ShUiComboboxItem(value: f, label: f))
+      .toList(),
+  placeholder: '과일 검색...',
+  emptyText: '일치하는 항목이 없습니다.',
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add combobox`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add combobox` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add combobox` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/combobox/</code>로 복사하고 Base UI를 설치한다.
+        React는 registry에서 <code>components/ui/combobox/</code>로 복사하고 Base UI를 설치한다. Flutter는 <code>packages/registry/flutter/widgets/sh_ui_combobox.dart</code>를 <code>lib/widgets/</code>로 복사한다.
       </p>
-      <CodePanel language="bash" showLineNumbers={false} code={`pnpm add @base-ui-components/react`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui-components/react` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `# 추가 의존성 없음 — Material 기반` },
+        ]}
+      />
 
       <h2>Examples</h2>
 
@@ -54,9 +87,13 @@ export default function ComboboxPage() {
       <p className="muted">
         <code>value</code> + <code>onValueChange</code>로 선택 값을 외부 상태와 동기화.
       </p>
-      <CodePanel
-        language="tsx"
-        code={`const [value, setValue] = useState<string | null>(null);
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `const [value, setValue] = useState<string | null>(null);
 
 <Combobox items={fruits} value={value} onValueChange={setValue}>
   <ComboboxInput placeholder="과일 검색..." />
@@ -65,7 +102,24 @@ export default function ComboboxPage() {
       {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
     </ComboboxList>
   </ComboboxContent>
-</Combobox>`}
+</Combobox>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `String? _value;
+
+ShUiCombobox<String>(
+  value: _value,
+  onChanged: (v) => setState(() => _value = v),
+  items: fruits
+      .map((f) => ShUiComboboxItem(value: f, label: f))
+      .toList(),
+  placeholder: '과일 검색...',
+)`,
+          },
+        ]}
       />
 
       <h3>다중 선택 + 칩</h3>
@@ -76,9 +130,13 @@ export default function ComboboxPage() {
         <Preview.Demo>
           <ComboboxMultiChipsDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Combobox items={cities} multiple>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Combobox items={cities} multiple>
   <ComboboxChips>
     <ComboboxValue>
       {(values) =>
@@ -97,7 +155,16 @@ export default function ComboboxPage() {
       {(item) => <ComboboxItem key={item} value={item}>{item}</ComboboxItem>}
     </ComboboxList>
   </ComboboxContent>
-</Combobox>`}
+</Combobox>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter ShUiCombobox는 현재 단일 선택만 지원합니다.
+// 다중 선택 + 칩 UI는 아직 구현되어 있지 않습니다.`,
+            },
+          ]}
         />
       </Preview>
 

@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -22,9 +22,13 @@ export default function DialogPage() {
         <Preview.Demo>
           <BasicDialogDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Dialog>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Dialog>
   <DialogTrigger render={<Button />}>프로젝트 삭제</DialogTrigger>
   <DialogContent>
     <DialogCloseX />
@@ -37,20 +41,62 @@ export default function DialogPage() {
       <DialogClose render={<Button variant="danger" />}>삭제</DialogClose>
     </DialogFooter>
   </DialogContent>
-</Dialog>`}
+</Dialog>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter는 명령형 — ShUiDialog.show(...)로 호출
+ShUiButton(
+  onPressed: () => ShUiDialog.show(
+    context: context,
+    builder: (context) => ShUiDialogContent(
+      title: const ShUiDialogTitle('프로젝트를 삭제하시겠습니까?'),
+      description: const ShUiDialogDescription(
+        '이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구 삭제됩니다.',
+      ),
+      footer: ShUiDialogFooter(children: [
+        ShUiButton(
+          variant: ShUiButtonVariant.secondary,
+          onPressed: () => Navigator.pop(context),
+          child: const Text('취소'),
+        ),
+        ShUiButton(
+          variant: ShUiButtonVariant.danger,
+          onPressed: () => Navigator.pop(context),
+          child: const Text('삭제'),
+        ),
+      ]),
+    ),
+  ),
+  child: const Text('프로젝트 삭제'),
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add dialog`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add dialog` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add dialog` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/dialog/</code>로 복사하고 Base UI를 설치한다.
+        React는 registry에서 <code>components/ui/dialog/</code>로 복사하고 Base UI를 설치한다. Flutter는 <code>packages/registry/flutter/widgets/sh_ui_dialog.dart</code>를 <code>lib/widgets/</code>로 복사한다.
       </p>
-      <CodePanel language="bash" showLineNumbers={false} code={`pnpm add @base-ui-components/react`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui-components/react` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `# 추가 의존성 없음 — Material 기반` },
+        ]}
+      />
 
       <h2>Examples</h2>
 
@@ -59,9 +105,13 @@ export default function DialogPage() {
         <Preview.Demo>
           <FormDialogDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Dialog>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Dialog>
   <DialogTrigger render={<Button variant="secondary" />}>피드백 보내기</DialogTrigger>
   <DialogContent>
     <DialogCloseX />
@@ -73,7 +123,37 @@ export default function DialogPage() {
       <Button>보내기</Button>
     </DialogFooter>
   </DialogContent>
-</Dialog>`}
+</Dialog>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiButton(
+  variant: ShUiButtonVariant.secondary,
+  onPressed: () => ShUiDialog.show(
+    context: context,
+    builder: (context) => ShUiDialogContent(
+      title: const ShUiDialogTitle('피드백'),
+      description: const ShUiDialogDescription('개선 사항이나 버그를 알려주세요.'),
+      child: const ShUiTextarea(placeholder: '의견을 입력하세요...'),
+      footer: ShUiDialogFooter(children: [
+        ShUiButton(
+          variant: ShUiButtonVariant.secondary,
+          onPressed: () => Navigator.pop(context),
+          child: const Text('취소'),
+        ),
+        ShUiButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('보내기'),
+        ),
+      ]),
+    ),
+  ),
+  child: const Text('피드백 보내기'),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -81,9 +161,13 @@ export default function DialogPage() {
       <p className="muted">
         <code>open</code> + <code>onOpenChange</code>로 외부 상태와 동기화. 폼 제출 후 닫기 등에 사용.
       </p>
-      <CodePanel
-        language="tsx"
-        code={`const [open, setOpen] = useState(false);
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `const [open, setOpen] = useState(false);
 
 <Dialog open={open} onOpenChange={setOpen}>
   <DialogTrigger render={<Button />}>열기</DialogTrigger>
@@ -94,7 +178,33 @@ export default function DialogPage() {
       <Button variant="secondary" onClick={() => setOpen(false)}>닫기</Button>
     </DialogFooter>
   </DialogContent>
-</Dialog>`}
+</Dialog>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// Flutter는 명령형 — ShUiDialog.show가 Future를 반환하므로 직접 await.
+// 외부 상태와의 동기화는 await 이후에 setState 처리.
+Future<void> _openDialog() async {
+  await ShUiDialog.show(
+    context: context,
+    builder: (context) => ShUiDialogContent(
+      title: const ShUiDialogTitle('Controlled Dialog'),
+      description: const ShUiDialogDescription('외부에서 상태를 제어합니다.'),
+      footer: ShUiDialogFooter(children: [
+        ShUiButton(
+          variant: ShUiButtonVariant.secondary,
+          onPressed: () => Navigator.pop(context),
+          child: const Text('닫기'),
+        ),
+      ]),
+    ),
+  );
+  // 닫힘 후 실행할 로직 — setState 등
+}`,
+          },
+        ]}
       />
 
       <h2>구성 요소</h2>
