@@ -1,5 +1,7 @@
+export const dynamic = "force-static";
+
 import { FileUpload } from "@/components/ui/file-upload";
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { MultiValidateDemo } from "./_demos/multi-validate";
@@ -19,27 +21,123 @@ export default function FileUploadPage() {
             <FileUpload hint="PNG, JPG · 최대 5MB" />
           </div>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<FileUpload hint="PNG, JPG · 최대 5MB" />`} />
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<FileUpload hint="PNG, JPG · 최대 5MB" />`,
+            },
+            {
+              value: "impl",
+              label: "구현",
+              language: "tsx",
+              filename: "components/ui/file-upload/index.tsx",
+              code: `function formatBytes(bytes: number): string {
+  if (bytes < 1024) return \`\${bytes} B\`;
+  if (bytes < 1024 ** 2) return \`\${(bytes / 1024).toFixed(1)} KB\`;
+  if (bytes < 1024 ** 3) return \`\${(bytes / 1024 / 1024).toFixed(1)} MB\`;
+  return \`\${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB\`;
+}
+
+export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
+  ({ value, defaultValue, onValueChange, multiple, accept, maxSize, maxFiles,
+     disabled, onError, placeholder, hint, showFileList = true, ...rest }, ref) => {
+    const isControlled = value !== undefined;
+    const [internal, setInternal] = React.useState<File[]>(defaultValue ?? []);
+    const files = isControlled ? value! : internal;
+    const [dragging, setDragging] = React.useState(false);
+
+    const update = (next: File[]) => {
+      if (!isControlled) setInternal(next);
+      onValueChange?.(next);
+    };
+
+    // 파일당 maxSize 검증 → 실패 메시지는 onError로 위임(UI는 부모 책임)
+    const validate = (file: File): string | null =>
+      maxSize && file.size > maxSize
+        ? \`\${file.name}: 최대 \${formatBytes(maxSize)}까지 업로드 가능합니다.\`
+        : null;
+
+    const addFiles = (incoming: FileList | File[]) => {
+      const accepted: File[] = [];
+      for (const f of Array.from(incoming)) {
+        const err = validate(f);
+        if (err) { onError?.(err); continue; }
+        accepted.push(f);
+      }
+      if (accepted.length === 0) return;
+
+      // multiple=false면 마지막 파일만 유지 (네이티브 input 동작과 동일)
+      let next = multiple ? [...files, ...accepted] : [accepted[accepted.length - 1]];
+      if (maxFiles && next.length > maxFiles) {
+        onError?.(\`최대 \${maxFiles}개까지 업로드 가능합니다.\`);
+        next = next.slice(0, maxFiles);
+      }
+      update(next);
+    };
+
+    return (
+      <div className="sh-ui-file-upload">
+        <label
+          className={cx("sh-ui-file-upload__dropzone",
+            dragging && "sh-ui-file-upload__dropzone--drag",
+            disabled && "sh-ui-file-upload__dropzone--disabled")}
+          onDragOver={(e) => { e.preventDefault(); if (!disabled) setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragging(false);
+            if (!disabled) addFiles(e.dataTransfer.files);
+          }}
+        >
+          <input
+            type="file" multiple={multiple} accept={accept} disabled={disabled}
+            className="sh-ui-file-upload__input"
+            onChange={(e) => {
+              if (e.target.files) addFiles(e.target.files);
+              e.target.value = ""; // 동일 파일 재선택 가능하도록 초기화
+            }}
+          />
+          {/* 드롭존 UI · 파일 리스트 (생략) */}
+        </label>
+      </div>
+    );
+  },
+);`,
+            },
+          ]}
+        />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add file-upload`} />
+      <CodeTabs
+        items={[
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add file-upload` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add file-upload` },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/file-upload/</code>로 복사한다.
+        registry에서 아래 파일을 복사한다.
       </p>
       <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
+        <li>React: <code>components/ui/file-upload/index.tsx</code>, <code>styles.css</code></li>
+        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_file_upload.dart</code> → <code>lib/widgets/</code></li>
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { FileUpload } from "@/components/ui/file-upload";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { FileUpload } from "@/components/ui/file-upload";
 
 <FileUpload
   multiple
@@ -50,7 +148,34 @@ export default function FileUploadPage() {
   value={files}
   onValueChange={setFiles}
   onError={(msg) => toast(msg)}
-/>`}
+/>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// Flutter에서는 실제 파일 선택은 file_picker 등 외부 패키지에 위임.
+// ShUiFileUpload는 UI만 제공하고 onPickFiles 콜백에서 플러그인을 호출한다.
+import 'widgets/sh_ui_file_upload.dart';
+
+final List<ShUiFileInfo> _files = [];
+
+ShUiFileUpload(
+  files: _files,
+  multiple: true,
+  hint: '이미지만 · 최대 5MB',
+  onPickFiles: () async {
+    // final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    // if (result != null) {
+    //   setState(() => _files.addAll(result.files.map(
+    //     (f) => ShUiFileInfo(name: f.name, size: f.size),
+    //   )));
+    // }
+  },
+  onRemove: (i) => setState(() => _files.removeAt(i)),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -60,9 +185,13 @@ export default function FileUploadPage() {
         <Preview.Demo>
           <MultiValidateDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [files, setFiles] = useState<File[]>([]);
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [files, setFiles] = useState<File[]>([]);
 const [error, setError] = useState<string | null>(null);
 
 <FileUpload
@@ -74,7 +203,26 @@ const [error, setError] = useState<string | null>(null);
   value={files}
   onValueChange={(next) => { setFiles(next); setError(null); }}
   onError={(msg) => setError(msg)}
-/>`}
+/>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// ShUiFileUpload는 UI만 담당. 검증 로직은 onPickFiles 내부에서 직접 수행.
+final List<ShUiFileInfo> _files = [];
+
+ShUiFileUpload(
+  files: _files,
+  multiple: true,
+  hint: '이미지만 · 최대 4개 · 파일당 5MB',
+  onPickFiles: () async {
+    // file_picker 등으로 파일 가져온 뒤 maxSize / maxFiles 직접 체크
+  },
+  onRemove: (i) => setState(() => _files.removeAt(i)),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -85,9 +233,24 @@ const [error, setError] = useState<string | null>(null);
             <FileUpload disabled hint="현재 업로드를 받지 않습니다." />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<FileUpload disabled hint="현재 업로드를 받지 않습니다." />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<FileUpload disabled hint="현재 업로드를 받지 않습니다." />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiFileUpload(
+  enabled: false,
+  hint: '현재 업로드를 받지 않습니다.',
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -102,13 +265,32 @@ const [error, setError] = useState<string | null>(null);
             />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<FileUpload
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<FileUpload
   accept=".pdf,.docx"
   placeholder={<>계약서를 끌어서 놓으세요</>}
   hint="PDF, DOCX"
-/>`}
+/>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiFileUpload(
+  files: const [],
+  onPickFiles: () {
+    // file_picker에서 allowedExtensions: ['pdf', 'docx']
+  },
+  placeholder: const Text('계약서를 끌어서 놓으세요'),
+  hint: 'PDF, DOCX',
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -120,9 +302,13 @@ const [error, setError] = useState<string | null>(null);
         <Preview.Demo>
           <CustomListDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<FileUpload
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<FileUpload
   showFileList={false}
   multiple
   value={files}
@@ -130,7 +316,22 @@ const [error, setError] = useState<string | null>(null);
 />
 {files.length > 0 && (
   <div>선택된 파일: {files.map((f) => f.name).join(", ")}</div>
-)}`}
+)}`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiFileUpload(
+  files: _files,
+  showFileList: false,
+  multiple: true,
+  onPickFiles: () async { /* ... */ },
+),
+if (_files.isNotEmpty)
+  Text('선택된 파일: \${_files.map((f) => f.name).join(', ')}'),`,
+            },
+          ]}
         />
       </Preview>
 

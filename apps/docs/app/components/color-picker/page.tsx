@@ -1,5 +1,7 @@
+export const dynamic = "force-static";
+
 import { ColorPicker } from "@/components/ui/color-picker";
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { ControlledColorPickerDemo } from "./_demos/controlled";
@@ -18,16 +20,50 @@ export default function ColorPickerPage() {
             <ColorPicker defaultValue="#3B82F6" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<ColorPicker defaultValue="#3B82F6" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<ColorPicker defaultValue="#3B82F6" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiColorPicker(
+  defaultValue: const Color(0xFF3B82F6),
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add color-picker`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add color-picker`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add color-picker
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_color_picker.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -39,13 +75,33 @@ export default function ColorPickerPage() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { ColorPicker } from "@/components/ui/color-picker";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { ColorPicker } from "@/components/ui/color-picker";
 
 const [color, setColor] = useState("#3B82F6");
 
-<ColorPicker value={color} onChange={setColor} />`}
+<ColorPicker value={color} onChange={setColor} />`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_color_picker.dart';
+
+// 부모 StatefulWidget에서
+Color _color = const Color(0xFF3B82F6);
+
+ShUiColorPicker(
+  value: _color,
+  onChanged: (c) => setState(() => _color = c),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -55,11 +111,28 @@ const [color, setColor] = useState("#3B82F6");
         <Preview.Demo>
           <ControlledColorPickerDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [color, setColor] = useState("#3B82F6");
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [color, setColor] = useState("#3B82F6");
 
-<ColorPicker value={color} onChange={setColor} />`}
+<ColorPicker value={color} onChange={setColor} />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `Color _color = const Color(0xFF3B82F6);
+
+ShUiColorPicker(
+  value: _color,
+  onChanged: (c) => setState(() => _color = c),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -70,9 +143,23 @@ const [color, setColor] = useState("#3B82F6");
             <ColorPicker defaultValue="#10B981" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<ColorPicker defaultValue="#10B981" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<ColorPicker defaultValue="#10B981" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiColorPicker(
+  defaultValue: const Color(0xFF10B981),
+)`,
+            },
+          ]}
         />
       </Preview>
 

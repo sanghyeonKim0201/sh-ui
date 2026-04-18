@@ -1,16 +1,16 @@
 .sh-ui-input {
   display: block;
   width: 100%;
-  height: 2.5rem;
-  padding: 0 0.75rem;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
   background: var(--background);
   color: var(--foreground);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   line-height: 1;
-  transition: border-color 120ms, box-shadow 120ms;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -18,7 +18,7 @@
 @media (hover: none) and (pointer: coarse) {
   .sh-ui-input {
     height: 2.75rem;
-    font-size: 1rem;
+    font-size: var(--text-base);
   }
 }
 
@@ -37,10 +37,11 @@
 }
 
 .sh-ui-input:disabled {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
   background: var(--background-subtle);
 }
+
 
 .sh-ui-input:read-only {
   background: var(--background-subtle);
@@ -64,8 +65,8 @@
   display: block;
 }
 
-.sh-ui-input--with-prefix { padding-left: 2.5rem; }
-.sh-ui-input--with-suffix { padding-right: 2.5rem; }
+.sh-ui-input--with-prefix { padding-left: var(--space-10); }
+.sh-ui-input--with-suffix { padding-right: var(--space-10); }
 
 .sh-ui-input__affix {
   position: absolute;
@@ -77,8 +78,8 @@
   color: var(--foreground-muted);
   pointer-events: none;
 }
-.sh-ui-input__affix--prefix { left: 0.75rem; }
-.sh-ui-input__affix--suffix { right: 0.25rem; }
+.sh-ui-input__affix--prefix { left: var(--space-3); }
+.sh-ui-input__affix--suffix { right: var(--space-1); }
 
 /* suffix 내부 클릭 가능한 요소(버튼 등)는 pointer-events 복원 */
 .sh-ui-input__affix > * { pointer-events: auto; }
@@ -96,12 +97,12 @@
   border-radius: calc(var(--radius) - 2px);
   color: var(--foreground-muted);
   cursor: pointer;
-  transition: color 120ms, background-color 120ms;
+  transition: color var(--duration-fast), background-color var(--duration-fast);
   -webkit-tap-highlight-color: transparent;
 }
 .sh-ui-input__toggle:hover { color: var(--foreground); background: var(--background-muted); }
 .sh-ui-input__toggle:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 

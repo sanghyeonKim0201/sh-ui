@@ -1,5 +1,7 @@
+export const dynamic = "force-static";
+
 import { Slider } from "@/components/ui/slider";
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { ControlledSliderDemo } from "./_demos/controlled";
@@ -18,16 +20,53 @@ export default function SliderPage() {
             <Slider defaultValue={50} aria-label="기본" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Slider defaultValue={50} aria-label="기본" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Slider defaultValue={50} aria-label="기본" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `double _value = 50;
+
+ShUiSlider(
+  value: _value,
+  onChanged: (v) => setState(() => _value = v),
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add slider`} />
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add slider`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add slider
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_slider.dart → lib/widgets/`,
+          },
+        ]}
+      />
 
       <h3>Manual</h3>
       <p className="muted">
@@ -39,13 +78,32 @@ export default function SliderPage() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import { Slider } from "@/components/ui/slider";
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Slider } from "@/components/ui/slider";
 
 const [value, setValue] = useState(40);
 
-<Slider value={value} onValueChange={setValue} aria-label="볼륨" />`}
+<Slider value={value} onValueChange={setValue} aria-label="볼륨" />`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_slider.dart';
+
+double _value = 40;
+
+ShUiSlider(
+  value: _value,
+  onChanged: (v) => setState(() => _value = v),
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
@@ -55,11 +113,29 @@ const [value, setValue] = useState(40);
         <Preview.Demo>
           <ControlledSliderDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`const [v, setV] = useState(40);
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [v, setV] = useState(40);
 
-<Slider value={v} onValueChange={setV} aria-label="볼륨" />`}
+<Slider value={v} onValueChange={setV} aria-label="볼륨" />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter의 ShUiSlider는 항상 제어 모드로 동작한다.
+double _v = 40;
+
+ShUiSlider(
+  value: _v,
+  onChanged: (next) => setState(() => _v = next),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -70,9 +146,29 @@ const [value, setValue] = useState(40);
             <Slider defaultValue={2.5} min={0} max={5} step={0.1} aria-label="별점" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Slider defaultValue={2.5} min={0} max={5} step={0.1} />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Slider defaultValue={2.5} min={0} max={5} step={0.1} />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `double _rating = 2.5;
+
+ShUiSlider(
+  value: _rating,
+  min: 0,
+  max: 5,
+  step: 0.1,
+  onChanged: (v) => setState(() => _rating = v),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -83,9 +179,24 @@ const [value, setValue] = useState(40);
             <Slider defaultValue={30} disabled aria-label="비활성" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Slider defaultValue={30} disabled />`}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Slider defaultValue={30} disabled />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `const ShUiSlider(
+  value: 30,
+  enabled: false,
+)`,
+            },
+          ]}
         />
       </Preview>
 

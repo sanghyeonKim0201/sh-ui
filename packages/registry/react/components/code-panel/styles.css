@@ -6,10 +6,10 @@
   overflow: hidden;
   font-size: 0.8125rem;
   line-height: 1.6;
-  margin: 1rem 0;
+  margin: var(--space-4) 0;
 }
 @media (max-width: 640px) {
-  .sh-ui-code { font-size: 0.75rem; }
+  .sh-ui-code { font-size: var(--text-xs); }
 }
 
 /* 헤더 (filename 있을 때) */
@@ -17,11 +17,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--border);
   background: var(--background-muted);
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--foreground-muted);
 }
 .sh-ui-code__filename {
@@ -32,11 +32,11 @@
 /* 헤더 없을 때 우상단에 떠있는 복사 버튼 */
 .sh-ui-code__copy-floating {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: var(--space-2);
+  right: var(--space-2);
   z-index: 1;
   opacity: 0;
-  transition: opacity 120ms;
+  transition: opacity var(--duration-fast);
 }
 .sh-ui-code:hover .sh-ui-code__copy-floating,
 .sh-ui-code:focus-within .sh-ui-code__copy-floating {
@@ -48,15 +48,15 @@
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.25rem 0.5rem;
+  padding: var(--space-1) var(--space-2);
   background: var(--background);
   color: var(--foreground-muted);
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) - 2px);
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   line-height: 1;
   cursor: pointer;
-  transition: color 120ms, border-color 120ms, background-color 120ms;
+  transition: color var(--duration-fast), border-color var(--duration-fast), background-color var(--duration-fast);
   -webkit-tap-highlight-color: transparent;
 }
 .sh-ui-code__copy:hover {
@@ -64,11 +64,11 @@
   border-color: var(--border-strong);
 }
 .sh-ui-code__copy:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 .sh-ui-code__copy-label {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
 }
 
 /* 코드 본문 — shiki 출력(<pre class="shiki">...) */
@@ -77,7 +77,7 @@
 }
 .sh-ui-code__body pre {
   margin: 0;
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
   background: transparent !important;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: inherit;
@@ -116,7 +116,7 @@
   counter-increment: step;
   display: inline-block;
   width: 1.75rem;
-  margin-right: 1rem;
+  margin-right: var(--space-4);
   text-align: right;
   color: var(--foreground-muted);
   opacity: 0.7;

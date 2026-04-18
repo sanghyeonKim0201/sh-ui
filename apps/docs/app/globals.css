@@ -1,12 +1,7 @@
 @import "./styles/tokens.css";
-
-* { box-sizing: border-box; }
+@import "./styles/base.css";
 
 html, body {
-  margin: 0;
-  padding: 0;
-  background: var(--background);
-  color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
     "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   font-size: 16px;
@@ -49,7 +44,9 @@ h3 { font-size: 1.125rem; margin: 1.75rem 0 0.5rem; }
 hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 
 .container {
+  width: 100%;
   max-width: 760px;
+  min-width: 0;
   margin: 0 auto;
   padding: 3rem 1.5rem 6rem;
 }
@@ -57,6 +54,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   .container { padding: 1.5rem 1rem 4rem; }
   h1 { font-size: 1.75rem; }
   h2 { font-size: 1.25rem; margin-top: 2rem; }
+}
+
+/* Preview 내부 데모가 자체 sidebar 레이아웃(static 등)을 가질 때
+   그 min-content가 부모 폭을 밀어 넘기지 않도록 가둔다. */
+.sh-ui-preview__demo > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* Playground 2-col 레이아웃 */
@@ -143,4 +147,79 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 .sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-brand__name {
   display: none;
+}
+
+/* 페이지 내 목차 (On this page) */
+.sh-ui-page-toc {
+  position: fixed;
+  top: 5rem;
+  right: 1.5rem;
+  width: 14rem;
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+  padding: 0.75rem 0.5rem 0.75rem 1rem;
+  border-left: 1px solid var(--border);
+  font-size: 0.8125rem;
+  z-index: 5;
+}
+.sh-ui-page-toc__label {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+.sh-ui-page-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.sh-ui-page-toc__list > li[data-level="3"] .sh-ui-page-toc__link {
+  padding-left: 1.25rem;
+  font-size: 0.8125em;
+  color: var(--foreground-subtle, var(--foreground-muted));
+}
+
+.sh-ui-page-toc__link {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  border-radius: calc(var(--radius) - 4px);
+  color: var(--foreground-muted);
+  text-decoration: none;
+  line-height: 1.4;
+  transition: color 120ms ease, background-color 120ms ease;
+}
+.sh-ui-page-toc__link:hover {
+  color: var(--foreground);
+  background: var(--background-subtle);
+}
+.sh-ui-page-toc__link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.sh-ui-page-toc__link[data-active="true"] {
+  color: var(--foreground);
+  font-weight: 600;
+  background: var(--background-subtle);
+}
+/* 앱 사이드바(16rem) + container(최대 47.5rem) + TOC(14rem) + gap이 모두 들어가려면
+   약 80rem 이상이 필요. 그보다 좁으면 TOC는 숨긴다. */
+@media (max-width: 80rem) {
+  .sh-ui-page-toc { display: none; }
+}
+
+/* TOC가 보이는 뷰포트에서는 메인 영역 우측에 TOC 폭만큼 padding을 예약해
+   container(centered, max 47.5rem)가 TOC를 절대 침범하지 않도록 한다.
+   Preview 안의 embedded 데모에는 TOC가 없으므로 스코프를 바깥 shell로 한정. */
+@media (min-width: 80rem) {
+  .sh-ui-sidebar-wrapper:not([data-embedded]) > .sh-ui-sidebar-inset {
+    padding-right: 16rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-page-toc__link { transition: none; }
 }

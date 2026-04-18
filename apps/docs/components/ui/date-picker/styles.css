@@ -1,0 +1,267 @@
+/* ��─ Trigger (input-like) ── */
+
+.sh-ui-date-picker__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .sh-ui-date-picker__trigger {
+    height: 2.75rem;
+    font-size: var(--text-base);
+  }
+}
+
+.sh-ui-date-picker__trigger:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.sh-ui-date-picker__trigger:focus-visible {
+  outline: none;
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+.sh-ui-date-picker__trigger:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+  background: var(--background-subtle);
+}
+
+.sh-ui-date-picker__trigger[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.sh-ui-date-picker__trigger[aria-invalid="true"]:focus-visible {
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+.sh-ui-date-picker__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sh-ui-date-picker__placeholder {
+  color: var(--foreground-muted);
+}
+
+.sh-ui-date-picker__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  color: var(--foreground-muted);
+  margin-left: var(--space-2);
+}
+
+/* ── Positioner / Popup ── */
+
+.sh-ui-date-picker__positioner {
+  z-index: var(--z-popover);
+  outline: none;
+}
+
+.sh-ui-date-picker__popup {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  outline: none;
+  padding: var(--space-3);
+  transform-origin: var(--transform-origin);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.sh-ui-date-picker__popup[data-starting-style],
+.sh-ui-date-picker__popup[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+/* ── Calendar ���─ */
+
+.sh-ui-calendar {
+  width: 17.5rem;
+  user-select: none;
+}
+
+.sh-ui-calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.sh-ui-calendar__title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.sh-ui-calendar__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.sh-ui-calendar__nav:hover {
+  background: var(--background-muted);
+  color: var(--foreground);
+}
+
+.sh-ui-calendar__nav:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* ── Weekdays ── */
+
+.sh-ui-calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: var(--space-1);
+}
+
+.sh-ui-calendar__weekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--foreground-muted);
+}
+
+/* ── Grid ��─ */
+
+.sh-ui-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  outline: none;
+}
+
+.sh-ui-calendar__grid:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+/* ── Day cell ── */
+
+.sh-ui-calendar__day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0.0625rem auto;
+  padding: 0;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.sh-ui-calendar__day:hover:not(:disabled) {
+  background: var(--background-muted);
+}
+
+.sh-ui-calendar__day:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.sh-ui-calendar__day--outside {
+  color: var(--foreground-subtle, var(--foreground-muted));
+  opacity: 0.4;
+}
+
+.sh-ui-calendar__day--today {
+  font-weight: var(--weight-bold);
+  text-decoration: underline;
+  text-underline-offset: 0.125rem;
+}
+
+.sh-ui-calendar__day--selected {
+  background: var(--foreground);
+  color: var(--background);
+  font-weight: var(--weight-semibold);
+}
+
+.sh-ui-calendar__day--selected:hover:not(:disabled) {
+  background: var(--foreground);
+  opacity: 0.9;
+}
+
+/* ── Range ── */
+
+.sh-ui-calendar__day--in-range {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  border-radius: 0;
+}
+
+.sh-ui-calendar__day--in-range:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--foreground) 18%, transparent);
+}
+
+.sh-ui-calendar__day--range-start {
+  background: var(--foreground);
+  color: var(--background);
+  font-weight: var(--weight-semibold);
+  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px);
+}
+
+.sh-ui-calendar__day--range-end {
+  background: var(--foreground);
+  color: var(--background);
+  font-weight: var(--weight-semibold);
+  border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0;
+}
+
+.sh-ui-calendar__day--range-start.sh-ui-calendar__day--range-end {
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.sh-ui-calendar__day--range-start:hover:not(:disabled),
+.sh-ui-calendar__day--range-end:hover:not(:disabled) {
+  background: var(--foreground);
+  opacity: 0.9;
+}
+
+/* ── Hint (range picker) ── */
+
+.sh-ui-date-picker__hint {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--foreground-muted);
+  text-align: center;
+}
+
+.sh-ui-calendar__day:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

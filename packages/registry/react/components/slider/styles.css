@@ -1,13 +1,13 @@
 .sh-ui-slider {
   position: relative;
   width: 100%;
-  padding: 0.5rem 0;
+  padding: var(--space-2) 0;
   user-select: none;
   -webkit-user-select: none;
 }
 
 .sh-ui-slider--disabled {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   pointer-events: none;
 }
 
@@ -50,7 +50,7 @@
   transform: translateY(-50%) scale(1.1);
 }
 .sh-ui-slider__thumb:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 

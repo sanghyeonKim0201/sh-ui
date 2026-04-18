@@ -1,0 +1,97 @@
+.sh-ui-carousel {
+  position: relative;
+  width: 100%;
+}
+
+.sh-ui-carousel__viewport {
+  overflow: hidden;
+}
+
+.sh-ui-carousel[data-orientation="vertical"] .sh-ui-carousel__viewport {
+  height: 20rem;
+}
+
+.sh-ui-carousel__content {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.sh-ui-carousel__content[data-orientation="vertical"] {
+  flex-direction: column;
+  height: 100%;
+}
+
+.sh-ui-carousel__item {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+.sh-ui-carousel__item[data-orientation="vertical"] {
+  flex-basis: auto;
+}
+
+/* 네비게이션 버튼 — 기본은 플로팅 원형. 원하면 className으로 덮어쓰기. */
+.sh-ui-carousel__nav {
+  position: absolute;
+  top: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transform: translateY(-50%);
+  z-index: 1;
+  transition:
+    opacity 150ms ease,
+    background 150ms ease;
+}
+
+.sh-ui-carousel__nav:hover:not(:disabled) {
+  background: var(--background-muted);
+}
+
+.sh-ui-carousel__nav:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.sh-ui-carousel__nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sh-ui-carousel__nav--prev {
+  left: -1rem;
+}
+
+.sh-ui-carousel__nav--next {
+  right: -1rem;
+}
+
+.sh-ui-carousel__nav[data-orientation="vertical"] {
+  top: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sh-ui-carousel__nav--prev[data-orientation="vertical"] {
+  top: -1rem;
+  left: 50%;
+}
+
+.sh-ui-carousel__nav--next[data-orientation="vertical"] {
+  bottom: -1rem;
+  top: auto;
+  left: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-carousel__nav {
+    transition: none;
+  }
+}

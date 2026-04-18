@@ -41,7 +41,7 @@
   background: var(--sidebar-bg);
   color: var(--sidebar-fg);
   border-right: 1px solid var(--sidebar-border);
-  transition: width 200ms ease;
+  transition: width var(--duration-slow) ease;
   position: relative;
   z-index: 5;
 }
@@ -80,13 +80,13 @@
 }
 .sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__menu-button {
   justify-content: center;
-  padding: 0.5rem;
+  padding: var(--space-2);
 }
 
 /* variant: floating */
 .sh-ui-sidebar[data-variant="floating"] {
   border: none;
-  padding: 0.5rem;
+  padding: var(--space-2);
   background: transparent;
 }
 .sh-ui-sidebar[data-variant="floating"] .sh-ui-sidebar__inner {
@@ -94,7 +94,7 @@
   border-radius: var(--radius);
   background: var(--sidebar-bg);
   height: calc(100svh - 1rem);
-  top: 0.5rem;
+  top: var(--space-2);
 }
 
 /* variant: inset (메인 영역이 카드 형태) */
@@ -116,8 +116,8 @@
   top: 0;
   bottom: 0;
   width: var(--sidebar-width-mobile);
-  z-index: 50;
-  transition: transform 200ms ease;
+  z-index: var(--z-overlay);
+  transition: transform var(--duration-slow) ease;
   border-right: 1px solid var(--sidebar-border);
 }
 .sh-ui-sidebar--mobile[data-side="left"] {
@@ -137,7 +137,10 @@
 .sh-ui-sidebar__backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.25);
+  /* unprefixed 속성만 사용 — 최신 브라우저(Chrome/Firefox/Safari 18+)는 prefix 불필요.
+     일부 CSS 트랜스포머가 prefix 중복 선언을 드롭하는 이슈를 피하기 위해 단일 선언 유지. */
+  backdrop-filter: blur(8px);
   z-index: 40;
 }
 
@@ -153,15 +156,99 @@
   color: var(--foreground-muted);
   border-radius: calc(var(--radius) - 2px);
   cursor: pointer;
-  transition: background-color 120ms, color 120ms, border-color 120ms;
+  transition: background-color var(--duration-fast), color var(--duration-fast), border-color var(--duration-fast);
 }
 .sh-ui-sidebar__trigger:hover {
   background: var(--sidebar-accent);
   color: var(--foreground);
 }
 .sh-ui-sidebar__trigger:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
+}
+
+/* ───────────── Panel (보조 확장 패널) ─────────────
+ * 레일(사이드바)과 Inset 사이에 위치. 활성 시 너비를 차지해 Inset을 밀어냄.
+ * 모바일에서는 드로어 형태로 오버레이. */
+.sh-ui-sidebar__panel {
+  --sidebar-panel-width: 20rem;
+
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-panel-width);
+  flex-shrink: 0;
+  background: var(--background);
+  border-right: 1px solid var(--sidebar-border);
+  position: relative;
+  z-index: 4;
+  overflow: hidden;
+  animation: sh-ui-sidebar-panel-in 180ms ease;
+}
+
+.sh-ui-sidebar__panel[data-state="closed"] {
+  display: none;
+}
+
+@keyframes sh-ui-sidebar-panel-in {
+  from { transform: translateX(-8px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.sh-ui-sidebar__panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.875rem var(--space-4);
+  border-bottom: 1px solid var(--sidebar-border);
+  font-weight: var(--weight-semibold);
+  font-size: 0.9375rem;
+}
+
+.sh-ui-sidebar__panel-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.sh-ui-sidebar__panel-close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground-muted);
+  font-size: var(--text-lg);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+.sh-ui-sidebar__panel-close:hover {
+  background: var(--sidebar-accent);
+  color: var(--foreground);
+}
+
+/* 모바일: 패널은 드로어 위에 오버레이 */
+@media (max-width: 47.9375rem) {
+  .sh-ui-sidebar__panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(var(--sidebar-panel-width), 90vw);
+    z-index: var(--z-modal);
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+}
+.sh-ui-sidebar-wrapper[data-embedded] .sh-ui-sidebar__panel {
+  position: relative;
 }
 
 /* ───────────── Inset (main) ───────────── */
@@ -181,8 +268,8 @@
 .sh-ui-sidebar__footer {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.5rem;
+  gap: var(--space-2);
+  padding: var(--space-2);
   overflow: hidden;
 }
 
@@ -196,7 +283,7 @@
 }
 
 .sh-ui-sidebar__separator {
-  margin: 0.25rem 0.5rem;
+  margin: var(--space-1) var(--space-2);
   border: none;
   border-top: 1px solid var(--sidebar-border);
   width: auto;
@@ -206,7 +293,7 @@
 .sh-ui-sidebar__group {
   display: flex;
   flex-direction: column;
-  padding: 0.5rem;
+  padding: var(--space-2);
   min-width: 0;
 }
 
@@ -214,16 +301,16 @@
   display: flex;
   align-items: center;
   height: 2rem;
-  padding: 0 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
   color: var(--foreground-muted);
   border-radius: calc(var(--radius) - 2px);
 }
 
 .sh-ui-sidebar__group-content {
   width: 100%;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 /* ───────────── Menu ───────────── */
@@ -246,16 +333,16 @@
   display: flex;
   width: 100%;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
+  gap: var(--space-2);
+  padding: var(--space-2);
   text-align: left;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--sidebar-fg);
   background: transparent;
   border: none;
   border-radius: calc(var(--radius) - 2px);
   cursor: pointer;
-  transition: background-color 120ms, color 120ms;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
   text-decoration: none;
   font-family: inherit;
   line-height: 1.4;
@@ -277,13 +364,13 @@
   color: var(--sidebar-accent-fg);
 }
 .sh-ui-sidebar__menu-button:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: -2px;
 }
 .sh-ui-sidebar__menu-button[data-active] {
   background: var(--primary);
   color: var(--primary-foreground);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 .sh-ui-sidebar__menu-button[data-active]:hover {
   background: var(--primary-hover);
@@ -291,20 +378,20 @@
 }
 .sh-ui-sidebar__menu-button:disabled,
 .sh-ui-sidebar__menu-button[aria-disabled="true"] {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   pointer-events: none;
 }
 
 .sh-ui-sidebar__menu-button--sm {
   height: 1.75rem;
-  padding: 0.25rem 0.5rem;
+  padding: var(--space-1) var(--space-2);
   font-size: 0.8125rem;
 }
 .sh-ui-sidebar__menu-button--md {
   /* default */
 }
 .sh-ui-sidebar__menu-button--lg {
-  padding: 0.75rem;
+  padding: var(--space-3);
   font-size: 0.9375rem;
 }
 
@@ -328,14 +415,14 @@
 .sh-ui-sidebar__menu-sub-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   height: 1.75rem;
-  padding: 0 0.5rem;
+  padding: 0 var(--space-2);
   border-radius: calc(var(--radius) - 2px);
   font-size: 0.8125rem;
   color: var(--sidebar-fg);
   text-decoration: none;
-  transition: background-color 120ms, color 120ms;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
   min-width: 0;
 }
 .sh-ui-sidebar__menu-sub-button > span {
@@ -352,14 +439,14 @@
 .sh-ui-sidebar__menu-sub-button[data-active] {
   background: var(--primary);
   color: var(--primary-foreground);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 .sh-ui-sidebar__menu-sub-button[data-active]:hover {
   background: var(--primary-hover);
   color: var(--primary-foreground);
 }
 .sh-ui-sidebar__menu-sub-button--sm {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
 }
 
 /* ───────────── Collapsible ───────────── */
@@ -377,6 +464,20 @@
 
 .sh-ui-sidebar__collapsible-content[data-state="closed"] {
   display: none;
+}
+
+/* ───── Flyout (collapsed=icon 상태의 서브메뉴) ─────
+ * 실제 포지셔닝·보더·쉐도우는 Popover가 담당. 여기서는 내부 서브메뉴만 정돈. */
+.sh-ui-sidebar__collapsible-flyout .sh-ui-sidebar__menu-sub {
+  display: flex !important;  /* collapsed 상태 전역 숨김 규칙 override */
+  flex-direction: column;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  border-left: 0;
+}
+.sh-ui-sidebar__collapsible-flyout .sh-ui-sidebar__menu-sub-button {
+  padding-left: 0.625rem;
 }
 
 /* collapsed=icon 상태에서는 chevron 숨기고 content도 숨김 */

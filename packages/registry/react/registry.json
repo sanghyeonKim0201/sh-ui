@@ -70,6 +70,15 @@
         { "src": "components/sidebar/styles.css", "dest": "{components}/sidebar/styles.css" }
       ],
       "dependencies": ["lucide-react"],
+      "registryDependencies": ["popover"]
+    },
+    "base": {
+      "name": "base",
+      "type": "utility",
+      "files": [
+        { "src": "components/base/base.css", "dest": "{styles}/base.css" }
+      ],
+      "dependencies": [],
       "registryDependencies": []
     },
     "breakpoints": {
@@ -135,6 +144,16 @@
       "dependencies": [],
       "registryDependencies": []
     },
+    "label": {
+      "name": "label",
+      "type": "component",
+      "files": [
+        { "src": "components/label/index.tsx", "dest": "{components}/label/index.tsx" },
+        { "src": "components/label/styles.css", "dest": "{components}/label/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "color-picker": {
       "name": "color-picker",
       "type": "component",
@@ -153,6 +172,160 @@
         { "src": "components/slider/styles.css", "dest": "{components}/slider/styles.css" }
       ],
       "dependencies": [],
+      "registryDependencies": []
+    },
+    "tabs": {
+      "name": "tabs",
+      "type": "component",
+      "files": [
+        { "src": "components/tabs/index.tsx", "dest": "{components}/tabs/index.tsx" },
+        { "src": "components/tabs/styles.css", "dest": "{components}/tabs/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "combobox": {
+      "name": "combobox",
+      "type": "component",
+      "files": [
+        { "src": "components/combobox/index.tsx", "dest": "{components}/combobox/index.tsx" },
+        { "src": "components/combobox/styles.css", "dest": "{components}/combobox/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "popover": {
+      "name": "popover",
+      "type": "component",
+      "files": [
+        { "src": "components/popover/index.tsx", "dest": "{components}/popover/index.tsx" },
+        { "src": "components/popover/styles.css", "dest": "{components}/popover/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "dialog": {
+      "name": "dialog",
+      "type": "component",
+      "files": [
+        { "src": "components/dialog/index.tsx", "dest": "{components}/dialog/index.tsx" },
+        { "src": "components/dialog/styles.css", "dest": "{components}/dialog/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "theme": {
+      "name": "theme",
+      "type": "component",
+      "files": [
+        { "src": "components/theme/index.tsx", "dest": "{components}/theme/index.tsx" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "checkbox": {
+      "name": "checkbox",
+      "type": "component",
+      "files": [
+        { "src": "components/checkbox/index.tsx", "dest": "{components}/checkbox/index.tsx" },
+        { "src": "components/checkbox/styles.css", "dest": "{components}/checkbox/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "radio": {
+      "name": "radio",
+      "type": "component",
+      "files": [
+        { "src": "components/radio/index.tsx", "dest": "{components}/radio/index.tsx" },
+        { "src": "components/radio/styles.css", "dest": "{components}/radio/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "switch": {
+      "name": "switch",
+      "type": "component",
+      "files": [
+        { "src": "components/switch/index.tsx", "dest": "{components}/switch/index.tsx" },
+        { "src": "components/switch/styles.css", "dest": "{components}/switch/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "toggle": {
+      "name": "toggle",
+      "type": "component",
+      "files": [
+        { "src": "components/toggle/index.tsx", "dest": "{components}/toggle/index.tsx" },
+        { "src": "components/toggle/styles.css", "dest": "{components}/toggle/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "textarea": {
+      "name": "textarea",
+      "type": "component",
+      "files": [
+        { "src": "components/textarea/index.tsx", "dest": "{components}/textarea/index.tsx" },
+        { "src": "components/textarea/styles.css", "dest": "{components}/textarea/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "toast": {
+      "name": "toast",
+      "type": "component",
+      "files": [
+        { "src": "components/toast/index.tsx", "dest": "{components}/toast/index.tsx" },
+        { "src": "components/toast/styles.css", "dest": "{components}/toast/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "date-picker": {
+      "name": "date-picker",
+      "type": "component",
+      "files": [
+        { "src": "components/date-picker/index.tsx", "dest": "{components}/date-picker/index.tsx" },
+        { "src": "components/date-picker/styles.css", "dest": "{components}/date-picker/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "skeleton": {
+      "name": "skeleton",
+      "type": "component",
+      "files": [
+        { "src": "components/skeleton/index.tsx", "dest": "{components}/skeleton/index.tsx" },
+        { "src": "components/skeleton/styles.css", "dest": "{components}/skeleton/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "accordion": {
+      "name": "accordion",
+      "type": "component",
+      "files": [
+        { "src": "components/accordion/index.tsx", "dest": "{components}/accordion/index.tsx" },
+        { "src": "components/accordion/styles.css", "dest": "{components}/accordion/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "carousel": {
+      "name": "carousel",
+      "type": "component",
+      "files": [
+        { "src": "components/carousel/index.tsx", "dest": "{components}/carousel/index.tsx" },
+        { "src": "components/carousel/styles.css", "dest": "{components}/carousel/styles.css" }
+      ],
+      "dependencies": [
+        "embla-carousel",
+        "embla-carousel-react",
+        "embla-carousel-autoplay",
+        "embla-carousel-auto-scroll"
+      ],
       "registryDependencies": []
     }
   }
