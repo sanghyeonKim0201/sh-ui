@@ -8,7 +8,11 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,css}\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,css}\"",
+    "showcase": "open -a Simulator && cd apps/showcase && flutter run",
+    "showcase:ios": "open -a Simulator && cd apps/showcase && flutter run -d iphone",
+    "showcase:web": "cd apps/showcase && flutter run -d chrome",
+    "showcase:mac": "cd apps/showcase && flutter run -d macos"
   },
   "devDependencies": {
     "prettier": "^3.8.3",
