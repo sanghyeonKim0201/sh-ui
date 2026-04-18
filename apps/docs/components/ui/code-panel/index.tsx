@@ -1,4 +1,4 @@
-import { codeToHtml } from "shiki";
+import { ensureLanguage } from "./highlighter";
 import { CodePanelCopyButton } from "./copy";
 import "./styles.css";
 
@@ -25,10 +25,11 @@ export async function CodePanel({
   className,
 }: CodePanelProps) {
   const trimmed = code.replace(/\n$/, "");
-  const html = await codeToHtml(trimmed, {
+  const highlighter = await ensureLanguage(language);
+  const html = highlighter.codeToHtml(trimmed, {
     lang: language,
     themes: { light: "github-light", dark: "github-dark" },
-    defaultColor: false, // CSS 변수만 생성 → .dark 클래스로 토글
+    defaultColor: false,
   });
 
   const classes = ["sh-ui-code", className].filter(Boolean).join(" ");

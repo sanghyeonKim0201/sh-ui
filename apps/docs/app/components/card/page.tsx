@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import {
   Card,
   CardHeader,
@@ -9,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 
@@ -38,9 +41,13 @@ export default function CardPage() {
             </Card>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Card>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<Card>
   <CardHeader>
     <CardTitle>알림 설정</CardTitle>
     <CardDescription>...</CardDescription>
@@ -50,7 +57,27 @@ export default function CardPage() {
     <Button variant="secondary">나중에</Button>
     <Button>설정하기</Button>
   </CardFooter>
-</Card>`}
+</Card>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `<Card>
+  <CardHeader>
+    <CardTitle>알림 설정</CardTitle>
+    <CardDescription>이메일과 푸시 알림을 받을지 선택하세요.</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>현재 모든 알림이 꺼져 있습니다. 언제든 다시 켤 수 있습니다.</p>
+  </CardContent>
+  <CardFooter>
+    <Button variant="secondary">나중에</Button>
+    <Button>설정하기</Button>
+  </CardFooter>
+</Card>`,
+            },
+          ]}
         />
       </Preview>
 

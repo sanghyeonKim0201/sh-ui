@@ -42,6 +42,7 @@
   background: var(--background-subtle);
 }
 
+
 .sh-ui-input:read-only {
   background: var(--background-subtle);
 }

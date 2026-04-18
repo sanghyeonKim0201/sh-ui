@@ -1,0 +1,54 @@
+.sh-ui-textarea {
+  display: block;
+  width: 100%;
+  min-height: 5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 120ms, box-shadow 120ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .sh-ui-textarea {
+    font-size: 1rem;
+  }
+}
+
+.sh-ui-textarea::placeholder {
+  color: var(--foreground-muted);
+}
+
+.sh-ui-textarea:hover:not(:disabled):not(:focus) {
+  border-color: var(--border-strong);
+}
+
+.sh-ui-textarea:focus {
+  outline: none;
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+.sh-ui-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--background-subtle);
+}
+
+.sh-ui-textarea:read-only {
+  background: var(--background-subtle);
+}
+
+/* 에러 상태 — aria-invalid="true" 기반 */
+.sh-ui-textarea[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.sh-ui-textarea[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 1px var(--danger);
+}

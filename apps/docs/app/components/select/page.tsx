@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import {
   MultiSelect,
   MultiSelectValue,
@@ -11,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -166,11 +169,43 @@ export default function SelectPage() {
             </Select>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<SelectItem value="team" disabled>Team (준비중)</SelectItem>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<SelectItem value="team" disabled>Team (준비중)</SelectItem>
 
-<Select disabled>...</Select>`}
+<Select disabled>...</Select>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `{/* 항목 단위 비활성 */}
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="플랜 선택" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="free">Free</SelectItem>
+    <SelectItem value="pro">Pro</SelectItem>
+    <SelectItem value="team" disabled>Team (준비중)</SelectItem>
+  </SelectContent>
+</Select>
+
+{/* 전체 비활성 */}
+<Select disabled>
+  <SelectTrigger>
+    <SelectValue placeholder="선택 불가" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="a">A</SelectItem>
+  </SelectContent>
+</Select>`,
+            },
+          ]}
         />
       </Preview>
 
@@ -209,23 +244,87 @@ export default function SelectPage() {
         <Preview.Demo>
           <ChipMultiSelectDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<MultiSelect defaultValue={["apple", "grapes"]}>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<MultiSelect defaultValue={["apple", "grapes"]}>
   <SelectTrigger>
     <MultiSelectValue
       placeholder="과일 선택"
-      render={(arr) => (
+      render={(arr, { remove }) => (
         <span className="sh-ui-select__chips">
           {arr.map((v) => (
-            <span key={v} className="sh-ui-select__chip">{v}</span>
+            <span key={v} className="sh-ui-select__chip">
+              {v}
+              <span
+                role="button"
+                tabIndex={0}
+                aria-label={\`\${v} 제거\`}
+                className="sh-ui-select__chip-remove"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); remove(v); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    remove(v);
+                  }
+                }}
+              >×</span>
+            </span>
           ))}
         </span>
       )}
     />
   </SelectTrigger>
   <SelectContent>...</SelectContent>
-</MultiSelect>`}
+</MultiSelect>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `<MultiSelect defaultValue={["apple", "grapes"]}>
+  <SelectTrigger>
+    <MultiSelectValue
+      placeholder="과일 선택"
+      render={(arr, { remove }) => (
+        <span className="sh-ui-select__chips">
+          {arr.map((v) => (
+            <span key={v} className="sh-ui-select__chip">
+              {v}
+              <span
+                role="button"
+                tabIndex={0}
+                aria-label={\`\${v} 제거\`}
+                className="sh-ui-select__chip-remove"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); remove(v); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    remove(v);
+                  }
+                }}
+              >×</span>
+            </span>
+          ))}
+        </span>
+      )}
+    />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="apple">Apple</SelectItem>
+    <SelectItem value="banana">Banana</SelectItem>
+    <SelectItem value="grapes">Grapes</SelectItem>
+  </SelectContent>
+</MultiSelect>`,
+            },
+          ]}
         />
       </Preview>
 

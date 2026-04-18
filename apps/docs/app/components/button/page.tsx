@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";

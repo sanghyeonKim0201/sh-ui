@@ -14,10 +14,33 @@ export function ChipMultiSelectDemo() {
       <SelectTrigger style={{ width: "24rem" }}>
         <MultiSelectValue
           placeholder="과일 선택"
-          render={(arr) => (
+          render={(arr, { remove }) => (
             <span className="sh-ui-select__chips">
               {arr.map((v) => (
-                <span key={v} className="sh-ui-select__chip">{v}</span>
+                <span key={v} className="sh-ui-select__chip">
+                  {v}
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${v} 제거`}
+                    className="sh-ui-select__chip-remove"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      remove(v);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        remove(v);
+                      }
+                    }}
+                  >
+                    ×
+                  </span>
+                </span>
               ))}
             </span>
           )}

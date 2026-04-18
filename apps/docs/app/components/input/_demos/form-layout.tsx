@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export function FormLayoutDemo() {
@@ -15,14 +16,14 @@ export function FormLayoutDemo() {
       }}
       onSubmit={(e) => e.preventDefault()}
     >
-      <label style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-        <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>이름</span>
-        <Input placeholder="홍길동" />
-      </label>
-      <label style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-        <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>이메일</span>
-        <Input type="email" placeholder="you@example.com" />
-      </label>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+        <Label htmlFor="form-name" isRequired>이름</Label>
+        <Input id="form-name" placeholder="홍길동" required />
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+        <Label htmlFor="form-email" isRequired>이메일</Label>
+        <Input id="form-email" type="email" placeholder="you@example.com" required />
+      </div>
       <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
         <Button type="submit">저장</Button>
         <Button type="button" variant="secondary">취소</Button>

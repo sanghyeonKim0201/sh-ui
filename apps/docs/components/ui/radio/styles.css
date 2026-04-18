@@ -1,0 +1,73 @@
+/* ───────────── Radio ───────────── */
+
+.sh-ui-radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--background);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 120ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sh-ui-radio:hover:not([data-disabled]) {
+  border-color: var(--foreground);
+}
+
+.sh-ui-radio:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.sh-ui-radio[data-checked] {
+  border-color: var(--primary);
+}
+
+.sh-ui-radio[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 모바일/터치: 최소 탭 영역 */
+@media (hover: none) and (pointer: coarse) {
+  .sh-ui-radio {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* ───────────── Indicator (내부 원) ───────────── */
+
+.sh-ui-radio__indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--primary);
+  transform: scale(0);
+  transition: transform 120ms ease-out;
+}
+
+.sh-ui-radio[data-checked] .sh-ui-radio__indicator {
+  transform: scale(1);
+}
+
+/* ───────────── RadioGroup ───────────── */
+
+.sh-ui-radio-group {
+  display: flex;
+  gap: 0.625rem;
+}
+
+.sh-ui-radio-group[data-orientation="vertical"] {
+  flex-direction: column;
+}
+
+.sh-ui-radio-group[data-orientation="horizontal"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+}

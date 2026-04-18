@@ -1,0 +1,115 @@
+/* ── Backdrop ── */
+
+.sh-ui-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  transition: opacity 200ms ease;
+}
+
+.sh-ui-dialog__backdrop[data-starting-style],
+.sh-ui-dialog__backdrop[data-ending-style] {
+  opacity: 0;
+}
+
+/* ── Content (Popup) ── */
+
+.sh-ui-dialog__content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 2rem);
+  max-width: 28rem;
+  max-height: calc(100dvh - 4rem);
+  padding: 1.5rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  outline: none;
+  overflow-y: auto;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+.sh-ui-dialog__content[data-starting-style] {
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 0.5rem)) scale(0.97);
+}
+
+.sh-ui-dialog__content[data-ending-style] {
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 0.25rem)) scale(0.98);
+}
+
+.sh-ui-dialog__content:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* ── Title ── */
+
+.sh-ui-dialog__title {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+/* ── Description ── */
+
+.sh-ui-dialog__description {
+  margin: 0 0 1.25rem;
+  color: var(--foreground-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ── Footer (액션 버튼 영역) ── */
+
+.sh-ui-dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+/* ── Close (× 버튼) ── */
+
+.sh-ui-dialog__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground-muted);
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 120ms, color 120ms;
+}
+.sh-ui-dialog__close:hover {
+  background: var(--background-muted);
+  color: var(--foreground);
+}
+.sh-ui-dialog__close:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}

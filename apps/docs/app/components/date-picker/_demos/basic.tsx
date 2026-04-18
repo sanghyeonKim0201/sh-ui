@@ -1,0 +1,95 @@
+"use client";
+
+import { useState } from "react";
+import { DatePicker, DateRangePicker } from "@/components/ui/date-picker";
+import type { DateRange } from "@/components/ui/date-picker";
+import { Label } from "@/components/ui/label";
+
+export function BasicDemo() {
+  return (
+    <div style={{ width: "100%", maxWidth: 280 }}>
+      <DatePicker placeholder="날짜를 선택하세요" />
+    </div>
+  );
+}
+
+export function ControlledDemo() {
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  return (
+    <div style={{ width: "100%", maxWidth: 280, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <DatePicker value={date} onValueChange={setDate} />
+      <p style={{ fontSize: "0.8125rem", color: "var(--foreground-muted)" }}>
+        선택: {date ? date.toLocaleDateString("ko-KR") : "없음"}
+      </p>
+    </div>
+  );
+}
+
+export function MinMaxDemo() {
+  const today = new Date();
+  const min = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+  const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
+
+  return (
+    <div style={{ width: "100%", maxWidth: 280, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      <Label>예약 날짜</Label>
+      <DatePicker min={min} max={max} placeholder="오늘 기준 -7일 ~ +30일" />
+    </div>
+  );
+}
+
+export function StatesDemo() {
+  return (
+    <div style={{ width: "100%", maxWidth: 280, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <DatePicker defaultValue={new Date()} />
+      <DatePicker placeholder="disabled" disabled />
+      <DatePicker defaultValue={new Date()} readOnly />
+      <DatePicker placeholder="invalid" aria-invalid />
+    </div>
+  );
+}
+
+export function WithLabelDemo() {
+  return (
+    <div style={{ width: "100%", maxWidth: 280, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      <Label htmlFor="birth" isRequired>생년월일</Label>
+      <DatePicker placeholder="YYYY-MM-DD" />
+    </div>
+  );
+}
+
+export function RangeBasicDemo() {
+  return (
+    <div style={{ width: "100%", maxWidth: 320 }}>
+      <DateRangePicker placeholder="시작일 ~ 종료일" />
+    </div>
+  );
+}
+
+export function RangeControlledDemo() {
+  const [range, setRange] = useState<DateRange | undefined>();
+
+  return (
+    <div style={{ width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <DateRangePicker value={range} onValueChange={setRange} />
+      <p style={{ fontSize: "0.8125rem", color: "var(--foreground-muted)" }}>
+        {range
+          ? `${range.from.toLocaleDateString("ko-KR")} ~ ${range.to.toLocaleDateString("ko-KR")}`
+          : "미선택"}
+      </p>
+    </div>
+  );
+}
+
+export function RangeWithLabelDemo() {
+  return (
+    <div style={{ width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+      <Label isRequired>투숙 기간</Label>
+      <DateRangePicker
+        min={new Date()}
+        placeholder="체크인 ~ 체크아웃"
+      />
+    </div>
+  );
+}

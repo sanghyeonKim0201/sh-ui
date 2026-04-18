@@ -1,0 +1,90 @@
+.sh-ui-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--foreground);
+  cursor: pointer;
+  user-select: none;
+}
+
+.sh-ui-label:not(:has(.sh-ui-label__title, .sh-ui-label__subtitle, .sh-ui-label__description, .sh-ui-label__caption)) {
+  display: block;
+}
+
+/* ───── 텍스트 계층 ───── */
+
+/* Title — 주 라벨 텍스트 (기본). Label에 서브컴포넌트 없이 텍스트만 넣으면 이 스타일. */
+.sh-ui-label__title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+/* Subtitle — 부제. 타이틀 옆이나 아래에 보조 강조. */
+.sh-ui-label__subtitle {
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: var(--foreground);
+}
+
+/* Description — 설명. 입력 필드 가이드. */
+.sh-ui-label__description {
+  margin: 0;
+  font-weight: 400;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--foreground-muted);
+}
+
+/* Caption — 흐린 설명. 가장 덜 중요한 보조 텍스트. */
+.sh-ui-label__caption {
+  margin: 0;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--foreground-subtle, var(--foreground-muted));
+  opacity: 0.75;
+}
+
+/* ───── 필수 표시 (* 마크) ─────
+ * 1) isRequired prop (data-required) — 명시적 수동 지정
+ * 2) 인접 폼 컴포넌트에 required 속성 — CSS :has()로 자동 감지
+ * ::after는 Label의 첫 번째 인라인 자식(타이틀) 뒤에 표시. */
+
+/* LabelTitle sub-component가 있는 경우 */
+.sh-ui-label[data-required] > .sh-ui-label__title::after,
+.sh-ui-label:has(+ .sh-ui-input:required) > .sh-ui-label__title::after,
+.sh-ui-label:has(+ .sh-ui-input-wrap .sh-ui-input:required) > .sh-ui-label__title::after,
+.sh-ui-label:has(+ .sh-ui-textarea:required) > .sh-ui-label__title::after,
+.sh-ui-label:has(+ .sh-ui-combobox__input:required) > .sh-ui-label__title::after {
+  content: " *";
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Title 없이 Label에 직접 텍스트를 넣은 경우 */
+.sh-ui-label[data-required]:not(:has(.sh-ui-label__title))::after,
+.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-input:required)::after,
+.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-input-wrap .sh-ui-input:required)::after,
+.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-textarea:required)::after,
+.sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-combobox__input:required)::after {
+  content: " *";
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* ───── disabled 자동 감지 ─────
+ * 인접 폼 컴포넌트가 disabled이면 Label도 흐리게. */
+.sh-ui-label:has(+ .sh-ui-input:disabled),
+.sh-ui-label:has(+ .sh-ui-input-wrap .sh-ui-input:disabled),
+.sh-ui-label:has(+ .sh-ui-textarea:disabled),
+.sh-ui-label:has(+ .sh-ui-select__trigger:disabled),
+.sh-ui-label:has(+ .sh-ui-combobox__input:disabled),
+.sh-ui-label:has(+ .sh-ui-date-picker__trigger:disabled),
+.sh-ui-label:has(+ .sh-ui-file-upload .sh-ui-file-upload__dropzone--disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

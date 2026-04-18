@@ -1,0 +1,102 @@
+/* sh-ui / base — 모바일 안전 기본값 + 공통 리셋.
+ *
+ * 사용: 글로벌 CSS에서 tokens.css 바로 뒤에 import.
+ *   @import "./styles/tokens.css";
+ *   @import "./styles/base.css";
+ *
+ * 목적:
+ *  1. box-sizing, margin 제거 등 일반적 리셋
+ *  2. 모바일에서 자식 min-content가 뷰포트를 밀어 가로 스크롤이 생기는 사고 방지
+ *  3. 미디어 요소가 부모를 넘치지 않도록 기본 제한
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  /* 참고: `overflow-x: hidden`을 body에 걸면 position:sticky 자식이
+     viewport 대신 body를 스크롤 조상으로 인식해 고장난다.
+     가로 오버플로는 아래 `main/section/article { min-width: 0 }` 규칙이 실제 원인을 차단. */
+}
+
+body {
+  min-height: 100svh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* 미디어: 부모 폭을 절대 넘지 않도록. height: auto로 비율 유지. */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* flex/grid 자식의 min-width: auto가 부모를 확장시키는 사고 방지.
+   (의도적으로 콘텐츠 크기만큼 커져야 하는 경우 해당 요소에서 min-width: auto로 복원) */
+main,
+section,
+article,
+aside,
+header,
+footer,
+nav {
+  min-width: 0;
+}
+
+/* 텍스트 요소 기본 래핑 — 긴 URL/토큰이 부모를 밀지 않게. */
+p,
+li,
+dd,
+dt {
+  overflow-wrap: anywhere;
+}
+
+/* 공용 컨테이너: 본문 래퍼. 모바일/데스크탑 모두에서 안전한 기본 폭 관리. */
+.sh-ui-container {
+  width: 100%;
+  max-width: 64rem;
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (max-width: 40rem) {
+  .sh-ui-container {
+    padding-inline: 1rem;
+  }
+}
+
+/* 터치 대상 최소 44×44px (WCAG 2.5.5) 가이드.
+   버튼/링크가 과도하게 작아지지 않도록 안전 하한. */
+button,
+[role="button"],
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 모션 감소 선호(운영체제 설정) 존중 — WCAG 2.3.3.
+   애니메이션·전환을 거의 0으로 줄이고 스크롤 동작도 즉시로. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

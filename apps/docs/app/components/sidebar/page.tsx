@@ -1,9 +1,18 @@
+export const dynamic = "force-static";
+
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { SidebarBasicDemo } from "./_demos/basic";
 import { SidebarTOCDemo } from "./_demos/toc";
+import {
+  SidebarHeaderlessFloatingDemo,
+  SidebarHeaderlessIconDemo,
+  SidebarHeaderlessInsideDemo,
+} from "./_demos/headerless";
+import { SidebarMixedDemo, SidebarPanelDemo } from "./_demos/panel";
 
 export default function SidebarPage() {
   return (
@@ -17,9 +26,13 @@ export default function SidebarPage() {
         <Preview.Demo>
           <SidebarBasicDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<SidebarProvider>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<SidebarProvider>
   <Sidebar>
     <SidebarHeader>...</SidebarHeader>
     <SidebarContent>
@@ -43,7 +56,57 @@ export default function SidebarPage() {
     <SidebarTrigger />
     {children}
   </SidebarInset>
-</SidebarProvider>`}
+</SidebarProvider>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `import { HomeIcon } from "lucide-react";
+import {
+  Sidebar, SidebarContent, SidebarFooter, SidebarGroup,
+  SidebarGroupContent, SidebarGroupLabel, SidebarHeader,
+  SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarProvider, SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+export function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+          <div className="px-2 font-semibold">sh-ui</div>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Application</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton isActive>
+                    <HomeIcon />
+                    <span>Home</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <div className="px-2 text-xs text-muted">v0.1.0</div>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex items-center gap-2 border-b px-3 py-2">
+          <SidebarTrigger />
+        </header>
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`,
+            },
+          ]}
         />
       </Preview>
 
@@ -139,9 +202,13 @@ export function AppSidebar() {
         <Preview.Demo>
           <SidebarTOCDemo />
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<SidebarTOC sectionIds={["intro", "install", "usage"]}>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<SidebarTOC sectionIds={["intro", "install", "usage"]}>
   <SidebarMenu>
     <SidebarMenuItem>
       <SidebarMenuButton sectionId="intro" asChild>
@@ -159,7 +226,481 @@ export function AppSidebar() {
       </SidebarMenuButton>
     </SidebarMenuItem>
   </SidebarMenu>
-</SidebarTOC>`}
+</SidebarTOC>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `// sectionIds의 각 id가 본문의 <section id="..."> 와 매칭되어야 한다.
+export function DocsPage() {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>On this page</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarTOC sectionIds={["intro", "install", "usage"]}>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton sectionId="intro" asChild>
+                      <a href="#intro">Intro</a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton sectionId="install" asChild>
+                      <a href="#install">Install</a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton sectionId="usage" asChild>
+                      <a href="#usage">Usage</a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarTOC>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <article>
+          <section id="intro">
+            <h2>Intro</h2>
+            {/* ... */}
+          </section>
+          <section id="install">
+            <h2>Install</h2>
+            {/* ... */}
+          </section>
+          <section id="usage">
+            <h2>Usage</h2>
+            {/* ... */}
+          </section>
+        </article>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>헤더 없는 레이아웃의 트리거 배치</h3>
+      <p className="muted">
+        페이지 상단에 별도 헤더가 없을 때 <code>SidebarTrigger</code>를 어디에 둘지에 대한 세 가지 패턴.
+      </p>
+
+      <h4>1. 사이드바 내부 상단에 배치</h4>
+      <p className="muted">
+        <code>SidebarHeader</code> 안에 브랜드 마크와 함께 트리거를 두면, 메인 영역에 헤더를 만들 필요가 없다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <SidebarHeaderlessInsideDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<Sidebar>
+  <SidebarHeader>
+    <div className="flex items-center justify-between">
+      <span>sh-ui</span>
+      <SidebarTrigger />   {/* 닫기 */}
+    </div>
+  </SidebarHeader>
+  <SidebarContent>...</SidebarContent>
+</Sidebar>
+<SidebarInset>
+  <OpenTrigger />          {/* 열기 — 닫혔을 때만 노출 */}
+  {children}
+</SidebarInset>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `function OpenTrigger() {
+  const { open } = useSidebar();
+  if (open) return null;
+  return (
+    <div className="absolute top-2 left-2 z-10">
+      <SidebarTrigger />
+    </div>
+  );
+}
+
+export function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+          <div className="flex items-center justify-between px-2">
+            <span className="font-semibold">sh-ui</span>
+            <SidebarTrigger />
+          </div>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Application</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {/* menu items */}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <OpenTrigger />
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h4>2. Floating 트리거</h4>
+      <p className="muted">
+        사이드바가 닫혔을 때 메인 영역 좌상단에 떠 있는 버튼 하나로 노출. 배경이 비어 허전해 보이는 걸 감수하되, 레이아웃을 완전히 비우고 싶을 때.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <SidebarHeaderlessFloatingDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `// 닫힘: Inset 좌상단 floating / 열림: 사이드바 헤더 안의 트리거로 닫기
+<Sidebar>
+  <SidebarHeader>
+    <SidebarTrigger />
+  </SidebarHeader>
+  <SidebarContent>...</SidebarContent>
+</Sidebar>
+<SidebarInset>
+  <OpenTrigger />
+  {children}
+</SidebarInset>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `function OpenTrigger() {
+  const { open } = useSidebar();
+  if (open) return null;
+  return (
+    <div className="absolute top-2 left-2 z-10">
+      <SidebarTrigger />
+    </div>
+  );
+}
+
+export function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider defaultOpen={false}>
+      <Sidebar>
+        <SidebarHeader>
+          <SidebarTrigger />
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {/* menu items */}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <OpenTrigger />
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h4>3. Icon-only 레일</h4>
+      <p className="muted">
+        <code>collapsible=&quot;icon&quot;</code>으로 두면 닫아도 아이콘 레일이 남아 허전함이 없다. 헤더 없는 앱에 가장 자연스러운 기본값.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <SidebarHeaderlessIconDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<Sidebar collapsible="icon">
+  <SidebarHeader>
+    <SidebarTrigger />
+  </SidebarHeader>
+  <SidebarContent>...</SidebarContent>
+</Sidebar>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `export function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider defaultOpen={false}>
+      <Sidebar collapsible="icon">
+        <SidebarHeader>
+          <SidebarTrigger />
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {/* menu items (아이콘 + span) */}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
+  );
+}`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>레일 + 보조 패널 (SidebarPanel)</h3>
+      <p className="muted">
+        네이버 지도·VS Code 활동 바 같은 <strong>모드 전환기</strong> 패턴. 좁은 아이콘 레일의 버튼을 누르면 바로 옆에 <code>SidebarPanel</code>이 펼쳐지고, 같은 버튼을 다시 누르거나 패널의 × 버튼을 누르면 닫힙니다. 한 번에 하나의 패널만 활성.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <SidebarPanelDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<Sidebar collapsible="icon">
+  <SidebarMenu>
+    <SidebarMenuItem>
+      <SidebarMenuButton panelId="search">
+        <SearchIcon /><span>검색</span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  </SidebarMenu>
+</Sidebar>
+
+<SidebarPanel id="search">
+  <SidebarPanelHeader>검색</SidebarPanelHeader>
+  <SidebarPanelContent>...</SidebarPanelContent>
+</SidebarPanel>
+
+<SidebarInset>{children}</SidebarInset>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `import { SearchIcon, StarIcon, SettingsIcon } from "lucide-react";
+import {
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarPanel, SidebarPanelContent, SidebarPanelHeader,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
+
+export function MapLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider defaultOpen={false}>
+      <Sidebar collapsible="icon">
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton panelId="search">
+                    <SearchIcon /><span>검색</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton panelId="favorites">
+                    <StarIcon /><span>즐겨찾기</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton panelId="settings">
+                    <SettingsIcon /><span>설정</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+
+      <SidebarPanel id="search">
+        <SidebarPanelHeader>검색</SidebarPanelHeader>
+        <SidebarPanelContent>
+          {/* 검색 UI */}
+        </SidebarPanelContent>
+      </SidebarPanel>
+
+      <SidebarPanel id="favorites">
+        <SidebarPanelHeader>즐겨찾기</SidebarPanelHeader>
+        <SidebarPanelContent>{/* 즐겨찾기 목록 */}</SidebarPanelContent>
+      </SidebarPanel>
+
+      <SidebarPanel id="settings">
+        <SidebarPanelHeader>설정</SidebarPanelHeader>
+        <SidebarPanelContent>{/* 설정 폼 */}</SidebarPanelContent>
+      </SidebarPanel>
+
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
+  );
+}`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>일반 메뉴 + 보조 패널 혼합</h3>
+      <p className="muted">
+        한 <code>SidebarMenu</code> 안에서 <strong>페이지 이동 버튼</strong>과 <strong>패널 트리거</strong>를 섞어 쓸 수 있습니다. <code>panelId</code>를 주면 보조 패널을 열고, 주지 않으면 일반 버튼으로 동작(링크는 <code>asChild</code>).
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <SidebarMixedDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<SidebarMenu>
+  {/* 라우팅 */}
+  <SidebarMenuItem>
+    <SidebarMenuButton asChild isActive={pathname === "/"}>
+      <Link href="/"><HomeIcon /><span>홈</span></Link>
+    </SidebarMenuButton>
+  </SidebarMenuItem>
+
+  {/* 보조 패널 */}
+  <SidebarMenuItem>
+    <SidebarMenuButton panelId="search">
+      <SearchIcon /><span>검색</span>
+    </SidebarMenuButton>
+  </SidebarMenuItem>
+</SidebarMenu>
+
+<SidebarPanel id="search">...</SidebarPanel>`,
+            },
+            {
+              value: "full",
+              label: "전체",
+              language: "tsx",
+              code: `import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { HomeIcon, LayoutDashboardIcon, UsersIcon, SearchIcon, SettingsIcon } from "lucide-react";
+import {
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
+  SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarPanel, SidebarPanelContent, SidebarPanelHeader,
+  SidebarProvider, SidebarSeparator,
+} from "@/components/ui/sidebar";
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>탐색</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/")}>
+                    <Link href="/"><HomeIcon /><span>홈</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/dashboard")}>
+                    <Link href="/dashboard"><LayoutDashboardIcon /><span>대시보드</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/team")}>
+                    <Link href="/team"><UsersIcon /><span>팀</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <SidebarSeparator />
+
+          <SidebarGroup>
+            <SidebarGroupLabel>도구</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton panelId="search">
+                    <SearchIcon /><span>검색</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton panelId="settings">
+                    <SettingsIcon /><span>설정</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+
+      <SidebarPanel id="search">
+        <SidebarPanelHeader>검색</SidebarPanelHeader>
+        <SidebarPanelContent>{/* 검색 UI */}</SidebarPanelContent>
+      </SidebarPanel>
+
+      <SidebarPanel id="settings">
+        <SidebarPanelHeader>설정</SidebarPanelHeader>
+        <SidebarPanelContent>{/* 설정 폼 */}</SidebarPanelContent>
+      </SidebarPanel>
+
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
+  );
+}`,
+            },
+          ]}
         />
       </Preview>
 
@@ -194,10 +735,13 @@ export function AppSidebar() {
           { name: "SidebarMenuSub", description: "서브 메뉴 ul (들여쓰기 + 좌측 라인)." },
           { name: "SidebarMenuSubItem", description: "서브 메뉴 li." },
           { name: "SidebarMenuSubButton", description: "서브 메뉴 버튼/링크." },
-          { name: "SidebarCollapsible", description: "메뉴 항목 펼침/접힘 그룹." },
+          { name: "SidebarCollapsible", description: "메뉴 항목 펼침/접힘 그룹. 접힌 icon 사이드바에서는 Popover 플라이아웃으로 자동 전환." },
           { name: "SidebarCollapsibleTrigger", description: "토글 트리거 (chevron 자동)." },
-          { name: "SidebarCollapsibleContent", description: "접힘 시 숨겨지는 컨텐츠." },
+          { name: "SidebarCollapsibleContent", description: "접힘 시 숨겨지는 컨텐츠. icon 모드에선 Popover로 렌더." },
           { name: "SidebarTOC", description: "페이지 내 섹션 스크롤을 감지해 활성 메뉴를 자동 전환 (Table of Contents)." },
+          { name: "SidebarPanel", description: "레일 버튼(panelId)과 짝지어 펼쳐지는 보조 패널. 한 번에 하나만 활성." },
+          { name: "SidebarPanelHeader", description: "보조 패널의 상단 영역 (타이틀 등)." },
+          { name: "SidebarPanelContent", description: "보조 패널의 스크롤 가능한 본문 영역." },
         ]}
       />
 
@@ -228,6 +772,7 @@ export function AppSidebar() {
         rows={[
           { prop: "isActive", type: "boolean", description: "활성 상태 표시. 명시되면 sectionId보다 우선한다." },
           { prop: "sectionId", type: "string", description: "SidebarTOC 안에서 활성 섹션 id와 같을 때 자동 활성화." },
+          { prop: "panelId", type: "string", description: "클릭 시 같은 id의 SidebarPanel을 토글. activePanel이 일치하면 자동 활성화." },
           { prop: "size", type: `"sm" | "md" | "lg"`, default: `"md"` },
           { prop: "asChild", type: "boolean", description: "단일 자식 엘리먼트(예: Next Link)에 props를 합쳐 전달." },
         ]}
@@ -257,9 +802,16 @@ export function AppSidebar() {
         ]}
       />
 
+      <h3>SidebarPanel</h3>
+      <PropsTable
+        rows={[
+          { prop: "id", type: "string", description: "SidebarMenuButton의 panelId와 매칭되는 식별자." },
+        ]}
+      />
+
       <h3>useSidebar()</h3>
       <p className="muted">
-        Provider 하위에서 상태를 직접 다룰 때 사용. 반환값: <code>state</code>, <code>open</code>, <code>setOpen</code>, <code>openMobile</code>, <code>setOpenMobile</code>, <code>isMobile</code>, <code>toggleSidebar</code>.
+        Provider 하위에서 상태를 직접 다룰 때 사용. 반환값: <code>state</code>, <code>open</code>, <code>setOpen</code>, <code>openMobile</code>, <code>setOpenMobile</code>, <code>isMobile</code>, <code>toggleSidebar</code>, <code>activePanel</code>, <code>setActivePanel</code>.
       </p>
 
     </main>

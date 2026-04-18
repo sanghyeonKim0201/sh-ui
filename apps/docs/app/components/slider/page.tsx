@@ -1,5 +1,8 @@
+export const dynamic = "force-static";
+
 import { Slider } from "@/components/ui/slider";
 import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { ControlledSliderDemo } from "./_demos/controlled";
@@ -18,9 +21,96 @@ export default function SliderPage() {
             <Slider defaultValue={50} aria-label="기본" />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Slider defaultValue={50} aria-label="기본" />`}
+        <CodeTabs
+          items={[
+            {
+              value: "highlight",
+              label: "강조",
+              language: "tsx",
+              code: `<Slider defaultValue={50} aria-label="기본" />`,
+            },
+            {
+              value: "impl",
+              label: "구현",
+              language: "tsx",
+              filename: "components/ui/slider/index.tsx",
+              code: `const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
+const snap = (v: number, step: number, min: number) =>
+  step <= 0 ? v : min + Math.round((v - min) / step) * step;
+
+export function Slider({
+  value: valueProp, defaultValue = 0, onValueChange,
+  min = 0, max = 100, step = 1, disabled,
+  "aria-label": ariaLabel,
+}: SliderProps) {
+  const isControlled = valueProp !== undefined;
+  const [internal, setInternal] = React.useState(defaultValue);
+  const value = clamp(isControlled ? valueProp! : internal, min, max);
+
+  const trackRef = React.useRef<HTMLDivElement>(null);
+
+  const setValue = (next: number) => {
+    const snapped = clamp(snap(next, step, min), min, max);
+    if (snapped === value) return;
+    if (!isControlled) setInternal(snapped);
+    onValueChange?.(snapped);
+  };
+
+  // 포인터 좌표 → 값 매핑 (트랙 기준)
+  const moveToClient = (clientX: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const ratio = clamp((clientX - r.left) / r.width, 0, 1);
+    setValue(min + ratio * (max - min));
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    const el = trackRef.current!;
+    el.setPointerCapture(e.pointerId);
+    moveToClient(e.clientX);
+    const move = (ev: PointerEvent) => moveToClient(ev.clientX);
+    const up = (ev: PointerEvent) => {
+      el.releasePointerCapture(ev.pointerId);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+    };
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+  };
+
+  // 키보드: ±step / Shift·Page ±step×10 / Home·End
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    const big = e.shiftKey ? step * 10 : step;
+    switch (e.key) {
+      case "ArrowRight": case "ArrowUp":   e.preventDefault(); setValue(value + big); break;
+      case "ArrowLeft":  case "ArrowDown": e.preventDefault(); setValue(value - big); break;
+      case "Home":      e.preventDefault(); setValue(min); break;
+      case "End":       e.preventDefault(); setValue(max); break;
+      case "PageUp":    e.preventDefault(); setValue(value + step * 10); break;
+      case "PageDown":  e.preventDefault(); setValue(value - step * 10); break;
+    }
+  };
+
+  const percent = \`\${max === min ? 0 : ((value - min) / (max - min)) * 100}%\`;
+  return (
+    <div className="sh-ui-slider" data-disabled={disabled || undefined}>
+      <div ref={trackRef} className="sh-ui-slider__track" onPointerDown={onPointerDown}>
+        <div className="sh-ui-slider__range" style={{ width: percent }} />
+        <div
+          role="slider" tabIndex={disabled ? -1 : 0}
+          aria-label={ariaLabel} aria-valuemin={min} aria-valuemax={max} aria-valuenow={value}
+          onKeyDown={onKeyDown}
+          className="sh-ui-slider__thumb" style={{ left: percent }}
+        />
+      </div>
+    </div>
+  );
+}`,
+            },
+          ]}
         />
       </Preview>
 
