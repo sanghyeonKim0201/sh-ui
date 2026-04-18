@@ -3,16 +3,16 @@
   display: inline-flex;
   width: 100%;
   min-width: 10rem;
-  height: 2.5rem;
-  padding: 0 0.75rem;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
   background: var(--background);
   color: var(--foreground);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   line-height: 1;
   outline: none;
-  transition: border-color 120ms;
+  transition: border-color var(--duration-fast);
 }
 .sh-ui-combobox__input::placeholder {
   color: var(--foreground-muted);
@@ -21,17 +21,17 @@
   border-color: var(--border-strong);
 }
 .sh-ui-combobox__input:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 .sh-ui-combobox__input:disabled {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   pointer-events: none;
 }
 
 /* ───── Popup ───── */
 .sh-ui-combobox__positioner {
-  z-index: 60;
+  z-index: var(--z-dropdown);
   outline: none;
   width: var(--anchor-width);
 }
@@ -39,7 +39,7 @@
 .sh-ui-combobox__content {
   max-height: min(20rem, var(--available-height));
   overflow-y: auto;
-  padding: 0.25rem;
+  padding: var(--space-1);
   background: var(--background);
   color: var(--foreground);
   border: 1px solid var(--border);
@@ -57,12 +57,11 @@
 
 /* ───── Item ───── */
 .sh-ui-combobox__item {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 0.5rem 0.375rem 1.75rem;
-  font-size: 0.875rem;
+  gap: var(--space-2);
+  padding: 0.375rem 0.75rem;
+  font-size: var(--text-sm);
   line-height: 1.4;
   border-radius: calc(var(--radius) - 2px);
   cursor: pointer;
@@ -75,18 +74,16 @@
 }
 .sh-ui-combobox__item[data-selected] {
   color: var(--foreground);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .sh-ui-combobox__item[data-disabled] {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   pointer-events: none;
 }
 
 .sh-ui-combobox__item-indicator {
-  position: absolute;
-  left: 0.375rem;
-  top: 50%;
-  transform: translateY(-50%);
+  order: 1;
+  margin-left: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -102,7 +99,7 @@
 
 /* ───── Empty ───── */
 .sh-ui-combobox__empty {
-  padding: 0.75rem 0.5rem;
+  padding: var(--space-3) var(--space-2);
   text-align: center;
   font-size: 0.8125rem;
   color: var(--foreground-muted);
@@ -110,9 +107,9 @@
 
 /* ───── Group label ───── */
 .sh-ui-combobox__group-label {
-  padding: 0.375rem 0.5rem 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 600;
+  padding: 0.375rem var(--space-2) var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
   color: var(--foreground-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -122,10 +119,10 @@
 .sh-ui-combobox__chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.125rem 0.375rem 0.125rem 0.5rem;
-  margin-right: 0.25rem;
-  font-size: 0.75rem;
+  gap: var(--space-1);
+  padding: 0.125rem 0.375rem 0.125rem var(--space-2);
+  margin-right: var(--space-1);
+  font-size: var(--text-xs);
   line-height: 1.25rem;
   background: var(--background-muted);
   border-radius: calc(var(--radius) - 2px);
@@ -143,10 +140,10 @@
   border-radius: 999px;
   background: transparent;
   color: var(--foreground-muted);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   line-height: 1;
   cursor: pointer;
-  transition: background-color 120ms, color 120ms;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
 }
 .sh-ui-combobox__chip-remove:hover {
   background: var(--background);

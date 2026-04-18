@@ -1,0 +1,94 @@
+.sh-ui-accordion {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sh-ui-accordion__item {
+  border-bottom: 1px solid var(--border);
+}
+
+.sh-ui-accordion__item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.sh-ui-accordion__header {
+  margin: 0;
+  font: inherit;
+}
+
+.sh-ui-accordion__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4) var(--space-1);
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sh-ui-accordion__trigger:hover .sh-ui-accordion__trigger-label {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sh-ui-accordion__trigger:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.sh-ui-accordion__trigger[disabled],
+.sh-ui-accordion__trigger[data-disabled] {
+  cursor: not-allowed;
+  color: var(--foreground-muted);
+}
+
+.sh-ui-accordion__trigger-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sh-ui-accordion__chevron {
+  flex-shrink: 0;
+  color: var(--foreground-muted);
+  transition: transform 180ms var(--ease-standard);
+}
+
+.sh-ui-accordion__trigger[data-panel-open] .sh-ui-accordion__chevron {
+  transform: rotate(180deg);
+}
+
+/* 패널: Base UI가 --accordion-panel-height CSS 변수를 제공. grid trick으로 열림/닫힘 전환. */
+.sh-ui-accordion__panel {
+  overflow: hidden;
+  height: var(--accordion-panel-height);
+  transition: height var(--duration-slow) var(--ease-standard);
+}
+
+.sh-ui-accordion__panel[data-starting-style],
+.sh-ui-accordion__panel[data-ending-style] {
+  height: 0;
+}
+
+.sh-ui-accordion__content {
+  padding: 0 var(--space-1) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--foreground-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-accordion__panel,
+  .sh-ui-accordion__chevron {
+    transition: none;
+  }
+}

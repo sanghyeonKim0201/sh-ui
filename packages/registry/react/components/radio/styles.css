@@ -11,7 +11,7 @@
   background: var(--background);
   cursor: pointer;
   flex-shrink: 0;
-  transition: border-color 120ms;
+  transition: border-color var(--duration-fast);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .sh-ui-radio:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 
@@ -29,7 +29,7 @@
 }
 
 .sh-ui-radio[data-disabled] {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 
@@ -49,7 +49,7 @@
   border-radius: 999px;
   background: var(--primary);
   transform: scale(0);
-  transition: transform 120ms ease-out;
+  transition: transform var(--duration-fast) ease-out;
 }
 
 .sh-ui-radio[data-checked] .sh-ui-radio__indicator {

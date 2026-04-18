@@ -62,25 +62,25 @@ class _ShUiButtonState extends State<ShUiButton> {
     }
   }
 
-  EdgeInsets get _padding => switch (widget.size) {
-        ShUiButtonSize.sm => const EdgeInsets.symmetric(horizontal: 12),
-        ShUiButtonSize.md => const EdgeInsets.symmetric(horizontal: 16),
-        ShUiButtonSize.lg => const EdgeInsets.symmetric(horizontal: 20),
+  EdgeInsets _paddingOf(ShUiTheme shUi) => switch (widget.size) {
+        ShUiButtonSize.sm => EdgeInsets.symmetric(horizontal: shUi.spacing.s3),
+        ShUiButtonSize.md => EdgeInsets.symmetric(horizontal: shUi.spacing.s4),
+        ShUiButtonSize.lg => EdgeInsets.symmetric(horizontal: shUi.spacing.s5),
       };
 
-  double get _height => switch (widget.size) {
-        ShUiButtonSize.sm => 32,
-        ShUiButtonSize.md => 40,
-        ShUiButtonSize.lg => 48,
+  double _heightOf(ShUiTheme shUi) => switch (widget.size) {
+        ShUiButtonSize.sm => shUi.control.sm,
+        ShUiButtonSize.md => shUi.control.md,
+        ShUiButtonSize.lg => shUi.control.lg,
       };
 
-  double get _fontSize => switch (widget.size) {
-        ShUiButtonSize.sm => 14,
-        ShUiButtonSize.md => 14,
-        ShUiButtonSize.lg => 16,
+  double _fontSizeOf(ShUiTheme shUi) => switch (widget.size) {
+        ShUiButtonSize.sm => shUi.text.sm,
+        ShUiButtonSize.md => shUi.text.sm,
+        ShUiButtonSize.lg => shUi.text.base,
       };
 
-  Widget _buildLink(ShUiTheme sh-ui, _Colors colors, bool disabled) {
+  Widget _buildLink(ShUiTheme shUi, _Colors colors, bool disabled) {
     return MouseRegion(
       cursor: disabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
@@ -93,8 +93,8 @@ class _ShUiButtonState extends State<ShUiButton> {
         child: DefaultTextStyle(
           style: TextStyle(
             color: colors.fg,
-            fontSize: _fontSize,
-            fontWeight: FontWeight.w500,
+            fontSize: _fontSizeOf(shUi),
+            fontWeight: shUi.weight.medium,
             height: 1.2,
             decoration: _hover ? TextDecoration.underline : TextDecoration.none,
             decorationColor: colors.fg,
@@ -107,19 +107,19 @@ class _ShUiButtonState extends State<ShUiButton> {
 
   @override
   Widget build(BuildContext context) {
-    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
-    final colors = _resolveColors(sh-ui.colors);
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final colors = _resolveColors(shUi.colors);
     final disabled = widget.onPressed == null;
 
     if (widget.variant == ShUiButtonVariant.link) {
       return Opacity(
-        opacity: disabled ? 0.5 : 1,
-        child: _buildLink(sh-ui, colors, disabled),
+        opacity: disabled ? shUi.opacity.disabled : 1,
+        child: _buildLink(shUi, colors, disabled),
       );
     }
 
     return Opacity(
-      opacity: disabled ? 0.5 : 1,
+      opacity: disabled ? shUi.opacity.disabled : 1,
       child: MouseRegion(
         cursor: disabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
         onEnter: (_) => setState(() => _hover = true),
@@ -134,22 +134,22 @@ class _ShUiButtonState extends State<ShUiButton> {
             duration: const Duration(milliseconds: 80),
             curve: Curves.easeOut,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 120),
-              height: _height,
-              padding: _padding,
+              duration: shUi.duration.fast,
+              height: _heightOf(shUi),
+              padding: _paddingOf(shUi),
               decoration: BoxDecoration(
                 color: _pressed
                     ? Color.lerp(colors.bg, Colors.black, 0.08)!
                     : colors.bg,
                 border: Border.all(color: colors.border),
-                borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius),
+                borderRadius: BorderRadius.circular(shUi.radius.defaultRadius),
               ),
               alignment: Alignment.center,
               child: DefaultTextStyle(
                 style: TextStyle(
                   color: colors.fg,
-                  fontSize: _fontSize,
-                  fontWeight: FontWeight.w500,
+                  fontSize: _fontSizeOf(shUi),
+                  fontWeight: shUi.weight.medium,
                   height: 1,
                 ),
                 child: widget.child,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../foundation/sh_ui_tokens.dart';
 
-/// sh-ui Card — 컴파운드 스타일.
+/// shUi Card — 컴파운드 스타일.
 ///
 /// React 쪽 compound children API와 달리 Flutter는 named params가 관용적이라
 /// 동일한 의미 구조를 다음과 같이 표현한다:
@@ -26,18 +26,18 @@ class ShUiCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Container(
       decoration: BoxDecoration(
-        color: sh-ui.colors.background,
-        border: Border.all(color: sh-ui.colors.border),
-        borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius),
+        color: shUi.colors.background,
+        border: Border.all(color: shUi.colors.border),
+        borderRadius: BorderRadius.circular(shUi.radius.defaultRadius),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      padding: EdgeInsets.symmetric(vertical: shUi.spacing.s6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
-        children: _withGaps(children, 24),
+        children: _withGaps(children, shUi.spacing.s6),
       ),
     );
   }
@@ -62,6 +62,7 @@ class ShUiCardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     final stack = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -73,14 +74,14 @@ class ShUiCardHeader extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: shUi.spacing.s6),
       child: action == null
           ? stack
           : Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: stack),
-                const SizedBox(width: 16),
+                SizedBox(width: shUi.spacing.s4),
                 action!,
               ],
             ),
@@ -94,13 +95,13 @@ class ShUiCardTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Text(
       text,
       style: TextStyle(
-        color: sh-ui.colors.foreground,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
+        color: shUi.colors.foreground,
+        fontSize: shUi.text.base,
+        fontWeight: shUi.weight.semibold,
         height: 1.25,
         letterSpacing: -0.16,
       ),
@@ -114,12 +115,12 @@ class ShUiCardDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Text(
       text,
       style: TextStyle(
-        color: sh-ui.colors.foregroundMuted,
-        fontSize: 14,
+        color: shUi.colors.foregroundMuted,
+        fontSize: shUi.text.sm,
         height: 1.5,
       ),
     );
@@ -132,8 +133,9 @@ class ShUiCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: shUi.spacing.s6),
       child: child,
     );
   }
@@ -145,11 +147,12 @@ class ShUiCardFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: shUi.spacing.s6),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: _withGaps(children, 8),
+        children: _withGaps(children, shUi.spacing.s2),
       ),
     );
   }

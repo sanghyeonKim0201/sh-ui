@@ -292,6 +292,41 @@
       ],
       "dependencies": ["@base-ui-components/react"],
       "registryDependencies": []
+    },
+    "skeleton": {
+      "name": "skeleton",
+      "type": "component",
+      "files": [
+        { "src": "components/skeleton/index.tsx", "dest": "{components}/skeleton/index.tsx" },
+        { "src": "components/skeleton/styles.css", "dest": "{components}/skeleton/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "accordion": {
+      "name": "accordion",
+      "type": "component",
+      "files": [
+        { "src": "components/accordion/index.tsx", "dest": "{components}/accordion/index.tsx" },
+        { "src": "components/accordion/styles.css", "dest": "{components}/accordion/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "carousel": {
+      "name": "carousel",
+      "type": "component",
+      "files": [
+        { "src": "components/carousel/index.tsx", "dest": "{components}/carousel/index.tsx" },
+        { "src": "components/carousel/styles.css", "dest": "{components}/carousel/styles.css" }
+      ],
+      "dependencies": [
+        "embla-carousel",
+        "embla-carousel-react",
+        "embla-carousel-autoplay",
+        "embla-carousel-auto-scroll"
+      ],
+      "registryDependencies": []
     }
   }
 }

@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
   line-height: 1.4;
   color: var(--foreground);
   cursor: pointer;
@@ -18,14 +18,14 @@
 
 /* Title — 주 라벨 텍스트 (기본). Label에 서브컴포넌트 없이 텍스트만 넣으면 이 스타일. */
 .sh-ui-label__title {
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
   color: var(--foreground);
 }
 
 /* Subtitle — 부제. 타이틀 옆이나 아래에 보조 강조. */
 .sh-ui-label__subtitle {
-  font-weight: 400;
+  font-weight: var(--weight-regular);
   font-size: 0.8125rem;
   color: var(--foreground);
 }
@@ -33,7 +33,7 @@
 /* Description — 설명. 입력 필드 가이드. */
 .sh-ui-label__description {
   margin: 0;
-  font-weight: 400;
+  font-weight: var(--weight-regular);
   font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--foreground-muted);
@@ -42,8 +42,8 @@
 /* Caption — 흐린 설명. 가장 덜 중요한 보조 텍스트. */
 .sh-ui-label__caption {
   margin: 0;
-  font-weight: 400;
-  font-size: 0.75rem;
+  font-weight: var(--weight-regular);
+  font-size: var(--text-xs);
   line-height: 1.3;
   color: var(--foreground-subtle, var(--foreground-muted));
   opacity: 0.75;
@@ -62,7 +62,7 @@
 .sh-ui-label:has(+ .sh-ui-combobox__input:required) > .sh-ui-label__title::after {
   content: " *";
   color: var(--danger);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 /* Title 없이 Label에 직접 텍스트를 넣은 경우 */
@@ -73,7 +73,7 @@
 .sh-ui-label:not(:has(.sh-ui-label__title)):has(+ .sh-ui-combobox__input:required)::after {
   content: " *";
   color: var(--danger);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 /* ───── disabled 자동 감지 ─────
@@ -85,6 +85,6 @@
 .sh-ui-label:has(+ .sh-ui-combobox__input:disabled),
 .sh-ui-label:has(+ .sh-ui-date-picker__trigger:disabled),
 .sh-ui-label:has(+ .sh-ui-file-upload .sh-ui-file-upload__dropzone--disabled) {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }

@@ -1,18 +1,18 @@
 .sh-ui-popover__positioner {
-  z-index: 60;
+  z-index: var(--z-popover);
   outline: none;
 }
 
 .sh-ui-popover__content {
   min-width: 12rem;
-  padding: 0.5rem;
+  padding: var(--space-2);
   background: var(--background);
   color: var(--foreground);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   outline: none;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   line-height: 1.4;
   transform-origin: var(--transform-origin);
 }
@@ -30,7 +30,7 @@
 }
 
 .sh-ui-popover__content:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 
@@ -43,8 +43,8 @@
 }
 
 .sh-ui-popover__title {
-  margin: 0 0 0.25rem;
-  font-weight: 600;
+  margin: 0 0 var(--space-1);
+  font-weight: var(--weight-semibold);
   font-size: 0.9375rem;
 }
 

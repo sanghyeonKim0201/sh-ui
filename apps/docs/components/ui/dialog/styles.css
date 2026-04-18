@@ -3,10 +3,10 @@
 .sh-ui-dialog__backdrop {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: var(--z-overlay);
   background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(8px);
-  transition: opacity 200ms ease;
+  transition: opacity var(--duration-slow) ease;
 }
 
 .sh-ui-dialog__backdrop[data-starting-style],
@@ -21,23 +21,23 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 51;
+  z-index: var(--z-modal);
   display: flex;
   flex-direction: column;
   width: calc(100% - 2rem);
   max-width: 28rem;
   max-height: calc(100dvh - 4rem);
-  padding: 1.5rem;
+  padding: var(--space-6);
   background: var(--background);
   color: var(--foreground);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-xl);
   outline: none;
   overflow-y: auto;
   transition:
-    opacity 200ms ease,
-    transform 200ms ease;
+    opacity var(--duration-slow) ease,
+    transform var(--duration-slow) ease;
 }
 
 .sh-ui-dialog__content[data-starting-style] {
@@ -51,25 +51,25 @@
 }
 
 .sh-ui-dialog__content:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 
 /* ── Title ── */
 
 .sh-ui-dialog__title {
-  margin: 0 0 0.25rem;
-  font-weight: 600;
-  font-size: 1.125rem;
+  margin: 0 0 var(--space-1);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-lg);
   line-height: 1.4;
 }
 
 /* ── Description ── */
 
 .sh-ui-dialog__description {
-  margin: 0 0 1.25rem;
+  margin: 0 0 var(--space-5);
   color: var(--foreground-muted);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
@@ -79,8 +79,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.5rem;
-  padding-top: 1rem;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--border);
   margin-top: auto;
 }
@@ -89,8 +89,8 @@
 
 .sh-ui-dialog__close {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: var(--space-3);
+  right: var(--space-3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -100,16 +100,16 @@
   border-radius: calc(var(--radius) - 2px);
   background: transparent;
   color: var(--foreground-muted);
-  font-size: 1.125rem;
+  font-size: var(--text-lg);
   line-height: 1;
   cursor: pointer;
-  transition: background-color 120ms, color 120ms;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
 }
 .sh-ui-dialog__close:hover {
   background: var(--background-muted);
   color: var(--foreground);
 }
 .sh-ui-dialog__close:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }

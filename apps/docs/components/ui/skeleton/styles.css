@@ -1,0 +1,24 @@
+.sh-ui-skeleton {
+  display: block;
+  width: 100%;
+  height: 1rem;
+  background: var(--background-muted);
+  border-radius: calc(var(--radius) - 2px);
+  animation: sh-ui-skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes sh-ui-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-skeleton {
+    animation: none;
+  }
+}

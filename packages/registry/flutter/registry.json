@@ -1,6 +1,13 @@
 {
   "$description": "Flutter 레지스트리 매니페스트 — CLI가 각 컴포넌트 name으로 조회해 files를 사용자 프로젝트의 lib/ 아래로 복사한다.",
   "components": {
+    "tokens": {
+      "name": "tokens",
+      "type": "foundation",
+      "files": [
+        { "src": "foundation/sh_ui_tokens.dart", "dest": "{foundation}/sh_ui_tokens.dart" }
+      ]
+    },
     "button": {
       "name": "button",
       "type": "widget",
@@ -28,12 +35,158 @@
       "dependencies": [],
       "registryDependencies": ["tokens"]
     },
-    "tokens": {
-      "name": "tokens",
-      "type": "foundation",
+    "checkbox": {
+      "name": "checkbox",
+      "type": "widget",
       "files": [
-        { "src": "foundation/sh_ui_tokens.dart", "dest": "{foundation}/sh_ui_tokens.dart" }
-      ]
+        { "src": "widgets/sh_ui_checkbox.dart", "dest": "{widgets}/sh_ui_checkbox.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "radio": {
+      "name": "radio",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_radio.dart", "dest": "{widgets}/sh_ui_radio.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "switch": {
+      "name": "switch",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_switch.dart", "dest": "{widgets}/sh_ui_switch.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "toggle": {
+      "name": "toggle",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_toggle.dart", "dest": "{widgets}/sh_ui_toggle.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "textarea": {
+      "name": "textarea",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_textarea.dart", "dest": "{widgets}/sh_ui_textarea.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "label": {
+      "name": "label",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_label.dart", "dest": "{widgets}/sh_ui_label.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "slider": {
+      "name": "slider",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_slider.dart", "dest": "{widgets}/sh_ui_slider.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "select": {
+      "name": "select",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_select.dart", "dest": "{widgets}/sh_ui_select.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "tabs": {
+      "name": "tabs",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_tabs.dart", "dest": "{widgets}/sh_ui_tabs.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "dialog": {
+      "name": "dialog",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_dialog.dart", "dest": "{widgets}/sh_ui_dialog.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "popover": {
+      "name": "popover",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_popover.dart", "dest": "{widgets}/sh_ui_popover.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "toast": {
+      "name": "toast",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_toast.dart", "dest": "{widgets}/sh_ui_toast.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "date-picker": {
+      "name": "date-picker",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_date_picker.dart", "dest": "{widgets}/sh_ui_date_picker.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "color-picker": {
+      "name": "color-picker",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_color_picker.dart", "dest": "{widgets}/sh_ui_color_picker.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "combobox": {
+      "name": "combobox",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_combobox.dart", "dest": "{widgets}/sh_ui_combobox.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "file-upload": {
+      "name": "file-upload",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_file_upload.dart", "dest": "{widgets}/sh_ui_file_upload.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "sidebar": {
+      "name": "sidebar",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_sidebar.dart", "dest": "{widgets}/sh_ui_sidebar.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
     }
   }
 }

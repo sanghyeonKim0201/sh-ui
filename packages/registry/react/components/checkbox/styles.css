@@ -12,7 +12,7 @@
   color: var(--primary-foreground);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background-color 120ms, border-color 120ms;
+  transition: background-color var(--duration-fast), border-color var(--duration-fast);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .sh-ui-checkbox:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .sh-ui-checkbox[data-disabled] {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 

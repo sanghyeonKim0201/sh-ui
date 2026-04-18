@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../foundation/sh_ui_tokens.dart';
 
-/// sh-ui 텍스트 입력 필드.
+/// shUi 텍스트 입력 필드.
 /// Material TextField를 기반으로 토큰 스타일을 입힌다.
 class ShUiInput extends StatefulWidget {
   final TextEditingController? controller;
@@ -75,8 +75,8 @@ class _ShUiInputState extends State<ShUiInput> {
 
   @override
   Widget build(BuildContext context) {
-    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
-    final colors = sh-ui.colors;
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final colors = shUi.colors;
     final focused = _focusNode.hasFocus;
 
     final bg = (!widget.enabled || widget.readOnly)
@@ -96,7 +96,7 @@ class _ShUiInputState extends State<ShUiInput> {
       onSubmitted: widget.onSubmitted,
       style: TextStyle(
         color: colors.foreground,
-        fontSize: 14,
+        fontSize: shUi.text.sm,
         height: 1.2,
       ),
       cursorColor: colors.foreground,
@@ -108,7 +108,7 @@ class _ShUiInputState extends State<ShUiInput> {
         hintText: widget.placeholder,
         hintStyle: TextStyle(
           color: colors.foregroundMuted,
-          fontSize: 14,
+          fontSize: shUi.text.sm,
         ),
       ),
     );
@@ -117,22 +117,22 @@ class _ShUiInputState extends State<ShUiInput> {
       onEnter: (_) => setState(() => _hover = true),
       onExit: (_) => setState(() => _hover = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        height: 40,
+        duration: shUi.duration.fast,
+        height: shUi.control.md,
         padding: EdgeInsets.only(
-          left: widget.prefix == null ? 12 : 8,
-          right: widget.suffix == null ? 12 : 4,
+          left: widget.prefix == null ? shUi.spacing.s3 : shUi.spacing.s2,
+          right: widget.suffix == null ? shUi.spacing.s3 : shUi.spacing.s1,
         ),
         decoration: BoxDecoration(
           color: bg,
           border: Border.all(
             color: _borderColor(colors),
-            width: focused ? 2 : 1,
+            width: focused ? shUi.borderWidth.strong : shUi.borderWidth.normal,
           ),
-          borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius),
+          borderRadius: BorderRadius.circular(shUi.radius.defaultRadius),
         ),
         child: Opacity(
-          opacity: widget.enabled ? 1 : 0.5,
+          opacity: widget.enabled ? 1 : shUi.opacity.disabled,
           child: Row(
             children: [
               if (widget.prefix != null) ...[
@@ -140,11 +140,11 @@ class _ShUiInputState extends State<ShUiInput> {
                   data: IconThemeData(color: colors.foregroundMuted, size: 16),
                   child: widget.prefix!,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: shUi.spacing.s2),
               ],
               Expanded(child: textField),
               if (widget.suffix != null) ...[
-                const SizedBox(width: 4),
+                SizedBox(width: shUi.spacing.s1),
                 IconTheme(
                   data: IconThemeData(color: colors.foregroundMuted, size: 16),
                   child: widget.suffix!,
@@ -217,19 +217,19 @@ class _ToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sh-ui = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     return Semantics(
       button: true,
       label: visible ? '비밀번호 숨기기' : '비밀번호 표시',
       child: InkWell(
         onTap: onToggle,
-        borderRadius: BorderRadius.circular(sh-ui.radius.defaultRadius - 2),
+        borderRadius: BorderRadius.circular(shUi.radius.defaultRadius - 2),
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(shUi.spacing.s2),
           child: Icon(
             visible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
             size: 18,
-            color: sh-ui.colors.foregroundMuted,
+            color: shUi.colors.foregroundMuted,
           ),
         ),
       ),

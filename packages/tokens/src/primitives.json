@@ -91,5 +91,56 @@
     "medium":   { "$value": 500, "$type": "fontWeight" },
     "semibold": { "$value": 600, "$type": "fontWeight" },
     "bold":     { "$value": 700, "$type": "fontWeight" }
+  },
+
+  "shadow": {
+    "sm": { "$value": "0 1px 2px rgba(0, 0, 0, 0.08)",   "$type": "shadow" },
+    "md": { "$value": "0 4px 12px rgba(0, 0, 0, 0.12)",  "$type": "shadow" },
+    "lg": { "$value": "0 8px 24px rgba(0, 0, 0, 0.15)",  "$type": "shadow" },
+    "xl": { "$value": "0 16px 48px rgba(0, 0, 0, 0.18)", "$type": "shadow" }
+  },
+
+  "duration": {
+    "fast": { "$value": "120ms", "$type": "duration" },
+    "base": { "$value": "160ms", "$type": "duration" },
+    "slow": { "$value": "200ms", "$type": "duration" }
+  },
+
+  "easing": {
+    "standard":   { "$value": "cubic-bezier(0.4, 0, 0.2, 1)", "$type": "easing" },
+    "emphasized": { "$value": "cubic-bezier(0.2, 0, 0, 1)",   "$type": "easing" }
+  },
+
+  "controlHeight": {
+    "sm": { "$value": "32px", "$type": "dimension" },
+    "md": { "$value": "40px", "$type": "dimension" },
+    "lg": { "$value": "48px", "$type": "dimension" }
+  },
+
+  "borderWidth": {
+    "default": { "$value": "1px", "$type": "dimension" },
+    "strong":  { "$value": "2px", "$type": "dimension" }
+  },
+
+  "opacity": {
+    "disabled": { "$value": 0.5, "$type": "number" }
+  },
+
+  "zIndex": {
+    "base":     { "$value": 0,   "$type": "number" },
+    "sticky":   { "$value": 100, "$type": "number" },
+    "dropdown": { "$value": 200, "$type": "number" },
+    "overlay":  { "$value": 300, "$type": "number" },
+    "modal":    { "$value": 400, "$type": "number" },
+    "popover":  { "$value": 500, "$type": "number" },
+    "toast":    { "$value": 600, "$type": "number" },
+    "tooltip":  { "$value": 700, "$type": "number" }
+  },
+
+  "breakpoint": {
+    "sm": { "$value": "640px",  "$type": "dimension" },
+    "md": { "$value": "768px",  "$type": "dimension" },
+    "lg": { "$value": "1024px", "$type": "dimension" },
+    "xl": { "$value": "1280px", "$type": "dimension" }
   }
 }

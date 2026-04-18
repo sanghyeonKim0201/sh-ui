@@ -29,7 +29,7 @@
 }
 
 .sh-ui-switch:focus-visible {
-  outline: 2px solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .sh-ui-switch[data-disabled] {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 
