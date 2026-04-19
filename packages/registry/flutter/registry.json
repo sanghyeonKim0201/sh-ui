@@ -197,6 +197,15 @@
       "dependencies": [],
       "registryDependencies": ["tokens", "sidebar"]
     },
+    "header": {
+      "name": "header",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_header.dart", "dest": "{widgets}/sh_ui_header.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
     "skeleton": {
       "name": "skeleton",
       "type": "widget",

@@ -3,6 +3,7 @@ import '../foundation/sh_ui_tokens.dart';
 import '../widgets/sh_ui_app_shell.dart';
 import 'accordion_page.dart';
 import 'app_shell_page.dart';
+import 'header_page.dart';
 import 'button_page.dart';
 import 'card_page.dart';
 import 'carousel_page.dart';
@@ -115,6 +116,7 @@ class HomePage extends StatelessWidget {
             ShUiAppShellItem(icon: Icons.web_outlined, label: 'AppShell', builder: _buildAppShell),
             ShUiAppShellItem(icon: Icons.credit_card, label: 'Card', builder: _buildCard),
             ShUiAppShellItem(icon: Icons.view_carousel_outlined, label: 'Carousel', builder: _buildCarousel),
+            ShUiAppShellItem(icon: Icons.view_headline, label: 'Header', builder: _buildHeader),
             ShUiAppShellItem(icon: Icons.menu, label: 'Sidebar', builder: _buildSidebar),
             ShUiAppShellItem(icon: Icons.tab, label: 'Tabs', builder: _buildTabs),
           ],
@@ -170,6 +172,7 @@ Widget _buildAccordion(BuildContext context) => const AccordionPage();
 Widget _buildAppShell(BuildContext context) => const AppShellPage();
 Widget _buildCard(BuildContext context) => const CardPage();
 Widget _buildCarousel(BuildContext context) => const CarouselPage();
+Widget _buildHeader(BuildContext context) => const HeaderPage();
 Widget _buildSidebar(BuildContext context) => const SidebarPage();
 Widget _buildTabs(BuildContext context) => const TabsPage();
 

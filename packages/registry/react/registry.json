@@ -72,6 +72,16 @@
       "dependencies": ["lucide-react"],
       "registryDependencies": ["popover"]
     },
+    "header": {
+      "name": "header",
+      "type": "component",
+      "files": [
+        { "src": "components/header/index.tsx", "dest": "{components}/header/index.tsx" },
+        { "src": "components/header/styles.css", "dest": "{components}/header/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "base": {
       "name": "base",
       "type": "utility",
@@ -320,12 +330,7 @@
         { "src": "components/carousel/index.tsx", "dest": "{components}/carousel/index.tsx" },
         { "src": "components/carousel/styles.css", "dest": "{components}/carousel/styles.css" }
       ],
-      "dependencies": [
-        "embla-carousel",
-        "embla-carousel-react",
-        "embla-carousel-autoplay",
-        "embla-carousel-auto-scroll"
-      ],
+      "dependencies": [],
       "registryDependencies": []
     }
   }

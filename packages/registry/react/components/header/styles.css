@@ -1,0 +1,190 @@
+/* ───── Root ───── */
+.sh-ui-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ───── Brand ───── */
+.sh-ui-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.sh-ui-header__logo {
+  display: inline-flex;
+  align-items: center;
+  color: var(--foreground);
+}
+
+.sh-ui-header__title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--foreground);
+  letter-spacing: -0.3px;
+}
+
+/* ───── Trigger (햄버거) ───── */
+.sh-ui-header__trigger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--foreground);
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition: background-color var(--duration-fast);
+}
+.sh-ui-header__trigger:hover {
+  background: var(--background-muted);
+}
+.sh-ui-header__trigger:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* ───── Inline Nav ───── */
+.sh-ui-header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sh-ui-header__nav::-webkit-scrollbar {
+  display: none;
+}
+
+/* ───── Item ───── */
+.sh-ui-header__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--foreground-muted);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--duration-fast), background-color var(--duration-fast);
+}
+.sh-ui-header__item:hover {
+  color: var(--foreground);
+  background: var(--background-muted);
+}
+.sh-ui-header__item[data-active] {
+  color: var(--foreground);
+  font-weight: var(--weight-semibold);
+}
+.sh-ui-header__item:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* ───── Actions ───── */
+.sh-ui-header__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ───── Drawer (backdrop + panel) — 기본 숨김 ───── */
+.sh-ui-header__backdrop,
+.sh-ui-header__drawer {
+  display: none;
+}
+
+/* ───── Mobile (< breakpoint.md) ───── */
+@media (max-width: 767px) {
+  /* 햄버거 노출 & 좌측 배치 */
+  .sh-ui-header__trigger {
+    display: inline-flex;
+    order: -1;
+  }
+  /* inline nav 숨김 */
+  .sh-ui-header__nav {
+    display: none;
+  }
+  /* 모바일에서 gap 조정 */
+  .sh-ui-header {
+    gap: var(--space-2);
+  }
+
+  /* backdrop */
+  .sh-ui-header__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(8px);
+    z-index: var(--z-overlay);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-standard);
+  }
+  .sh-ui-header__backdrop[data-open] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* drawer panel */
+  .sh-ui-header__drawer {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(17.5rem, 85vw);
+    background: var(--background-subtle);
+    border-right: 1px solid var(--border);
+    z-index: var(--z-modal);
+    transform: translateX(-100%);
+    transition: transform var(--duration-base) var(--ease-standard);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sh-ui-header__drawer[data-open] {
+    transform: translateX(0);
+  }
+
+  .sh-ui-header__drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: var(--space-2) var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sh-ui-header__drawer-nav {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-2);
+    gap: 1px;
+  }
+
+  .sh-ui-header__drawer .sh-ui-header__item {
+    padding: var(--space-3) var(--space-3);
+    font-size: var(--text-sm);
+    border-radius: calc(var(--radius) - 2px);
+  }
+}
