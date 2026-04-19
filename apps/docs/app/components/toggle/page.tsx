@@ -236,6 +236,43 @@ ShUiToggleGroup<String>(
         />
       </Preview>
 
+      <h3>ToggleGroup (세로 방향)</h3>
+      <p className="muted">
+        <code>orientation=&quot;vertical&quot;</code>로 세로 배치. 사이드바 등 좁은 영역에 유용.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `<ToggleGroup orientation="vertical" variant="outline">
+  <ToggleGroupItem value="left"><AlignLeftIcon /></ToggleGroupItem>
+  <ToggleGroupItem value="center"><AlignCenterIcon /></ToggleGroupItem>
+  <ToggleGroupItem value="right"><AlignRightIcon /></ToggleGroupItem>
+</ToggleGroup>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `Set<String> _value = {'left'};
+
+ShUiToggleGroup<String>(
+  variant: ShUiToggleVariant.outline,
+  orientation: ShUiToggleOrientation.vertical,
+  value: _value,
+  onValueChange: (v) => setState(() => _value = v),
+  children: const [
+    ShUiToggleGroupItem(value: 'left', child: Icon(Icons.format_align_left)),
+    ShUiToggleGroupItem(value: 'center', child: Icon(Icons.format_align_center)),
+    ShUiToggleGroupItem(value: 'right', child: Icon(Icons.format_align_right)),
+  ],
+)`,
+          },
+        ]}
+      />
+
       <h2>API Reference</h2>
 
       <h3>Toggle</h3>

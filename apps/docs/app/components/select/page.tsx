@@ -167,7 +167,7 @@ ShUiSelect<String>(
             value: "flutter",
             label: "Flutter",
             language: "dart",
-            code: `// 단일 선택 (Flutter는 기본적으로 단일 선택만 제공)
+            code: `// 단일 선택
 String? value;
 
 ShUiSelect<String>(
@@ -176,6 +176,19 @@ ShUiSelect<String>(
   placeholder: '선택하세요',
   items: const [
     ShUiSelectItem(value: 'apple', child: Text('Apple')),
+  ],
+)
+
+// 다중 선택 (value: List<T>)
+List<String> values = [];
+
+ShUiMultiSelect<String>(
+  value: values,
+  onChanged: (v) => setState(() => values = v),
+  placeholder: '여러 개 선택',
+  elements: const [
+    ShUiSelectItem(value: 'apple', child: Text('Apple')),
+    ShUiSelectItem(value: 'banana', child: Text('Banana')),
   ],
 )`,
           },
@@ -233,17 +246,28 @@ ShUiSelect<String>(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter의 ShUiSelect는 그룹/라벨/구분선을 직접 지원하지 않는다.
-// 단순한 items 배열을 사용한다.
+              code: `// elements로 그룹/구분선/라벨을 구성한다.
+// (기존 items와 상호 배타 — 구조화된 목록이면 elements 사용)
 ShUiSelect<String>(
   value: _country,
   onChanged: (v) => setState(() => _country = v),
   placeholder: '국가 선택',
-  items: const [
-    ShUiSelectItem(value: 'kr', child: Text('대한민국')),
-    ShUiSelectItem(value: 'jp', child: Text('일본')),
-    ShUiSelectItem(value: 'de', child: Text('독일')),
-    ShUiSelectItem(value: 'fr', child: Text('프랑스')),
+  elements: const [
+    ShUiSelectGroup(
+      label: '아시아',
+      items: [
+        ShUiSelectItem(value: 'kr', child: Text('대한민국')),
+        ShUiSelectItem(value: 'jp', child: Text('일본')),
+      ],
+    ),
+    ShUiSelectSeparator(),
+    ShUiSelectGroup(
+      label: '유럽',
+      items: [
+        ShUiSelectItem(value: 'de', child: Text('독일')),
+        ShUiSelectItem(value: 'fr', child: Text('프랑스')),
+      ],
+    ),
   ],
 )`,
             },
@@ -367,8 +391,18 @@ ShUiSelect<String>(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter의 ShUiSelect는 아직 다중 선택(MultiSelect)을 지원하지 않는다.
-// 단일 선택만 제공.`,
+              code: `List<String> values = [];
+
+ShUiMultiSelect<String>(
+  value: values,
+  onChanged: (v) => setState(() => values = v),
+  placeholder: '과일을 여러 개 선택',
+  elements: const [
+    ShUiSelectItem(value: 'apple', child: Text('Apple')),
+    ShUiSelectItem(value: 'banana', child: Text('Banana')),
+    ShUiSelectItem(value: 'grapes', child: Text('Grapes')),
+  ],
+)`,
             },
           ]}
         />
@@ -429,7 +463,30 @@ ShUiSelect<String>(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter의 ShUiSelect는 MultiSelect / chip 커스텀 렌더를 아직 지원하지 않는다.`,
+              code: `// chipsBuilder로 트리거 내부 칩 렌더링을 커스터마이즈.
+// 기본은 쉼표 join 텍스트.
+List<String> values = ['apple', 'grapes'];
+
+ShUiMultiSelect<String>(
+  value: values,
+  onChanged: (v) => setState(() => values = v),
+  placeholder: '과일 선택',
+  elements: const [
+    ShUiSelectItem(value: 'apple', child: Text('Apple')),
+    ShUiSelectItem(value: 'banana', child: Text('Banana')),
+    ShUiSelectItem(value: 'grapes', child: Text('Grapes')),
+  ],
+  chipsBuilder: (values, onRemove) => Wrap(
+    spacing: 4,
+    runSpacing: 4,
+    children: values
+        .map((v) => ShUiSelectChip(
+              label: v,
+              onRemove: () => onRemove(v),
+            ))
+        .toList(),
+  ),
+)`,
             },
           ]}
         />

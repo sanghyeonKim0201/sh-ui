@@ -245,8 +245,14 @@ ShUiTabs(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter 위젯은 현재 수평 배치만 지원합니다.
-// 수직 배치가 필요하면 위젯을 래핑해 커스텀 레이아웃을 구성하세요.`,
+              code: `ShUiTabs(
+  orientation: ShUiTabsOrientation.vertical,
+  tabs: const [
+    ShUiTab(label: 'One', child: Text('세로 배치 탭 1')),
+    ShUiTab(label: 'Two', child: Text('세로 배치 탭 2')),
+    ShUiTab(label: 'Three', child: Text('세로 배치 탭 3')),
+  ],
+)`,
             },
           ]}
         />

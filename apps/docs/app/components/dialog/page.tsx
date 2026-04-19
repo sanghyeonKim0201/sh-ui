@@ -47,7 +47,7 @@ export default function DialogPage() {
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter는 명령형 — ShUiDialog.show(...)로 호출
+              code: `// 명령형 — ShUiDialog.show(...)
 ShUiButton(
   onPressed: () => ShUiDialog.show(
     context: context,
@@ -72,6 +72,43 @@ ShUiButton(
   ),
   child: const Text('프로젝트 삭제'),
 )`,
+            },
+            {
+              value: "flutter-declarative",
+              label: "Flutter (declarative)",
+              language: "dart",
+              code: `// 선언형 — open / onOpenChange로 외부 상태 동기화
+bool _open = false;
+
+// build 내부:
+Column(children: [
+  ShUiButton(
+    onPressed: () => setState(() => _open = true),
+    child: const Text('프로젝트 삭제'),
+  ),
+  ShUiDialog(
+    open: _open,
+    onOpenChange: (v) => setState(() => _open = v),
+    child: ShUiDialogContent(
+      header: const ShUiDialogHeader(
+        title: '프로젝트를 삭제하시겠습니까?',
+        description: '이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구 삭제됩니다.',
+      ),
+      footer: ShUiDialogFooter(children: [
+        ShUiButton(
+          variant: ShUiButtonVariant.secondary,
+          onPressed: () => setState(() => _open = false),
+          child: const Text('취소'),
+        ),
+        ShUiButton(
+          variant: ShUiButtonVariant.danger,
+          onPressed: () => setState(() => _open = false),
+          child: const Text('삭제'),
+        ),
+      ]),
+    ),
+  ),
+])`,
             },
           ]}
         />
@@ -184,25 +221,26 @@ ShUiButton(
             value: "flutter",
             label: "Flutter",
             language: "dart",
-            code: `// Flutter는 명령형 — ShUiDialog.show가 Future를 반환하므로 직접 await.
-// 외부 상태와의 동기화는 await 이후에 setState 처리.
-Future<void> _openDialog() async {
-  await ShUiDialog.show(
-    context: context,
-    builder: (context) => ShUiDialogContent(
-      title: const ShUiDialogTitle('Controlled Dialog'),
-      description: const ShUiDialogDescription('외부에서 상태를 제어합니다.'),
-      footer: ShUiDialogFooter(children: [
-        ShUiButton(
-          variant: ShUiButtonVariant.secondary,
-          onPressed: () => Navigator.pop(context),
-          child: const Text('닫기'),
-        ),
-      ]),
+            code: `// 선언형 ShUiDialog — open / onOpenChange로 외부 상태 동기화.
+bool _open = false;
+
+ShUiDialog(
+  open: _open,
+  onOpenChange: (v) => setState(() => _open = v),
+  child: ShUiDialogContent(
+    header: const ShUiDialogHeader(
+      title: 'Controlled Dialog',
+      description: '외부에서 상태를 제어합니다.',
     ),
-  );
-  // 닫힘 후 실행할 로직 — setState 등
-}`,
+    footer: ShUiDialogFooter(children: [
+      ShUiButton(
+        variant: ShUiButtonVariant.secondary,
+        onPressed: () => setState(() => _open = false),
+        child: const Text('닫기'),
+      ),
+    ]),
+  ),
+)`,
           },
         ]}
       />

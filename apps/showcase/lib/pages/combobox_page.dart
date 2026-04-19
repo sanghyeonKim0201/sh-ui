@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../foundation/sh_ui_tokens.dart';
 import '../widgets/sh_ui_combobox.dart';
+import '../widgets/sh_ui_select.dart' show ShUiSelectChip;
 
 class ComboboxPage extends StatefulWidget {
   const ComboboxPage({super.key});
@@ -12,6 +13,8 @@ class ComboboxPage extends StatefulWidget {
 class _ComboboxPageState extends State<ComboboxPage> {
   String? _selectedFruit;
   String? _selectedCountry;
+  List<String> _multiCities = const [];
+  List<String> _multiCustom = const ['서울'];
 
   static const _fruits = [
     '사과',
@@ -24,6 +27,19 @@ class _ComboboxPageState extends State<ComboboxPage> {
     '복숭아',
     '자두',
     '키위',
+  ];
+
+  static const _cities = [
+    '서울',
+    '부산',
+    '대구',
+    '인천',
+    '광주',
+    '대전',
+    '울산',
+    '세종',
+    '수원',
+    '제주',
   ];
 
   static const _countries = [
@@ -105,6 +121,47 @@ class _ComboboxPageState extends State<ComboboxPage> {
                 .map((f) => ShUiComboboxItem(value: f, label: f))
                 .toList(),
             placeholder: '검색 불가',
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- MultiCombobox (기본 칩) ---
+          _section('MultiCombobox', colors),
+          ShUiMultiCombobox<String>(
+            value: _multiCities,
+            onChanged: (v) => setState(() => _multiCities = v),
+            items: _cities
+                .map((c) => ShUiComboboxItem(value: c, label: c))
+                .toList(),
+            placeholder: '도시 추가...',
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '선택된 도시: ${_multiCities.isEmpty ? '없음' : _multiCities.join(', ')}',
+            style: TextStyle(color: colors.foregroundMuted, fontSize: 14),
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- MultiCombobox (chip 커스텀) ---
+          _section('MultiCombobox — Custom Chips', colors),
+          ShUiMultiCombobox<String>(
+            value: _multiCustom,
+            onChanged: (v) => setState(() => _multiCustom = v),
+            items: _cities
+                .map((c) => ShUiComboboxItem(value: c, label: c))
+                .toList(),
+            placeholder: '도시 추가...',
+            chipsBuilder: (values, onRemove) => Wrap(
+              spacing: shUi.spacing.s1,
+              runSpacing: shUi.spacing.s1,
+              children: values
+                  .map((v) => ShUiSelectChip(
+                        label: v,
+                        onRemove: () => onRemove(v),
+                      ))
+                  .toList(),
+            ),
           ),
         ],
       ),

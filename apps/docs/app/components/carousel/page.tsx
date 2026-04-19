@@ -8,7 +8,7 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { PropsTable } from "@/components/props-table";
@@ -46,12 +46,9 @@ export default function CarouselPage() {
     <main className="container">
       <h1>Carousel</h1>
       <p className="muted">
-        Embla 기반 캐러셀. 터치 드래그·키보드 화살표·무한 루프·자동 재생을
-        지원하며, <code>prefers-reduced-motion</code>은 embla가 자동으로
-        존중한다.
-      </p>
-      <p className="muted">
-        <em>Flutter 위젯은 아직 제공되지 않습니다. React 예제만 표시합니다.</em>
+        React는 Embla 기반. 터치 드래그·키보드 화살표·무한 루프·자동 재생을
+        지원한다. Flutter <code>ShUiCarousel</code>은 <code>PageView</code>{" "}
+        기반으로 좌우 스와이프와 도트 인디케이터·화살표 버튼을 제공한다.
       </p>
 
       <Preview>
@@ -70,9 +67,13 @@ export default function CarouselPage() {
             </Carousel>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Carousel>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Carousel>
   <CarouselContent>
     {slides.map((n) => (
       <CarouselItem key={n}>
@@ -84,17 +85,53 @@ export default function CarouselPage() {
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
-</Carousel>`}
+</Carousel>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiCarousel(
+  itemHeight: 180,
+  items: List.generate(5, (i) => ShUiCard(
+    children: [
+      ShUiCardContent(
+        child: SizedBox(
+          height: 100,
+          child: Center(child: Text('\${i + 1}', style: TextStyle(fontSize: 32))),
+        ),
+      ),
+    ],
+  )),
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel
-        language="bash"
-        showLineNumbers={false}
-        code={`npx sh-ui add carousel`}
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add carousel`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add carousel
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_carousel.dart → lib/widgets/`,
+          },
+        ]}
       />
 
       <h3>Manual</h3>
@@ -110,9 +147,13 @@ export default function CarouselPage() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import {
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import {
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -127,20 +168,32 @@ export default function CarouselPage() {
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
-</Carousel>`}
+</Carousel>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_carousel.dart';
+
+ShUiCarousel(
+  itemHeight: 220,
+  items: [
+    // 임의의 위젯들
+    MyFirstSlide(),
+    MySecondSlide(),
+  ],
+)`,
+          },
+        ]}
       />
-      <p className="muted">
-        슬라이드 폭은 <code>CarouselItem</code>의 <code>flex-basis</code>(기본{" "}
-        <code>100%</code>)로 제어한다. 여러 개를 한 번에 보여주려면{" "}
-        <code>style</code>이나 <code>className</code>으로 덮어쓰면 된다.
-      </p>
 
       <h2>Examples</h2>
 
       <h3>무한 루프</h3>
       <p className="muted">
-        <code>loop</code>만 켜면 끝에서 처음으로, 처음에서 끝으로 이어진다. 자동
-        재생은 꺼진 상태.
+        React는 <code>loop</code>만 켜면 무한 루프. Flutter 버전은 현재 무한 루프를
+        지원하지 않으며 인덱스 기반 스텝으로 동작한다.
       </p>
       <Preview>
         <Preview.Demo>
@@ -158,14 +211,30 @@ export default function CarouselPage() {
             </Carousel>
           </div>
         </Preview.Demo>
-        <CodePanel language="tsx" code={`<Carousel loop>...</Carousel>`} />
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Carousel loop>...</Carousel>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter 버전은 loop 미지원.
+ShUiCarousel(items: slides)`,
+            },
+          ]}
+        />
       </Preview>
 
       <h3>자동 재생</h3>
       <p className="muted">
-        <code>autoPlay</code>를 <code>true</code>로 주면 4초 간격으로 넘어간다.
-        숫자를 주면 지연(ms)을 지정하며, 마우스가 올라가면 자동으로 멈춘다. 루프와
-        독립적인 옵션이라 함께 켜거나 따로 켤 수 있다.
+        React는 <code>autoPlay</code>로 간단히 켠다. Flutter는 자동 재생을
+        기본 제공하지 않지만 <code>initialIndex</code>·<code>onIndexChanged</code>를
+        통해 외부 타이머로 <code>ShUiCarousel</code>을 제어할 수 있다.
       </p>
       <Preview>
         <Preview.Demo>
@@ -183,9 +252,13 @@ export default function CarouselPage() {
             </Carousel>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`{/* 기본 4초 간격 */}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `{/* 기본 4초 간격 */}
 <Carousel autoPlay>...</Carousel>
 
 {/* 지연 지정 (ms) */}
@@ -194,7 +267,20 @@ export default function CarouselPage() {
 {/* 객체로 세부 옵션 지정 */}
 <Carousel autoPlay={{ delay: 3000, stopOnInteraction: true }}>
   ...
-</Carousel>`}
+</Carousel>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// 자동 재생이 필요하면 상위 위젯에서 Timer로 인덱스를 돌린다.
+ShUiCarousel(
+  items: slides,
+  initialIndex: currentIndex,
+  onIndexChanged: (i) => setState(() => currentIndex = i),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -203,7 +289,7 @@ export default function CarouselPage() {
         <code>autoScroll</code>은 한 장씩 끊어 넘기는 대신 일정 속도로 흐르듯
         움직인다. 로고 월이나 티커처럼 끊김 없는 흐름이 필요할 때 쓴다. 숫자를
         주면 <code>speed</code>(프레임당 픽셀)를 지정하며, 보통{" "}
-        <code>loop</code>과 같이 켠다.
+        <code>loop</code>과 같이 켠다. Flutter 버전은 지원하지 않는다.
       </p>
       <Preview>
         <Preview.Demo>
@@ -222,9 +308,13 @@ export default function CarouselPage() {
             </Carousel>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`{/* 기본 속도 */}
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `{/* 기본 속도 */}
 <Carousel loop autoScroll>...</Carousel>
 
 {/* 속도 지정 (px/frame) */}
@@ -236,62 +326,54 @@ export default function CarouselPage() {
   autoScroll={{ direction: "backward", stopOnMouseEnter: false }}
 >
   ...
-</Carousel>`}
+</Carousel>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter 버전은 autoScroll 미지원.`,
+            },
+          ]}
         />
       </Preview>
 
-      <h3>루프 + 자동 재생</h3>
-      <Preview>
-        <Preview.Demo>
-          <div style={{ padding: "0 2rem", width: "100%", maxWidth: 420 }}>
-            <Carousel loop autoPlay={3000}>
-              <CarouselContent>
-                {slides.map((n) => (
-                  <CarouselItem key={n}>
-                    <SlideTile n={n} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </div>
-        </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Carousel loop autoPlay={3000}>...</Carousel>`}
-        />
-      </Preview>
-
-      <h3>한 화면에 여러 슬라이드</h3>
-      <Preview>
-        <Preview.Demo>
-          <div style={{ padding: "0 2rem", width: "100%" }}>
-            <Carousel loop>
-              <CarouselContent>
-                {slides.map((n) => (
-                  <CarouselItem
-                    key={n}
-                    style={{ flex: "0 0 calc(33.333% - 0.667rem)" }}
-                  >
-                    <SlideTile n={n} height="6rem" />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
-          </div>
-        </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<CarouselItem style={{ flex: "0 0 calc(33.333% - 0.667rem)" }}>
-  ...
-</CarouselItem>`}
-        />
-      </Preview>
+      <h3>인디케이터/컨트롤 숨기기</h3>
+      <p className="muted">
+        Flutter는 <code>showIndicators</code>·<code>showControls</code>로 도트와
+        화살표 버튼을 각각 끌 수 있다. 좁은 화면(breakpoint.sm 미만)에서는
+        화살표 버튼이 자동으로 숨겨진다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `{/* React는 구성 요소를 조합해 직접 끈다 */}
+<Carousel>
+  <CarouselContent>...</CarouselContent>
+  {/* CarouselPrevious / CarouselNext 생략 */}
+</Carousel>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `ShUiCarousel(
+  items: slides,
+  showControls: false,   // 화살표 버튼 숨김
+  showIndicators: true,  // 도트는 유지
+)`,
+          },
+        ]}
+      />
 
       <h3>세로 방향</h3>
+      <p className="muted">
+        React는 <code>orientation=&quot;vertical&quot;</code>. Flutter 버전은
+        현재 가로 방향만 지원한다.
+      </p>
       <Preview>
         <Preview.Demo>
           <div style={{ padding: "2rem 0", width: "100%", maxWidth: 280 }}>
@@ -308,15 +390,27 @@ export default function CarouselPage() {
             </Carousel>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Carousel orientation="vertical" loop>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Carousel orientation="vertical" loop>
   <CarouselContent>
     <CarouselItem style={{ height: "6rem" }}>...</CarouselItem>
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
-</Carousel>`}
+</Carousel>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter 버전은 가로만 지원.`,
+            },
+          ]}
         />
       </Preview>
 
@@ -327,7 +421,7 @@ export default function CarouselPage() {
             name: "Carousel",
             description: (
               <>
-                루트. <code>loop</code>, <code>autoPlay</code>,{" "}
+                React 루트. <code>loop</code>, <code>autoPlay</code>,{" "}
                 <code>orientation</code> 등을 받고 내부 컨텍스트로 상태를 공유.
               </>
             ),
@@ -354,10 +448,20 @@ export default function CarouselPage() {
               <>다음 슬라이드로 이동하는 버튼. 끝에 도달하면 disabled (루프 시 항상 활성).</>
             ),
           },
+          {
+            name: "ShUiCarousel",
+            description: (
+              <>
+                Flutter 루트. <code>items</code>·<code>itemHeight</code>·
+                <code>showIndicators</code>·<code>showControls</code>·
+                <code>initialIndex</code>·<code>onIndexChanged</code>를 받는다.
+              </>
+            ),
+          },
         ]}
       />
 
-      <h2>API Reference</h2>
+      <h2>API Reference (React)</h2>
       <PropsTable
         rows={[
           {
@@ -404,6 +508,49 @@ export default function CarouselPage() {
             default: "-",
             description:
               "Embla API 인스턴스를 외부로 꺼내 직접 제어하고 싶을 때.",
+          },
+        ]}
+      />
+
+      <h2>API Reference (Flutter)</h2>
+      <PropsTable
+        rows={[
+          {
+            prop: "items",
+            type: "List<Widget>",
+            default: "-",
+            description: "슬라이드로 표시할 위젯 목록.",
+          },
+          {
+            prop: "itemHeight",
+            type: "double?",
+            default: "220",
+            description: "슬라이드 영역 높이.",
+          },
+          {
+            prop: "showIndicators",
+            type: "bool",
+            default: "true",
+            description: "하단 도트 인디케이터 노출 여부.",
+          },
+          {
+            prop: "showControls",
+            type: "bool",
+            default: "true",
+            description:
+              "좌/우 화살표 버튼 노출 여부. 좁은 폭(breakpoint.sm 미만)에서는 자동 숨김.",
+          },
+          {
+            prop: "initialIndex",
+            type: "int?",
+            default: "0",
+            description: "초기 선택 인덱스.",
+          },
+          {
+            prop: "onIndexChanged",
+            type: "ValueChanged<int>?",
+            default: "-",
+            description: "인덱스 변경 콜백.",
           },
         ]}
       />

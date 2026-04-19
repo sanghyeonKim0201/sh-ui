@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../foundation/sh_ui_tokens.dart';
+import 'accordion_page.dart';
 import 'button_page.dart';
 import 'card_page.dart';
+import 'carousel_page.dart';
 import 'checkbox_page.dart';
 import 'radio_page.dart';
 import 'switch_page.dart';
@@ -20,6 +22,7 @@ import 'color_picker_page.dart';
 import 'combobox_page.dart';
 import 'file_upload_page.dart';
 import 'sidebar_page.dart';
+import 'skeleton_page.dart';
 
 class HomePage extends StatelessWidget {
   final ThemeMode themeMode;
@@ -134,9 +137,22 @@ class HomePage extends StatelessWidget {
           _ComponentGrid(
             colors: colors,
             items: [
+              _Item('Accordion', Icons.unfold_more, const AccordionPage()),
               _Item('Card', Icons.credit_card, const CardPage()),
-              _Item('Tabs', Icons.tab, const TabsPage()),
+              _Item('Carousel', Icons.view_carousel_outlined, const CarouselPage()),
               _Item('Sidebar', Icons.menu, const SidebarPage()),
+              _Item('Tabs', Icons.tab, const TabsPage()),
+            ],
+          ),
+
+          const SizedBox(height: 24),
+
+          // Display
+          _SectionTitle('표시', colors),
+          _ComponentGrid(
+            colors: colors,
+            items: [
+              _Item('Skeleton', Icons.view_stream_outlined, const SkeletonPage()),
             ],
           ),
 

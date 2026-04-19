@@ -5,6 +5,8 @@ enum ShUiToggleVariant { outline, ghost }
 
 enum ShUiToggleSize { sm, md, lg }
 
+enum ShUiToggleOrientation { horizontal, vertical }
+
 /// sh-ui Toggle — 눌러서 on/off 전환하는 토글 버튼.
 class ShUiToggle extends StatefulWidget {
   final bool pressed;
@@ -122,6 +124,7 @@ class ShUiToggleGroup<T> extends StatelessWidget {
   final bool multiple;
   final ShUiToggleVariant variant;
   final ShUiToggleSize size;
+  final ShUiToggleOrientation orientation;
   final List<ShUiToggleGroupItem<T>> children;
 
   const ShUiToggleGroup({
@@ -131,21 +134,30 @@ class ShUiToggleGroup<T> extends StatelessWidget {
     this.multiple = false,
     this.variant = ShUiToggleVariant.ghost,
     this.size = ShUiToggleSize.md,
+    this.orientation = ShUiToggleOrientation.horizontal,
     required this.children,
   });
 
   @override
   Widget build(BuildContext context) {
+    final layout = orientation == ShUiToggleOrientation.vertical
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: children,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: children,
+          );
+
     return _ShUiToggleGroupScope(
       value: value,
       onValueChange: onValueChange,
       multiple: multiple,
       variant: variant,
       size: size,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      ),
+      child: layout,
     );
   }
 }

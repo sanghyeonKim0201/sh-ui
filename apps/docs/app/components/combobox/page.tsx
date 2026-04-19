@@ -161,8 +161,36 @@ ShUiCombobox<String>(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter ShUiCombobox는 현재 단일 선택만 지원합니다.
-// 다중 선택 + 칩 UI는 아직 구현되어 있지 않습니다.`,
+              code: `// ShUiMultiCombobox: 검색 + 다중 선택 + 칩 표시.
+// 기본 칩은 입력 위에 자동 렌더. chipsBuilder로 커스터마이즈 가능.
+List<String> cities = [];
+
+ShUiMultiCombobox<String>(
+  value: cities,
+  onChanged: (v) => setState(() => cities = v),
+  items: ['서울', '부산', '대구', '인천']
+      .map((c) => ShUiComboboxItem(value: c, label: c))
+      .toList(),
+  placeholder: '도시 추가...',
+)
+
+// 커스텀 칩 렌더러
+ShUiMultiCombobox<String>(
+  value: cities,
+  onChanged: (v) => setState(() => cities = v),
+  items: items,
+  placeholder: '도시 추가...',
+  chipsBuilder: (values, onRemove) => Wrap(
+    spacing: 4,
+    runSpacing: 4,
+    children: values
+        .map((v) => ShUiSelectChip(
+              label: v,
+              onRemove: () => onRemove(v),
+            ))
+        .toList(),
+  ),
+)`,
             },
           ]}
         />

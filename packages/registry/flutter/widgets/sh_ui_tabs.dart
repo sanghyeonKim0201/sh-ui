@@ -3,10 +3,13 @@ import '../foundation/sh_ui_tokens.dart';
 
 enum ShUiTabsVariant { underline, pill, plain }
 
+enum ShUiTabsOrientation { horizontal, vertical }
+
 /// sh-ui Tabs — 탭 네비게이션.
 ///
 /// ShUiTabs(
 ///   variant: ShUiTabsVariant.underline,
+///   orientation: ShUiTabsOrientation.horizontal,
 ///   tabs: [
 ///     ShUiTab(label: '개요', child: Text('개요 내용')),
 ///     ShUiTab(label: '설정', child: Text('설정 내용')),
@@ -17,6 +20,10 @@ class ShUiTabs extends StatefulWidget {
   final int initialIndex;
   final ValueChanged<int>? onChanged;
   final ShUiTabsVariant variant;
+  final ShUiTabsOrientation orientation;
+
+  /// vertical 일 때 탭 리스트의 너비.
+  final double verticalListWidth;
 
   const ShUiTabs({
     super.key,
@@ -24,6 +31,8 @@ class ShUiTabs extends StatefulWidget {
     this.initialIndex = 0,
     this.onChanged,
     this.variant = ShUiTabsVariant.underline,
+    this.orientation = ShUiTabsOrientation.horizontal,
+    this.verticalListWidth = 160,
   });
 
   @override
@@ -49,22 +58,38 @@ class _ShUiTabsState extends State<ShUiTabs> {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     final colors = shUi.colors;
 
+    final tabList = _ShUiTabList(
+      tabs: widget.tabs,
+      selectedIndex: _selectedIndex,
+      onSelect: _select,
+      variant: widget.variant,
+      orientation: widget.orientation,
+      colors: colors,
+      radius: shUi.radius,
+    );
+
+    final content = _selectedIndex < widget.tabs.length
+        ? widget.tabs[_selectedIndex].child
+        : const SizedBox.shrink();
+
+    if (widget.orientation == ShUiTabsOrientation.vertical) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(width: widget.verticalListWidth, child: tabList),
+          SizedBox(width: shUi.spacing.s4),
+          Expanded(child: content),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Tab list
-        _ShUiTabList(
-          tabs: widget.tabs,
-          selectedIndex: _selectedIndex,
-          onSelect: _select,
-          variant: widget.variant,
-          colors: colors,
-          radius: shUi.radius,
-        ),
-        // Tab content
-        if (_selectedIndex < widget.tabs.length)
-          widget.tabs[_selectedIndex].child,
+        tabList,
+        content,
       ],
     );
   }
@@ -87,6 +112,7 @@ class _ShUiTabList extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelect;
   final ShUiTabsVariant variant;
+  final ShUiTabsOrientation orientation;
   final ShUiColorTokens colors;
   final ShUiRadiusTokens radius;
 
@@ -95,6 +121,7 @@ class _ShUiTabList extends StatelessWidget {
     required this.selectedIndex,
     required this.onSelect,
     required this.variant,
+    required this.orientation,
     required this.colors,
     required this.radius,
   });
@@ -102,27 +129,43 @@ class _ShUiTabList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
-    Widget list = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(tabs.length, (i) {
-        return _ShUiTabTrigger(
-          label: tabs[i].label,
-          icon: tabs[i].icon,
-          selected: i == selectedIndex,
-          onTap: () => onSelect(i),
-          variant: variant,
-          colors: colors,
-          radius: radius,
-        );
-      }),
-    );
+    final isVertical = orientation == ShUiTabsOrientation.vertical;
 
-    // underline variant 아래 구분선
+    final triggers = List.generate(tabs.length, (i) {
+      return _ShUiTabTrigger(
+        label: tabs[i].label,
+        icon: tabs[i].icon,
+        selected: i == selectedIndex,
+        onTap: () => onSelect(i),
+        variant: variant,
+        orientation: orientation,
+        colors: colors,
+        radius: radius,
+      );
+    });
+
+    Widget list = isVertical
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: triggers,
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: triggers,
+          );
+
+    // underline variant 구분선
     if (variant == ShUiTabsVariant.underline) {
       list = Container(
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: colors.border, width: shUi.borderWidth.normal),
+            bottom: isVertical
+                ? BorderSide.none
+                : BorderSide(color: colors.border, width: shUi.borderWidth.normal),
+            right: isVertical
+                ? BorderSide(color: colors.border, width: shUi.borderWidth.normal)
+                : BorderSide.none,
           ),
         ),
         child: list,
@@ -151,6 +194,7 @@ class _ShUiTabTrigger extends StatefulWidget {
   final bool selected;
   final VoidCallback onTap;
   final ShUiTabsVariant variant;
+  final ShUiTabsOrientation orientation;
   final ShUiColorTokens colors;
   final ShUiRadiusTokens radius;
 
@@ -160,6 +204,7 @@ class _ShUiTabTrigger extends StatefulWidget {
     required this.selected,
     required this.onTap,
     required this.variant,
+    required this.orientation,
     required this.colors,
     required this.radius,
   });
@@ -174,6 +219,8 @@ class _ShUiTabTriggerState extends State<_ShUiTabTrigger> {
   @override
   Widget build(BuildContext context) {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final isVertical = widget.orientation == ShUiTabsOrientation.vertical;
+
     Color bg;
     Color fg;
     BoxBorder? border;
@@ -182,11 +229,23 @@ class _ShUiTabTriggerState extends State<_ShUiTabTrigger> {
       case ShUiTabsVariant.underline:
         bg = Colors.transparent;
         fg = widget.selected ? widget.colors.foreground : widget.colors.foregroundMuted;
-        border = widget.selected
-            ? Border(
-                bottom: BorderSide(color: widget.colors.foreground, width: shUi.borderWidth.strong),
-              )
-            : null;
+        if (widget.selected) {
+          border = isVertical
+              ? Border(
+                  right: BorderSide(
+                    color: widget.colors.foreground,
+                    width: shUi.borderWidth.strong,
+                  ),
+                )
+              : Border(
+                  bottom: BorderSide(
+                    color: widget.colors.foreground,
+                    width: shUi.borderWidth.strong,
+                  ),
+                );
+        } else {
+          border = null;
+        }
         break;
       case ShUiTabsVariant.pill:
         bg = widget.selected ? widget.colors.background : Colors.transparent;
@@ -204,53 +263,62 @@ class _ShUiTabTriggerState extends State<_ShUiTabTrigger> {
       fg = widget.colors.foreground;
     }
 
+    final rowChildren = <Widget>[
+      if (widget.icon != null) ...[
+        IconTheme(
+          data: IconThemeData(color: fg, size: 16),
+          child: widget.icon!,
+        ),
+        const SizedBox(width: 6),
+      ],
+      Text(
+        widget.label,
+        style: TextStyle(
+          color: fg,
+          fontSize: shUi.text.sm,
+          fontWeight: widget.selected ? shUi.weight.medium : shUi.weight.regular,
+          height: 1,
+        ),
+      ),
+    ];
+
+    final trigger = AnimatedContainer(
+      duration: shUi.duration.fast,
+      height: isVertical ? shUi.control.md : null,
+      padding: EdgeInsets.symmetric(
+        horizontal: shUi.spacing.s4,
+        vertical: shUi.spacing.s2,
+      ),
+      decoration: BoxDecoration(
+        color: bg,
+        border: border,
+        borderRadius: widget.variant == ShUiTabsVariant.pill
+            ? BorderRadius.circular(widget.radius.defaultRadius - 2)
+            : null,
+        boxShadow: widget.variant == ShUiTabsVariant.pill && widget.selected
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ]
+            : null,
+      ),
+      alignment: isVertical ? Alignment.centerLeft : null,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: rowChildren,
+      ),
+    );
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
       onExit: (_) => setState(() => _hover = false),
       child: GestureDetector(
         onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: shUi.duration.fast,
-          padding: EdgeInsets.symmetric(horizontal: shUi.spacing.s4, vertical: shUi.spacing.s2),
-          decoration: BoxDecoration(
-            color: bg,
-            border: border,
-            borderRadius: widget.variant == ShUiTabsVariant.pill
-                ? BorderRadius.circular(widget.radius.defaultRadius - 2)
-                : null,
-            boxShadow: widget.variant == ShUiTabsVariant.pill && widget.selected
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 2,
-                      offset: const Offset(0, 1),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.icon != null) ...[
-                IconTheme(
-                  data: IconThemeData(color: fg, size: 16),
-                  child: widget.icon!,
-                ),
-                const SizedBox(width: 6),
-              ],
-              Text(
-                widget.label,
-                style: TextStyle(
-                  color: fg,
-                  fontSize: shUi.text.sm,
-                  fontWeight: widget.selected ? shUi.weight.medium : shUi.weight.regular,
-                  height: 1,
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: trigger,
       ),
     );
   }

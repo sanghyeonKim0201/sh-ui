@@ -12,6 +12,9 @@ class SelectPage extends StatefulWidget {
 class _SelectPageState extends State<SelectPage> {
   String? _selected;
   String? _selectedDisabled;
+  String? _selectedCountry;
+  List<String> _multiFruits = const [];
+  List<String> _multiChipsFruits = const ['apple', 'grape'];
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +104,89 @@ class _SelectPageState extends State<SelectPage> {
               ShUiSelectItem(value: 'x', child: Text('항목 X')),
               ShUiSelectItem(value: 'y', child: Text('항목 Y')),
             ],
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- Groups + Separator ---
+          _section('Groups + Separator', colors),
+          ShUiSelect<String>(
+            value: _selectedCountry,
+            onChanged: (v) => setState(() => _selectedCountry = v),
+            placeholder: '국가 선택',
+            elements: const [
+              ShUiSelectGroup(
+                label: '아시아',
+                items: [
+                  ShUiSelectItem(value: 'kr', child: Text('대한민국')),
+                  ShUiSelectItem(value: 'jp', child: Text('일본')),
+                  ShUiSelectItem(value: 'tw', child: Text('대만')),
+                ],
+              ),
+              ShUiSelectSeparator(),
+              ShUiSelectGroup(
+                label: '유럽',
+                items: [
+                  ShUiSelectItem(value: 'de', child: Text('독일')),
+                  ShUiSelectItem(value: 'fr', child: Text('프랑스')),
+                  ShUiSelectItem(value: 'uk', child: Text('영국')),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '선택된 국가: ${_selectedCountry ?? '없음'}',
+            style: TextStyle(color: colors.foregroundMuted, fontSize: 14),
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- MultiSelect (기본) ---
+          _section('MultiSelect', colors),
+          ShUiMultiSelect<String>(
+            value: _multiFruits,
+            onChanged: (v) => setState(() => _multiFruits = v),
+            placeholder: '과일을 여러 개 선택',
+            elements: const [
+              ShUiSelectItem(value: 'apple', child: Text('사과')),
+              ShUiSelectItem(value: 'banana', child: Text('바나나')),
+              ShUiSelectItem(value: 'grape', child: Text('포도')),
+              ShUiSelectItem(value: 'orange', child: Text('오렌지')),
+              ShUiSelectItem(value: 'strawberry', child: Text('딸기')),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '선택된 과일: ${_multiFruits.isEmpty ? '없음' : _multiFruits.join(', ')}',
+            style: TextStyle(color: colors.foregroundMuted, fontSize: 14),
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- MultiSelect (chip 렌더 커스텀) ---
+          _section('MultiSelect — Chips', colors),
+          ShUiMultiSelect<String>(
+            value: _multiChipsFruits,
+            onChanged: (v) => setState(() => _multiChipsFruits = v),
+            placeholder: '과일 선택',
+            elements: const [
+              ShUiSelectItem(value: 'apple', child: Text('사과')),
+              ShUiSelectItem(value: 'banana', child: Text('바나나')),
+              ShUiSelectItem(value: 'grape', child: Text('포도')),
+              ShUiSelectItem(value: 'orange', child: Text('오렌지')),
+              ShUiSelectItem(value: 'strawberry', child: Text('딸기')),
+            ],
+            chipsBuilder: (values, onRemove) => Wrap(
+              spacing: shUi.spacing.s1,
+              runSpacing: shUi.spacing.s1,
+              children: values
+                  .map((v) => ShUiSelectChip(
+                        label: v,
+                        onRemove: () => onRemove(v),
+                      ))
+                  .toList(),
+            ),
           ),
         ],
       ),

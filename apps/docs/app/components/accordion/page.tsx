@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { CodePanel } from "@/components/ui/code-panel";
+import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { AccordionSingleDemo } from "./_demos/basic";
@@ -16,12 +16,11 @@ export default function AccordionPage() {
     <main className="container">
       <h1>Accordion</h1>
       <p className="muted">
-        수직으로 쌓인 접이식 섹션. Base UI Accordion을 얇게 감쌌으며 기본은 다중
-        확장(동시에 여러 개 열림), <code>value</code>/
-        <code>defaultValue</code>로 제어할 수 있다.
-      </p>
-      <p className="muted">
-        <em>Flutter 위젯은 아직 제공되지 않습니다. React 예제만 표시합니다.</em>
+        수직으로 쌓인 접이식 섹션. React는 Base UI Accordion을 얇게 감쌌으며
+        기본이 다중 확장(multiple)이고 <code>value</code>/
+        <code>defaultValue</code>로 제어한다. Flutter는{" "}
+        <code>ShUiAccordion</code>에 <code>items</code>·<code>type</code>·
+        <code>initialValue</code>를 넘겨 구성한다.
       </p>
 
       <Preview>
@@ -53,9 +52,13 @@ export default function AccordionPage() {
             </Accordion>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Accordion defaultValue={["item-1"]}>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Accordion defaultValue={["item-1"]}>
   <AccordionItem value="item-1">
     <AccordionTrigger>설치 방법이 궁금합니다</AccordionTrigger>
     <AccordionContent>...</AccordionContent>
@@ -64,17 +67,55 @@ export default function AccordionPage() {
     <AccordionTrigger>테마는 어떻게 바꾸나요?</AccordionTrigger>
     <AccordionContent>...</AccordionContent>
   </AccordionItem>
-</Accordion>`}
+</Accordion>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiAccordion(
+  initialValue: const ['item-1'],
+  items: [
+    ShUiAccordionItem(
+      value: 'item-1',
+      title: '설치 방법이 궁금합니다',
+      content: Text('CLI를 사용하면 "sh-ui add accordion"으로 위젯 파일이 lib/widgets/에 복사됩니다.'),
+    ),
+    ShUiAccordionItem(
+      value: 'item-2',
+      title: '테마는 어떻게 바꾸나요?',
+      content: Text('ShUiTheme 토큰을 덮어쓰면 전체 위젯에 일괄 적용됩니다.'),
+    ),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel
-        language="bash"
-        showLineNumbers={false}
-        code={`npx sh-ui add accordion`}
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add accordion`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui add accordion
+
+# 또는 수동 복사:
+# packages/registry/flutter/widgets/sh_ui_accordion.dart → lib/widgets/`,
+          },
+        ]}
       />
 
       <h3>Manual</h3>
@@ -88,9 +129,13 @@ export default function AccordionPage() {
       </ul>
 
       <h2>Usage</h2>
-      <CodePanel
-        language="tsx"
-        code={`import {
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
@@ -102,16 +147,36 @@ export default function AccordionPage() {
     <AccordionTrigger>질문 A</AccordionTrigger>
     <AccordionContent>답변 A</AccordionContent>
   </AccordionItem>
-</Accordion>`}
+</Accordion>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_accordion.dart';
+
+ShUiAccordion(
+  initialValue: const ['a'],
+  items: [
+    ShUiAccordionItem(
+      value: 'a',
+      title: '질문 A',
+      content: Text('답변 A'),
+    ),
+  ],
+)`,
+          },
+        ]}
       />
 
       <h2>Examples</h2>
 
       <h3>여러 항목 동시 열기 (multiple)</h3>
       <p className="muted">
-        기본값이 <code>multiple={`{true}`}</code>라 여러 섹션을 동시에 펼칠 수
-        있다. <code>defaultValue</code>에 배열로 여러 값을 주면 그만큼 초기 열림
-        상태로 시작한다.
+        React는 기본이 <code>multiple</code>이며{" "}
+        <code>defaultValue</code>에 배열로 여러 값을 줄 수 있다. Flutter도{" "}
+        <code>ShUiAccordionType.multiple</code>이 기본이며{" "}
+        <code>initialValue</code>에 <code>List&lt;String&gt;</code>을 전달한다.
       </p>
       <Preview>
         <Preview.Demo>
@@ -138,9 +203,13 @@ export default function AccordionPage() {
             </Accordion>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Accordion defaultValue={["item-a", "item-b"]}>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Accordion defaultValue={["item-a", "item-b"]}>
   <AccordionItem value="item-a">
     <AccordionTrigger>섹션 A</AccordionTrigger>
     <AccordionContent>A는 처음부터 열려 있습니다.</AccordionContent>
@@ -149,18 +218,30 @@ export default function AccordionPage() {
     <AccordionTrigger>섹션 B</AccordionTrigger>
     <AccordionContent>B도 같이 열려 있습니다.</AccordionContent>
   </AccordionItem>
-  <AccordionItem value="item-c">
-    <AccordionTrigger>섹션 C</AccordionTrigger>
-    <AccordionContent>C를 열어도 A·B는 닫히지 않습니다.</AccordionContent>
-  </AccordionItem>
-</Accordion>`}
+</Accordion>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiAccordion(
+  type: ShUiAccordionType.multiple,
+  initialValue: const ['item-a', 'item-b'],
+  items: [
+    ShUiAccordionItem(value: 'item-a', title: '섹션 A', content: Text('A는 처음부터 열려 있습니다.')),
+    ShUiAccordionItem(value: 'item-b', title: '섹션 B', content: Text('B도 같이 열려 있습니다.')),
+    ShUiAccordionItem(value: 'item-c', title: '섹션 C', content: Text('C를 열어도 A·B는 닫히지 않습니다.')),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
       <h3>한 번에 하나만 열기 (single)</h3>
       <p className="muted">
-        <code>multiple={`{false}`}</code>로 한 번에 하나만 열리도록 제한할 수
-        있다.
+        React는 <code>multiple={`{false}`}</code>, Flutter는{" "}
+        <code>type: ShUiAccordionType.single</code>로 한 번에 하나만 열리게 한다.
       </p>
       <Preview>
         <Preview.Demo>
@@ -168,9 +249,13 @@ export default function AccordionPage() {
             <AccordionSingleDemo />
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<Accordion multiple={false}>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Accordion multiple={false}>
   <AccordionItem value="a">
     <AccordionTrigger>A</AccordionTrigger>
     <AccordionContent>A 내용</AccordionContent>
@@ -179,7 +264,22 @@ export default function AccordionPage() {
     <AccordionTrigger>B</AccordionTrigger>
     <AccordionContent>B 내용</AccordionContent>
   </AccordionItem>
-</Accordion>`}
+</Accordion>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiAccordion(
+  type: ShUiAccordionType.single,
+  initialValue: 'a',
+  items: [
+    ShUiAccordionItem(value: 'a', title: 'A', content: Text('A 내용')),
+    ShUiAccordionItem(value: 'b', title: 'B', content: Text('B 내용')),
+  ],
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -199,12 +299,29 @@ export default function AccordionPage() {
             </Accordion>
           </div>
         </Preview.Demo>
-        <CodePanel
-          language="tsx"
-          code={`<AccordionItem value="b" disabled>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<AccordionItem value="b" disabled>
   <AccordionTrigger>비활성화된 항목</AccordionTrigger>
   <AccordionContent>...</AccordionContent>
-</AccordionItem>`}
+</AccordionItem>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiAccordionItem(
+  value: 'b',
+  title: '비활성화된 항목',
+  disabled: true,
+  content: Text('이 내용은 열리지 않습니다.'),
+)`,
+            },
+          ]}
         />
       </Preview>
 
@@ -235,14 +352,39 @@ export default function AccordionPage() {
             name: "AccordionContent",
             description: <>열림/닫힘 전환되는 패널 본문.</>,
           },
+          {
+            name: "ShUiAccordion",
+            description: (
+              <>
+                Flutter 루트. <code>items</code>·<code>type</code>·
+                <code>initialValue</code>·<code>onValueChange</code>를 받는다.
+              </>
+            ),
+          },
+          {
+            name: "ShUiAccordionItem",
+            description: (
+              <>
+                Flutter 항목 모델. <code>value</code>·<code>title</code>·
+                <code>content</code>·<code>leadingIcon</code>·
+                <code>disabled</code>.
+              </>
+            ),
+          },
         ]}
       />
 
       <h2>API Reference</h2>
       <p className="muted">
-        Props는 Base UI Accordion과 동일하다: <code>value</code>,{" "}
+        React Props는 Base UI Accordion과 동일하다: <code>value</code>,{" "}
         <code>defaultValue</code>, <code>onValueChange</code>,{" "}
         <code>disabled</code>, <code>orientation</code> 등.
+      </p>
+      <p className="muted">
+        Flutter: <code>type</code>이 <code>single</code>이면{" "}
+        <code>initialValue</code>와 <code>onValueChange</code>의 값 타입이{" "}
+        <code>String?</code>, <code>multiple</code>이면{" "}
+        <code>List&lt;String&gt;</code>이다.
       </p>
     </main>
   );

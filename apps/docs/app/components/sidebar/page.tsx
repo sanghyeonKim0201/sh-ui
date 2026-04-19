@@ -304,8 +304,16 @@ ShUiSidebarProvider(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter의 ShUiSidebar는 variant 파라미터를 제공하지 않는다.
-// 플로팅 스타일이 필요하면 Container/decoration 으로 감싸 커스터마이즈한다.`,
+              code: `// Flutter ShUiSidebar는 variant 파라미터를 지원한다: sidebar / floating / inset.
+ShUiSidebarProvider(
+  child: Row(children: [
+    ShUiSidebar(
+      variant: ShUiSidebarVariant.floating,
+      children: const [/* ... */],
+    ),
+    const Expanded(child: mainContent),
+  ]),
+)`,
             },
           ]}
         />
@@ -350,22 +358,18 @@ ShUiSidebarProvider(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter의 ShUiSidebar는 TOC(스크롤 기반 자동 활성화)를 기본 제공하지 않는다.
-// ScrollController + VisibilityDetector로 직접 활성 섹션을 추적해
-// ShUiSidebarItem(isActive: ...) 에 반영한다.
-ShUiSidebarGroup(
-  label: 'On this page',
-  children: [
-    ShUiSidebarItem(
-      label: 'Intro',
-      isActive: _activeId == 'intro',
-      onTap: () => _scrollTo('intro'),
-    ),
-    ShUiSidebarItem(
-      label: 'Install',
-      isActive: _activeId == 'install',
-      onTap: () => _scrollTo('install'),
-    ),
+              code: `// Flutter는 ShUiSidebarTOC + ShUiSidebarTOCItem 로 트리형 TOC를 제공한다.
+// (IntersectionObserver 없으므로 activeId는 호출자가 ScrollController 등으로 관리)
+ShUiSidebarTOC(
+  activeId: _activeId,
+  onItemTap: (id) => _scrollTo(id),
+  items: const [
+    ShUiSidebarTOCItem(id: 'intro', label: 'Intro'),
+    ShUiSidebarTOCItem(id: 'usage', label: 'Usage', children: [
+      ShUiSidebarTOCItem(id: 'usage-basic', label: 'Basic'),
+      ShUiSidebarTOCItem(id: 'usage-advanced', label: 'Advanced'),
+    ]),
+    ShUiSidebarTOCItem(id: 'api', label: 'API'),
   ],
 )`,
             },
@@ -570,27 +574,27 @@ ShUiSidebarProvider(
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// Flutter의 ShUiSidebar는 panelId / SidebarPanel을 기본 제공하지 않는다.
-// 직접 상태(activePanel)를 관리해 Row에 추가 패널 위젯을 렌더한다.
-String? _activePanel;
-
-Row(children: [
-  ShUiSidebar(
-    children: [
-      ShUiSidebarItem(
-        icon: Icons.search,
-        label: '검색',
-        isActive: _activePanel == 'search',
-        onTap: () => setState(() {
-          _activePanel = _activePanel == 'search' ? null : 'search';
-        }),
-      ),
-    ],
-  ),
-  if (_activePanel == 'search')
-    SizedBox(width: 280, child: SearchPanel(onClose: () => setState(() => _activePanel = null))),
-  Expanded(child: mainContent),
-])`,
+              code: `// ShUiSidebarItem(panelId: ...) + ShUiSidebarPanel(panelId: ...) 조합.
+// activePanelId는 ShUiSidebarProvider가 관리하고, 아이템 탭 시 토글된다.
+ShUiSidebarProvider(
+  defaultOpen: false,
+  collapsedWidth: 56,
+  child: Row(children: [
+    ShUiSidebar(children: const [
+      ShUiSidebarItem(icon: Icons.search, label: '검색', panelId: 'search'),
+      ShUiSidebarItem(icon: Icons.folder_outlined, label: '탐색기', panelId: 'explorer'),
+    ]),
+    ShUiSidebarPanel(
+      panelId: 'search',
+      child: SearchPanelBody(),
+    ),
+    ShUiSidebarPanel(
+      panelId: 'explorer',
+      child: ExplorerPanelBody(),
+    ),
+    const Expanded(child: mainContent),
+  ]),
+)`,
             },
           ]}
         />
@@ -632,7 +636,7 @@ Row(children: [
               value: "flutter",
               label: "Flutter",
               language: "dart",
-              code: `// 라우팅 항목과 패널 트리거를 한 그룹에 섞어 배치.
+              code: `// 라우팅 항목과 panelId 트리거를 한 그룹에 혼합.
 ShUiSidebarGroup(
   label: '탐색',
   children: [
@@ -642,13 +646,11 @@ ShUiSidebarGroup(
       isActive: _route == '/',
       onTap: () => context.go('/'),
     ),
+    // panelId 지정 → activePanelId로 자동 활성 판정
     ShUiSidebarItem(
       icon: Icons.search,
       label: '검색',
-      isActive: _activePanel == 'search',
-      onTap: () => setState(() {
-        _activePanel = _activePanel == 'search' ? null : 'search';
-      }),
+      panelId: 'search',
     ),
   ],
 )`,
@@ -656,6 +658,55 @@ ShUiSidebarGroup(
           ]}
         />
       </Preview>
+
+      <h3>중첩 서브메뉴 (MenuSub)</h3>
+      <p className="muted">
+        메뉴 항목에 하위 항목을 넣어 펼침/접힘 동작으로 표시한다. React는 <code>SidebarMenuSub</code> 컴포넌트, Flutter는 <code>ShUiSidebarItem.children</code> 파라미터를 사용한다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `<SidebarMenu>
+  <SidebarMenuItem>
+    <SidebarMenuButton>프로젝트</SidebarMenuButton>
+    <SidebarMenuSub>
+      <SidebarMenuSubItem>
+        <SidebarMenuSubButton href="#web">Web</SidebarMenuSubButton>
+      </SidebarMenuSubItem>
+      <SidebarMenuSubItem>
+        <SidebarMenuSubButton href="#mobile">Mobile</SidebarMenuSubButton>
+      </SidebarMenuSubItem>
+    </SidebarMenuSub>
+  </SidebarMenuItem>
+</SidebarMenu>`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// ShUiSidebarItem(children: [...]) 로 서브메뉴 구성.
+// 탭 시 chevron 회전 + AnimatedSize로 펼침/접힘된다.
+ShUiSidebarItem(
+  icon: Icons.work_outline,
+  label: '프로젝트',
+  children: [
+    ShUiSidebarItem(label: 'Web', onTap: () => context.go('/web')),
+    ShUiSidebarItem(label: 'Mobile', onTap: () => context.go('/mobile')),
+    ShUiSidebarItem(
+      label: 'Internal',
+      children: [
+        ShUiSidebarItem(label: 'Admin', onTap: () => context.go('/admin')),
+        ShUiSidebarItem(label: 'Analytics', onTap: () => context.go('/analytics')),
+      ],
+    ),
+  ],
+)`,
+          },
+        ]}
+      />
 
       <h3>Collapsible: none (always open)</h3>
       <Preview>

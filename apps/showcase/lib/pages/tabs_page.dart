@@ -118,6 +118,61 @@ class _TabsPageState extends State<TabsPage> {
               ),
             ],
           ),
+
+          const SizedBox(height: 32),
+
+          // --- Vertical ---
+          _section('Vertical (underline)', colors),
+          SizedBox(
+            height: 180,
+            child: ShUiTabs(
+              orientation: ShUiTabsOrientation.vertical,
+              variant: ShUiTabsVariant.underline,
+              tabs: [
+                ShUiTab(
+                  label: 'One',
+                  child: _tabContent('세로 배치 탭 1.', colors),
+                ),
+                ShUiTab(
+                  label: 'Two',
+                  child: _tabContent('세로 배치 탭 2.', colors),
+                ),
+                ShUiTab(
+                  label: 'Three',
+                  child: _tabContent('세로 배치 탭 3.', colors),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 32),
+
+          // --- Vertical (pill) ---
+          _section('Vertical (pill)', colors),
+          SizedBox(
+            height: 180,
+            child: ShUiTabs(
+              orientation: ShUiTabsOrientation.vertical,
+              variant: ShUiTabsVariant.pill,
+              tabs: [
+                ShUiTab(
+                  label: '계정',
+                  icon: const Icon(Icons.person_outline),
+                  child: _tabContent('계정 설정 내용.', colors),
+                ),
+                ShUiTab(
+                  label: '알림',
+                  icon: const Icon(Icons.notifications_none),
+                  child: _tabContent('알림 설정 내용.', colors),
+                ),
+                ShUiTab(
+                  label: '보안',
+                  icon: const Icon(Icons.lock_outline),
+                  child: _tabContent('보안 설정 내용.', colors),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
