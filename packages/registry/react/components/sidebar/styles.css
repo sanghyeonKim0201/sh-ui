@@ -485,3 +485,18 @@
 .sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] .sh-ui-sidebar__collapsible-content {
   display: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-sidebar,
+  .sh-ui-sidebar--mobile,
+  .sh-ui-sidebar__trigger,
+  .sh-ui-sidebar__menu-button,
+  .sh-ui-sidebar__menu-sub-button,
+  .sh-ui-sidebar__panel-close,
+  .sh-ui-sidebar__chevron {
+    transition: none;
+  }
+  .sh-ui-sidebar__panel {
+    animation: none;
+  }
+}

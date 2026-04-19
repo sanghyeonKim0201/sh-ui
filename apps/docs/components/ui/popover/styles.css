@@ -53,3 +53,13 @@
   color: var(--foreground-muted);
   font-size: 0.8125rem;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-popover__content {
+    transition: none;
+  }
+  .sh-ui-popover__content[data-starting-style],
+  .sh-ui-popover__content[data-ending-style] {
+    transform: none;
+  }
+}

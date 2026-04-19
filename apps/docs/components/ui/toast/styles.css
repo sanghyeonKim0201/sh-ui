@@ -279,3 +279,12 @@
   outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-toast {
+    animation: none !important;
+  }
+  .sh-ui-toast__close {
+    transition: none;
+  }
+}

@@ -77,3 +77,9 @@
 .sh-ui-toggle-group[data-orientation="vertical"] {
   flex-direction: column;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-toggle {
+    transition: none;
+  }
+}
