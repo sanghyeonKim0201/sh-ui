@@ -1,6 +1,6 @@
 {
   "name": "sh-ui",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "sh-ui — 짧은 이름, 단단한 기본기. 담백하게 설계된 멀티 플랫폼 디자인 시스템.",
   "scripts": {
