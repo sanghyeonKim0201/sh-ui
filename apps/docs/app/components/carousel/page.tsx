@@ -6,6 +6,7 @@ import {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselIndicators,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { CodeTabs } from "@/components/code-tabs";
@@ -46,9 +47,10 @@ export default function CarouselPage() {
     <main className="container">
       <h1>Carousel</h1>
       <p className="muted">
-        React는 Embla 기반. 터치 드래그·키보드 화살표·무한 루프·자동 재생을
-        지원한다. Flutter <code>ShUiCarousel</code>은 <code>PageView</code>{" "}
-        기반으로 좌우 스와이프와 도트 인디케이터·화살표 버튼을 제공한다.
+        React는 순수 CSS scroll-snap 기반의 compound 컴포넌트. 터치 드래그·키보드
+        화살표·자동 재생·도트 인디케이터를 지원한다. Flutter <code>ShUiCarousel</code>
+        은 <code>PageView</code> 기반으로 좌우 스와이프와 도트 인디케이터·화살표
+        버튼을 제공한다.
       </p>
 
       <Preview>
@@ -64,6 +66,7 @@ export default function CarouselPage() {
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />
+              <CarouselIndicators />
             </Carousel>
           </div>
         </Preview.Demo>
@@ -85,6 +88,7 @@ export default function CarouselPage() {
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
+  <CarouselIndicators />
 </Carousel>`,
             },
             {
@@ -137,9 +141,7 @@ export default function CarouselPage() {
       <h3>Manual</h3>
       <p className="muted">
         registry에서 아래 파일을 <code>components/ui/carousel/</code>로 복사한다.{" "}
-        <code>embla-carousel</code>, <code>embla-carousel-react</code>,{" "}
-        <code>embla-carousel-autoplay</code>,{" "}
-        <code>embla-carousel-auto-scroll</code> 의존성이 필요하다.
+        외부 의존성 없이 순수 React + CSS로 동작한다.
       </p>
       <ul>
         <li><code>index.tsx</code></li>
@@ -159,6 +161,7 @@ export default function CarouselPage() {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselIndicators,
 } from "@/components/ui/carousel";
 
 <Carousel>
@@ -168,6 +171,7 @@ export default function CarouselPage() {
   </CarouselContent>
   <CarouselPrevious />
   <CarouselNext />
+  <CarouselIndicators />
 </Carousel>`,
           },
           {
@@ -192,8 +196,8 @@ ShUiCarousel(
 
       <h3>무한 루프</h3>
       <p className="muted">
-        React는 <code>loop</code>만 켜면 무한 루프. Flutter 버전은 현재 무한 루프를
-        지원하지 않으며 인덱스 기반 스텝으로 동작한다.
+        React는 <code>loop</code>만 켜면 다음/이전 버튼이 양 끝에서 감긴다. Flutter
+        버전은 현재 무한 루프를 지원하지 않으며 인덱스 기반 스텝으로 동작한다.
       </p>
       <Preview>
         <Preview.Demo>
@@ -208,6 +212,7 @@ ShUiCarousel(
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />
+              <CarouselIndicators />
             </Carousel>
           </div>
         </Preview.Demo>
@@ -232,14 +237,16 @@ ShUiCarousel(items: slides)`,
 
       <h3>자동 재생</h3>
       <p className="muted">
-        React는 <code>autoPlay</code>로 간단히 켠다. Flutter는 자동 재생을
-        기본 제공하지 않지만 <code>initialIndex</code>·<code>onIndexChanged</code>를
-        통해 외부 타이머로 <code>ShUiCarousel</code>을 제어할 수 있다.
+        React는 <code>autoPlay</code>로 간단히 켠다. <code>true</code>면 4초
+        간격이며, 숫자를 주면 지연(ms)을 지정한다. 마우스가 올라가면 자동으로
+        일시정지한다. Flutter는 자동 재생을 기본 제공하지 않지만{" "}
+        <code>initialIndex</code>·<code>onIndexChanged</code>를 통해 외부 타이머로
+        제어할 수 있다.
       </p>
       <Preview>
         <Preview.Demo>
           <div style={{ padding: "0 2rem", width: "100%", maxWidth: 420 }}>
-            <Carousel autoPlay={2500}>
+            <Carousel autoPlay={2500} loop>
               <CarouselContent>
                 {slides.map((n) => (
                   <CarouselItem key={n}>
@@ -249,6 +256,7 @@ ShUiCarousel(items: slides)`,
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />
+              <CarouselIndicators />
             </Carousel>
           </div>
         </Preview.Demo>
@@ -259,15 +267,10 @@ ShUiCarousel(items: slides)`,
               label: "React",
               language: "tsx",
               code: `{/* 기본 4초 간격 */}
-<Carousel autoPlay>...</Carousel>
+<Carousel autoPlay loop>...</Carousel>
 
 {/* 지연 지정 (ms) */}
-<Carousel autoPlay={2500}>...</Carousel>
-
-{/* 객체로 세부 옵션 지정 */}
-<Carousel autoPlay={{ delay: 3000, stopOnInteraction: true }}>
-  ...
-</Carousel>`,
+<Carousel autoPlay={2500} loop>...</Carousel>`,
             },
             {
               value: "flutter",
@@ -284,65 +287,11 @@ ShUiCarousel(
         />
       </Preview>
 
-      <h3>자동 스크롤 (연속 모드)</h3>
-      <p className="muted">
-        <code>autoScroll</code>은 한 장씩 끊어 넘기는 대신 일정 속도로 흐르듯
-        움직인다. 로고 월이나 티커처럼 끊김 없는 흐름이 필요할 때 쓴다. 숫자를
-        주면 <code>speed</code>(프레임당 픽셀)를 지정하며, 보통{" "}
-        <code>loop</code>과 같이 켠다. Flutter 버전은 지원하지 않는다.
-      </p>
-      <Preview>
-        <Preview.Demo>
-          <div style={{ padding: "0 2rem", width: "100%" }}>
-            <Carousel loop autoScroll>
-              <CarouselContent>
-                {slides.map((n) => (
-                  <CarouselItem
-                    key={n}
-                    style={{ flex: "0 0 calc(25% - 0.75rem)" }}
-                  >
-                    <SlideTile n={n} height="5rem" />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `{/* 기본 속도 */}
-<Carousel loop autoScroll>...</Carousel>
-
-{/* 속도 지정 (px/frame) */}
-<Carousel loop autoScroll={2}>...</Carousel>
-
-{/* 역방향 + 마우스 오버 시 멈춤 끄기 */}
-<Carousel
-  loop
-  autoScroll={{ direction: "backward", stopOnMouseEnter: false }}
->
-  ...
-</Carousel>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `// Flutter 버전은 autoScroll 미지원.`,
-            },
-          ]}
-        />
-      </Preview>
-
       <h3>인디케이터/컨트롤 숨기기</h3>
       <p className="muted">
-        Flutter는 <code>showIndicators</code>·<code>showControls</code>로 도트와
-        화살표 버튼을 각각 끌 수 있다. 좁은 화면(breakpoint.sm 미만)에서는
-        화살표 버튼이 자동으로 숨겨진다.
+        Compound 패턴에서는 구성 요소를 생략하기만 하면 된다. Flutter는{" "}
+        <code>showIndicators</code>·<code>showControls</code>로 각각 끌 수 있고,
+        좁은 화면(breakpoint.sm 미만)에서는 화살표 버튼이 자동으로 숨겨진다.
       </p>
       <CodeTabs
         items={[
@@ -353,7 +302,7 @@ ShUiCarousel(
             code: `{/* React는 구성 요소를 조합해 직접 끈다 */}
 <Carousel>
   <CarouselContent>...</CarouselContent>
-  {/* CarouselPrevious / CarouselNext 생략 */}
+  {/* CarouselPrevious / CarouselNext / CarouselIndicators 생략 */}
 </Carousel>`,
           },
           {
@@ -422,14 +371,15 @@ ShUiCarousel(
             description: (
               <>
                 React 루트. <code>loop</code>, <code>autoPlay</code>,{" "}
-                <code>orientation</code> 등을 받고 내부 컨텍스트로 상태를 공유.
+                <code>orientation</code>, <code>index</code>/<code>onIndexChange</code>
+                {" "}등을 받고 내부 컨텍스트로 상태를 공유.
               </>
             ),
           },
           {
             name: "CarouselContent",
             description: (
-              <>Embla 뷰포트와 트랙을 렌더링. 슬라이드를 담는 컨테이너.</>
+              <>scroll-snap 컨테이너. 슬라이드를 담으며 자체적으로 overflow를 관리한다.</>
             ),
           },
           {
@@ -446,6 +396,15 @@ ShUiCarousel(
             name: "CarouselNext",
             description: (
               <>다음 슬라이드로 이동하는 버튼. 끝에 도달하면 disabled (루프 시 항상 활성).</>
+            ),
+          },
+          {
+            name: "CarouselIndicators",
+            description: (
+              <>
+                도트 인디케이터. 각 도트 클릭으로 해당 슬라이드로 이동.{" "}
+                <code>labelFor</code>로 커스텀 aria-label을 지정 가능.
+              </>
             ),
           },
           {
@@ -478,36 +437,28 @@ ShUiCarousel(
           },
           {
             prop: "autoPlay",
-            type: "boolean | number | AutoplayOptions",
+            type: "boolean | number",
             default: "false",
             description:
-              "자동 재생(스텝). true=4초, 숫자=지연(ms), 객체=embla Autoplay 옵션. 마우스 오버 시 기본 일시정지. autoScroll과 동시 사용 X.",
+              "자동 재생. true=4000ms, 숫자=지연(ms). 마우스 오버 시 자동 일시정지.",
           },
           {
-            prop: "autoScroll",
-            type: "boolean | number | AutoScrollOptions",
-            default: "false",
-            description:
-              "자동 스크롤(연속). true=기본 속도, 숫자=speed(px/frame), 객체=embla AutoScroll 옵션. 보통 loop과 함께 쓴다.",
+            prop: "defaultIndex",
+            type: "number",
+            default: "0",
+            description: "초기 슬라이드 인덱스 (비제어 모드).",
           },
           {
-            prop: "opts",
-            type: "EmblaOptionsType",
+            prop: "index",
+            type: "number",
             default: "-",
-            description: "Embla raw 옵션 escape hatch.",
+            description: "제어 모드 인덱스. onIndexChange와 함께 사용.",
           },
           {
-            prop: "plugins",
-            type: "EmblaPluginType[]",
+            prop: "onIndexChange",
+            type: "(index: number) => void",
             default: "-",
-            description: "Autoplay 외 커스텀 플러그인을 얹을 때.",
-          },
-          {
-            prop: "setApi",
-            type: "(api: CarouselApi) => void",
-            default: "-",
-            description:
-              "Embla API 인스턴스를 외부로 꺼내 직접 제어하고 싶을 때.",
+            description: "인덱스 변경 콜백.",
           },
         ]}
       />

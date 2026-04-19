@@ -53,7 +53,7 @@ function getDaysGrid(year: number, month: number) {
   return cells;
 }
 
-/* ───────── Types ──��────── */
+/* ───────── Types ───────── */
 
 export interface DateRange {
   from: Date;
@@ -87,7 +87,36 @@ function CalendarIcon() {
   );
 }
 
-/* ───────── Calendar (internal) ───────── */
+/* ───────── Context ───────── */
+
+interface DatePickerContextValue {
+  selected: Date | undefined;
+  setSelected: (date: Date | undefined) => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  focusedDate: Date;
+  setFocusedDate: (date: Date) => void;
+  formatDate: (date: Date) => string;
+  placeholder: string;
+  min?: Date;
+  max?: Date;
+  disabled?: boolean;
+  readOnly?: boolean;
+  ariaInvalid?: boolean | "true";
+  closeOnSelect: boolean;
+}
+
+const DatePickerContext = React.createContext<DatePickerContextValue | null>(null);
+
+function useDatePickerContext(component: string) {
+  const ctx = React.useContext(DatePickerContext);
+  if (!ctx) {
+    throw new Error(`${component}는 <DatePicker> 내부에서 사용해야 합니다.`);
+  }
+  return ctx;
+}
+
+/* ───────── Internal Calendar Grid (shared w/ range picker) ───────── */
 
 interface CalendarProps {
   selected?: Date;
@@ -259,7 +288,7 @@ function Calendar({
   );
 }
 
-/* ───────── DatePicker ───────── */
+/* ───────── DatePicker Root ───────── */
 
 export interface DatePickerProps {
   value?: Date;
@@ -272,96 +301,263 @@ export interface DatePickerProps {
   disabled?: boolean;
   readOnly?: boolean;
   "aria-invalid"?: boolean | "true";
+  /**
+   * className은 children이 없을 때(기본 레이아웃 모드) Trigger로 전달된다.
+   * 사용자 조립 모드(children 제공)에서는 DatePickerTrigger에 직접 className을 전달한다.
+   */
   className?: string;
+  /** 날짜 선택 시 팝오버를 자동으로 닫을지 여부. 기본 true. */
+  closeOnSelect?: boolean;
+  /**
+   * 조립 모드: children 제공 시 Trigger/Content/Calendar/Footer를 사용자가 조립.
+   * 생략 시 기본 레이아웃(Trigger + Content + Calendar)이 렌더된다.
+   */
+  children?: React.ReactNode;
 }
 
-export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
-  function DatePicker(
-    {
-      value,
-      defaultValue,
-      onValueChange,
-      formatDate = formatDefault,
-      min,
-      max,
-      placeholder = "날짜 선택",
-      disabled,
-      readOnly,
-      "aria-invalid": ariaInvalid,
-      className,
-    },
-    ref,
-  ) {
-    const isControlled = value !== undefined;
-    const [internal, setInternal] = React.useState<Date | undefined>(defaultValue);
-    const selected = isControlled ? value : internal;
+export function DatePicker({
+  value,
+  defaultValue,
+  onValueChange,
+  formatDate = formatDefault,
+  min,
+  max,
+  placeholder = "날짜 선택",
+  disabled,
+  readOnly,
+  "aria-invalid": ariaInvalid,
+  className,
+  closeOnSelect = true,
+  children,
+}: DatePickerProps) {
+  const isControlled = value !== undefined;
+  const [internal, setInternal] = React.useState<Date | undefined>(defaultValue);
+  const selected = isControlled ? value : internal;
 
-    const [open, setOpen] = React.useState(false);
-    const [focusedDate, setFocusedDate] = React.useState(
-      () => selected ?? new Date(),
-    );
+  const [open, setOpen] = React.useState(false);
+  const [focusedDate, setFocusedDate] = React.useState<Date>(
+    () => selected ?? new Date(),
+  );
 
-    React.useEffect(() => {
-      if (open && selected) {
-        setFocusedDate(new Date(selected.getFullYear(), selected.getMonth(), 1));
-      }
-    }, [open, selected]);
+  React.useEffect(() => {
+    if (open && selected) {
+      setFocusedDate(new Date(selected.getFullYear(), selected.getMonth(), 1));
+    }
+  }, [open, selected]);
 
-    const handleSelect = (date: Date) => {
+  const setSelected = React.useCallback(
+    (date: Date | undefined) => {
       if (!isControlled) setInternal(date);
       onValueChange?.(date);
-      setOpen(false);
-    };
+    },
+    [isControlled, onValueChange],
+  );
 
-    const displayText = selected ? formatDate(selected) : undefined;
+  const ctx = React.useMemo<DatePickerContextValue>(
+    () => ({
+      selected,
+      setSelected,
+      open,
+      setOpen,
+      focusedDate,
+      setFocusedDate,
+      formatDate,
+      placeholder,
+      min,
+      max,
+      disabled,
+      readOnly,
+      ariaInvalid,
+      closeOnSelect,
+    }),
+    [
+      selected,
+      setSelected,
+      open,
+      focusedDate,
+      formatDate,
+      placeholder,
+      min,
+      max,
+      disabled,
+      readOnly,
+      ariaInvalid,
+      closeOnSelect,
+    ],
+  );
 
-    return (
+  return (
+    <DatePickerContext.Provider value={ctx}>
       <BasePopover.Root open={open} onOpenChange={setOpen}>
-        <BasePopover.Trigger
-          ref={ref}
-          className={cx("sh-ui-date-picker__trigger", className)}
-          disabled={disabled}
-          aria-invalid={ariaInvalid}
-          aria-haspopup="dialog"
-          onClick={(e) => {
-            if (readOnly) e.preventDefault();
-          }}
-        >
-          <span className={cx("sh-ui-date-picker__value", !displayText && "sh-ui-date-picker__placeholder")}>
-            {displayText ?? placeholder}
+        {children ?? (
+          <>
+            <DatePickerTrigger className={className} />
+            <DatePickerContent>
+              <DatePickerCalendar />
+            </DatePickerContent>
+          </>
+        )}
+      </BasePopover.Root>
+    </DatePickerContext.Provider>
+  );
+}
+
+/* ───────── DatePickerTrigger ───────── */
+
+export interface DatePickerTriggerProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  /** 커스텀 트리거 렌더. value/formatted/placeholder를 제공한다. */
+  children?:
+    | React.ReactNode
+    | ((state: {
+        value: Date | undefined;
+        formatted: string | undefined;
+        placeholder: string;
+      }) => React.ReactNode);
+}
+
+export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerTriggerProps>(
+  function DatePickerTrigger({ className, children, onClick, ...props }, ref) {
+    const ctx = useDatePickerContext("DatePickerTrigger");
+    const displayText = ctx.selected ? ctx.formatDate(ctx.selected) : undefined;
+
+    const renderContent = () => {
+      if (typeof children === "function") {
+        return children({
+          value: ctx.selected,
+          formatted: displayText,
+          placeholder: ctx.placeholder,
+        });
+      }
+      if (children !== undefined) return children;
+      return (
+        <>
+          <span
+            className={cx(
+              "sh-ui-date-picker__value",
+              !displayText && "sh-ui-date-picker__placeholder",
+            )}
+          >
+            {displayText ?? ctx.placeholder}
           </span>
           <span className="sh-ui-date-picker__icon" aria-hidden>
             <CalendarIcon />
           </span>
-        </BasePopover.Trigger>
+        </>
+      );
+    };
 
-        {!disabled && !readOnly && (
-          <BasePopover.Portal>
-            <BasePopover.Positioner
-              className="sh-ui-date-picker__positioner"
-              sideOffset={4}
-              side="bottom"
-              align="start"
-            >
-              <BasePopover.Popup className="sh-ui-date-picker__popup">
-                <Calendar
-                  selected={selected}
-                  onSelect={handleSelect}
-                  min={min}
-                  max={max}
-                  focusedDate={focusedDate}
-                  onFocusedDateChange={setFocusedDate}
-                />
-              </BasePopover.Popup>
-            </BasePopover.Positioner>
-          </BasePopover.Portal>
-        )}
-      </BasePopover.Root>
+    return (
+      <BasePopover.Trigger
+        ref={ref}
+        className={cx("sh-ui-date-picker__trigger", className)}
+        disabled={ctx.disabled}
+        aria-invalid={ctx.ariaInvalid}
+        aria-haspopup="dialog"
+        onClick={(e) => {
+          if (ctx.readOnly) e.preventDefault();
+          onClick?.(e);
+        }}
+        {...props}
+      >
+        {renderContent()}
+      </BasePopover.Trigger>
     );
   },
 );
 
-/* ───────── DateRangePicker ───────── */
+/* ───────── DatePickerContent ───────── */
+
+export interface DatePickerContentProps
+  extends Omit<React.ComponentPropsWithoutRef<typeof BasePopover.Popup>, "className"> {
+  className?: string;
+  sideOffset?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["sideOffset"];
+  side?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["side"];
+  align?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["align"];
+}
+
+export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerContentProps>(
+  function DatePickerContent(
+    { className, children, sideOffset = 4, side = "bottom", align = "start", ...props },
+    ref,
+  ) {
+    const ctx = useDatePickerContext("DatePickerContent");
+    if (ctx.disabled || ctx.readOnly) return null;
+
+    return (
+      <BasePopover.Portal>
+        <BasePopover.Positioner
+          className="sh-ui-date-picker__positioner"
+          sideOffset={sideOffset}
+          side={side}
+          align={align}
+        >
+          <BasePopover.Popup
+            ref={ref}
+            className={cx("sh-ui-date-picker__popup", className)}
+            {...props}
+          >
+            {children}
+          </BasePopover.Popup>
+        </BasePopover.Positioner>
+      </BasePopover.Portal>
+    );
+  },
+);
+
+/* ───────── DatePickerCalendar ───────── */
+
+export function DatePickerCalendar() {
+  const ctx = useDatePickerContext("DatePickerCalendar");
+
+  const handleSelect = (date: Date) => {
+    ctx.setSelected(date);
+    if (ctx.closeOnSelect) ctx.setOpen(false);
+  };
+
+  return (
+    <Calendar
+      selected={ctx.selected}
+      onSelect={handleSelect}
+      min={ctx.min}
+      max={ctx.max}
+      focusedDate={ctx.focusedDate}
+      onFocusedDateChange={ctx.setFocusedDate}
+    />
+  );
+}
+
+/* ───────── DatePickerFooter ───────── */
+
+export interface DatePickerFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const DatePickerFooter = React.forwardRef<HTMLDivElement, DatePickerFooterProps>(
+  function DatePickerFooter({ className, ...props }, ref) {
+    return (
+      <div
+        ref={ref}
+        className={cx("sh-ui-date-picker__footer", className)}
+        {...props}
+      />
+    );
+  },
+);
+
+/* ───────── useDatePicker (for custom footer actions) ───────── */
+
+export function useDatePicker() {
+  const ctx = useDatePickerContext("useDatePicker");
+  return {
+    value: ctx.selected,
+    setValue: ctx.setSelected,
+    open: ctx.open,
+    setOpen: ctx.setOpen,
+    focusedDate: ctx.focusedDate,
+    setFocusedDate: ctx.setFocusedDate,
+  };
+}
+
+/* ───────── DateRangePicker (단일 컴포넌트, 스코프 외) ───────── */
 
 export interface DateRangePickerProps {
   /** 선택된 범위 (controlled). */

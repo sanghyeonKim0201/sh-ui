@@ -28,10 +28,10 @@
   color: var(--foreground);
 }
 
-.sh-ui-file-upload__dropzone:focus-within {
-  border-color: var(--foreground);
+.sh-ui-file-upload__dropzone:focus-visible {
   outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
+  border-color: var(--foreground);
 }
 
 .sh-ui-file-upload__dropzone--drag {
@@ -70,6 +70,35 @@
 .sh-ui-file-upload__hint {
   font-size: var(--text-xs);
   color: var(--foreground-muted);
+}
+
+/* Trigger 버튼 */
+.sh-ui-file-upload__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition: background-color var(--duration-fast), border-color var(--duration-fast);
+}
+.sh-ui-file-upload__trigger:hover:not(:disabled) {
+  background: var(--background-muted);
+  border-color: var(--border-strong);
+}
+.sh-ui-file-upload__trigger:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+.sh-ui-file-upload__trigger:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
 }
 
 /* 파일 목록 */

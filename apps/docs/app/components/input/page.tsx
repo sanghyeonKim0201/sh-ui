@@ -1,6 +1,11 @@
 export const dynamic = "force-static";
 
-import { Input, PasswordInput } from "@/components/ui/input";
+import {
+  Input,
+  InputAdornment,
+  InputGroup,
+  PasswordInput,
+} from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -599,6 +604,67 @@ export const BusinessNumberInput = React.forwardRef<HTMLInputElement, BusinessNu
         />
       </Preview>
 
+      <h3>InputGroup + InputAdornment (compound, React)</h3>
+      <p className="muted">
+        <code>prefix</code>/<code>suffix</code> prop 대신 합성 방식으로 좌/우
+        adornment를 붙일 수 있다. <code>InputGroup</code>이 공용 보더와 포커스
+        링을 제공하고, 내부 <code>Input</code>은 자체 보더를 감춘다. 기존
+        prop 방식도 그대로 동작한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <div style={{ width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <InputGroup>
+              <InputAdornment>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+                  <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M10.5 10.5 14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </InputAdornment>
+              <Input placeholder="검색..." />
+            </InputGroup>
+            <InputGroup>
+              <InputAdornment>@</InputAdornment>
+              <Input placeholder="아이디" />
+              <InputAdornment>.com</InputAdornment>
+            </InputGroup>
+            <InputGroup aria-invalid>
+              <Input placeholder="invalid 상태" defaultValue="잘못된 값" />
+              <InputAdornment>!</InputAdornment>
+            </InputGroup>
+          </div>
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<InputGroup>
+  <InputAdornment><SearchIcon /></InputAdornment>
+  <Input placeholder="검색..." />
+</InputGroup>
+
+<InputGroup>
+  <InputAdornment>@</InputAdornment>
+  <Input placeholder="아이디" />
+  <InputAdornment>.com</InputAdornment>
+</InputGroup>
+
+{/* 기존 prop 방식도 그대로 동작 */}
+<Input prefix={<SearchIcon />} placeholder="검색..." />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter는 prop 기반 유지.
+const ShUiInput(placeholder: '검색...'),`,
+            },
+          ]}
+        />
+      </Preview>
+
       <h3>폼 레이아웃</h3>
       <Preview>
         <Preview.Demo>
@@ -658,7 +724,9 @@ export const BusinessNumberInput = React.forwardRef<HTMLInputElement, BusinessNu
       <h2>구성 요소</h2>
       <SubComponents
         rows={[
-          { name: "Input", description: "단일 행 입력 필드. prefix/suffix 슬롯 지원." },
+          { name: "Input", description: "단일 행 입력 필드. prefix/suffix 슬롯 지원. InputGroup 내부에서는 자체 보더를 감추고 그룹의 포커스 링을 공유." },
+          { name: "InputGroup", description: "Compound 컨테이너. 공용 보더·포커스 링·aria-invalid·disabled 상태를 제공." },
+          { name: "InputAdornment", description: "InputGroup 내부에 배치하는 좌/우 adornment. 위치는 children 순서로 결정." },
           { name: "PasswordInput", description: "type=password + 표시/숨김 토글 버튼이 내장." },
           { name: "NumberInput", description: "정수 입력. 천 단위 콤마 + min/max clamp." },
           { name: "PhoneInput", description: "한국 전화번호 자동 하이픈." },

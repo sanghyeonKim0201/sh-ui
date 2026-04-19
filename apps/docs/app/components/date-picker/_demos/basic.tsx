@@ -1,9 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { DatePicker, DateRangePicker } from "@/components/ui/date-picker";
+import {
+  DatePicker,
+  DatePickerTrigger,
+  DatePickerContent,
+  DatePickerCalendar,
+  DatePickerFooter,
+  DateRangePicker,
+  useDatePicker,
+} from "@/components/ui/date-picker";
 import type { DateRange } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export function BasicDemo() {
   return (
@@ -90,6 +99,79 @@ export function RangeWithLabelDemo() {
         min={new Date()}
         placeholder="체크인 ~ 체크아웃"
       />
+    </div>
+  );
+}
+
+function TodayClearActions() {
+  const { setValue, setFocusedDate, setOpen } = useDatePicker();
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => {
+          const today = new Date();
+          setValue(today);
+          setFocusedDate(new Date(today.getFullYear(), today.getMonth(), 1));
+          setOpen(false);
+        }}
+      >
+        오늘
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => {
+          setValue(undefined);
+          setOpen(false);
+        }}
+      >
+        지우기
+      </Button>
+    </>
+  );
+}
+
+export function CompoundDemo() {
+  const [date, setDate] = useState<Date | undefined>();
+
+  return (
+    <div style={{ width: "100%", maxWidth: 280, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <DatePicker value={date} onValueChange={setDate} closeOnSelect={false}>
+        <DatePickerTrigger />
+        <DatePickerContent>
+          <DatePickerCalendar />
+          <DatePickerFooter>
+            <TodayClearActions />
+          </DatePickerFooter>
+        </DatePickerContent>
+      </DatePicker>
+      <p style={{ fontSize: "0.8125rem", color: "var(--foreground-muted)" }}>
+        선택: {date ? date.toLocaleDateString("ko-KR") : "없음"}
+      </p>
+    </div>
+  );
+}
+
+export function CustomTriggerDemo() {
+  const [date, setDate] = useState<Date | undefined>();
+
+  return (
+    <div style={{ width: "100%", maxWidth: 280 }}>
+      <DatePicker value={date} onValueChange={setDate}>
+        <DatePickerTrigger>
+          {({ formatted, placeholder }) => (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
+              <span aria-hidden>🗓️</span>
+              <span>{formatted ?? placeholder}</span>
+            </span>
+          )}
+        </DatePickerTrigger>
+        <DatePickerContent>
+          <DatePickerCalendar />
+        </DatePickerContent>
+      </DatePicker>
     </div>
   );
 }

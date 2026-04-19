@@ -12,8 +12,110 @@ function cx(...args: (string | undefined | null | false)[]) {
   return args.filter(Boolean).join(" ");
 }
 
+/* ───────── InputGroup + InputAdornment (compound) ─────────
+ * <InputGroup>
+ *   <InputAdornment><SearchIcon /></InputAdornment>
+ *   <Input placeholder="검색..." />
+ *   <InputAdornment><ClearButton /></InputAdornment>
+ * </InputGroup>
+ *
+ * InputGroup이 공용 보더/포커스 링을 담당하고, 내부 Input은 자신의 보더를
+ * 감춘다(data-in-group 기반). Adornment 위치는 children 순서로 결정한다.
+ */
+
+interface InputGroupContextValue {
+  inGroup: true;
+}
+
+const InputGroupContext = React.createContext<InputGroupContextValue | null>(
+  null,
+);
+
+function useInputGroup() {
+  return React.useContext(InputGroupContext);
+}
+
+export interface InputGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** invalid 상태를 그룹 전체에 적용. */
+  "aria-invalid"?: boolean | "true" | "false";
+  /** disabled 상태를 그룹 전체에 적용. */
+  disabled?: boolean;
+}
+
+export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(
+  (
+    {
+      className,
+      children,
+      "aria-invalid": ariaInvalid,
+      disabled,
+      onClick,
+      ...props
+    },
+    ref,
+  ) => {
+    const innerRef = React.useRef<HTMLDivElement | null>(null);
+    const mergedRef = React.useCallback(
+      (el: HTMLDivElement | null) => {
+        innerRef.current = el;
+        if (typeof ref === "function") ref(el);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+      },
+      [ref],
+    );
+
+    // 그룹 어느 곳을 클릭해도 내부 input에 포커스
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      onClick?.(e);
+      if (e.defaultPrevented) return;
+      const target = e.target as HTMLElement;
+      if (target.closest("button, input, textarea, select, a")) return;
+      const input = innerRef.current?.querySelector<HTMLInputElement>("input");
+      input?.focus();
+    };
+
+    return (
+      <InputGroupContext.Provider value={{ inGroup: true }}>
+        <div
+          ref={mergedRef}
+          className={cx("sh-ui-input-group", className)}
+          data-disabled={disabled || undefined}
+          aria-invalid={ariaInvalid}
+          onClick={handleClick}
+          {...props}
+        >
+          {children}
+        </div>
+      </InputGroupContext.Provider>
+    );
+  },
+);
+InputGroup.displayName = "InputGroup";
+
+export interface InputAdornmentProps
+  extends React.HTMLAttributes<HTMLSpanElement> {
+  /** 클릭이 input으로 버블링되지 않도록. 버튼을 담을 때 유용. */
+  interactive?: boolean;
+}
+
+export const InputAdornment = React.forwardRef<
+  HTMLSpanElement,
+  InputAdornmentProps
+>(({ className, interactive, ...props }, ref) => {
+  return (
+    <span
+      ref={ref}
+      className={cx("sh-ui-input-group__adornment", className)}
+      data-interactive={interactive || undefined}
+      {...props}
+    />
+  );
+});
+InputAdornment.displayName = "InputAdornment";
+
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = "text", prefix, suffix, ...props }, ref) => {
+    const group = useInputGroup();
     const hasAffix = Boolean(prefix || suffix);
     const input = (
       <input
@@ -25,6 +127,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           !!suffix && "sh-ui-input--with-suffix",
           className,
         )}
+        data-in-group={group ? "" : undefined}
         {...props}
       />
     );
@@ -32,7 +135,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     if (!hasAffix) return input;
 
     return (
-      <div className="sh-ui-input-wrap">
+      <div className="sh-ui-input-wrap" data-in-group={group ? "" : undefined}>
         {prefix && <span className="sh-ui-input__affix sh-ui-input__affix--prefix">{prefix}</span>}
         {input}
         {suffix && <span className="sh-ui-input__affix sh-ui-input__affix--suffix">{suffix}</span>}

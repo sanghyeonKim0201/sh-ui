@@ -3,20 +3,31 @@
 import * as React from "react";
 import "./styles.css";
 
-export interface ColorPickerProps {
-  /** 현재 색상 (hex, e.g. "#FF8800"). */
-  value?: string;
-  /** 변경 콜백. */
-  onChange?: (hex: string) => void;
-  /** 비제어 모드 초기값. */
-  defaultValue?: string;
-  className?: string;
-}
+/* ───────────── types ───────────── */
 
 interface HSV {
   h: number; // 0~360
   s: number; // 0~1
   v: number; // 0~1
+}
+
+interface HSVA extends HSV {
+  a: number; // 0~1
+}
+
+export interface ColorPickerProps {
+  /** 현재 색상 (hex, e.g. "#FF8800"). */
+  value?: string;
+  /** 변경 콜백. 항상 6자리 대문자 hex. */
+  onChange?: (hex: string) => void;
+  /** 비제어 모드 초기값. */
+  defaultValue?: string;
+  className?: string;
+  /**
+   * children 없이 렌더하면 기본 compound 레이아웃
+   * (Saturation + Hue + Hex)이 자동 렌더된다. 백워드 호환용.
+   */
+  children?: React.ReactNode;
 }
 
 /* ───────────── color math ───────────── */
@@ -106,135 +117,325 @@ function useDrag(onMove: (e: PointerEvent, el: HTMLElement) => void) {
   return { ref, onPointerDown };
 }
 
-/* ───────────── component ───────────── */
+/* ───────────── context ───────────── */
+
+interface ColorPickerContextValue {
+  hsva: HSVA;
+  hex: string;
+  /** 현재 hue에 해당하는 순색(pure) hex. SV 배경용. */
+  pureHueHex: string;
+  setHsv: (next: Partial<HSV>) => void;
+  setAlpha: (a: number) => void;
+  commitHex: (raw: string) => boolean;
+}
+
+const ColorPickerContext = React.createContext<ColorPickerContextValue | null>(null);
+
+function useColorPicker() {
+  const ctx = React.useContext(ColorPickerContext);
+  if (!ctx) {
+    throw new Error(
+      "ColorPicker 하위 컴포넌트는 <ColorPicker> 내부에서만 사용할 수 있습니다.",
+    );
+  }
+  return ctx;
+}
+
+/* ───────────── root ───────────── */
 
 export function ColorPicker({
   value: valueProp,
   onChange,
   defaultValue = "#000000",
   className,
+  children,
 }: ColorPickerProps) {
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = React.useState(defaultValue);
   const value = isControlled ? valueProp! : internal;
 
-  const [hsv, setHsv] = React.useState<HSV>(() => hexToHsv(value));
-  const [hexInput, setHexInput] = React.useState(value);
+  const [hsva, setHsva] = React.useState<HSVA>(() => ({ ...hexToHsv(value), a: 1 }));
 
-  /* 외부 value 변경 시 hsv/hexInput 동기화 (단, 우리가 만든 hex는 무시 — 무한 루프 방지) */
+  /* 외부 value 변경 시 hsv 동기화 (우리가 내놓은 hex는 무시 — 무한 루프 방지) */
   const lastEmittedRef = React.useRef(value);
   React.useEffect(() => {
     if (value === lastEmittedRef.current) return;
-    setHsv(hexToHsv(value));
-    setHexInput(value);
+    setHsva((prev) => ({ ...hexToHsv(value), a: prev.a }));
   }, [value]);
 
   const emit = React.useCallback(
-    (nextHsv: HSV) => {
-      const hex = hsvToHex(nextHsv);
+    (next: HSVA) => {
+      const hex = hsvToHex(next);
       lastEmittedRef.current = hex;
-      setHsv(nextHsv);
-      setHexInput(hex);
+      setHsva(next);
       if (!isControlled) setInternal(hex);
       onChange?.(hex);
     },
-    [isControlled, onChange]
+    [isControlled, onChange],
   );
 
-  /* SV 영역 드래그 */
-  const sv = useDrag((e, el) => {
+  const setHsv = React.useCallback(
+    (partial: Partial<HSV>) => {
+      setHsva((prev) => {
+        const next: HSVA = { ...prev, ...partial };
+        const hex = hsvToHex(next);
+        lastEmittedRef.current = hex;
+        if (!isControlled) setInternal(hex);
+        onChange?.(hex);
+        return next;
+      });
+    },
+    [isControlled, onChange],
+  );
+
+  const setAlpha = React.useCallback((a: number) => {
+    setHsva((prev) => ({ ...prev, a: clamp(a, 0, 1) }));
+  }, []);
+
+  const commitHex = React.useCallback(
+    (raw: string) => {
+      const v = raw.trim();
+      if (!HEX_RE.test(v)) return false;
+      const normalized = (v.startsWith("#") ? v : `#${v}`).toUpperCase();
+      const nextHsv = hexToHsv(normalized);
+      emit({ ...nextHsv, a: hsva.a });
+      return true;
+    },
+    [emit, hsva.a],
+  );
+
+  const pureHueHex = React.useMemo(
+    () => hsvToHex({ h: hsva.h, s: 1, v: 1 }),
+    [hsva.h],
+  );
+
+  const ctx = React.useMemo<ColorPickerContextValue>(
+    () => ({
+      hsva,
+      hex: value,
+      pureHueHex,
+      setHsv,
+      setAlpha,
+      commitHex,
+    }),
+    [hsva, value, pureHueHex, setHsv, setAlpha, commitHex],
+  );
+
+  return (
+    <ColorPickerContext.Provider value={ctx}>
+      <div className={["sh-ui-color-picker", className].filter(Boolean).join(" ")}>
+        {children ?? (
+          <>
+            <ColorPickerSaturation />
+            <ColorPickerHue />
+            <ColorPickerHex />
+          </>
+        )}
+      </div>
+    </ColorPickerContext.Provider>
+  );
+}
+
+/* ───────────── parts ───────────── */
+
+export interface ColorPickerSaturationProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onPointerDown"> {}
+
+export function ColorPickerSaturation({
+  className,
+  style,
+  ...rest
+}: ColorPickerSaturationProps) {
+  const { hsva, hex, pureHueHex, setHsv } = useColorPicker();
+  const drag = useDrag((e, el) => {
     const r = el.getBoundingClientRect();
     const x = clamp((e.clientX - r.left) / r.width, 0, 1);
     const y = clamp((e.clientY - r.top) / r.height, 0, 1);
-    emit({ ...hsv, s: x, v: 1 - y });
+    setHsv({ s: x, v: 1 - y });
   });
+  return (
+    <div
+      ref={drag.ref}
+      onPointerDown={drag.onPointerDown}
+      className={["sh-ui-color-picker__sv", className].filter(Boolean).join(" ")}
+      style={{ background: pureHueHex, ...style }}
+      role="slider"
+      aria-label="채도/명도"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(hsva.s * 100)}
+      {...rest}
+    >
+      <div className="sh-ui-color-picker__sv-saturation" />
+      <div className="sh-ui-color-picker__sv-value" />
+      <div
+        className="sh-ui-color-picker__sv-thumb"
+        style={{
+          left: `${hsva.s * 100}%`,
+          top: `${(1 - hsva.v) * 100}%`,
+          background: hex,
+        }}
+      />
+    </div>
+  );
+}
 
-  /* Hue 슬라이더 드래그 */
-  const hue = useDrag((e, el) => {
+export interface ColorPickerHueProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onPointerDown"> {}
+
+export function ColorPickerHue({ className, ...rest }: ColorPickerHueProps) {
+  const { hsva, setHsv } = useColorPicker();
+  const drag = useDrag((e, el) => {
     const r = el.getBoundingClientRect();
     const x = clamp((e.clientX - r.left) / r.width, 0, 1);
-    emit({ ...hsv, h: x * 360 });
+    setHsv({ h: x * 360 });
   });
+  return (
+    <div
+      ref={drag.ref}
+      onPointerDown={drag.onPointerDown}
+      className={["sh-ui-color-picker__hue", className].filter(Boolean).join(" ")}
+      role="slider"
+      aria-label="색조"
+      aria-valuemin={0}
+      aria-valuemax={360}
+      aria-valuenow={Math.round(hsva.h)}
+      {...rest}
+    >
+      <div
+        className="sh-ui-color-picker__hue-thumb"
+        style={{ left: `${(hsva.h / 360) * 100}%` }}
+      />
+    </div>
+  );
+}
 
-  const onHexCommit = () => {
-    const v = hexInput.trim();
-    if (HEX_RE.test(v)) {
-      const normalized = (v.startsWith("#") ? v : `#${v}`).toUpperCase();
-      const nextHsv = hexToHsv(normalized);
-      emit(nextHsv);
-    } else {
-      setHexInput(value);
-    }
+export interface ColorPickerAlphaProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onPointerDown"> {}
+
+export function ColorPickerAlpha({ className, style, ...rest }: ColorPickerAlphaProps) {
+  const { hsva, hex, setAlpha } = useColorPicker();
+  const drag = useDrag((e, el) => {
+    const r = el.getBoundingClientRect();
+    const x = clamp((e.clientX - r.left) / r.width, 0, 1);
+    setAlpha(x);
+  });
+  const gradient = `linear-gradient(to right, rgba(0,0,0,0) 0%, ${hex} 100%)`;
+  return (
+    <div
+      ref={drag.ref}
+      onPointerDown={drag.onPointerDown}
+      className={["sh-ui-color-picker__alpha", className].filter(Boolean).join(" ")}
+      role="slider"
+      aria-label="투명도"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(hsva.a * 100)}
+      style={style}
+      {...rest}
+    >
+      <div
+        className="sh-ui-color-picker__alpha-track"
+        style={{ backgroundImage: gradient }}
+      />
+      <div
+        className="sh-ui-color-picker__hue-thumb"
+        style={{ left: `${hsva.a * 100}%` }}
+      />
+    </div>
+  );
+}
+
+export interface ColorPickerHexProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** 왼쪽 swatch 표시 여부. 기본 true. */
+  showSwatch?: boolean;
+}
+
+export function ColorPickerHex({
+  className,
+  showSwatch = true,
+  ...rest
+}: ColorPickerHexProps) {
+  const { hex, commitHex } = useColorPicker();
+  const [draft, setDraft] = React.useState(hex);
+
+  // 외부 hex 변경 시 draft 동기화 (단, 포커스 중이 아닐 때만)
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  React.useEffect(() => {
+    if (document.activeElement !== inputRef.current) setDraft(hex);
+  }, [hex]);
+
+  const onCommit = () => {
+    if (!commitHex(draft)) setDraft(hex);
   };
 
-  const pureHueHex = hsvToHex({ h: hsv.h, s: 1, v: 1 });
-
   return (
-    <div className={["sh-ui-color-picker", className].filter(Boolean).join(" ")}>
-      {/* SV 영역 */}
-      <div
-        className="sh-ui-color-picker__sv"
-        ref={sv.ref}
-        onPointerDown={sv.onPointerDown}
-        style={{ background: pureHueHex }}
-        role="slider"
-        aria-label="채도/명도"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(hsv.s * 100)}
-      >
-        <div className="sh-ui-color-picker__sv-saturation" />
-        <div className="sh-ui-color-picker__sv-value" />
-        <div
-          className="sh-ui-color-picker__sv-thumb"
-          style={{
-            left: `${hsv.s * 100}%`,
-            top: `${(1 - hsv.v) * 100}%`,
-            background: value,
-          }}
-        />
-      </div>
-
-      {/* Hue 슬라이더 */}
-      <div
-        className="sh-ui-color-picker__hue"
-        ref={hue.ref}
-        onPointerDown={hue.onPointerDown}
-        role="slider"
-        aria-label="색조"
-        aria-valuemin={0}
-        aria-valuemax={360}
-        aria-valuenow={Math.round(hsv.h)}
-      >
-        <div
-          className="sh-ui-color-picker__hue-thumb"
-          style={{ left: `${(hsv.h / 360) * 100}%` }}
-        />
-      </div>
-
-      {/* Hex 인풋 + 미리보기 */}
-      <div className="sh-ui-color-picker__row">
+    <div
+      className={["sh-ui-color-picker__row", className].filter(Boolean).join(" ")}
+      {...rest}
+    >
+      {showSwatch && (
         <div
           className="sh-ui-color-picker__swatch"
-          style={{ background: value }}
+          style={{ background: hex }}
           aria-hidden
         />
-        <input
-          type="text"
-          className="sh-ui-color-picker__hex"
-          value={hexInput}
-          onChange={(e) => setHexInput(e.target.value)}
-          onBlur={onHexCommit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              (e.target as HTMLInputElement).blur();
-            }
-          }}
-          spellCheck={false}
-          aria-label="Hex"
-        />
-      </div>
+      )}
+      <input
+        ref={inputRef}
+        type="text"
+        className="sh-ui-color-picker__hex"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={onCommit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            (e.target as HTMLInputElement).blur();
+          }
+        }}
+        spellCheck={false}
+        aria-label="Hex"
+      />
+    </div>
+  );
+}
+
+export interface ColorPickerSwatchesProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  colors: string[];
+}
+
+export function ColorPickerSwatches({
+  className,
+  colors,
+  ...rest
+}: ColorPickerSwatchesProps) {
+  const { hex, commitHex } = useColorPicker();
+  return (
+    <div
+      role="group"
+      aria-label="미리 준비된 색상"
+      className={["sh-ui-color-picker__swatches", className].filter(Boolean).join(" ")}
+      {...rest}
+    >
+      {colors.map((c) => {
+        const normalized = c.toUpperCase();
+        const selected = normalized === hex.toUpperCase();
+        return (
+          <button
+            key={c}
+            type="button"
+            className="sh-ui-color-picker__swatch-btn"
+            aria-label={c}
+            aria-pressed={selected}
+            data-selected={selected || undefined}
+            style={{ background: c }}
+            onClick={() => commitHex(c)}
+          />
+        );
+      })}
     </div>
   );
 }
