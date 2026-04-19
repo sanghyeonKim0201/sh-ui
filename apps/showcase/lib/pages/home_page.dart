@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../foundation/sh_ui_tokens.dart';
+import '../widgets/sh_ui_app_shell.dart';
 import 'accordion_page.dart';
+import 'app_shell_page.dart';
 import 'button_page.dart';
 import 'card_page.dart';
 import 'carousel_page.dart';
@@ -23,6 +25,10 @@ import 'combobox_page.dart';
 import 'file_upload_page.dart';
 import 'sidebar_page.dart';
 import 'skeleton_page.dart';
+import 'examples/dashboard_page.dart';
+import 'examples/login_page.dart';
+import 'examples/settings_page.dart';
+import 'examples/signup_page.dart';
 
 class HomePage extends StatelessWidget {
   final ThemeMode themeMode;
@@ -39,268 +45,138 @@ class HomePage extends StatelessWidget {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     final colors = shUi.colors;
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      appBar: AppBar(
-        title: Text(
-          'sh-ui',
-          style: TextStyle(
+    return ShUiAppShell(
+      title: 'sh-ui',
+      logo: Icon(Icons.hexagon_outlined, size: 22, color: colors.foreground),
+      actions: [
+        IconButton(
+          icon: Icon(
+            themeMode == ThemeMode.light
+                ? Icons.dark_mode_outlined
+                : Icons.light_mode_outlined,
             color: colors.foreground,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
           ),
+          onPressed: onToggleTheme,
         ),
-        backgroundColor: colors.background,
-        elevation: 0,
-        scrolledUnderElevation: 0.5,
-        actions: [
-          IconButton(
-            icon: Icon(
-              themeMode == ThemeMode.light
-                  ? Icons.dark_mode_outlined
-                  : Icons.light_mode_outlined,
-              color: colors.foreground,
+      ],
+      groups: [
+        ShUiAppShellGroup(
+          label: '예제',
+          items: const [
+            ShUiAppShellItem(
+              icon: Icons.login,
+              label: '로그인',
+              builder: _buildLogin,
             ),
-            onPressed: onToggleTheme,
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: colors.border),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.only(bottom: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '위젯 쇼케이스',
-                  style: TextStyle(
-                    color: colors.foreground,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '담백하게 설계된 Flutter 디자인 시스템',
-                  style: TextStyle(
-                    color: colors.foregroundMuted,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
+            ShUiAppShellItem(
+              icon: Icons.person_add_outlined,
+              label: '회원가입',
+              builder: _buildSignup,
             ),
-          ),
-
-          // Form
-          _SectionTitle('폼', colors),
-          _ComponentGrid(
-            colors: colors,
-            items: [
-              _Item('Button', Icons.smart_button_outlined, const ButtonPage()),
-              _Item('Input', Icons.text_fields, const InputPage()),
-              _Item('Textarea', Icons.notes, const TextareaPage()),
-              _Item('Checkbox', Icons.check_box_outlined, const CheckboxPage()),
-              _Item('Radio', Icons.radio_button_checked, const RadioPage()),
-              _Item('Switch', Icons.toggle_on_outlined, const SwitchPage()),
-              _Item('Toggle', Icons.toggle_off_outlined, const TogglePage()),
-              _Item('Slider', Icons.tune, const SliderPage()),
-              _Item('Label', Icons.label_outline, const LabelPage()),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // Selection
-          _SectionTitle('선택', colors),
-          _ComponentGrid(
-            colors: colors,
-            items: [
-              _Item('Select', Icons.arrow_drop_down_circle_outlined, const SelectPage()),
-              _Item('Combobox', Icons.search, const ComboboxPage()),
-              _Item('Date Picker', Icons.calendar_today_outlined, const DatePickerPage()),
-              _Item('Color Picker', Icons.palette_outlined, const ColorPickerPage()),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // Layout
-          _SectionTitle('레이아웃', colors),
-          _ComponentGrid(
-            colors: colors,
-            items: [
-              _Item('Accordion', Icons.unfold_more, const AccordionPage()),
-              _Item('Card', Icons.credit_card, const CardPage()),
-              _Item('Carousel', Icons.view_carousel_outlined, const CarouselPage()),
-              _Item('Sidebar', Icons.menu, const SidebarPage()),
-              _Item('Tabs', Icons.tab, const TabsPage()),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // Display
-          _SectionTitle('표시', colors),
-          _ComponentGrid(
-            colors: colors,
-            items: [
-              _Item('Skeleton', Icons.view_stream_outlined, const SkeletonPage()),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // Overlay
-          _SectionTitle('오버레이', colors),
-          _ComponentGrid(
-            colors: colors,
-            items: [
-              _Item('Dialog', Icons.open_in_new, const DialogPage()),
-              _Item('Popover', Icons.chat_bubble_outline, const PopoverPage()),
-              _Item('Toast', Icons.notifications_outlined, const ToastPage()),
-            ],
-          ),
-
-          const SizedBox(height: 24),
-
-          // File
-          _SectionTitle('파일', colors),
-          _ComponentGrid(
-            colors: colors,
-            items: [
-              _Item('File Upload', Icons.upload_file, const FileUploadPage()),
-            ],
-          ),
-
-          const SizedBox(height: 32),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  final ShUiColorTokens colors;
-
-  const _SectionTitle(this.title, this.colors);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: TextStyle(
-          color: colors.foregroundMuted,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1,
+            ShUiAppShellItem(
+              icon: Icons.settings_outlined,
+              label: '설정',
+              builder: _buildSettings,
+            ),
+            ShUiAppShellItem(
+              icon: Icons.dashboard_outlined,
+              label: '대시보드',
+              builder: _buildDashboard,
+            ),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _Item {
-  final String label;
-  final IconData icon;
-  final Widget page;
-  const _Item(this.label, this.icon, this.page);
-}
-
-class _ComponentGrid extends StatelessWidget {
-  final ShUiColorTokens colors;
-  final List<_Item> items;
-
-  const _ComponentGrid({required this.colors, required this.items});
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: items.map((item) {
-        return _ComponentTile(
-          label: item.label,
-          icon: item.icon,
-          colors: colors,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => item.page),
-          ),
-        );
-      }).toList(),
-    );
-  }
-}
-
-class _ComponentTile extends StatefulWidget {
-  final String label;
-  final IconData icon;
-  final ShUiColorTokens colors;
-  final VoidCallback onTap;
-
-  const _ComponentTile({
-    required this.label,
-    required this.icon,
-    required this.colors,
-    required this.onTap,
-  });
-
-  @override
-  State<_ComponentTile> createState() => _ComponentTileState();
-}
-
-class _ComponentTileState extends State<_ComponentTile> {
-  bool _hover = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final width = (MediaQuery.of(context).size.width - 48) / 3;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hover = true),
-      onExit: (_) => setState(() => _hover = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          width: width.clamp(100, 140),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-          decoration: BoxDecoration(
-            color: _hover
-                ? widget.colors.backgroundSubtle
-                : widget.colors.background,
-            border: Border.all(color: widget.colors.border),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(widget.icon, size: 24, color: widget.colors.foreground),
-              const SizedBox(height: 8),
-              Text(
-                widget.label,
-                style: TextStyle(
-                  color: widget.colors.foreground,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        ShUiAppShellGroup(
+          label: '폼',
+          items: const [
+            ShUiAppShellItem(icon: Icons.smart_button_outlined, label: 'Button', builder: _buildButton),
+            ShUiAppShellItem(icon: Icons.text_fields, label: 'Input', builder: _buildInput),
+            ShUiAppShellItem(icon: Icons.notes, label: 'Textarea', builder: _buildTextarea),
+            ShUiAppShellItem(icon: Icons.check_box_outlined, label: 'Checkbox', builder: _buildCheckbox),
+            ShUiAppShellItem(icon: Icons.radio_button_checked, label: 'Radio', builder: _buildRadio),
+            ShUiAppShellItem(icon: Icons.toggle_on_outlined, label: 'Switch', builder: _buildSwitch),
+            ShUiAppShellItem(icon: Icons.toggle_off_outlined, label: 'Toggle', builder: _buildToggle),
+            ShUiAppShellItem(icon: Icons.tune, label: 'Slider', builder: _buildSlider),
+            ShUiAppShellItem(icon: Icons.label_outline, label: 'Label', builder: _buildLabel),
+          ],
         ),
-      ),
+        ShUiAppShellGroup(
+          label: '선택',
+          items: const [
+            ShUiAppShellItem(icon: Icons.arrow_drop_down_circle_outlined, label: 'Select', builder: _buildSelect),
+            ShUiAppShellItem(icon: Icons.search, label: 'Combobox', builder: _buildCombobox),
+            ShUiAppShellItem(icon: Icons.calendar_today_outlined, label: 'Date Picker', builder: _buildDatePicker),
+            ShUiAppShellItem(icon: Icons.palette_outlined, label: 'Color Picker', builder: _buildColorPicker),
+          ],
+        ),
+        ShUiAppShellGroup(
+          label: '레이아웃',
+          items: const [
+            ShUiAppShellItem(icon: Icons.unfold_more, label: 'Accordion', builder: _buildAccordion),
+            ShUiAppShellItem(icon: Icons.web_outlined, label: 'AppShell', builder: _buildAppShell),
+            ShUiAppShellItem(icon: Icons.credit_card, label: 'Card', builder: _buildCard),
+            ShUiAppShellItem(icon: Icons.view_carousel_outlined, label: 'Carousel', builder: _buildCarousel),
+            ShUiAppShellItem(icon: Icons.menu, label: 'Sidebar', builder: _buildSidebar),
+            ShUiAppShellItem(icon: Icons.tab, label: 'Tabs', builder: _buildTabs),
+          ],
+        ),
+        ShUiAppShellGroup(
+          label: '표시',
+          items: const [
+            ShUiAppShellItem(icon: Icons.view_stream_outlined, label: 'Skeleton', builder: _buildSkeleton),
+          ],
+        ),
+        ShUiAppShellGroup(
+          label: '오버레이',
+          items: const [
+            ShUiAppShellItem(icon: Icons.open_in_new, label: 'Dialog', builder: _buildDialog),
+            ShUiAppShellItem(icon: Icons.chat_bubble_outline, label: 'Popover', builder: _buildPopover),
+            ShUiAppShellItem(icon: Icons.notifications_outlined, label: 'Toast', builder: _buildToast),
+          ],
+        ),
+        ShUiAppShellGroup(
+          label: '파일',
+          items: const [
+            ShUiAppShellItem(icon: Icons.upload_file, label: 'File Upload', builder: _buildFileUpload),
+          ],
+        ),
+      ],
     );
   }
 }
+
+// 각 페이지 빌더. ShUiAppShellItem.builder 시그니처(WidgetBuilder)에 맞게
+// 최상위 함수로 선언 — const 생성자에서 참조 가능.
+Widget _buildLogin(BuildContext context) => const LoginPage();
+Widget _buildSignup(BuildContext context) => const SignupPage();
+Widget _buildSettings(BuildContext context) => const SettingsPage();
+Widget _buildDashboard(BuildContext context) => const DashboardPage();
+
+Widget _buildButton(BuildContext context) => const ButtonPage();
+Widget _buildInput(BuildContext context) => const InputPage();
+Widget _buildTextarea(BuildContext context) => const TextareaPage();
+Widget _buildCheckbox(BuildContext context) => const CheckboxPage();
+Widget _buildRadio(BuildContext context) => const RadioPage();
+Widget _buildSwitch(BuildContext context) => const SwitchPage();
+Widget _buildToggle(BuildContext context) => const TogglePage();
+Widget _buildSlider(BuildContext context) => const SliderPage();
+Widget _buildLabel(BuildContext context) => const LabelPage();
+
+Widget _buildSelect(BuildContext context) => const SelectPage();
+Widget _buildCombobox(BuildContext context) => const ComboboxPage();
+Widget _buildDatePicker(BuildContext context) => const DatePickerPage();
+Widget _buildColorPicker(BuildContext context) => const ColorPickerPage();
+
+Widget _buildAccordion(BuildContext context) => const AccordionPage();
+Widget _buildAppShell(BuildContext context) => const AppShellPage();
+Widget _buildCard(BuildContext context) => const CardPage();
+Widget _buildCarousel(BuildContext context) => const CarouselPage();
+Widget _buildSidebar(BuildContext context) => const SidebarPage();
+Widget _buildTabs(BuildContext context) => const TabsPage();
+
+Widget _buildSkeleton(BuildContext context) => const SkeletonPage();
+
+Widget _buildDialog(BuildContext context) => const DialogPage();
+Widget _buildPopover(BuildContext context) => const PopoverPage();
+Widget _buildToast(BuildContext context) => const ToastPage();
+
+Widget _buildFileUpload(BuildContext context) => const FileUploadPage();

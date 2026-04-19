@@ -188,6 +188,15 @@
       "dependencies": [],
       "registryDependencies": ["tokens"]
     },
+    "app-shell": {
+      "name": "app-shell",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_app_shell.dart", "dest": "{widgets}/sh_ui_app_shell.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens", "sidebar"]
+    },
     "skeleton": {
       "name": "skeleton",
       "type": "widget",

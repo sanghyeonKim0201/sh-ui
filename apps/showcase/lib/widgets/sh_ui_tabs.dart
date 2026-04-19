@@ -150,9 +150,13 @@ class _ShUiTabList extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: triggers,
           )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: triggers,
+        : SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: triggers,
+            ),
           );
 
     // underline variant 구분선

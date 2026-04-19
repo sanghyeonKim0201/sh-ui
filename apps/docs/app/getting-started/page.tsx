@@ -187,6 +187,90 @@ Widget build(BuildContext context) {
         <code>themeMode: ThemeMode.light / .dark / .system</code>으로 전환. 각 분기에 <code>ShUiTheme.light</code>와 <code>ShUiTheme.dark</code>를 사용한다.
       </p>
 
+      <h4>SafeArea — 노치·홈 인디케이터 대응</h4>
+      <p>
+        iPhone의 노치 / Dynamic Island, Android의 gesture indicator 등 시스템 UI 영역에 콘텐츠가 걸치지 않도록 <strong>화면 템플릿 수준에서 처리</strong>한다. <code>Scaffold</code> + <code>AppBar</code> 조합은 상단 상태바를 자동으로 흡수하지만, 전체 화면 배경을 직접 그리거나 <code>AppBar</code>가 없을 때는 <code>SafeArea</code>로 감싼다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "scaffold",
+            label: "표준 (Scaffold)",
+            language: "dart",
+            filename: "my_screen.dart",
+            code: `// Scaffold + AppBar는 상단 시스템 영역 자동 처리.
+// body만 SafeArea로 감싸면 하단 홈 인디케이터까지 대응.
+Scaffold(
+  appBar: AppBar(title: const Text('제목')),
+  body: SafeArea(
+    child: Padding(
+      padding: EdgeInsets.all(shUi.spacing.s4),
+      child: content,
+    ),
+  ),
+);`,
+          },
+          {
+            value: "edge-to-edge",
+            label: "전체 배경",
+            language: "dart",
+            filename: "my_screen.dart",
+            code: `// 배경은 화면 끝까지, 콘텐츠는 안전 영역 안으로.
+Scaffold(
+  extendBody: true,
+  extendBodyBehindAppBar: true,
+  body: Stack(children: [
+    Positioned.fill(child: GradientBackground()),
+    SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(shUi.spacing.s4),
+        child: content,
+      ),
+    ),
+  ]),
+);`,
+          },
+          {
+            value: "measure",
+            label: "직접 측정",
+            language: "dart",
+            filename: "my_screen.dart",
+            code: `// 안전 영역 수치를 직접 읽기
+final padding = MediaQuery.paddingOf(context);
+// padding.top      — 상태바/노치 (iOS ~44–59, Android ~24–48)
+// padding.bottom   — 홈 인디케이터 (iOS 34, Android 0 or 16–24)
+// padding.left / right — 가로 모드의 노치
+
+Container(
+  padding: EdgeInsets.only(
+    top: padding.top + shUi.spacing.s2,
+    bottom: padding.bottom,
+  ),
+  child: content,
+);`,
+          },
+        ]}
+      />
+
+      <h4>반응형 — 태블릿 / 폴드</h4>
+      <p>
+        <code>shUi.breakpoint.sm/md/lg/xl</code> 토큰을 <code>MediaQuery</code> 또는 <code>LayoutBuilder</code>와 조합하면 화면 폭에 따라 레이아웃을 분기할 수 있다. sh-ui의 <code>ShUiSidebar.mode: auto</code>가 동일 패턴을 내부적으로 사용한다.
+      </p>
+      <CodePanel
+        language="dart"
+        code={`LayoutBuilder(
+  builder: (context, c) {
+    if (c.maxWidth >= shUi.breakpoint.lg) {
+      return TabletLayout();   // 2-column, sidebar inline
+    }
+    if (c.maxWidth >= shUi.breakpoint.md) {
+      return CompactLayout();  // sidebar drawer
+    }
+    return PhoneLayout();
+  },
+)`}
+      />
+
       <h2>다음 단계</h2>
       <ul>
         <li><a href="/tokens">토큰</a> — 전체 토큰 목록과 값</li>

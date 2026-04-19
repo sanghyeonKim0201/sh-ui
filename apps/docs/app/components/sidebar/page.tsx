@@ -287,6 +287,57 @@ ShUiSidebarProvider(
         />
       </Preview>
 
+      <h3>Mode: 반응형 drawer (Flutter)</h3>
+      <p className="muted">
+        Flutter <code>ShUiSidebar</code>는 <code>mode</code> 파라미터로 배치 방식을 제어한다. 기본값 <code>auto</code>는 React의 반응형 동작을 그대로 따라 — 화면 폭이 <code>breakpoint.md</code>(768px) 미만이면 자동으로 backdrop + 슬라이드 drawer로 바뀐다. drawer 모드에서는 사이드바가 숨겨져 있으니 <code>ShUiSidebarTrigger</code>는 AppBar 등 바깥에 둬야 한다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "auto",
+            label: "auto (기본)",
+            language: "dart",
+            code: `// 화면 폭 ≥ breakpoint.md → inline
+// 미만 → drawer (backdrop + 슬라이드)
+ShUiSidebarProvider(
+  child: Scaffold(
+    appBar: AppBar(
+      leading: const ShUiSidebarTrigger(),  // drawer 모드 대비 바깥에 배치
+      title: const Text('내 앱'),
+    ),
+    body: Row(children: [
+      ShUiSidebar(
+        mode: ShUiSidebarMode.auto,         // 기본값이므로 생략 가능
+        children: const [/* ... */],
+      ),
+      const Expanded(child: mainContent),
+    ]),
+  ),
+)`,
+          },
+          {
+            value: "drawer",
+            label: "drawer (강제)",
+            language: "dart",
+            code: `// 데스크탑에서도 항상 drawer로 쓰고 싶을 때
+ShUiSidebar(
+  mode: ShUiSidebarMode.drawer,
+  children: const [/* ... */],
+)`,
+          },
+          {
+            value: "inline",
+            label: "inline (강제)",
+            language: "dart",
+            code: `// 좁은 화면에서도 항상 Row에 고정하고 싶을 때
+ShUiSidebar(
+  mode: ShUiSidebarMode.inline,
+  children: const [/* ... */],
+)`,
+          },
+        ]}
+      />
+
       <h3>Variant: floating</h3>
       <Preview>
         <Preview.Demo>
