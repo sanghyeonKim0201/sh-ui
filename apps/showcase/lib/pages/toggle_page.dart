@@ -182,6 +182,36 @@ class _TogglePageState extends State<TogglePage> {
 
           const SizedBox(height: 24),
 
+          const SizedBox(height: 24),
+
+          // --- Vertical Toggle Group ---
+          _section('Toggle Group (vertical)', colors),
+          SizedBox(
+            width: 160,
+            child: ShUiToggleGroup<String>(
+              value: _alignValue,
+              variant: ShUiToggleVariant.outline,
+              orientation: ShUiToggleOrientation.vertical,
+              onValueChange: (v) => setState(() => _alignValue = v),
+              children: const [
+                ShUiToggleGroupItem(
+                  value: 'left',
+                  child: Icon(Icons.format_align_left),
+                ),
+                ShUiToggleGroupItem(
+                  value: 'center',
+                  child: Icon(Icons.format_align_center),
+                ),
+                ShUiToggleGroupItem(
+                  value: 'right',
+                  child: Icon(Icons.format_align_right),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
           // --- Current State ---
           _section('Current State', colors),
           Container(

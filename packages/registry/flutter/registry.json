@@ -187,6 +187,33 @@
       ],
       "dependencies": [],
       "registryDependencies": ["tokens"]
+    },
+    "skeleton": {
+      "name": "skeleton",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_skeleton.dart", "dest": "{widgets}/sh_ui_skeleton.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "accordion": {
+      "name": "accordion",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_accordion.dart", "dest": "{widgets}/sh_ui_accordion.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "carousel": {
+      "name": "carousel",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_carousel.dart", "dest": "{widgets}/sh_ui_carousel.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
     }
   }
 }

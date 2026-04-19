@@ -295,6 +295,20 @@ ShUiInput(
 <NumberInput value={v} onValueChange={setV} placeholder="금액" />`,
             },
             {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `num? _amount = 1234567;
+
+ShUiNumberInput(
+  value: _amount,
+  placeholder: '금액',
+  min: 0,
+  max: 99999999,
+  onChanged: (v) => setState(() => _amount = v),
+)`,
+            },
+            {
               value: "full",
               label: "전체",
               language: "tsx",
@@ -396,6 +410,17 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 <PhoneInput value={v} onValueChange={setV} />`,
             },
             {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `String _digits = '01012345678';
+
+ShUiPhoneInput(
+  value: _digits,
+  onChanged: (d) => setState(() => _digits = d),
+)`,
+            },
+            {
               value: "full",
               label: "전체",
               language: "tsx",
@@ -479,6 +504,18 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   onValueChange={setV}
   validateChecksum
 />`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `String _digits = '1234567890';
+
+ShUiBusinessNumberInput(
+  value: _digits,
+  validateChecksum: true,
+  onChanged: (d) => setState(() => _digits = d),
+)`,
             },
             {
               value: "full",

@@ -14,6 +14,10 @@ class _InputPageState extends State<InputPage> {
   final _prefixController = TextEditingController();
   final _suffixController = TextEditingController();
 
+  num? _amount = 1234567;
+  String _phoneDigits = '01012345678';
+  String _brnDigits = '1234567890';
+
   @override
   void dispose() {
     _basicController.dispose();
@@ -117,6 +121,69 @@ class _InputPageState extends State<InputPage> {
             placeholder: 'Max 20 characters',
             maxLength: 20,
             onChanged: (v) {},
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- Number Input ---
+          _section('NumberInput', colors),
+          ShUiNumberInput(
+            value: _amount,
+            placeholder: '금액',
+            min: 0,
+            max: 99999999,
+            onChanged: (v) => setState(() => _amount = v),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'value: ${_amount ?? 'null'}',
+            style: TextStyle(
+              color: colors.foregroundMuted,
+              fontSize: shUi.text.xs,
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- Phone Input ---
+          _section('PhoneInput (KR)', colors),
+          ShUiPhoneInput(
+            value: _phoneDigits,
+            placeholder: '전화번호',
+            onChanged: (d) => setState(() => _phoneDigits = d),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'digits: $_phoneDigits',
+            style: TextStyle(
+              color: colors.foregroundMuted,
+              fontSize: shUi.text.xs,
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- Business Number Input ---
+          _section('BusinessNumberInput (KR 사업자등록번호)', colors),
+          ShUiBusinessNumberInput(
+            value: _brnDigits,
+            placeholder: '사업자등록번호',
+            validateChecksum: true,
+            onChanged: (d) => setState(() => _brnDigits = d),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _brnDigits.length == 10
+                ? (isValidBRN(_brnDigits)
+                    ? '✓ 유효한 사업자등록번호'
+                    : '체크섬 불일치')
+                : 'digits: $_brnDigits',
+            style: TextStyle(
+              color: _brnDigits.length == 10 && !isValidBRN(_brnDigits)
+                  ? colors.danger
+                  : colors.foregroundMuted,
+              fontSize: shUi.text.xs,
+            ),
           ),
         ],
       ),

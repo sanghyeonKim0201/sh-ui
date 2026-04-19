@@ -11,6 +11,8 @@ class DialogPage extends StatefulWidget {
 }
 
 class _DialogPageState extends State<DialogPage> {
+  bool _declarativeOpen = false;
+
   @override
   Widget build(BuildContext context) {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
@@ -90,6 +92,54 @@ class _DialogPageState extends State<DialogPage> {
                 child: const Text('커스텀 컨텐츠'),
               ),
             ],
+          ),
+
+          const SizedBox(height: 24),
+
+          // --- Declarative (controlled) Dialog ---
+          _section('선언형 (declarative)', colors),
+          Text(
+            'open / onOpenChange로 상태 기반 제어.',
+            style: TextStyle(color: colors.foregroundMuted, fontSize: 13),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              ShUiButton(
+                onPressed: () => setState(() => _declarativeOpen = true),
+                child: const Text('선언형 열기'),
+              ),
+            ],
+          ),
+          // 선언형 ShUiDialog — open이 true가 되면 Overlay에 삽입.
+          ShUiDialog(
+            open: _declarativeOpen,
+            onOpenChange: (v) => setState(() => _declarativeOpen = v),
+            child: ShUiDialogContent(
+              header: const ShUiDialogHeader(
+                title: '선언형 Dialog',
+                description: '외부 상태(_declarativeOpen)와 동기화됩니다.',
+              ),
+              body: Text(
+                '백드롭 탭, × 버튼, 하드웨어 백/Esc 모두 onOpenChange(false)를 호출합니다.',
+                style: TextStyle(color: colors.foreground, fontSize: 14),
+              ),
+              footer: ShUiDialogFooter(
+                children: [
+                  ShUiButton(
+                    variant: ShUiButtonVariant.secondary,
+                    onPressed: () => setState(() => _declarativeOpen = false),
+                    child: const Text('취소'),
+                  ),
+                  ShUiButton(
+                    onPressed: () => setState(() => _declarativeOpen = false),
+                    child: const Text('확인'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
