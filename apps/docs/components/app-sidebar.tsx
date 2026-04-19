@@ -52,6 +52,7 @@ const components: { title: string; href: string }[] = [
   { title: "DatePicker", href: "/components/date-picker" },
   { title: "Dialog", href: "/components/dialog" },
   { title: "FileUpload", href: "/components/file-upload" },
+  { title: "Header", href: "/components/header" },
   { title: "Input", href: "/components/input" },
   { title: "Label", href: "/components/label" },
   { title: "Popover", href: "/components/popover" },

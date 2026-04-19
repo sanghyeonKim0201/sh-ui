@@ -3,27 +3,36 @@
   width: 100%;
 }
 
-.sh-ui-carousel__viewport {
-  overflow: hidden;
-}
-
-.sh-ui-carousel[data-orientation="vertical"] .sh-ui-carousel__viewport {
-  height: 20rem;
-}
-
 .sh-ui-carousel__content {
   display: flex;
   gap: var(--space-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-inline: contain;
+}
+
+.sh-ui-carousel__content::-webkit-scrollbar {
+  display: none;
 }
 
 .sh-ui-carousel__content[data-orientation="vertical"] {
   flex-direction: column;
-  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  height: 20rem;
 }
 
 .sh-ui-carousel__item {
   flex: 0 0 100%;
   min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .sh-ui-carousel__item[data-orientation="vertical"] {
@@ -47,8 +56,8 @@
   transform: translateY(-50%);
   z-index: 1;
   transition:
-    opacity 150ms ease,
-    background 150ms ease;
+    opacity var(--duration-fast) ease,
+    background var(--duration-fast) ease;
 }
 
 .sh-ui-carousel__nav:hover:not(:disabled) {
@@ -90,8 +99,57 @@
   left: 50%;
 }
 
+/* 인디케이터 */
+.sh-ui-carousel__indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.sh-ui-carousel__indicators[data-orientation="vertical"] {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  margin-top: 0;
+  flex-direction: column;
+  transform: translateY(-50%);
+}
+
+.sh-ui-carousel__indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  background: var(--border);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) ease,
+    transform var(--duration-fast) ease;
+}
+
+.sh-ui-carousel__indicator:hover {
+  background: var(--border-strong);
+}
+
+.sh-ui-carousel__indicator[data-active] {
+  background: var(--foreground);
+  transform: scale(1.2);
+}
+
+.sh-ui-carousel__indicator:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .sh-ui-carousel__nav {
+  .sh-ui-carousel__content {
+    scroll-behavior: auto;
+  }
+  .sh-ui-carousel__nav,
+  .sh-ui-carousel__indicator {
     transition: none;
   }
 }

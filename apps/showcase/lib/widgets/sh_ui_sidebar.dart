@@ -1,10 +1,17 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import '../foundation/sh_ui_tokens.dart';
 
 /// sh-ui Sidebar — 네비게이션 사이드바 / 드로어.
 ///
-/// Flutter에서는 Drawer 패턴과 조합하여 사용한다.
-/// 데스크탑에서는 고정 사이드바, 모바일에서는 드로어로 동작.
+/// 기본(`mode: auto`)은 반응형으로 동작한다.
+///   - 화면 폭 >= [ShUiBreakpointTokens.md] → inline (Row 레이아웃 유지)
+///   - 화면 폭 <  md → drawer (backdrop + 슬라이드)
+/// 강제로 고정하려면 `mode: ShUiSidebarMode.inline` 또는 `.drawer`.
+///
+/// drawer 모드에서는 사이드바가 숨겨져 있으므로 [ShUiSidebarTrigger]는
+/// AppBar 등 바깥에 배치해야 한다.
 ///
 /// ShUiSidebarProvider(
 ///   child: Row(
@@ -26,7 +33,7 @@ import '../foundation/sh_ui_tokens.dart';
 ///   ),
 /// )
 
-/* ───────── Variant ───────── */
+/* ───────── Variant / Mode ───────── */
 
 /// Sidebar 외형 변형.
 /// - [sidebar] 기본. 가장자리에 붙어 border로 구분.
@@ -34,6 +41,12 @@ import '../foundation/sh_ui_tokens.dart';
 /// - [inset] 사이드바는 가장자리에 붙고, 메인 컨텐츠(ShUiSidebarInset)가
 ///           내부 여백/radius를 가진 형태.
 enum ShUiSidebarVariant { sidebar, floating, inset }
+
+/// Sidebar 배치 모드.
+/// - [auto] 화면 폭 기준 자동. `>= breakpoint.md` 면 inline, 미만이면 drawer.
+/// - [inline] 항상 Row 레이아웃의 고정 사이드바.
+/// - [drawer] 항상 backdrop + 슬라이드 drawer.
+enum ShUiSidebarMode { auto, inline, drawer }
 
 /* ───────── Provider ───────── */
 
@@ -154,11 +167,12 @@ ShUiSidebarState? useSidebar(BuildContext context) {
 
 /* ───────── Sidebar ───────── */
 
-class ShUiSidebar extends StatelessWidget {
+class ShUiSidebar extends StatefulWidget {
   final Widget? header;
   final Widget? footer;
   final List<Widget> children;
   final ShUiSidebarVariant variant;
+  final ShUiSidebarMode mode;
 
   const ShUiSidebar({
     super.key,
@@ -166,24 +180,130 @@ class ShUiSidebar extends StatelessWidget {
     this.footer,
     required this.children,
     this.variant = ShUiSidebarVariant.sidebar,
+    this.mode = ShUiSidebarMode.auto,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
-    final colors = shUi.colors;
+  State<ShUiSidebar> createState() => _ShUiSidebarState();
+}
+
+class _ShUiSidebarState extends State<ShUiSidebar>
+    with SingleTickerProviderStateMixin {
+  OverlayEntry? _drawerEntry;
+  AnimationController? _drawerCtrl;
+  bool _lastOverlayOpen = false;
+
+  bool _computeDrawer(BuildContext context, ShUiTheme shUi) {
+    switch (widget.mode) {
+      case ShUiSidebarMode.inline:
+        return false;
+      case ShUiSidebarMode.drawer:
+        return true;
+      case ShUiSidebarMode.auto:
+        return MediaQuery.of(context).size.width < shUi.breakpoint.md;
+    }
+  }
+
+  @override
+  void dispose() {
+    _removeDrawer();
+    _drawerCtrl?.dispose();
+    super.dispose();
+  }
+
+  void _ensureCtrl(ShUiTheme shUi) {
+    _drawerCtrl ??= AnimationController(
+      vsync: this,
+      duration: shUi.duration.base,
+    );
+  }
+
+  void _showDrawer() {
+    if (_drawerEntry != null || _drawerCtrl == null) return;
+    final overlayState = Overlay.maybeOf(context);
+    if (overlayState == null) return;
+    _drawerEntry = OverlayEntry(builder: _buildDrawerOverlay);
+    overlayState.insert(_drawerEntry!);
+    _drawerCtrl!.forward();
+  }
+
+  void _hideDrawer(VoidCallback onClosed) {
+    if (_drawerEntry == null) {
+      onClosed();
+      return;
+    }
+    var closed = false;
+    void finish() {
+      if (closed) return;
+      closed = true;
+      _drawerCtrl?.value = 0;
+      _removeDrawer();
+      onClosed();
+    }
+
+    _drawerCtrl?.reverse().whenComplete(finish);
+    // 새 라우트로 이동해 현재 라우트가 비활성화되면 TickerMode가 꺼져
+    // reverse() 애니메이션이 진행되지 않는다. 타이머 fallback으로 강제 제거.
+    Future<void>.delayed(const Duration(milliseconds: 400), finish);
+  }
+
+  void _removeDrawer() {
+    _drawerEntry?.remove();
+    _drawerEntry = null;
+  }
+
+  Widget _buildDrawerOverlay(BuildContext overlayContext) {
+    final shUi =
+        Theme.of(overlayContext).extension<ShUiTheme>() ?? ShUiTheme.light;
     final scope = _ShUiSidebarScope.of(context);
-    final isOpen = scope?.open ?? true;
-    final width = isOpen
-        ? (scope?.expandedWidth ?? 256)
-        : (scope?.collapsedWidth ?? 56);
+    final width = scope?.expandedWidth ?? 256;
+    final curve = CurvedAnimation(
+      parent: _drawerCtrl!,
+      curve: shUi.ease.standard,
+    );
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        FadeTransition(
+          opacity: curve,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: ModalBarrier(
+              dismissible: true,
+              onDismiss: () => scope?.toggle(),
+              color: Colors.black.withValues(alpha: 0.25),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(-1, 0),
+              end: Offset.zero,
+            ).animate(curve),
+            child: SizedBox(
+              width: width,
+              child: Material(
+                color: Colors.transparent,
+                child: _buildPanel(shUi, forceOpen: true, insetSafeArea: true),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-    final isFloating = variant == ShUiSidebarVariant.floating;
-
-    // floating: 카드 형태. margin + radius + border 전체 적용.
-    // inset: 사이드바 자체는 기본(sidebar)과 동일한 flush 배치.
-    //        내부 여백은 ShUiSidebarInset에서 담당.
-    // sidebar: 가장자리에 flush + 우측 border.
+  Widget _buildPanel(
+    ShUiTheme shUi, {
+    required bool forceOpen,
+    bool insetSafeArea = false,
+  }) {
+    final colors = shUi.colors;
+    final isFloating = widget.variant == ShUiSidebarVariant.floating;
     final decoration = isFloating
         ? BoxDecoration(
             color: colors.backgroundSubtle,
@@ -195,41 +315,78 @@ class ShUiSidebar extends StatelessWidget {
             color: colors.backgroundSubtle,
             border: Border(right: BorderSide(color: colors.border)),
           );
+    final margin =
+        isFloating ? EdgeInsets.all(shUi.spacing.s2) : EdgeInsets.zero;
+    final clip = isFloating ? Clip.antiAlias : Clip.none;
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (widget.header != null) widget.header!,
+        Expanded(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(vertical: shUi.spacing.s4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: widget.children,
+            ),
+          ),
+        ),
+        if (widget.footer != null) widget.footer!,
+      ],
+    );
+    return Container(
+      margin: margin,
+      decoration: decoration,
+      clipBehavior: clip,
+      // drawer 모드: 배경은 노치 영역까지 연장하되 콘텐츠만 SafeArea 안쪽으로.
+      child: insetSafeArea ? SafeArea(right: false, child: content) : content,
+    );
+  }
 
-    final margin = isFloating
-        ? EdgeInsets.all(shUi.spacing.s2)
-        : EdgeInsets.zero;
+  @override
+  Widget build(BuildContext context) {
+    final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
+    final scope = _ShUiSidebarScope.of(context);
+    final isOpen = scope?.open ?? true;
+    final isDrawer = _computeDrawer(context, shUi);
 
-    final clip = isFloating
-        ? Clip.antiAlias
-        : Clip.none;
+    _ensureCtrl(shUi);
+
+    // drawer 모드에서 open 상태 변화에 따라 overlay 토글
+    if (isDrawer) {
+      if (isOpen && !_lastOverlayOpen) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _showDrawer();
+        });
+      } else if (!isOpen && _lastOverlayOpen) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _hideDrawer(() {});
+        });
+      }
+      _lastOverlayOpen = isOpen;
+      // drawer 모드에서는 Row 레이아웃에서 자리를 차지하지 않는다.
+      return const SizedBox.shrink();
+    }
+
+    // inline 모드로 바뀌면 떠있는 overlay 정리.
+    if (_drawerEntry != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _drawerCtrl?.value = 0;
+        _removeDrawer();
+      });
+    }
+    _lastOverlayOpen = false;
+
+    final width =
+        isOpen ? (scope?.expandedWidth ?? 256) : (scope?.collapsedWidth ?? 56);
+    final isFloating = widget.variant == ShUiSidebarVariant.floating;
 
     return AnimatedContainer(
       duration: shUi.duration.slow,
       curve: shUi.ease.standard,
       width: width + (isFloating ? shUi.spacing.s2 * 2 : 0),
       margin: EdgeInsets.zero,
-      child: Container(
-        margin: margin,
-        decoration: decoration,
-        clipBehavior: clip,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (header != null) header!,
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(vertical: shUi.spacing.s2),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: children,
-                ),
-              ),
-            ),
-            if (footer != null) footer!,
-          ],
-        ),
-      ),
+      child: _buildPanel(shUi, forceOpen: false),
     );
   }
 }
@@ -304,8 +461,17 @@ class ShUiSidebarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
-    return Container(
-      padding: EdgeInsets.all(shUi.spacing.s4),
+    final scope = _ShUiSidebarScope.of(context);
+    final isOpen = scope?.open ?? true;
+    // 접힌 상태(56px)에선 s4(16) 패딩이 너무 커서 trigger(36px)가 경계를
+    // 벗어나 hit test 영역이 잘린다. 좌우만 s2로 줄여 트리거가 안쪽에 들어오도록.
+    return AnimatedContainer(
+      duration: shUi.duration.slow,
+      curve: shUi.ease.standard,
+      padding: EdgeInsets.symmetric(
+        horizontal: isOpen ? shUi.spacing.s4 : shUi.spacing.s2,
+        vertical: shUi.spacing.s4,
+      ),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: shUi.colors.border)),
       ),
@@ -322,8 +488,15 @@ class ShUiSidebarFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
-    return Container(
-      padding: EdgeInsets.all(shUi.spacing.s4),
+    final scope = _ShUiSidebarScope.of(context);
+    final isOpen = scope?.open ?? true;
+    return AnimatedContainer(
+      duration: shUi.duration.slow,
+      curve: shUi.ease.standard,
+      padding: EdgeInsets.symmetric(
+        horizontal: isOpen ? shUi.spacing.s4 : shUi.spacing.s2,
+        vertical: shUi.spacing.s4,
+      ),
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: shUi.colors.border)),
       ),
@@ -334,21 +507,46 @@ class ShUiSidebarFooter extends StatelessWidget {
 
 /* ───────── Group ───────── */
 
-class ShUiSidebarGroup extends StatelessWidget {
+class ShUiSidebarGroup extends StatefulWidget {
   final String? label;
   final List<Widget> children;
+
+  /// `true`면 label 탭으로 접기/펼치기 가능. `label`이 있어야 의미가 있다.
+  final bool collapsible;
+
+  /// `collapsible: true`일 때 초기 확장 상태.
+  final bool initiallyExpanded;
 
   const ShUiSidebarGroup({
     super.key,
     this.label,
     required this.children,
+    this.collapsible = false,
+    this.initiallyExpanded = true,
   });
+
+  @override
+  State<ShUiSidebarGroup> createState() => _ShUiSidebarGroupState();
+}
+
+class _ShUiSidebarGroupState extends State<ShUiSidebarGroup>
+    with SingleTickerProviderStateMixin {
+  late bool _expanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _expanded = widget.initiallyExpanded;
+  }
 
   @override
   Widget build(BuildContext context) {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     final scope = _ShUiSidebarScope.of(context);
-    final isOpen = scope?.open ?? true;
+    final isSidebarOpen = scope?.open ?? true;
+
+    final hasLabel = widget.label != null && isSidebarOpen;
+    final canCollapse = widget.collapsible && hasLabel;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: shUi.spacing.s1),
@@ -356,21 +554,65 @@ class ShUiSidebarGroup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (label != null && isOpen)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: shUi.spacing.s4, vertical: shUi.spacing.s1),
-              child: Text(
-                label!,
-                style: TextStyle(
-                  color: shUi.colors.foregroundMuted,
-                  fontSize: shUi.text.xs,
-                  fontWeight: shUi.weight.medium,
-                  letterSpacing: 0.5,
-                ),
+          if (hasLabel)
+            _buildLabel(shUi, canCollapse: canCollapse),
+          AnimatedSize(
+            duration: shUi.duration.fast,
+            curve: shUi.ease.standard,
+            alignment: Alignment.topCenter,
+            child: (canCollapse && !_expanded)
+                ? const SizedBox(width: double.infinity)
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: widget.children,
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLabel(ShUiTheme shUi, {required bool canCollapse}) {
+    final textStyle = TextStyle(
+      color: shUi.colors.foregroundMuted,
+      fontSize: shUi.text.xs,
+      fontWeight: shUi.weight.medium,
+      letterSpacing: 0.5,
+    );
+
+    if (!canCollapse) {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: shUi.spacing.s4,
+          vertical: shUi.spacing.s1,
+        ),
+        child: Text(widget.label!, style: textStyle),
+      );
+    }
+
+    return InkWell(
+      onTap: () => setState(() => _expanded = !_expanded),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: shUi.spacing.s4,
+          vertical: shUi.spacing.s1,
+        ),
+        child: Row(
+          children: [
+            Expanded(child: Text(widget.label!, style: textStyle)),
+            AnimatedRotation(
+              turns: _expanded ? 0 : -0.25,
+              duration: shUi.duration.fast,
+              curve: shUi.ease.standard,
+              child: Icon(
+                Icons.keyboard_arrow_down,
+                size: 16,
+                color: shUi.colors.foregroundMuted,
               ),
             ),
-          ...children,
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -467,6 +709,45 @@ class _ShUiSidebarItemState extends State<ShUiSidebarItem>
 
     final indent = widget._depth * shUi.spacing.s4;
 
+    final expandedLayout = Row(
+      children: [
+        if (widget.icon != null) ...[
+          Icon(widget.icon, size: 18, color: fg),
+          const SizedBox(width: 10),
+        ],
+        Expanded(
+          child: Text(
+            widget.label,
+            style: TextStyle(
+              color: fg,
+              fontSize: shUi.text.sm,
+              fontWeight: resolvedActive
+                  ? shUi.weight.medium
+                  : shUi.weight.regular,
+            ),
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+          ),
+        ),
+        if (_hasChildren)
+          AnimatedRotation(
+            duration: shUi.duration.base,
+            curve: shUi.ease.standard,
+            turns: _expanded ? 0.25 : 0,
+            child: Icon(Icons.chevron_right, size: 16, color: fg),
+          ),
+      ],
+    );
+
+    final collapsedLayout = Center(
+      child: widget.icon != null
+          ? Icon(widget.icon, size: 20, color: fg)
+          : Text(
+              widget.label.isNotEmpty ? widget.label[0] : '',
+              style: TextStyle(color: fg, fontSize: shUi.text.sm),
+            ),
+    );
+
     final row = MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
@@ -474,7 +755,8 @@ class _ShUiSidebarItemState extends State<ShUiSidebarItem>
       child: GestureDetector(
         onTap: handleTap,
         child: AnimatedContainer(
-          duration: shUi.duration.fast,
+          duration: shUi.duration.slow,
+          curve: shUi.ease.standard,
           margin: EdgeInsets.fromLTRB(
             shUi.spacing.s2 + indent,
             1,
@@ -490,47 +772,27 @@ class _ShUiSidebarItemState extends State<ShUiSidebarItem>
             borderRadius:
                 BorderRadius.circular(shUi.radius.defaultRadius - 2),
           ),
-          child: isOpen
-              ? Row(
-                  children: [
-                    if (widget.icon != null) ...[
-                      Icon(widget.icon, size: 18, color: fg),
-                      const SizedBox(width: 10),
-                    ],
-                    Expanded(
-                      child: Text(
-                        widget.label,
-                        style: TextStyle(
-                          color: fg,
-                          fontSize: shUi.text.sm,
-                          fontWeight: resolvedActive
-                              ? shUi.weight.medium
-                              : shUi.weight.regular,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (_hasChildren)
-                      AnimatedRotation(
-                        duration: shUi.duration.base,
-                        curve: shUi.ease.standard,
-                        turns: _expanded ? 0.25 : 0,
-                        child: Icon(
-                          Icons.chevron_right,
-                          size: 16,
-                          color: fg,
-                        ),
-                      ),
-                  ],
-                )
-              : Center(
-                  child: widget.icon != null
-                      ? Icon(widget.icon, size: 20, color: fg)
-                      : Text(
-                          widget.label.isNotEmpty ? widget.label[0] : '',
-                          style: TextStyle(color: fg, fontSize: shUi.text.sm),
-                        ),
-                ),
+          child: ClipRect(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final w = constraints.maxWidth.isFinite
+                    ? constraints.maxWidth
+                    : 0.0;
+                return AnimatedCrossFade(
+                  duration: shUi.duration.slow,
+                  sizeCurve: shUi.ease.standard,
+                  firstCurve: shUi.ease.standard,
+                  secondCurve: shUi.ease.standard,
+                  alignment: Alignment.centerLeft,
+                  crossFadeState: isOpen
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: SizedBox(width: w, child: expandedLayout),
+                  secondChild: SizedBox(width: w, child: collapsedLayout),
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

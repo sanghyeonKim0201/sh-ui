@@ -21,21 +21,9 @@ class _SelectPageState extends State<SelectPage> {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     final colors = shUi.colors;
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      appBar: AppBar(
-        title: Text('Select', style: TextStyle(color: colors.foreground)),
-        backgroundColor: colors.background,
-        elevation: 0,
-        iconTheme: IconThemeData(color: colors.foreground),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: colors.border),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
           // --- Basic ---
           _section('Basic', colors),
           ShUiSelect<String>(
@@ -189,7 +177,6 @@ class _SelectPageState extends State<SelectPage> {
             ),
           ),
         ],
-      ),
     );
   }
 

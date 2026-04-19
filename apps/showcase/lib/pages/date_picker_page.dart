@@ -21,21 +21,9 @@ class _DatePickerPageState extends State<DatePickerPage> {
 
     final now = DateTime.now();
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      appBar: AppBar(
-        title: Text('Date Picker', style: TextStyle(color: colors.foreground)),
-        backgroundColor: colors.background,
-        elevation: 0,
-        iconTheme: IconThemeData(color: colors.foreground),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: colors.border),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
           // --- Single Date ---
           _section('Single Date', colors),
           ShUiDatePicker(
@@ -88,7 +76,6 @@ class _DatePickerPageState extends State<DatePickerPage> {
             placeholder: '선택 불가',
           ),
         ],
-      ),
     );
   }
 

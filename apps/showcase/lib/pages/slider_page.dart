@@ -19,21 +19,9 @@ class _SliderPageState extends State<SliderPage> {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     final colors = shUi.colors;
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      appBar: AppBar(
-        title: Text('Slider', style: TextStyle(color: colors.foreground)),
-        backgroundColor: colors.background,
-        elevation: 0,
-        iconTheme: IconThemeData(color: colors.foreground),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: colors.border),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
           // --- Default (0-100) ---
           _section('Default (0 - 100)', colors),
           ShUiSlider(
@@ -143,7 +131,6 @@ class _SliderPageState extends State<SliderPage> {
             ],
           ),
         ],
-      ),
     );
   }
 

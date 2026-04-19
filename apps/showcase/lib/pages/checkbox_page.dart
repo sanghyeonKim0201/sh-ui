@@ -27,21 +27,9 @@ class _CheckboxPageState extends State<CheckboxPage> {
     final shUi = Theme.of(context).extension<ShUiTheme>() ?? ShUiTheme.light;
     final colors = shUi.colors;
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      appBar: AppBar(
-        title: Text('Checkbox', style: TextStyle(color: colors.foreground)),
-        backgroundColor: colors.background,
-        elevation: 0,
-        iconTheme: IconThemeData(color: colors.foreground),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: colors.border),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
           // --- States ---
           _section('States', colors),
           _checkboxRow('Unchecked', colors,
@@ -128,7 +116,6 @@ class _CheckboxPageState extends State<CheckboxPage> {
             ],
           ),
         ],
-      ),
     );
   }
 

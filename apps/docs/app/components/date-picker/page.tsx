@@ -13,6 +13,8 @@ import {
   RangeBasicDemo,
   RangeControlledDemo,
   RangeWithLabelDemo,
+  CompoundDemo,
+  CustomTriggerDemo,
 } from "./_demos/basic";
 
 export default function DatePickerPage() {
@@ -71,15 +73,33 @@ export default function DatePickerPage() {
             value: "react",
             label: "React",
             language: "tsx",
-            code: `import { DatePicker, DateRangePicker } from "@/components/ui/date-picker";
+            code: `import {
+  DatePicker,
+  DatePickerTrigger,
+  DatePickerContent,
+  DatePickerCalendar,
+  DatePickerFooter,
+  DateRangePicker,
+} from "@/components/ui/date-picker";
 import type { DateRange } from "@/components/ui/date-picker";
 
-// 단일 날짜
+// 기본 (children 생략 시 Trigger + Content + Calendar 자동 렌더)
 <DatePicker placeholder="날짜 선택" />
 
 // Controlled
 const [date, setDate] = useState<Date | undefined>(new Date());
 <DatePicker value={date} onValueChange={setDate} />
+
+// Compound 조립 모드 (footer 추가 등 커스터마이징)
+<DatePicker value={date} onValueChange={setDate} closeOnSelect={false}>
+  <DatePickerTrigger />
+  <DatePickerContent>
+    <DatePickerCalendar />
+    <DatePickerFooter>
+      {/* 오늘 / 지우기 버튼 등 */}
+    </DatePickerFooter>
+  </DatePickerContent>
+</DatePicker>
 
 // 범위 선택
 const [range, setRange] = useState<DateRange | undefined>();
@@ -237,6 +257,82 @@ const ShUiDatePicker(placeholder: 'YYYY-MM-DD'),`,
         />
       </Preview>
 
+      <h3>Compound 조립 (Footer 추가)</h3>
+      <p className="muted">
+        children으로 Trigger/Content/Calendar/Footer를 조립하면 레이아웃을 자유롭게 커스터마이징할 수 있다.
+        <code>useDatePicker()</code> 훅으로 Footer 내부에서 value/open 상태를 제어한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <CompoundDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `function TodayClearActions() {
+  const { setValue, setFocusedDate, setOpen } = useDatePicker();
+  return (
+    <>
+      <Button variant="ghost" size="sm" onClick={() => {
+        const today = new Date();
+        setValue(today);
+        setFocusedDate(new Date(today.getFullYear(), today.getMonth(), 1));
+        setOpen(false);
+      }}>오늘</Button>
+      <Button variant="ghost" size="sm" onClick={() => {
+        setValue(undefined);
+        setOpen(false);
+      }}>지우기</Button>
+    </>
+  );
+}
+
+<DatePicker value={date} onValueChange={setDate} closeOnSelect={false}>
+  <DatePickerTrigger />
+  <DatePickerContent>
+    <DatePickerCalendar />
+    <DatePickerFooter>
+      <TodayClearActions />
+    </DatePickerFooter>
+  </DatePickerContent>
+</DatePicker>`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>커스텀 트리거 (render prop)</h3>
+      <p className="muted">
+        <code>DatePickerTrigger</code>의 children에 함수를 전달하면 value/formatted/placeholder를 받아 자유롭게 렌더한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <CustomTriggerDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<DatePicker value={date} onValueChange={setDate}>
+  <DatePickerTrigger>
+    {({ formatted, placeholder }) => (
+      <span>{formatted ?? placeholder}</span>
+    )}
+  </DatePickerTrigger>
+  <DatePickerContent>
+    <DatePickerCalendar />
+  </DatePickerContent>
+</DatePicker>`,
+            },
+          ]}
+        />
+      </Preview>
+
       <h2>DateRangePicker</h2>
       <p className="muted">
         시작일과 종료일을 순서대로 클릭하여 범위를 선택한다. 호버 시 선택 예정 범위가 하이라이트된다.
@@ -336,7 +432,12 @@ ShUiDateRangePicker(
       <h2>구성 요소</h2>
       <SubComponents
         rows={[
-          { name: "DatePicker", description: "단일 날짜 선택. 캘린더 팝오버 + 트리거 버튼." },
+          { name: "DatePicker", description: "루트. value/open/focusedDate 상태를 Context로 제공. children 생략 시 Trigger + Content + Calendar 자동 렌더." },
+          { name: "DatePickerTrigger", description: "팝오버를 여는 버튼. 기본은 날짜 문자열 + calendar 아이콘, children에 render prop 전달 가능." },
+          { name: "DatePickerContent", description: "Popover Portal/Positioner/Popup 래퍼." },
+          { name: "DatePickerCalendar", description: "달력 그리드. month navigation + day selection." },
+          { name: "DatePickerFooter", description: "하단 액션 영역. 오늘/지우기 등 버튼 배치." },
+          { name: "useDatePicker", description: "Footer 내부에서 value/open/focusedDate를 제어하기 위한 훅." },
           { name: "DateRangePicker", description: "시작일~종료일 범위 선택. 2회 클릭으로 범위 확정." },
           { name: "DateRange", description: "{ from: Date; to: Date } 타입." },
         ]}
@@ -357,6 +458,8 @@ ShUiDateRangePicker(
           { prop: "disabled", type: "boolean" },
           { prop: "readOnly", type: "boolean" },
           { prop: "aria-invalid", type: `boolean | "true"`, description: "에러 상태. 보더가 --danger로 전환." },
+          { prop: "closeOnSelect", type: "boolean", default: "true", description: "날짜 선택 시 팝오버 자동 닫기. Footer 액션을 노출하려면 false." },
+          { prop: "children", type: "ReactNode", description: "조립 모드. 생략 시 Trigger + Content + Calendar가 자동 렌더." },
         ]}
       />
 

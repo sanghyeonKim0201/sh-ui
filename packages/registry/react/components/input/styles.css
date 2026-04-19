@@ -113,3 +113,91 @@
 .sh-ui-input[aria-invalid="true"]:focus {
   box-shadow: 0 0 0 1px var(--danger);
 }
+
+/* ───────── InputGroup + InputAdornment ───────── */
+
+.sh-ui-input-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--control-md);
+  padding: 0 var(--space-2);
+  gap: var(--space-2);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  cursor: text;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .sh-ui-input-group {
+    min-height: 2.75rem;
+  }
+}
+
+.sh-ui-input-group:hover:not([data-disabled]):not(:focus-within) {
+  border-color: var(--border-strong);
+}
+
+.sh-ui-input-group:focus-within {
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+.sh-ui-input-group[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.sh-ui-input-group[aria-invalid="true"]:focus-within {
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+.sh-ui-input-group[data-disabled] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+  background: var(--background-subtle);
+}
+
+/* 그룹 내부의 Input은 자체 보더/배경/포커스 링을 모두 감춘다 */
+.sh-ui-input[data-in-group] {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sh-ui-input[data-in-group]:focus,
+.sh-ui-input[data-in-group]:hover {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.sh-ui-input[data-in-group]:disabled {
+  background: transparent;
+}
+
+/* 그룹 안에서는 Input-wrap도 단순 flex 자식으로 */
+.sh-ui-input-wrap[data-in-group] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sh-ui-input-group__adornment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--foreground-muted);
+  padding: 0 var(--space-1);
+}
+
+.sh-ui-input-group__adornment[data-interactive] {
+  padding: 0;
+}
