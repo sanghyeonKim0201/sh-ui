@@ -258,6 +258,15 @@ ShUiMultiCombobox<String>(
           { prop: "children", type: "ReactNode", default: `"×"`, description: "버튼 텍스트/아이콘." },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li>입력에 문자 타이핑 — 실시간 필터링</li>
+        <li><code>↓</code> / <code>↑</code> — 결과 항목 이동</li>
+        <li><code>Enter</code> — 선택, <code>Esc</code> — 닫기</li>
+        <li>Backspace(빈 입력) — multiselect에서 마지막 chip 제거</li>
+        <li>Base UI가 <code>role=&quot;combobox&quot;</code>, <code>aria-expanded</code>, <code>aria-activedescendant</code>를 자동 관리</li>
+      </ul>
     </main>
   );
 }

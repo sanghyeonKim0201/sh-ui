@@ -516,6 +516,15 @@ ShUiMultiSelect<String>(
           { prop: "container", type: "Element | RefObject", description: "Portal이 마운트될 노드. 기본 body. 토큰 스코프 안에 띄우려면 해당 컨테이너 ref 전달." },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li><code>Space</code> / <code>Enter</code> / <code>↓</code> — 팝업 열기</li>
+        <li><code>↑</code> / <code>↓</code> — 항목 이동, <code>Home</code> / <code>End</code> — 첫/마지막</li>
+        <li>문자 타이핑 — type-ahead(해당 글자로 시작하는 항목으로 이동)</li>
+        <li><code>Enter</code> — 선택, <code>Esc</code> — 닫기(변경 취소)</li>
+        <li>Base UI가 <code>role=&quot;listbox&quot;</code>, <code>aria-selected</code>, <code>aria-expanded</code>를 자동 관리</li>
+      </ul>
     </main>
   );
 }

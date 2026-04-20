@@ -241,6 +241,14 @@ const ShUiRadio<String>(
           { prop: "disabled", type: "boolean", default: "false" },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li><code>Tab</code> — 그룹 안으로 포커스 진입(선택된 항목 또는 첫 항목)</li>
+        <li><code>↑</code> / <code>↓</code> / <code>←</code> / <code>→</code> — 그룹 내 항목 이동 + 즉시 선택</li>
+        <li><code>Space</code> — 현재 포커스 항목 선택</li>
+        <li>Base UI가 <code>aria-checked</code>·<code>aria-disabled</code>를 자동 관리</li>
+      </ul>
     </main>
   );
 }

@@ -162,6 +162,13 @@ const ShUiSwitch(enabled: false, checked: true)`,
           { prop: "name", type: "string", description: "폼 제출 시 필드 이름." },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li><code>Space</code> / <code>Enter</code> — on/off 토글</li>
+        <li><code>Tab</code> / <code>Shift+Tab</code> — 포커스 이동</li>
+        <li>Base UI가 <code>role=&quot;switch&quot;</code>, <code>aria-checked</code>를 자동 부여</li>
+      </ul>
     </main>
   );
 }

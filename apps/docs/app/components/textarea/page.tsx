@@ -235,6 +235,13 @@ ShUiTextarea(minLines: 10, placeholder: 'minLines=10')`,
           { prop: "rows", type: "number", description: "표시 행 수. 기본값은 브라우저 기본(보통 2)." },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li>네이티브 <code>&lt;textarea&gt;</code> — <code>Tab</code> 이동, 멀티라인 편집 기본 동작</li>
+        <li>레이블 연결: <code>&lt;Label htmlFor=&quot;id&quot;&gt;</code>로 <code>id</code>와 묶기</li>
+        <li>에러 메시지: <code>aria-invalid</code> + <code>aria-describedby</code>로 연결</li>
+      </ul>
     </main>
   );
 }

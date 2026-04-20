@@ -97,6 +97,15 @@ export default function TooltipPage() {
           { prop: "closeDelay", type: "number", description: "닫기 지연(ms)." },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li>데스크탑 — hover 또는 <code>Tab</code> 포커스 시 자동 표시</li>
+        <li>모바일 — long-press로 표시</li>
+        <li><code>Esc</code> — 닫기</li>
+        <li>Base UI가 <code>role=&quot;tooltip&quot;</code>, <code>aria-describedby</code>(트리거 ↔ 팝업)를 자동 연결</li>
+        <li>메뉴·다이얼로그 버튼처럼 기능이 텍스트로 명확한 곳에는 tooltip 대신 <code>aria-label</code>을 쓴다</li>
+      </ul>
     </main>
   );
 }
