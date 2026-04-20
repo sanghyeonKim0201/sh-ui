@@ -20,6 +20,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import { Spinner } from "@/components/ui/spinner";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const STORAGE_KEY = "sh-ui-playground-tokens";
 
@@ -78,6 +97,14 @@ const groups: { label: string; keys: TokenKey[] }[] = [
 ];
 
 const DEFAULT_RADIUS = 0.5;
+
+const RADIUS_PRESETS: { label: string; value: number }[] = [
+  { label: "none", value: 0 },
+  { label: "sm", value: 0.25 },
+  { label: "md", value: 0.5 },
+  { label: "lg", value: 0.75 },
+  { label: "xl", value: 1 },
+];
 
 export default function PlaygroundPage() {
   const [mode, setMode] = useState<Mode>("light");
@@ -254,6 +281,29 @@ export default function PlaygroundPage() {
                   {radius.toFixed(2)}rem
                 </code>
               </div>
+              <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
+                {RADIUS_PRESETS.map((p) => {
+                  const active = Math.abs(radius - p.value) < 0.001;
+                  return (
+                    <button
+                      key={p.label}
+                      type="button"
+                      onClick={() => setRadius(p.value)}
+                      style={{
+                        padding: "0.25rem 0.5rem",
+                        fontSize: "0.75rem",
+                        border: "1px solid var(--border)",
+                        borderRadius: "calc(var(--radius) - 2px)",
+                        background: active ? "var(--background-muted)" : "transparent",
+                        color: active ? "var(--foreground)" : "var(--foreground-muted)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </aside>
 
@@ -329,6 +379,67 @@ export default function PlaygroundPage() {
                   </CardFooter>
                 </Card>
               </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Toggles">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center" }}>
+                <Switch defaultChecked aria-label="알림" />
+                <Switch aria-label="다크 모드" />
+                <Checkbox defaultChecked aria-label="동의" />
+                <Checkbox aria-label="필수 아님" />
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Badges">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                <Badge>Primary</Badge>
+                <Badge variant="secondary">Secondary</Badge>
+                <Badge variant="success">Success</Badge>
+                <Badge variant="warning">Warning</Badge>
+                <Badge variant="danger">Danger</Badge>
+                <Badge variant="outline">Outline</Badge>
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Avatars">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center" }}>
+                <Avatar size="sm"><AvatarFallback>SM</AvatarFallback></Avatar>
+                <Avatar size="md"><AvatarFallback>MD</AvatarFallback></Avatar>
+                <Avatar size="lg"><AvatarFallback>LG</AvatarFallback></Avatar>
+                <Avatar size="xl"><AvatarFallback>XL</AvatarFallback></Avatar>
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Progress / Spinner">
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", maxWidth: 360 }}>
+                <Progress value={40} aria-label="determinate 40%" />
+                <Progress aria-label="indeterminate" />
+                <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+                  <Spinner size="sm" />
+                  <Spinner size="md" />
+                  <Spinner size="lg" />
+                </div>
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Tooltip · DropdownMenu">
+              <TooltipProvider delay={150}>
+                <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                  <Tooltip>
+                    <TooltipTrigger render={<Button variant="secondary">호버</Button>} />
+                    <TooltipContent>토큰이 실시간으로 반영됩니다</TooltipContent>
+                  </Tooltip>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger render={<Button variant="secondary">메뉴</Button>} />
+                    <DropdownMenuContent align="start" container={previewRef}>
+                      <DropdownMenuItem>프로필</DropdownMenuItem>
+                      <DropdownMenuItem>설정</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>로그아웃</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </TooltipProvider>
             </ShowcaseSection>
           </section>
         </div>
