@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.15.1",
+      "date": "2026-04-21",
+      "title": "ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정",
+      "type": "patch",
+      "highlights": [
+        "setHsv 업데이터 콜백 내부에서 onChange를 호출하던 부작용을 업데이터 밖으로 이동",
+        "React StrictMode가 updater를 두 번 invoke할 때 발생하던 'setState while rendering' 경고 제거",
+        "controlled 모드에서 부모 상태를 동기화하는 시나리오(예: playground 토큰 에디터) 안정성 개선"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.1"
+    },
+    {
       "version": "0.15.0",
       "date": "2026-04-21",
       "title": "llms.txt — AI 도구용 컴포넌트 인벤토리",
