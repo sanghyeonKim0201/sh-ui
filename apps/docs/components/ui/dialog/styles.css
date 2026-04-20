@@ -113,3 +113,15 @@
   outline: var(--border-width-strong) solid var(--foreground);
   outline-offset: 2px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-dialog__backdrop,
+  .sh-ui-dialog__content,
+  .sh-ui-dialog__close {
+    transition: none;
+  }
+  .sh-ui-dialog__content[data-starting-style],
+  .sh-ui-dialog__content[data-ending-style] {
+    transform: translate(-50%, -50%);
+  }
+}

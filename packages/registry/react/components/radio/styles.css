@@ -71,3 +71,10 @@
   flex-direction: row;
   flex-wrap: wrap;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-radio,
+  .sh-ui-radio__indicator {
+    transition: none;
+  }
+}

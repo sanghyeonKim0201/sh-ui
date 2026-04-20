@@ -1,6 +1,11 @@
 export const dynamic = "force-static";
 
-import { Slider } from "@/components/ui/slider";
+import {
+  Slider,
+  SliderTrack,
+  SliderRange,
+  SliderThumb,
+} from "@/components/ui/slider";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -200,6 +205,38 @@ ShUiSlider(
         />
       </Preview>
 
+      <h3>Compound 구성</h3>
+      <p className="muted">
+        레이아웃을 커스터마이즈하려면 하위 컴포넌트를 직접 조합한다. 자식 생략 시 아래와 동일한 기본 구성이 렌더된다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <div style={{ width: "100%", maxWidth: 320 }}>
+            <Slider defaultValue={60} aria-label="compound">
+              <SliderTrack>
+                <SliderRange />
+                <SliderThumb />
+              </SliderTrack>
+            </Slider>
+          </div>
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Slider defaultValue={60} aria-label="compound">
+  <SliderTrack>
+    <SliderRange />
+    <SliderThumb />
+  </SliderTrack>
+</Slider>`,
+            },
+          ]}
+        />
+      </Preview>
+
       <h2>API Reference</h2>
 
       <h3>Slider</h3>
@@ -213,6 +250,17 @@ ShUiSlider(
           { prop: "step", type: "number", default: "1", description: "증감 단위. Shift+화살표는 ×10." },
           { prop: "disabled", type: "boolean" },
           { prop: "aria-label", type: "string", description: "스크린리더용 라벨. 시각 라벨이 별도로 없으면 필수." },
+          { prop: "children", type: "ReactNode", description: "생략 시 기본 Track/Range/Thumb 렌더. 제공 시 그대로 사용." },
+        ]}
+      />
+
+      <h3>하위 컴포넌트</h3>
+      <PropsTable
+        rows={[
+          { prop: "SliderTrack", type: "div", description: "클릭·드래그 수신 영역. 내부에 SliderRange/SliderThumb 배치." },
+          { prop: "SliderRange", type: "div", description: "선택된 값까지의 진행 바." },
+          { prop: "SliderThumb", type: "div", description: "키보드·포커스 수신 핸들. role=\"slider\"." },
+          { prop: "useSliderState()", type: "hook", description: "Slider 내부에서 현재 value/min/max 등을 읽는 훅." },
         ]}
       />
 

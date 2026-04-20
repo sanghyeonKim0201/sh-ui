@@ -187,24 +187,28 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       };
     }, [orientation, index, setIndex]);
 
-    // 자동 재생
+    // 자동 재생 — 호버·키보드 포커스 시 일시정지(WCAG 2.2.2).
     React.useEffect(() => {
       if (!autoPlay || count <= 1) return;
       const delay = autoPlay === true ? 4000 : autoPlay;
       const el = contentRef.current;
       let paused = false;
-      const onEnter = () => (paused = true);
-      const onLeave = () => (paused = false);
-      el?.addEventListener("mouseenter", onEnter);
-      el?.addEventListener("mouseleave", onLeave);
+      const pause = () => (paused = true);
+      const resume = () => (paused = false);
+      el?.addEventListener("mouseenter", pause);
+      el?.addEventListener("mouseleave", resume);
+      el?.addEventListener("focusin", pause);
+      el?.addEventListener("focusout", resume);
       const id = window.setInterval(() => {
         if (paused) return;
         setIndex(clamp(index + 1));
       }, delay);
       return () => {
         window.clearInterval(id);
-        el?.removeEventListener("mouseenter", onEnter);
-        el?.removeEventListener("mouseleave", onLeave);
+        el?.removeEventListener("mouseenter", pause);
+        el?.removeEventListener("mouseleave", resume);
+        el?.removeEventListener("focusin", pause);
+        el?.removeEventListener("focusout", resume);
       };
     }, [autoPlay, count, index, clamp, setIndex]);
 

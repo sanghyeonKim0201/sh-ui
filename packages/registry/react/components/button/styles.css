@@ -81,3 +81,13 @@
   filter: none;
   color: var(--foreground-muted);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-button {
+    transition: none;
+  }
+  .sh-ui-button:active:not(:disabled) {
+    transform: none;
+    filter: none;
+  }
+}

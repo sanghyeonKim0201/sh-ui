@@ -1,6 +1,12 @@
 export const dynamic = "force-static";
 
-import { CodePanel } from "@/components/ui/code-panel";
+import {
+  CodePanel,
+  CodePanelHeader,
+  CodePanelFilename,
+  CodePanelCopy,
+  CodePanelBody,
+} from "@/components/ui/code-panel";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 
@@ -135,17 +141,60 @@ export default function CodePanelPage() {
         />
       </Preview>
 
+      <h3>Compound 구성</h3>
+      <p className="muted">
+        헤더에 커스텀 액션을 붙이거나 복사 버튼 위치를 바꾸고 싶으면 하위 컴포넌트를 직접 조합한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <div style={{ width: "100%" }}>
+            <CodePanel>
+              <CodePanelHeader>
+                <CodePanelFilename>demo.tsx</CodePanelFilename>
+                <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
+                  React · TypeScript
+                </span>
+                <CodePanelCopy code={buttonExample} />
+              </CodePanelHeader>
+              <CodePanelBody code={buttonExample} language="tsx" />
+            </CodePanel>
+          </div>
+        </Preview.Demo>
+        <CodePanel
+          language="tsx"
+          code={`<CodePanel>
+  <CodePanelHeader>
+    <CodePanelFilename>demo.tsx</CodePanelFilename>
+    <span>React · TypeScript</span>
+    <CodePanelCopy code={code} />
+  </CodePanelHeader>
+  <CodePanelBody code={code} language="tsx" />
+</CodePanel>`}
+        />
+      </Preview>
+
       <h2>API Reference</h2>
 
       <h3>CodePanel</h3>
       <PropsTable
         rows={[
-          { prop: "code", type: "string", description: "하이라이팅할 코드 문자열. (required)" },
+          { prop: "code", type: "string", description: "하이라이팅할 코드 문자열. children 미제공 시 필수." },
           { prop: "language", type: "string", default: `"text"`, description: "Shiki 언어 ID (tsx, typescript, css, json, bash, dart 등)." },
           { prop: "filename", type: "string", description: "헤더에 표시할 파일명. 있으면 헤더가 그려진다." },
           { prop: "showLineNumbers", type: "boolean", default: "true", description: "줄 번호 표시 여부." },
           { prop: "hideCopy", type: "boolean", description: "복사 버튼 숨기기." },
           { prop: "className", type: "string" },
+          { prop: "children", type: "ReactNode", description: "제공 시 직접 구성한 하위 컴포넌트를 그대로 렌더." },
+        ]}
+      />
+
+      <h3>하위 컴포넌트</h3>
+      <PropsTable
+        rows={[
+          { prop: "CodePanelHeader", type: "div", description: "상단 헤더 행. 파일명·액션을 담는 슬롯." },
+          { prop: "CodePanelFilename", type: "span", description: "헤더의 파일명 텍스트." },
+          { prop: "CodePanelCopy", type: "{ code: string }", description: "클립보드 복사 버튼 (클라이언트)." },
+          { prop: "CodePanelBody", type: "{ code, language?, showLineNumbers? }", description: "Shiki 하이라이팅 본문 (async)." },
         ]}
       />
     </main>
