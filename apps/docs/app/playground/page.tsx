@@ -13,6 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -20,12 +22,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from "@/components/ui/combobox";
+import { DatePicker } from "@/components/ui/date-picker";
+import {
+  FileUpload,
+  FileUploadDropzone,
+  FileUploadList,
+} from "@/components/ui/file-upload";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Radio, RadioGroup } from "@/components/ui/radio";
+import {
+  Toggle,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipTrigger,
@@ -39,6 +63,67 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+} from "@/components/ui/context-menu";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverTitle,
+  PopoverDescription,
+} from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Menubar } from "@/components/ui/menubar";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselIndicators,
+} from "@/components/ui/carousel";
 
 const STORAGE_KEY = "sh-ui-playground-tokens";
 
@@ -322,6 +407,8 @@ export default function PlaygroundPage() {
               gap: "2rem",
             }}
           >
+            <CategoryHeader title="Action" />
+
             <ShowcaseSection title="Buttons">
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
                 <Button>Primary</Button>
@@ -333,7 +420,7 @@ export default function PlaygroundPage() {
               </div>
             </ShowcaseSection>
 
-            <ShowcaseSection title="Sizes">
+            <ShowcaseSection title="Button sizes">
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center" }}>
                 <Button size="sm">sm</Button>
                 <Button size="md">md</Button>
@@ -341,27 +428,113 @@ export default function PlaygroundPage() {
               </div>
             </ShowcaseSection>
 
-            <ShowcaseSection title="Inputs">
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", maxWidth: 320 }}>
+            <CategoryHeader title="Form" />
+
+            <ShowcaseSection title="Input · Textarea">
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", maxWidth: 360 }}>
                 <Input placeholder="기본 입력" />
                 <Input defaultValue="값이 있는 상태" />
                 <Input placeholder="에러 상태" aria-invalid />
                 <Input placeholder="비활성" disabled />
+                <Textarea placeholder="여러 줄 입력" rows={3} />
               </div>
             </ShowcaseSection>
 
-            <ShowcaseSection title="Select">
-              <Select>
-                <SelectTrigger style={{ width: "14rem" }}>
-                  <SelectValue placeholder="과일 선택" />
-                </SelectTrigger>
-                <SelectContent container={previewRef}>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                </SelectContent>
-              </Select>
+            <ShowcaseSection title="Label">
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem", maxWidth: 360 }}>
+                <Label htmlFor="pg-label-email" isRequired>
+                  이메일
+                </Label>
+                <Input id="pg-label-email" type="email" placeholder="you@example.com" required />
+              </div>
             </ShowcaseSection>
+
+            <ShowcaseSection title="Select · Combobox">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+                <Select>
+                  <SelectTrigger style={{ width: "14rem" }}>
+                    <SelectValue placeholder="과일 선택" />
+                  </SelectTrigger>
+                  <SelectContent container={previewRef}>
+                    <SelectItem value="apple">Apple</SelectItem>
+                    <SelectItem value="banana">Banana</SelectItem>
+                    <SelectItem value="grapes">Grapes</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Combobox items={["Apple", "Banana", "Grapes", "Mango", "Orange"]}>
+                  <ComboboxInput placeholder="과일 검색" style={{ width: "14rem" }} />
+                  <ComboboxContent container={previewRef}>
+                    <ComboboxList>
+                      {(item: string) => (
+                        <ComboboxItem key={item} value={item}>
+                          {item}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                    <ComboboxEmpty>일치하는 항목 없음</ComboboxEmpty>
+                  </ComboboxContent>
+                </Combobox>
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="DatePicker · FileUpload">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "flex-start" }}>
+                <DatePicker />
+                <div style={{ minWidth: 240, flex: "1 1 240px" }}>
+                  <FileUpload multiple>
+                    <FileUploadDropzone>
+                      <strong>파일을 드래그</strong>하거나 클릭해서 선택
+                    </FileUploadDropzone>
+                    <FileUploadList />
+                  </FileUpload>
+                </div>
+              </div>
+            </ShowcaseSection>
+
+            <CategoryHeader title="Choice" />
+
+            <ShowcaseSection title="Checkbox · Switch">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center" }}>
+                <Switch defaultChecked aria-label="알림" />
+                <Switch aria-label="다크 모드" />
+                <Checkbox defaultChecked aria-label="동의" />
+                <Checkbox aria-label="필수 아님" />
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Radio">
+              <RadioGroup defaultValue="public" orientation="horizontal" style={{ display: "flex", gap: "1rem" }}>
+                <label style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem" }}>
+                  <Radio value="public" /> 공개
+                </label>
+                <label style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem" }}>
+                  <Radio value="private" /> 비공개
+                </label>
+                <label style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem" }}>
+                  <Radio value="team" /> 팀
+                </label>
+              </RadioGroup>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Toggle · ToggleGroup">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center" }}>
+                <Toggle variant="outline" aria-label="굵게">B</Toggle>
+                <Toggle variant="ghost" aria-label="기울임">I</Toggle>
+                <ToggleGroup variant="outline" defaultValue={["left"]}>
+                  <ToggleGroupItem value="left">L</ToggleGroupItem>
+                  <ToggleGroupItem value="center">C</ToggleGroupItem>
+                  <ToggleGroupItem value="right">R</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Slider">
+              <div style={{ maxWidth: 360 }}>
+                <Slider defaultValue={60} min={0} max={100} step={1} aria-label="볼륨" />
+              </div>
+            </ShowcaseSection>
+
+            <CategoryHeader title="Display" />
 
             <ShowcaseSection title="Card">
               <div style={{ maxWidth: 480 }}>
@@ -378,15 +551,6 @@ export default function PlaygroundPage() {
                     <Button>설정하기</Button>
                   </CardFooter>
                 </Card>
-              </div>
-            </ShowcaseSection>
-
-            <ShowcaseSection title="Toggles">
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center" }}>
-                <Switch defaultChecked aria-label="알림" />
-                <Switch aria-label="다크 모드" />
-                <Checkbox defaultChecked aria-label="동의" />
-                <Checkbox aria-label="필수 아님" />
               </div>
             </ShowcaseSection>
 
@@ -410,7 +574,7 @@ export default function PlaygroundPage() {
               </div>
             </ShowcaseSection>
 
-            <ShowcaseSection title="Progress / Spinner">
+            <ShowcaseSection title="Progress · Spinner">
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", maxWidth: 360 }}>
                 <Progress value={40} aria-label="determinate 40%" />
                 <Progress aria-label="indeterminate" />
@@ -421,6 +585,30 @@ export default function PlaygroundPage() {
                 </div>
               </div>
             </ShowcaseSection>
+
+            <ShowcaseSection title="Skeleton">
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", maxWidth: 360 }}>
+                <Skeleton style={{ height: "1rem", width: "60%" }} />
+                <Skeleton style={{ height: "1rem", width: "85%" }} />
+                <Skeleton style={{ height: "1rem", width: "40%" }} />
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Separator">
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontSize: "0.875rem" }}>
+                <span>좌측</span>
+                <Separator orientation="vertical" style={{ height: "1rem" }} />
+                <span>중앙</span>
+                <Separator orientation="vertical" style={{ height: "1rem" }} />
+                <span>우측</span>
+              </div>
+              <Separator style={{ margin: "0.75rem 0" }} />
+              <p className="muted" style={{ fontSize: "0.8125rem", margin: 0 }}>
+                수평 구분선
+              </p>
+            </ShowcaseSection>
+
+            <CategoryHeader title="Overlay" />
 
             <ShowcaseSection title="Tooltip · DropdownMenu">
               <TooltipProvider delay={150}>
@@ -440,6 +628,194 @@ export default function PlaygroundPage() {
                   </DropdownMenu>
                 </div>
               </TooltipProvider>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Popover · Dialog">
+              <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                <Popover>
+                  <PopoverTrigger render={<Button variant="secondary">Popover</Button>} />
+                  <PopoverContent container={previewRef}>
+                    <PopoverTitle>토큰 미리보기</PopoverTitle>
+                    <PopoverDescription>
+                      편집한 색과 radius가 여기에도 그대로 적용됩니다.
+                    </PopoverDescription>
+                  </PopoverContent>
+                </Popover>
+                <Dialog>
+                  <DialogTrigger render={<Button>Dialog</Button>} />
+                  <DialogContent container={previewRef}>
+                    <DialogTitle>확인</DialogTitle>
+                    <DialogDescription>
+                      이 작업은 취소할 수 없습니다. 계속 진행하시겠어요?
+                    </DialogDescription>
+                    <DialogFooter>
+                      <DialogClose render={<Button variant="secondary">취소</Button>} />
+                      <DialogClose render={<Button variant="danger">삭제</Button>} />
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="ContextMenu">
+              <ContextMenu>
+                <ContextMenuTrigger
+                  style={{
+                    display: "grid",
+                    placeItems: "center",
+                    height: "5rem",
+                    border: "1px dashed var(--border)",
+                    borderRadius: "var(--radius)",
+                    color: "var(--foreground-muted)",
+                    fontSize: "0.8125rem",
+                    maxWidth: 360,
+                  }}
+                >
+                  이 영역에서 우클릭
+                </ContextMenuTrigger>
+                <ContextMenuContent container={previewRef}>
+                  <ContextMenuItem>복사</ContextMenuItem>
+                  <ContextMenuItem>잘라내기</ContextMenuItem>
+                  <ContextMenuSeparator />
+                  <ContextMenuItem>삭제</ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Menubar">
+              <Menubar>
+                <DropdownMenu>
+                  <DropdownMenuTrigger render={<Button variant="ghost" size="sm">파일</Button>} />
+                  <DropdownMenuContent align="start" container={previewRef}>
+                    <DropdownMenuItem>새로 만들기</DropdownMenuItem>
+                    <DropdownMenuItem>열기</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>저장</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger render={<Button variant="ghost" size="sm">편집</Button>} />
+                  <DropdownMenuContent align="start" container={previewRef}>
+                    <DropdownMenuItem>실행 취소</DropdownMenuItem>
+                    <DropdownMenuItem>다시 실행</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger render={<Button variant="ghost" size="sm">보기</Button>} />
+                  <DropdownMenuContent align="start" container={previewRef}>
+                    <DropdownMenuItem>확대</DropdownMenuItem>
+                    <DropdownMenuItem>축소</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </Menubar>
+            </ShowcaseSection>
+
+            <CategoryHeader title="Navigation" />
+
+            <ShowcaseSection title="Tabs">
+              <Tabs defaultValue="overview" style={{ maxWidth: 480 }}>
+                <TabsList>
+                  <TabsTrigger value="overview">개요</TabsTrigger>
+                  <TabsTrigger value="analytics">분석</TabsTrigger>
+                  <TabsTrigger value="reports">보고서</TabsTrigger>
+                </TabsList>
+                <TabsContent value="overview" style={{ paddingTop: "0.75rem" }}>
+                  개요 탭의 내용입니다.
+                </TabsContent>
+                <TabsContent value="analytics" style={{ paddingTop: "0.75rem" }}>
+                  분석 탭의 내용입니다.
+                </TabsContent>
+                <TabsContent value="reports" style={{ paddingTop: "0.75rem" }}>
+                  보고서 탭의 내용입니다.
+                </TabsContent>
+              </Tabs>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Accordion">
+              <Accordion style={{ maxWidth: 480 }}>
+                <AccordionItem value="a">
+                  <AccordionTrigger>무엇을 제공하나요?</AccordionTrigger>
+                  <AccordionContent>
+                    React/Flutter 공용 디자인 시스템 컴포넌트를 제공합니다.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="b">
+                  <AccordionTrigger>토큰은 어떻게 바꾸나요?</AccordionTrigger>
+                  <AccordionContent>
+                    좌측 편집 패널에서 색과 radius를 조정하면 이 영역에 즉시 반영됩니다.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Breadcrumb">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="#">홈</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="#">컴포넌트</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Playground</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Pagination">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </ShowcaseSection>
+
+            <ShowcaseSection title="Carousel">
+              <Carousel loop style={{ maxWidth: 480 }}>
+                <CarouselContent>
+                  {["하나", "둘", "셋", "넷"].map((label) => (
+                    <CarouselItem key={label}>
+                      <div
+                        style={{
+                          display: "grid",
+                          placeItems: "center",
+                          height: "8rem",
+                          background: "var(--background-muted)",
+                          borderRadius: "var(--radius)",
+                          fontSize: "1.25rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {label}
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+                <CarouselIndicators />
+              </Carousel>
             </ShowcaseSection>
           </section>
         </div>
@@ -594,6 +970,25 @@ function ShowcaseSection({ title, children }: { title: string; children: React.R
         {title}
       </h3>
       {children}
+    </div>
+  );
+}
+
+function CategoryHeader({ title }: { title: string }) {
+  return (
+    <div
+      style={{
+        fontSize: "0.6875rem",
+        fontWeight: 600,
+        textTransform: "uppercase",
+        letterSpacing: "0.08em",
+        color: "var(--foreground-muted)",
+        paddingBottom: "0.375rem",
+        borderBottom: "1px solid var(--border)",
+        marginTop: "0.5rem",
+      }}
+    >
+      {title}
     </div>
   );
 }
