@@ -26,6 +26,7 @@ import 'combobox_page.dart';
 import 'file_upload_page.dart';
 import 'sidebar_page.dart';
 import 'skeleton_page.dart';
+import 'changelog_page.dart';
 import 'examples/dashboard_page.dart';
 import 'examples/login_page.dart';
 import 'examples/settings_page.dart';
@@ -141,6 +142,12 @@ class HomePage extends StatelessWidget {
             ShUiAppShellItem(icon: Icons.upload_file, label: 'File Upload', builder: _buildFileUpload),
           ],
         ),
+        ShUiAppShellGroup(
+          label: '정보',
+          items: const [
+            ShUiAppShellItem(icon: Icons.history, label: '변경 내역', builder: _buildChangelog),
+          ],
+        ),
       ],
     );
   }
@@ -183,3 +190,5 @@ Widget _buildPopover(BuildContext context) => const PopoverPage();
 Widget _buildToast(BuildContext context) => const ToastPage();
 
 Widget _buildFileUpload(BuildContext context) => const FileUploadPage();
+
+Widget _buildChangelog(BuildContext context) => const ChangelogPage();

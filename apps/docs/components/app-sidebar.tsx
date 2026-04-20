@@ -6,6 +6,7 @@ import {
   BookOpenIcon,
   BoxesIcon,
   BrushIcon,
+  HistoryIcon,
   PaletteIcon,
   RocketIcon,
   SlidersHorizontalIcon,
@@ -38,6 +39,7 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
   { title: "Playground", href: "/playground", icon: SlidersHorizontalIcon },
   { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
+  { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
 ];
 
 const components: { title: string; href: string }[] = [
