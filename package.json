@@ -8,6 +8,7 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
+    "gen:llms": "pnpm --filter @sh-ui/llms gen",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,css}\"",
     "showcase": "open -a Simulator && cd apps/showcase && flutter run",
     "showcase:ios": "open -a Simulator && cd apps/showcase && flutter run -d iphone",

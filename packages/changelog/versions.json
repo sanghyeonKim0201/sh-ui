@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.15.0",
+      "date": "2026-04-21",
+      "title": "llms.txt — AI 도구용 컴포넌트 인벤토리",
+      "type": "minor",
+      "highlights": [
+        "apps/docs/public/llms.txt — 전 컴포넌트 한 줄 요약 + 설치 플로우 + 관용 규칙 (llms.txt 표준 따름)",
+        "apps/docs/public/llms-full.txt — 각 컴포넌트별 설치 커맨드/import 경로/의존성 + 최근 릴리즈 5개",
+        "packages/llms 신규 워크스페이스 — registry.json + summaries/*.json을 읽어 자동 생성. next build 훅에 연결",
+        "pnpm gen:llms — 루트 스크립트로 수동 재생성 가능"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.0"
+    },
+    {
       "version": "0.14.0",
       "date": "2026-04-20",
       "title": "Pagination — 페이지 단위 내비게이션 컴포넌트",

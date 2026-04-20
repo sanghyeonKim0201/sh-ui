@@ -1,0 +1,775 @@
+# sh-ui
+
+> React + Flutter 듀얼 컴포넌트 레지스트리. shadcn 스타일로 컴포넌트 소스를 프로젝트에 복사해 사용자가 직접 소유한다. 디자인 토큰은 단일 소스(`@sh-ui/tokens`)에서 `sh-ui.config.json`을 통해 플랫폼별로 변환된다.
+
+## 설치 흐름
+
+1. `npx sh-ui init` — 프로젝트에 `sh-ui.config.json` 생성
+2. `npx sh-ui add <name>` — 컴포넌트 소스를 프로젝트로 복사
+3. `npx sh-ui list` — 설치된 컴포넌트 목록
+4. `npx sh-ui remove <name>` — 설치 제거
+5. `npx sh-ui add <name> --diff` — 실제 파일 쓰지 않고 업데이트 미리보기
+
+## Import 경로
+
+- **React**: 컴포넌트는 `@/components/ui/<name>`, 훅은 `@/hooks/<name>`, 유틸은 `@/lib/<name>` (경로 alias는 `sh-ui.config.json`으로 바꿀 수 있음)
+- **Flutter**: `lib/widgets/sh_ui_<name>.dart`, 토큰은 `lib/foundation/sh_ui_tokens.dart`
+
+## 핵심 관용
+
+- **React는 compound 우선** — `<Pagination><PaginationContent>...</PaginationContent></Pagination>`처럼 sub-component 조합. prop 덩어리 컴포넌트 지양.
+- **Flutter는 named slot 우선** — `ShUiDialog(header:, body:, footer:)`처럼 생성자 slot. 단 Pagination·Breadcrumb처럼 items 배열로 끝나는 구성은 items prop.
+- **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
+- **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
+
+**최신 버전**: v0.15.0 (2026-04-21) — llms.txt — AI 도구용 컴포넌트 인벤토리
+
+## React — Components
+
+### button
+
+- Type: component
+- Summary: 기본 버튼 — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).
+- Install: `npx sh-ui add button`
+- Import: `@/components/ui/button`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/button
+
+### card
+
+- Type: component
+- Summary: 카드 컨테이너 — compound (Card.Header / Card.Body / Card.Footer / Card.Title / Card.Description).
+- Install: `npx sh-ui add card`
+- Import: `@/components/ui/card`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/card
+
+### input
+
+- Type: component
+- Summary: 단일 행 텍스트 입력 — hasError 지원.
+- Install: `npx sh-ui add input`
+- Import: `@/components/ui/input`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/input
+
+### file-upload
+
+- Type: component
+- Summary: 파일 업로드 — 드롭존, 다중 파일, 진행률.
+- Install: `npx sh-ui add file-upload`
+- Import: `@/components/ui/file-upload`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/file-upload
+
+### code-panel
+
+- Type: component
+- Summary: Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.
+- Install: `npx sh-ui add code-panel`
+- npm/pub deps: shiki
+- Import: `@/components/ui/code-panel`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/code-panel
+
+### select
+
+- Type: component
+- Summary: 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
+- Install: `npx sh-ui add select`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/select`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/select
+
+### sidebar
+
+- Type: component
+- Summary: 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
+- Install: `npx sh-ui add sidebar`
+- npm/pub deps: lucide-react
+- Registry deps: popover (자동 설치됨)
+- Import: `@/components/ui/sidebar`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/sidebar
+
+### header
+
+- Type: component
+- Summary: 앱 헤더 — 로고/네비/액션 compound.
+- Install: `npx sh-ui add header`
+- Import: `@/components/ui/header`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/header
+
+### label
+
+- Type: component
+- Summary: 폼 레이블 — htmlFor로 입력과 연결.
+- Install: `npx sh-ui add label`
+- Import: `@/components/ui/label`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/label
+
+### color-picker
+
+- Type: component
+- Summary: 색상 선택 — hex/rgb, 프리셋 팔레트.
+- Install: `npx sh-ui add color-picker`
+- Import: `@/components/ui/color-picker`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/color-picker
+
+### slider
+
+- Type: component
+- Summary: 수평 슬라이더 — 단일/범위 값, step.
+- Install: `npx sh-ui add slider`
+- Import: `@/components/ui/slider`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/slider
+
+### tabs
+
+- Type: component
+- Summary: 탭 — compound (Tabs.List / Tabs.Trigger / Tabs.Content) (Base UI).
+- Install: `npx sh-ui add tabs`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/tabs`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/tabs
+
+### combobox
+
+- Type: component
+- Summary: 검색 가능 셀렉트 — 자동 필터링, 키보드 내비 (Base UI).
+- Install: `npx sh-ui add combobox`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/combobox`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/combobox
+
+### popover
+
+- Type: component
+- Summary: floating 팝오버 — 트리거 기준 위치 (Base UI).
+- Install: `npx sh-ui add popover`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/popover`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/popover
+
+### dialog
+
+- Type: component
+- Summary: 모달 다이얼로그 — compound (Dialog.Trigger / Dialog.Content / Dialog.Title / Dialog.Description) + 포커스 트랩 (Base UI).
+- Install: `npx sh-ui add dialog`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/dialog`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/dialog
+
+### dropdown-menu
+
+- Type: component
+- Summary: 드롭다운 메뉴 — compound, sub-menu 지원 (Base UI).
+- Install: `npx sh-ui add dropdown-menu`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/dropdown-menu`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/dropdown-menu
+
+### context-menu
+
+- Type: component
+- Summary: 우클릭 컨텍스트 메뉴 — DropdownMenu와 같은 구조 (Base UI).
+- Install: `npx sh-ui add context-menu`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/context-menu`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/context-menu
+
+### menubar
+
+- Type: component
+- Summary: 수평 메뉴바 — dropdown-menu 위에 구성 (Base UI).
+- Install: `npx sh-ui add menubar`
+- npm/pub deps: @base-ui-components/react
+- Registry deps: dropdown-menu (자동 설치됨)
+- Import: `@/components/ui/menubar`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/menubar
+
+### tooltip
+
+- Type: component
+- Summary: 짧은 힌트 — hover/focus 표시, delay/closeDelay (Base UI).
+- Install: `npx sh-ui add tooltip`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/tooltip`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/tooltip
+
+### breadcrumb
+
+- Type: component
+- Summary: 경로 내비게이션 — compound (Breadcrumb.List/Item/Link/Page/Separator/Ellipsis). aria-current 자동.
+- Install: `npx sh-ui add breadcrumb`
+- Import: `@/components/ui/breadcrumb`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/breadcrumb
+
+### pagination
+
+- Type: component
+- Summary: 페이지 단위 내비게이션 — compound (PaginationContent/Item/Link/Previous/Next/Ellipsis). getPaginationRange 유틸 동봉. aria-current 자동.
+- Install: `npx sh-ui add pagination`
+- Import: `@/components/ui/pagination`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/pagination
+
+### avatar
+
+- Type: component
+- Summary: 프로필 아바타 — 이미지 fallback → initials (Base UI).
+- Install: `npx sh-ui add avatar`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/avatar`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/avatar
+
+### badge
+
+- Type: component
+- Summary: 상태 뱃지 — variant, size.
+- Install: `npx sh-ui add badge`
+- Import: `@/components/ui/badge`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/badge
+
+### progress
+
+- Type: component
+- Summary: 선형 진행률 — value 0~100, indeterminate.
+- Install: `npx sh-ui add progress`
+- Import: `@/components/ui/progress`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/progress
+
+### spinner
+
+- Type: component
+- Summary: 로딩 스피너 — size.
+- Install: `npx sh-ui add spinner`
+- Import: `@/components/ui/spinner`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/spinner
+
+### separator
+
+- Type: component
+- Summary: 구분선 — orientation(horizontal/vertical).
+- Install: `npx sh-ui add separator`
+- Import: `@/components/ui/separator`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/separator
+
+### theme
+
+- Type: component
+- Summary: 테마 프로바이더 + useTheme 훅 — light/dark/system.
+- Install: `npx sh-ui add theme`
+- Import: `@/components/ui/theme`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/theme
+
+### checkbox
+
+- Type: component
+- Summary: 체크박스 — indeterminate 지원 (Base UI).
+- Install: `npx sh-ui add checkbox`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/checkbox`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/checkbox
+
+### radio
+
+- Type: component
+- Summary: 라디오 그룹 — RadioGroup + RadioGroupItem (Base UI).
+- Install: `npx sh-ui add radio`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/radio`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/radio
+
+### switch
+
+- Type: component
+- Summary: 토글 스위치 — controlled/uncontrolled 모두 지원 (Base UI).
+- Install: `npx sh-ui add switch`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/switch`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/switch
+
+### toggle
+
+- Type: component
+- Summary: 단일 토글 / 토글 그룹 — pressed 상태 (Base UI).
+- Install: `npx sh-ui add toggle`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/toggle`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/toggle
+
+### textarea
+
+- Type: component
+- Summary: 여러 행 텍스트 입력 — rows, autoResize.
+- Install: `npx sh-ui add textarea`
+- Import: `@/components/ui/textarea`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/textarea
+
+### toast
+
+- Type: component
+- Summary: 임시 알림 — useToast 훅 + ToastProvider. aria-live 자동.
+- Install: `npx sh-ui add toast`
+- Import: `@/components/ui/toast`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/toast
+
+### date-picker
+
+- Type: component
+- Summary: 날짜 선택 — 캘린더 팝업 (Base UI).
+- Install: `npx sh-ui add date-picker`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/date-picker`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/date-picker
+
+### skeleton
+
+- Type: component
+- Summary: 스켈레톤 로딩 플레이스홀더.
+- Install: `npx sh-ui add skeleton`
+- Import: `@/components/ui/skeleton`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/skeleton
+
+### accordion
+
+- Type: component
+- Summary: 펼침/접힘 아코디언 — single/multiple (Base UI).
+- Install: `npx sh-ui add accordion`
+- npm/pub deps: @base-ui-components/react
+- Import: `@/components/ui/accordion`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/accordion
+
+### carousel
+
+- Type: component
+- Summary: 슬라이드 캐러셀 — Embla 기반, autoplay/autoscroll.
+- Install: `npx sh-ui add carousel`
+- Import: `@/components/ui/carousel`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/carousel
+
+## React — 유틸 / 훅 / 스타일 기반
+
+### base
+
+- Type: utility
+- Summary: CSS 리셋 — base.css.
+- Install: `npx sh-ui add base`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/base
+
+### breakpoints
+
+- Type: utility
+- Summary: 반응형 미디어 쿼리 토큰 — breakpoints.css.
+- Install: `npx sh-ui add breakpoints`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/breakpoints
+
+### focus-ring
+
+- Type: utility
+- Summary: 공용 포커스 링 스타일 — focus-ring.css.
+- Install: `npx sh-ui add focus-ring`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/focus-ring
+
+### z-index
+
+- Type: utility
+- Summary: z-index 레이어 토큰 — z-index.css.
+- Install: `npx sh-ui add z-index`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/z-index
+
+### animations
+
+- Type: utility
+- Summary: 공용 애니메이션 키프레임 — animations.css.
+- Install: `npx sh-ui add animations`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/animations
+
+### cn
+
+- Type: lib
+- Summary: className 머지 유틸 (tailwind-merge 미사용, 순수 concat).
+- Install: `npx sh-ui add cn`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/cn
+
+### use-media-query
+
+- Type: hook
+- Summary: 미디어 쿼리 매칭 훅.
+- Install: `npx sh-ui add use-media-query`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/use-media-query
+
+### use-active-section
+
+- Type: hook
+- Summary: 스크롤 위치로 현재 섹션 감지 훅.
+- Install: `npx sh-ui add use-active-section`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/use-active-section
+
+## Flutter — Widgets
+
+### tokens
+
+- Type: foundation
+- Summary: ShUiTheme (ThemeExtension) — 색상/간격/타이포/반경/지속시간 토큰. Theme.of(ctx).extension<ShUiTheme>()로 접근.
+- Install: `npx sh-ui add tokens`
+- Import: `lib/widgets/sh_ui_tokens.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/tokens
+
+### button
+
+- Type: widget
+- Summary: ShUiButton — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).
+- Install: `npx sh-ui add button`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_button.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/button
+
+### card
+
+- Type: widget
+- Summary: ShUiCard — header/body/footer named slot.
+- Install: `npx sh-ui add card`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_card.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/card
+
+### input
+
+- Type: widget
+- Summary: ShUiInput — TextField 래퍼 + sh-ui 토큰 스타일.
+- Install: `npx sh-ui add input`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_input.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/input
+
+### checkbox
+
+- Type: widget
+- Summary: ShUiCheckbox — tristate 지원.
+- Install: `npx sh-ui add checkbox`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_checkbox.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/checkbox
+
+### radio
+
+- Type: widget
+- Summary: ShUiRadio / ShUiRadioGroup — 단일 선택.
+- Install: `npx sh-ui add radio`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_radio.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/radio
+
+### switch
+
+- Type: widget
+- Summary: ShUiSwitch — 토글 스위치.
+- Install: `npx sh-ui add switch`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_switch.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/switch
+
+### toggle
+
+- Type: widget
+- Summary: ShUiToggle — 프레스 상태 유지 버튼.
+- Install: `npx sh-ui add toggle`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_toggle.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/toggle
+
+### textarea
+
+- Type: widget
+- Summary: ShUiTextarea — 다중 행 입력.
+- Install: `npx sh-ui add textarea`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_textarea.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/textarea
+
+### label
+
+- Type: widget
+- Summary: ShUiLabel — 폼 레이블.
+- Install: `npx sh-ui add label`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_label.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/label
+
+### slider
+
+- Type: widget
+- Summary: ShUiSlider — 단일 값, step.
+- Install: `npx sh-ui add slider`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_slider.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/slider
+
+### select
+
+- Type: widget
+- Summary: ShUiSelect — 네이티브 대체 드롭다운 셀렉트.
+- Install: `npx sh-ui add select`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_select.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/select
+
+### tabs
+
+- Type: widget
+- Summary: ShUiTabs / ShUiTabsController — 탭 내비.
+- Install: `npx sh-ui add tabs`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_tabs.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/tabs
+
+### dialog
+
+- Type: widget
+- Summary: ShUiDialog — header/body/footer named slot, showDialog로 호출.
+- Install: `npx sh-ui add dialog`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_dialog.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/dialog
+
+### popover
+
+- Type: widget
+- Summary: ShUiPopover — 트리거 기준 오버레이.
+- Install: `npx sh-ui add popover`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_popover.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/popover
+
+### toast
+
+- Type: widget
+- Summary: ShUiToast — ShUiToastOverlay로 스택 관리.
+- Install: `npx sh-ui add toast`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_toast.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/toast
+
+### date-picker
+
+- Type: widget
+- Summary: ShUiDatePicker — 캘린더 팝업.
+- Install: `npx sh-ui add date-picker`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_date_picker.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/date-picker
+
+### color-picker
+
+- Type: widget
+- Summary: ShUiColorPicker — 색상 선택.
+- Install: `npx sh-ui add color-picker`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_color_picker.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/color-picker
+
+### combobox
+
+- Type: widget
+- Summary: ShUiCombobox — 검색 가능 셀렉트.
+- Install: `npx sh-ui add combobox`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_combobox.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/combobox
+
+### file-upload
+
+- Type: widget
+- Summary: ShUiFileUpload — 파일 선택/드롭.
+- Install: `npx sh-ui add file-upload`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_file_upload.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/file-upload
+
+### sidebar
+
+- Type: widget
+- Summary: ShUiSidebar — 접이식 사이드바.
+- Install: `npx sh-ui add sidebar`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_sidebar.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/sidebar
+
+### app-shell
+
+- Type: widget
+- Summary: ShUiAppShell — 사이드바 + 상단 바 + 본문 레이아웃.
+- Install: `npx sh-ui add app-shell`
+- Registry deps: tokens, sidebar (자동 설치됨)
+- Import: `lib/widgets/sh_ui_app_shell.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/app-shell
+
+### header
+
+- Type: widget
+- Summary: ShUiHeader — 로고/네비/액션 영역.
+- Install: `npx sh-ui add header`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_header.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/header
+
+### skeleton
+
+- Type: widget
+- Summary: ShUiSkeleton — 로딩 플레이스홀더.
+- Install: `npx sh-ui add skeleton`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_skeleton.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/skeleton
+
+### accordion
+
+- Type: widget
+- Summary: ShUiAccordion — 펼침/접힘. single/multiple.
+- Install: `npx sh-ui add accordion`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_accordion.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/accordion
+
+### carousel
+
+- Type: widget
+- Summary: ShUiCarousel — PageView 기반, autoplay/dots.
+- Install: `npx sh-ui add carousel`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_carousel.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/carousel
+
+### badge
+
+- Type: widget
+- Summary: ShUiBadge — 상태 뱃지.
+- Install: `npx sh-ui add badge`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_badge.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/badge
+
+### avatar
+
+- Type: widget
+- Summary: ShUiAvatar — 이미지/initials fallback.
+- Install: `npx sh-ui add avatar`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_avatar.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/avatar
+
+### breadcrumb
+
+- Type: widget
+- Summary: ShUiBreadcrumb(items: [...]) — items 기반 경로 내비.
+- Install: `npx sh-ui add breadcrumb`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_breadcrumb.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/breadcrumb
+
+### pagination
+
+- Type: widget
+- Summary: ShUiPagination(page:, pageCount:, siblingCount:, onPageChanged:) — 페이지 범위 계산 내장.
+- Install: `npx sh-ui add pagination`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_pagination.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/pagination
+
+### tooltip
+
+- Type: widget
+- Summary: ShUiTooltip — long-press / hover 힌트.
+- Install: `npx sh-ui add tooltip`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_tooltip.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/tooltip
+
+### dropdown-menu
+
+- Type: widget
+- Summary: ShUiDropdownMenu — 트리거 기준 메뉴.
+- Install: `npx sh-ui add dropdown-menu`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_dropdown_menu.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/dropdown-menu
+
+### context-menu
+
+- Type: widget
+- Summary: ShUiContextMenu — 길게 누르기/우클릭 메뉴.
+- Install: `npx sh-ui add context-menu`
+- Registry deps: tokens, dropdown-menu (자동 설치됨)
+- Import: `lib/widgets/sh_ui_context_menu.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/context-menu
+
+### menubar
+
+- Type: widget
+- Summary: ShUiMenubar — 수평 메뉴바.
+- Install: `npx sh-ui add menubar`
+- Registry deps: tokens, dropdown-menu (자동 설치됨)
+- Import: `lib/widgets/sh_ui_menubar.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/menubar
+
+### progress
+
+- Type: widget
+- Summary: ShUiProgress — 선형 진행률, indeterminate.
+- Install: `npx sh-ui add progress`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_progress.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/progress
+
+### spinner
+
+- Type: widget
+- Summary: ShUiSpinner — 원형 로딩.
+- Install: `npx sh-ui add spinner`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_spinner.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/spinner
+
+### separator
+
+- Type: widget
+- Summary: ShUiSeparator — 구분선 (horizontal/vertical).
+- Install: `npx sh-ui add separator`
+- Registry deps: tokens (자동 설치됨)
+- Import: `lib/widgets/sh_ui_separator.dart`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/separator
+
+## 최근 릴리즈 (최대 5개)
+
+### v0.15.0 — llms.txt — AI 도구용 컴포넌트 인벤토리 (2026-04-21)
+- apps/docs/public/llms.txt — 전 컴포넌트 한 줄 요약 + 설치 플로우 + 관용 규칙 (llms.txt 표준 따름)
+- apps/docs/public/llms-full.txt — 각 컴포넌트별 설치 커맨드/import 경로/의존성 + 최근 릴리즈 5개
+- packages/llms 신규 워크스페이스 — registry.json + summaries/*.json을 읽어 자동 생성. next build 훅에 연결
+- pnpm gen:llms — 루트 스크립트로 수동 재생성 가능
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.0
+
+### v0.14.0 — Pagination — 페이지 단위 내비게이션 컴포넌트 (2026-04-20)
+- React: Pagination / PaginationContent / Item / Link / Previous / Next / Ellipsis 컴파운드 구성 — Breadcrumb와 동일한 관용
+- getPaginationRange({page, totalPages, siblings}) 유틸 — 현재 페이지 주변 + 양 끝 + 생략(…) 토큰 배열 생성
+- Flutter: ShUiPagination(page:, pageCount:, siblingCount:, onPageChanged:) — 페이지 범위 계산 내장
+- nav + ol/ul 시맨틱, 현재 페이지 aria-current="page", 이전/다음 aria-label 자동 부여
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.14.0
+
+### v0.13.1 — 토큰 대비 감사 — WCAG AA 통과 (2026-04-20)
+- light mode foreground-muted를 base.500 → base.600로 (muted 텍스트 on muted background 4.35:1 → 7.17:1)
+- light mode danger를 red.500 → red.600로 통일 (danger 버튼 3.76:1 → 4.83:1)
+- 감사 스크립트 추가: pnpm --filter @sh-ui/tokens audit:contrast — 3 base × 2 mode 조합 일괄 검증
+- 주의: 기존 설치자는 sh-ui add tokens로 tokens.css 재생성 필요
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.1
+
+### v0.13.0 — CLI list / remove — 설치 관리 사이클 완결 (2026-04-20)
+- sh-ui list — 설치된 컴포넌트 목록 (--all로 레지스트리 전체)
+- sh-ui remove <name...> — 설치 파일 삭제, 빈 폴더 자동 정리
+- 사용자 수정 파일은 기본 보호, --force로만 강제 삭제. --dry-run 미리보기 지원
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.0
+
+### v0.12.0 — CLI --diff 플래그 — 업데이트 미리보기 (2026-04-20)
+- sh-ui add <name> --diff — 파일을 쓰지 않고 변경 내역(unified diff)만 출력
+- 신규/변경/동일 파일을 분류해 요약, 수정해둔 파일이 있는지 사전 확인 가능
+- 의존성 없는 LCS 기반 line-diff 내장 (packages/cli/src/diff.mjs)
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.12.0
+
+## Resources
+
+- GitHub: https://github.com/sanghyeonKim0201/sh-ui
+- Changelog source: packages/changelog/versions.json
