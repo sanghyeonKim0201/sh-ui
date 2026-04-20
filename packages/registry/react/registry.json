@@ -224,6 +224,16 @@
       "dependencies": ["@base-ui-components/react"],
       "registryDependencies": []
     },
+    "dropdown-menu": {
+      "name": "dropdown-menu",
+      "type": "component",
+      "files": [
+        { "src": "components/dropdown-menu/index.tsx", "dest": "{components}/dropdown-menu/index.tsx" },
+        { "src": "components/dropdown-menu/styles.css", "dest": "{components}/dropdown-menu/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
     "theme": {
       "name": "theme",
       "type": "component",

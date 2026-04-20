@@ -51,6 +51,7 @@ const components: { title: string; href: string }[] = [
   { title: "Combobox", href: "/components/combobox" },
   { title: "DatePicker", href: "/components/date-picker" },
   { title: "Dialog", href: "/components/dialog" },
+  { title: "DropdownMenu", href: "/components/dropdown-menu" },
   { title: "FileUpload", href: "/components/file-upload" },
   { title: "Header", href: "/components/header" },
   { title: "Input", href: "/components/input" },
