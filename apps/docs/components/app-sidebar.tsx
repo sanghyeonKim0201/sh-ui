@@ -10,6 +10,7 @@ import {
   PaletteIcon,
   RocketIcon,
   SlidersHorizontalIcon,
+  TerminalIcon,
   type LucideIcon,
 } from "lucide-react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
@@ -35,6 +36,7 @@ import {
 
 const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "시작하기", href: "/getting-started", icon: RocketIcon },
+  { title: "CLI", href: "/cli", icon: TerminalIcon },
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
   { title: "Playground", href: "/playground", icon: SlidersHorizontalIcon },

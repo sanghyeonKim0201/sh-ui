@@ -30,6 +30,7 @@ import 'avatar_page.dart';
 import 'badge_page.dart';
 import 'breadcrumb_page.dart';
 import 'changelog_page.dart';
+import 'cli_page.dart';
 import 'context_menu_page.dart';
 import 'dropdown_menu_page.dart';
 import 'menubar_page.dart';
@@ -159,6 +160,7 @@ class HomePage extends StatelessWidget {
         ShUiAppShellGroup(
           label: '정보',
           items: const [
+            ShUiAppShellItem(icon: Icons.terminal, label: 'CLI', builder: _buildCli),
             ShUiAppShellItem(icon: Icons.history, label: '변경 내역', builder: _buildChangelog),
           ],
         ),
@@ -214,3 +216,4 @@ Widget _buildMenubar(BuildContext context) => const MenubarPage();
 Widget _buildTooltip(BuildContext context) => const TooltipPage();
 
 Widget _buildChangelog(BuildContext context) => const ChangelogPage();
+Widget _buildCli(BuildContext context) => const CliPage();
