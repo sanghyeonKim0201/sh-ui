@@ -295,6 +295,33 @@
       ],
       "dependencies": [],
       "registryDependencies": ["tokens", "dropdown-menu"]
+    },
+    "progress": {
+      "name": "progress",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_progress.dart", "dest": "{widgets}/sh_ui_progress.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "spinner": {
+      "name": "spinner",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_spinner.dart", "dest": "{widgets}/sh_ui_spinner.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "separator": {
+      "name": "separator",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_separator.dart", "dest": "{widgets}/sh_ui_separator.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
     }
   }
 }

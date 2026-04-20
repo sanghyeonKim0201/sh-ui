@@ -1,0 +1,15 @@
+.sh-ui-separator {
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.sh-ui-separator--horizontal {
+  width: 100%;
+  height: 1px;
+}
+
+.sh-ui-separator--vertical {
+  width: 1px;
+  height: 100%;
+  align-self: stretch;
+}

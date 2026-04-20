@@ -294,6 +294,36 @@
       "dependencies": [],
       "registryDependencies": []
     },
+    "progress": {
+      "name": "progress",
+      "type": "component",
+      "files": [
+        { "src": "components/progress/index.tsx", "dest": "{components}/progress/index.tsx" },
+        { "src": "components/progress/styles.css", "dest": "{components}/progress/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "spinner": {
+      "name": "spinner",
+      "type": "component",
+      "files": [
+        { "src": "components/spinner/index.tsx", "dest": "{components}/spinner/index.tsx" },
+        { "src": "components/spinner/styles.css", "dest": "{components}/spinner/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "separator": {
+      "name": "separator",
+      "type": "component",
+      "files": [
+        { "src": "components/separator/index.tsx", "dest": "{components}/separator/index.tsx" },
+        { "src": "components/separator/styles.css", "dest": "{components}/separator/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "theme": {
       "name": "theme",
       "type": "component",
