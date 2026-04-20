@@ -31,6 +31,7 @@ import 'badge_page.dart';
 import 'breadcrumb_page.dart';
 import 'changelog_page.dart';
 import 'cli_page.dart';
+import 'pagination_page.dart';
 import 'progress_page.dart';
 import 'separator_page.dart';
 import 'spinner_page.dart';
@@ -139,6 +140,7 @@ class HomePage extends StatelessWidget {
             ShUiAppShellItem(icon: Icons.person_outline, label: 'Avatar', builder: _buildAvatar),
             ShUiAppShellItem(icon: Icons.label_important_outline, label: 'Badge', builder: _buildBadge),
             ShUiAppShellItem(icon: Icons.alt_route, label: 'Breadcrumb', builder: _buildBreadcrumb),
+            ShUiAppShellItem(icon: Icons.format_list_numbered, label: 'Pagination', builder: _buildPagination),
             ShUiAppShellItem(icon: Icons.linear_scale, label: 'Progress', builder: _buildProgress),
             ShUiAppShellItem(icon: Icons.horizontal_rule, label: 'Separator', builder: _buildSeparator),
             ShUiAppShellItem(icon: Icons.view_stream_outlined, label: 'Skeleton', builder: _buildSkeleton),
@@ -224,6 +226,7 @@ Widget _buildTooltip(BuildContext context) => const TooltipPage();
 Widget _buildChangelog(BuildContext context) => const ChangelogPage();
 Widget _buildCli(BuildContext context) => const CliPage();
 
+Widget _buildPagination(BuildContext context) => const PaginationPage();
 Widget _buildProgress(BuildContext context) => const ProgressPage();
 Widget _buildSeparator(BuildContext context) => const SeparatorPage();
 Widget _buildSpinner(BuildContext context) => const SpinnerPage();
