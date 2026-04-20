@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { ContextMenu as BaseContextMenu } from "@base-ui-components/react/context-menu";
 import "./styles.css";

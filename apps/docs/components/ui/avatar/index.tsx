@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Avatar as BaseAvatar } from "@base-ui-components/react/avatar";
 import "./styles.css";
