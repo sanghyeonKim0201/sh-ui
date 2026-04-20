@@ -182,52 +182,58 @@ const groups: { label: string; keys: TokenKey[] }[] = [
 ];
 
 /* ───────── Dart 토큰 내보내기 ─────────
- * Flutter 쪽 ShUiColorTokens 필드 중 playground가 편집하지 않는 inverse 계열은
- * sh_ui_tokens.dart 기본값을 그대로 유지한다.
+ * ShUiColorTokens 필드 매핑:
+ * - self    — 현재 모드에서 playground가 편집하는 값
+ * - inverse — 반대 모드의 편집값 (backgroundInverse / foregroundInverse)
+ * - default — playground가 노출하지 않음. 기본값 유지 (foregroundSubtle)
  */
 
-const DART_FIELD_ORDER: { field: string; source: TokenKey | "default" }[] = [
-  { field: "background", source: "background" },
-  { field: "backgroundSubtle", source: "background-subtle" },
-  { field: "backgroundMuted", source: "background-muted" },
-  { field: "backgroundInverse", source: "default" },
-  { field: "foreground", source: "foreground" },
-  { field: "foregroundMuted", source: "foreground-muted" },
-  { field: "foregroundSubtle", source: "default" },
-  { field: "foregroundInverse", source: "default" },
-  { field: "border", source: "border" },
-  { field: "borderStrong", source: "border-strong" },
-  { field: "primary", source: "primary" },
-  { field: "primaryForeground", source: "primary-foreground" },
-  { field: "primaryHover", source: "primary-hover" },
-  { field: "danger", source: "danger" },
-  { field: "dangerForeground", source: "danger-foreground" },
+type DartFieldSource =
+  | { kind: "self"; key: TokenKey }
+  | { kind: "inverse"; key: TokenKey }
+  | { kind: "default" };
+
+const DART_FIELD_ORDER: { field: string; source: DartFieldSource }[] = [
+  { field: "background", source: { kind: "self", key: "background" } },
+  { field: "backgroundSubtle", source: { kind: "self", key: "background-subtle" } },
+  { field: "backgroundMuted", source: { kind: "self", key: "background-muted" } },
+  { field: "backgroundInverse", source: { kind: "inverse", key: "background" } },
+  { field: "foreground", source: { kind: "self", key: "foreground" } },
+  { field: "foregroundMuted", source: { kind: "self", key: "foreground-muted" } },
+  { field: "foregroundSubtle", source: { kind: "default" } },
+  { field: "foregroundInverse", source: { kind: "inverse", key: "foreground" } },
+  { field: "border", source: { kind: "self", key: "border" } },
+  { field: "borderStrong", source: { kind: "self", key: "border-strong" } },
+  { field: "primary", source: { kind: "self", key: "primary" } },
+  { field: "primaryForeground", source: { kind: "self", key: "primary-foreground" } },
+  { field: "primaryHover", source: { kind: "self", key: "primary-hover" } },
+  { field: "danger", source: { kind: "self", key: "danger" } },
+  { field: "dangerForeground", source: { kind: "self", key: "danger-foreground" } },
 ];
 
-const DART_INVERSE_DEFAULTS = {
-  light: {
-    backgroundInverse: "0xFF0A0A0A",
-    foregroundSubtle: "0xFFA3A3A3",
-    foregroundInverse: "0xFFFFFFFF",
-  },
-  dark: {
-    backgroundInverse: "0xFFFFFFFF",
-    foregroundSubtle: "0xFF737373",
-    foregroundInverse: "0xFF0A0A0A",
-  },
-} as const;
+const DART_DEFAULTS: Record<Mode, Record<string, string>> = {
+  light: { foregroundSubtle: "0xFFA3A3A3" },
+  dark: { foregroundSubtle: "0xFF737373" },
+};
 
 const toDartColor = (hex: string) =>
   `Color(0xFF${hex.replace("#", "").toUpperCase()})`;
 
-function buildDartColorTokens(mode: Mode, tokens: Record<TokenKey, string>): string {
-  const defaults = DART_INVERSE_DEFAULTS[mode];
+function buildDartColorTokens(
+  mode: Mode,
+  self: Record<TokenKey, string>,
+  opposite: Record<TokenKey, string>,
+): string {
+  const defaults = DART_DEFAULTS[mode];
   const lines = DART_FIELD_ORDER.map(({ field, source }) => {
-    if (source === "default") {
-      const dartHex = defaults[field as keyof typeof defaults];
-      return `  ${field}: Color(${dartHex}),`;
+    switch (source.kind) {
+      case "self":
+        return `  ${field}: ${toDartColor(self[source.key])},`;
+      case "inverse":
+        return `  ${field}: ${toDartColor(opposite[source.key])},`;
+      case "default":
+        return `  ${field}: Color(${defaults[field]}),`;
     }
-    return `  ${field}: ${toDartColor(tokens[source])},`;
   }).join("\n");
   return `static const ${mode} = ShUiColorTokens(\n${lines}\n);`;
 }
@@ -300,9 +306,9 @@ export default function PlaygroundPage() {
       "// lib/foundation/sh_ui_tokens.dart 내부의 해당 static const 블록을 아래로 교체하세요.",
       "",
       "// class ShUiColorTokens { ... }",
-      buildDartColorTokens("light", light),
+      buildDartColorTokens("light", light, dark),
       "",
-      buildDartColorTokens("dark", dark),
+      buildDartColorTokens("dark", dark, light),
       "",
       "// class ShUiRadiusTokens { ... }",
       "static const tokens = ShUiRadiusTokens(",
