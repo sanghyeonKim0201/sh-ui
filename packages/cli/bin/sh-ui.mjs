@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { init } from "../src/init.mjs";
 import { add } from "../src/add.mjs";
+import { list } from "../src/list.mjs";
+import { remove } from "../src/remove.mjs";
 
 const [, , cmd, ...rest] = process.argv;
 
@@ -9,9 +11,14 @@ const usage = `사용법:
   sh-ui add <component...>         컴포넌트 소스를 프로젝트로 복사하고
                                    필요한 외부 패키지를 자동 설치
                                    특수값: tokens → 설정 기반 토큰 파일 생성
+  sh-ui list                       현재 설치된 컴포넌트 목록 표시
+  sh-ui remove <component...>      설치된 컴포넌트 파일 삭제
   옵션:
-    --skip-install                 외부 패키지 자동 설치 생략 (명령어만 안내)
-    --diff                         파일을 쓰지 않고 기존 내용과 변경 내역만 출력
+    --skip-install                 (add) 외부 패키지 자동 설치 생략
+    --diff                         (add) 파일을 쓰지 않고 변경 내역만 출력
+    --all                          (list) 설치되지 않은 컴포넌트까지 표시
+    --force                        (remove) 사용자가 수정한 파일도 삭제
+    --dry-run                      (remove) 삭제 대상만 출력하고 실행 안 함
 `;
 
 try {
@@ -29,6 +36,24 @@ try {
         process.exit(1);
       }
       await add({ cwd: process.cwd(), names, skipInstall, diffMode });
+      break;
+    }
+    case "list": {
+      const all = rest.includes("--all");
+      await list({ cwd: process.cwd(), all });
+      break;
+    }
+    case "remove":
+    case "rm": {
+      const force = rest.includes("--force");
+      const dryRun = rest.includes("--dry-run");
+      const names = rest.filter((a) => !a.startsWith("--"));
+      if (names.length === 0) {
+        console.error("에러: 삭제할 컴포넌트 이름이 필요합니다.\n");
+        console.error(usage);
+        process.exit(1);
+      }
+      await remove({ cwd: process.cwd(), names, force, dryRun });
       break;
     }
     case undefined:

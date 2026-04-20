@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.13.0",
+      "date": "2026-04-20",
+      "title": "CLI list / remove — 설치 관리 사이클 완결",
+      "type": "minor",
+      "highlights": [
+        "sh-ui list — 설치된 컴포넌트 목록 (--all로 레지스트리 전체)",
+        "sh-ui remove <name...> — 설치 파일 삭제, 빈 폴더 자동 정리",
+        "사용자 수정 파일은 기본 보호, --force로만 강제 삭제. --dry-run 미리보기 지원"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.0"
+    },
+    {
       "version": "0.12.0",
       "date": "2026-04-20",
       "title": "CLI --diff 플래그 — 업데이트 미리보기",

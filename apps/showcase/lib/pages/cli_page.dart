@@ -61,10 +61,30 @@ class CliPage extends StatelessWidget {
         ),
         const SizedBox(height: 20),
 
-        _section('3. 플래그 참고', colors),
+        _section('3. 관리 명령', colors),
+        _CommandBlock(
+          command: 'npx sh-ui list',
+          description: '현재 설치된 컴포넌트 목록 (`--all`로 설치 가능한 전체 표시).',
+        ),
+        const SizedBox(height: 8),
+        _CommandBlock(
+          command: 'npx sh-ui remove button card',
+          description: '여러 컴포넌트 파일 한 번에 삭제. 수정한 파일은 건너뜀 (--force로 강제).',
+        ),
+        const SizedBox(height: 8),
+        _CommandBlock(
+          command: 'npx sh-ui remove button --dry-run',
+          description: '삭제 대상만 확인하고 실제 삭제는 하지 않음.',
+        ),
+        const SizedBox(height: 20),
+
+        _section('4. 플래그 참고', colors),
         _flagRow('--yes / -y', '프롬프트 없이 기본값으로 진행 (init)', colors),
-        _flagRow('--force', '기존 sh-ui.config.json을 덮어쓴다 (init)', colors),
+        _flagRow('--force', 'init: 기존 config 덮어쓰기 / remove: 수정 파일도 삭제', colors),
         _flagRow('--skip-install', '외부 패키지 자동 설치 생략 (add, React 한정)', colors),
+        _flagRow('--diff', '파일 쓰지 않고 변경 내역만 출력 (add)', colors),
+        _flagRow('--all', '설치되지 않은 컴포넌트까지 표시 (list)', colors),
+        _flagRow('--dry-run', '실제 삭제 없이 대상 파일만 출력 (remove)', colors),
         const SizedBox(height: 20),
 
         _section('Flutter 설정 예시', colors),

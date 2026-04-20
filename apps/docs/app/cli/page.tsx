@@ -24,6 +24,8 @@ export default function CliPage() {
           { prop: "sh-ui init", type: "command", description: "프로젝트 루트에 sh-ui.config.json 생성." },
           { prop: "sh-ui add <name...>", type: "command", description: "레지스트리에서 컴포넌트 소스를 복사하고 필요한 외부 패키지를 자동 설치." },
           { prop: "sh-ui add tokens", type: "special", description: "설정 값을 치환해 토큰 파일 생성 (CSS 또는 Dart)." },
+          { prop: "sh-ui list", type: "command", description: "현재 설치된 컴포넌트 목록 표시." },
+          { prop: "sh-ui remove <name...>", type: "command", description: "설치된 컴포넌트 파일 삭제 (별칭 sh-ui rm)." },
         ]}
       />
 
@@ -170,6 +172,55 @@ npx sh-ui add button`}
           { prop: "aliases", type: "object", description: "React 한정. import 경로 alias (현재 컴포넌트에는 미반영 — 향후 확장)." },
         ]}
       />
+
+      <h2>sh-ui list</h2>
+      <p>
+        설정 파일을 읽어 <code>paths.components</code> 아래에서 현재 설치된 컴포넌트를 찾는다. 기본은 설치된 것만 표시.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# 설치된 것만
+npx sh-ui list
+
+# 설치되지 않은 컴포넌트까지 함께 보기
+npx sh-ui list --all`}
+      />
+      <PropsTable
+        rows={[
+          { prop: "--all", type: "boolean", description: "레지스트리의 모든 컴포넌트 중 아직 설치되지 않은 것도 함께 표시." },
+        ]}
+      />
+
+      <h2>sh-ui remove</h2>
+      <p>
+        설치된 컴포넌트 파일을 삭제한다. 사용자가 수정한 파일은 기본적으로 삭제되지 않으며, <code>--force</code>가 있을 때만 제거된다.
+        폴더가 비게 되면 자동 정리.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# 여러 개 한 번에
+npx sh-ui remove button card
+
+# 삭제 대상만 확인
+npx sh-ui remove button --dry-run
+
+# 수정된 파일도 강제 삭제
+npx sh-ui remove button --force
+
+# 별칭
+npx sh-ui rm button`}
+      />
+      <PropsTable
+        rows={[
+          { prop: "--dry-run", type: "boolean", description: "실제로 삭제하지 않고 대상 파일만 출력." },
+          { prop: "--force", type: "boolean", description: "사용자가 수정한 파일도 삭제. 원본 복구 불가이므로 주의." },
+        ]}
+      />
+      <p className="muted">
+        <code>registryDependencies</code>(예: Menubar → DropdownMenu)는 공유될 수 있으므로 함께 제거되지 않는다. 필요하면 이름을 명시적으로 나열.
+      </p>
 
       <h2>사용 예 — 전형적인 흐름</h2>
       <CodePanel
