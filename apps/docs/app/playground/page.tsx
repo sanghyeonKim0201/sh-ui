@@ -181,6 +181,57 @@ const groups: { label: string; keys: TokenKey[] }[] = [
   { label: "Danger", keys: ["danger", "danger-foreground"] },
 ];
 
+/* ───────── Dart 토큰 내보내기 ─────────
+ * Flutter 쪽 ShUiColorTokens 필드 중 playground가 편집하지 않는 inverse 계열은
+ * sh_ui_tokens.dart 기본값을 그대로 유지한다.
+ */
+
+const DART_FIELD_ORDER: { field: string; source: TokenKey | "default" }[] = [
+  { field: "background", source: "background" },
+  { field: "backgroundSubtle", source: "background-subtle" },
+  { field: "backgroundMuted", source: "background-muted" },
+  { field: "backgroundInverse", source: "default" },
+  { field: "foreground", source: "foreground" },
+  { field: "foregroundMuted", source: "foreground-muted" },
+  { field: "foregroundSubtle", source: "default" },
+  { field: "foregroundInverse", source: "default" },
+  { field: "border", source: "border" },
+  { field: "borderStrong", source: "border-strong" },
+  { field: "primary", source: "primary" },
+  { field: "primaryForeground", source: "primary-foreground" },
+  { field: "primaryHover", source: "primary-hover" },
+  { field: "danger", source: "danger" },
+  { field: "dangerForeground", source: "danger-foreground" },
+];
+
+const DART_INVERSE_DEFAULTS = {
+  light: {
+    backgroundInverse: "0xFF0A0A0A",
+    foregroundSubtle: "0xFFA3A3A3",
+    foregroundInverse: "0xFFFFFFFF",
+  },
+  dark: {
+    backgroundInverse: "0xFFFFFFFF",
+    foregroundSubtle: "0xFF737373",
+    foregroundInverse: "0xFF0A0A0A",
+  },
+} as const;
+
+const toDartColor = (hex: string) =>
+  `Color(0xFF${hex.replace("#", "").toUpperCase()})`;
+
+function buildDartColorTokens(mode: Mode, tokens: Record<TokenKey, string>): string {
+  const defaults = DART_INVERSE_DEFAULTS[mode];
+  const lines = DART_FIELD_ORDER.map(({ field, source }) => {
+    if (source === "default") {
+      const dartHex = defaults[field as keyof typeof defaults];
+      return `  ${field}: Color(${dartHex}),`;
+    }
+    return `  ${field}: ${toDartColor(tokens[source])},`;
+  }).join("\n");
+  return `static const ${mode} = ShUiColorTokens(\n${lines}\n);`;
+}
+
 const DEFAULT_RADIUS = 0.5;
 
 const RADIUS_PRESETS: { label: string; value: number }[] = [
@@ -239,6 +290,25 @@ export default function PlaygroundPage() {
       .map(([k, v]) => `  --${k}: ${v};`)
       .join("\n");
     return `:root {\n${lightVars}\n  --radius: ${radius}rem;\n}\n.dark {\n${darkVars}\n}`;
+  }, [light, dark, radius]);
+
+  /* 내보내기용 — Flutter ShUiColorTokens / ShUiRadiusTokens */
+  const dartText = useMemo(() => {
+    const radiusPx = (radius * 16).toFixed(1);
+    return [
+      "// sh-ui playground — 편집한 토큰을 Dart로 내보냄",
+      "// lib/foundation/sh_ui_tokens.dart 내부의 해당 static const 블록을 아래로 교체하세요.",
+      "",
+      "// class ShUiColorTokens { ... }",
+      buildDartColorTokens("light", light),
+      "",
+      buildDartColorTokens("dark", dark),
+      "",
+      "// class ShUiRadiusTokens { ... }",
+      "static const tokens = ShUiRadiusTokens(",
+      `  defaultRadius: ${radiusPx},`,
+      ");",
+    ].join("\n");
   }, [light, dark, radius]);
 
   const current = mode === "light" ? light : dark;
@@ -821,11 +891,22 @@ export default function PlaygroundPage() {
         </div>
 
         {/* ───────────── 내보내기 ───────────── */}
-        <h2 style={{ marginTop: "2.5rem" }}>tokens.css 내보내기</h2>
+        <h2 style={{ marginTop: "2.5rem" }}>토큰 내보내기</h2>
         <p className="muted">
-          현재 라이트 + 다크 + radius 설정을 그대로 담은 블록. 프로젝트 <code>tokens.css</code>에 붙여넣으면 동일한 룩을 재현한다.
+          편집한 값을 그대로 담은 블록. React는 <code>tokens.css</code>, Flutter는 <code>lib/foundation/sh_ui_tokens.dart</code>의 해당 블록을 교체한다.
         </p>
-        <ExportBlock code={cssText} />
+        <Tabs defaultValue="css" style={{ marginTop: "0.75rem" }}>
+          <TabsList>
+            <TabsTrigger value="css">React · tokens.css</TabsTrigger>
+            <TabsTrigger value="dart">Flutter · sh_ui_tokens.dart</TabsTrigger>
+          </TabsList>
+          <TabsContent value="css">
+            <ExportBlock code={cssText} filename="tokens.css" />
+          </TabsContent>
+          <TabsContent value="dart">
+            <ExportBlock code={dartText} filename="sh_ui_tokens.dart" />
+          </TabsContent>
+        </Tabs>
       </main>
     </>
   );
@@ -899,7 +980,7 @@ function ColorRow({
   );
 }
 
-function ExportBlock({ code }: { code: string }) {
+function ExportBlock({ code, filename = "tokens.css" }: { code: string; filename?: string }) {
   const [copied, setCopied] = useState(false);
   const onCopy = async () => {
     try {
@@ -931,7 +1012,7 @@ function ExportBlock({ code }: { code: string }) {
           color: "var(--foreground-muted)",
         }}
       >
-        <code style={{ color: "var(--foreground)" }}>tokens.css</code>
+        <code style={{ color: "var(--foreground)" }}>{filename}</code>
         <button
           type="button"
           onClick={onCopy}
