@@ -63,13 +63,13 @@ const lightDefaults: Record<TokenKey, string> = {
   "background-subtle": "#FAFAFA",
   "background-muted": "#F5F5F5",
   foreground: "#0A0A0A",
-  "foreground-muted": "#737373",
+  "foreground-muted": "#525252",
   border: "#E5E5E5",
   "border-strong": "#D4D4D4",
   primary: "#171717",
   "primary-foreground": "#FAFAFA",
   "primary-hover": "#262626",
-  danger: "#EF4444",
+  danger: "#DC2626",
   "danger-foreground": "#FFFFFF",
 };
 

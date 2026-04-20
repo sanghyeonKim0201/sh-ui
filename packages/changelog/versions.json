@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.13.1",
+      "date": "2026-04-20",
+      "title": "토큰 대비 감사 — WCAG AA 통과",
+      "type": "patch",
+      "highlights": [
+        "light mode foreground-muted를 base.500 → base.600로 (muted 텍스트 on muted background 4.35:1 → 7.17:1)",
+        "light mode danger를 red.500 → red.600로 통일 (danger 버튼 3.76:1 → 4.83:1)",
+        "감사 스크립트 추가: pnpm --filter @sh-ui/tokens audit:contrast — 3 base × 2 mode 조합 일괄 검증",
+        "주의: 기존 설치자는 sh-ui add tokens로 tokens.css 재생성 필요"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.1"
+    },
+    {
       "version": "0.13.0",
       "date": "2026-04-20",
       "title": "CLI list / remove — 설치 관리 사이클 완결",

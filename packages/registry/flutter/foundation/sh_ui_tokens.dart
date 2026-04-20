@@ -45,7 +45,7 @@ class ShUiColorTokens {
     backgroundMuted: Color(0xFFF5F5F5),
     backgroundInverse: Color(0xFF0A0A0A),
     foreground: Color(0xFF0A0A0A),
-    foregroundMuted: Color(0xFF737373),
+    foregroundMuted: Color(0xFF525252),
     foregroundSubtle: Color(0xFFA3A3A3),
     foregroundInverse: Color(0xFFFFFFFF),
     border: Color(0xFFE5E5E5),
@@ -53,7 +53,7 @@ class ShUiColorTokens {
     primary: Color(0xFF171717),
     primaryForeground: Color(0xFFFAFAFA),
     primaryHover: Color(0xFF262626),
-    danger: Color(0xFFEF4444),
+    danger: Color(0xFFDC2626),
     dangerForeground: Color(0xFFFFFFFF),
   );
 

@@ -10,7 +10,7 @@
     },
     "foreground": {
       "default": { "$value": "{color.{base}.950}", "$type": "color" },
-      "muted":   { "$value": "{color.{base}.500}", "$type": "color" },
+      "muted":   { "$value": "{color.{base}.600}", "$type": "color" },
       "subtle":  { "$value": "{color.{base}.400}", "$type": "color" },
       "inverse": { "$value": "{color.white}", "$type": "color" }
     },
@@ -24,7 +24,7 @@
       "hover":      { "$value": "{color.{base}.800}", "$type": "color" }
     },
     "danger": {
-      "default":    { "$value": "{color.red.500}", "$type": "color" },
+      "default":    { "$value": "{color.red.600}", "$type": "color" },
       "foreground": { "$value": "{color.white}", "$type": "color" }
     }
   },
