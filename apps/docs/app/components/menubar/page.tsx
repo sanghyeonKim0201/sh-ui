@@ -41,6 +41,31 @@ export default function MenubarPage() {
   </DropdownMenu>
 </Menubar>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiMenubar(
+  menus: [
+    ShUiMenubarMenu(
+      label: '파일',
+      onSelected: (v) => print(v),
+      items: const [
+        ShUiDropdownMenuItem(value: 'new', label: '새로 만들기'),
+        ShUiDropdownMenuItem(value: 'open', label: '열기…'),
+      ],
+    ),
+    ShUiMenubarMenu(
+      label: '편집',
+      onSelected: (v) => print(v),
+      items: const [
+        ShUiDropdownMenuItem(value: 'undo', label: '실행 취소'),
+        ShUiDropdownMenuItem(value: 'redo', label: '다시 실행'),
+      ],
+    ),
+  ],
+)`,
+            },
           ]}
         />
       </Preview>

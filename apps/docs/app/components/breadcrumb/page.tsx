@@ -62,6 +62,18 @@ export default function BreadcrumbDocsPage() {
   </BreadcrumbList>
 </Breadcrumb>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiBreadcrumb(
+  items: [
+    ShUiBreadcrumbItem(label: '홈', onTap: () => ...),
+    ShUiBreadcrumbItem(label: '컴포넌트', onTap: () => ...),
+    const ShUiBreadcrumbItem(label: 'Breadcrumb', isCurrent: true),
+  ],
+)`,
+            },
           ]}
         />
       </Preview>

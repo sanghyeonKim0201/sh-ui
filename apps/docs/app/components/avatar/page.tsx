@@ -45,6 +45,16 @@ export default function AvatarPage() {
   <AvatarFallback>SK</AvatarFallback>
 </Avatar>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiAvatar(
+  imageUrl: 'https://.../photo.jpg',
+  fallback: const Text('SK'),
+  semanticLabel: '사용자 이름',
+)`,
+            },
           ]}
         />
       </Preview>

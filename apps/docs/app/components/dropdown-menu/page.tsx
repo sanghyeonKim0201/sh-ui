@@ -46,6 +46,29 @@ export default function DropdownMenuPage() {
   </DropdownMenuContent>
 </DropdownMenu>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiDropdownMenu<String>(
+  onSelected: (v) => print(v),
+  items: const [
+    ShUiDropdownMenuLabel('내 계정'),
+    ShUiDropdownMenuItem(value: 'profile', label: '프로필'),
+    ShUiDropdownMenuItem(value: 'settings', label: '설정'),
+    ShUiDropdownMenuItem(value: 'billing', label: '청구 내역'),
+    ShUiDropdownMenuDivider(),
+    ShUiDropdownMenuItem(value: 'team', label: '팀 (준비 중)', disabled: true),
+    ShUiDropdownMenuDivider(),
+    ShUiDropdownMenuItem(value: 'signout', label: '로그아웃'),
+  ],
+  child: ShUiButton(
+    variant: ShUiButtonVariant.secondary,
+    onPressed: null,
+    child: const Text('메뉴 열기'),
+  ),
+)`,
+            },
           ]}
         />
       </Preview>

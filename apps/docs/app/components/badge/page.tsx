@@ -37,6 +37,17 @@ export default function BadgePage() {
 <Badge variant="danger">Danger</Badge>
 <Badge variant="outline">Outline</Badge>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiBadge.text('Primary')
+ShUiBadge.text('Secondary', variant: ShUiBadgeVariant.secondary)
+ShUiBadge.text('Success', variant: ShUiBadgeVariant.success)
+ShUiBadge.text('Warning', variant: ShUiBadgeVariant.warning)
+ShUiBadge.text('Danger', variant: ShUiBadgeVariant.danger)
+ShUiBadge.text('Outline', variant: ShUiBadgeVariant.outline)`,
+            },
           ]}
         />
       </Preview>

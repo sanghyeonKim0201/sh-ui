@@ -42,6 +42,28 @@ export default function ContextMenuPage() {
   </ContextMenuContent>
 </ContextMenu>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiContextMenu<String>(
+  onSelected: (v) => print(v),
+  items: const [
+    ShUiDropdownMenuLabel('편집'),
+    ShUiDropdownMenuItem(value: 'cut', label: '잘라내기'),
+    ShUiDropdownMenuItem(value: 'copy', label: '복사'),
+    ShUiDropdownMenuItem(value: 'paste', label: '붙여넣기'),
+    ShUiDropdownMenuDivider(),
+    ShUiDropdownMenuItem(value: 'delete', label: '삭제'),
+  ],
+  child: Container(
+    /* 우클릭/long-press 감지할 영역 */
+    width: 320, height: 128,
+    alignment: Alignment.center,
+    child: const Text('이 영역에서 우클릭'),
+  ),
+)`,
+            },
           ]}
         />
       </Preview>

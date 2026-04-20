@@ -35,6 +35,19 @@ export default function TooltipPage() {
   </Tooltip>
 </TooltipProvider>`,
             },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `ShUiTooltip(
+  message: '변경 사항을 저장합니다 (⌘S)',
+  child: ShUiButton(
+    variant: ShUiButtonVariant.secondary,
+    onPressed: () {},
+    child: const Text('저장'),
+  ),
+)`,
+            },
           ]}
         />
       </Preview>

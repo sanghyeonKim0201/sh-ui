@@ -3,6 +3,22 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.10.0",
+      "date": "2026-04-20",
+      "title": "Flutter 파리티 라운드 — 최근 7종 위젯 추가",
+      "type": "minor",
+      "highlights": [
+        "신규: ShUiDropdownMenu (PopupMenuButton 기반)",
+        "신규: ShUiContextMenu (우클릭 + long-press)",
+        "신규: ShUiMenubar (가로 메뉴바)",
+        "신규: ShUiTooltip (Flutter Tooltip 래핑)",
+        "신규: ShUiBreadcrumb (items 리스트)",
+        "신규: ShUiAvatar (이미지 + fallback, 4사이즈)",
+        "신규: ShUiBadge (6 variant × 2 size)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.10.0"
+    },
+    {
       "version": "0.9.0",
       "date": "2026-04-20",
       "title": "Menu 계열 완결 + Tooltip/Breadcrumb/Avatar/Badge",
