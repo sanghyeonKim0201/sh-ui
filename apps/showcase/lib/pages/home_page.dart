@@ -26,6 +26,18 @@ import 'combobox_page.dart';
 import 'file_upload_page.dart';
 import 'sidebar_page.dart';
 import 'skeleton_page.dart';
+import 'avatar_page.dart';
+import 'badge_page.dart';
+import 'breadcrumb_page.dart';
+import 'changelog_page.dart';
+import 'cli_page.dart';
+import 'progress_page.dart';
+import 'separator_page.dart';
+import 'spinner_page.dart';
+import 'context_menu_page.dart';
+import 'dropdown_menu_page.dart';
+import 'menubar_page.dart';
+import 'tooltip_page.dart';
 import 'examples/dashboard_page.dart';
 import 'examples/login_page.dart';
 import 'examples/settings_page.dart';
@@ -124,14 +136,24 @@ class HomePage extends StatelessWidget {
         ShUiAppShellGroup(
           label: '표시',
           items: const [
+            ShUiAppShellItem(icon: Icons.person_outline, label: 'Avatar', builder: _buildAvatar),
+            ShUiAppShellItem(icon: Icons.label_important_outline, label: 'Badge', builder: _buildBadge),
+            ShUiAppShellItem(icon: Icons.alt_route, label: 'Breadcrumb', builder: _buildBreadcrumb),
+            ShUiAppShellItem(icon: Icons.linear_scale, label: 'Progress', builder: _buildProgress),
+            ShUiAppShellItem(icon: Icons.horizontal_rule, label: 'Separator', builder: _buildSeparator),
             ShUiAppShellItem(icon: Icons.view_stream_outlined, label: 'Skeleton', builder: _buildSkeleton),
+            ShUiAppShellItem(icon: Icons.refresh, label: 'Spinner', builder: _buildSpinner),
           ],
         ),
         ShUiAppShellGroup(
           label: '오버레이',
           items: const [
+            ShUiAppShellItem(icon: Icons.more_horiz, label: 'ContextMenu', builder: _buildContextMenu),
             ShUiAppShellItem(icon: Icons.open_in_new, label: 'Dialog', builder: _buildDialog),
+            ShUiAppShellItem(icon: Icons.arrow_drop_down, label: 'DropdownMenu', builder: _buildDropdownMenu),
+            ShUiAppShellItem(icon: Icons.menu_book_outlined, label: 'Menubar', builder: _buildMenubar),
             ShUiAppShellItem(icon: Icons.chat_bubble_outline, label: 'Popover', builder: _buildPopover),
+            ShUiAppShellItem(icon: Icons.info_outline, label: 'Tooltip', builder: _buildTooltip),
             ShUiAppShellItem(icon: Icons.notifications_outlined, label: 'Toast', builder: _buildToast),
           ],
         ),
@@ -139,6 +161,13 @@ class HomePage extends StatelessWidget {
           label: '파일',
           items: const [
             ShUiAppShellItem(icon: Icons.upload_file, label: 'File Upload', builder: _buildFileUpload),
+          ],
+        ),
+        ShUiAppShellGroup(
+          label: '정보',
+          items: const [
+            ShUiAppShellItem(icon: Icons.terminal, label: 'CLI', builder: _buildCli),
+            ShUiAppShellItem(icon: Icons.history, label: '변경 내역', builder: _buildChangelog),
           ],
         ),
       ],
@@ -183,3 +212,18 @@ Widget _buildPopover(BuildContext context) => const PopoverPage();
 Widget _buildToast(BuildContext context) => const ToastPage();
 
 Widget _buildFileUpload(BuildContext context) => const FileUploadPage();
+
+Widget _buildAvatar(BuildContext context) => const AvatarPage();
+Widget _buildBadge(BuildContext context) => const BadgePage();
+Widget _buildBreadcrumb(BuildContext context) => const BreadcrumbPage();
+Widget _buildContextMenu(BuildContext context) => const ContextMenuPage();
+Widget _buildDropdownMenu(BuildContext context) => const DropdownMenuPage();
+Widget _buildMenubar(BuildContext context) => const MenubarPage();
+Widget _buildTooltip(BuildContext context) => const TooltipPage();
+
+Widget _buildChangelog(BuildContext context) => const ChangelogPage();
+Widget _buildCli(BuildContext context) => const CliPage();
+
+Widget _buildProgress(BuildContext context) => const ProgressPage();
+Widget _buildSeparator(BuildContext context) => const SeparatorPage();
+Widget _buildSpinner(BuildContext context) => const SpinnerPage();

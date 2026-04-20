@@ -224,6 +224,106 @@
       "dependencies": ["@base-ui-components/react"],
       "registryDependencies": []
     },
+    "dropdown-menu": {
+      "name": "dropdown-menu",
+      "type": "component",
+      "files": [
+        { "src": "components/dropdown-menu/index.tsx", "dest": "{components}/dropdown-menu/index.tsx" },
+        { "src": "components/dropdown-menu/styles.css", "dest": "{components}/dropdown-menu/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "context-menu": {
+      "name": "context-menu",
+      "type": "component",
+      "files": [
+        { "src": "components/context-menu/index.tsx", "dest": "{components}/context-menu/index.tsx" },
+        { "src": "components/context-menu/styles.css", "dest": "{components}/context-menu/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "menubar": {
+      "name": "menubar",
+      "type": "component",
+      "files": [
+        { "src": "components/menubar/index.tsx", "dest": "{components}/menubar/index.tsx" },
+        { "src": "components/menubar/styles.css", "dest": "{components}/menubar/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": ["dropdown-menu"]
+    },
+    "tooltip": {
+      "name": "tooltip",
+      "type": "component",
+      "files": [
+        { "src": "components/tooltip/index.tsx", "dest": "{components}/tooltip/index.tsx" },
+        { "src": "components/tooltip/styles.css", "dest": "{components}/tooltip/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "breadcrumb": {
+      "name": "breadcrumb",
+      "type": "component",
+      "files": [
+        { "src": "components/breadcrumb/index.tsx", "dest": "{components}/breadcrumb/index.tsx" },
+        { "src": "components/breadcrumb/styles.css", "dest": "{components}/breadcrumb/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "avatar": {
+      "name": "avatar",
+      "type": "component",
+      "files": [
+        { "src": "components/avatar/index.tsx", "dest": "{components}/avatar/index.tsx" },
+        { "src": "components/avatar/styles.css", "dest": "{components}/avatar/styles.css" }
+      ],
+      "dependencies": ["@base-ui-components/react"],
+      "registryDependencies": []
+    },
+    "badge": {
+      "name": "badge",
+      "type": "component",
+      "files": [
+        { "src": "components/badge/index.tsx", "dest": "{components}/badge/index.tsx" },
+        { "src": "components/badge/styles.css", "dest": "{components}/badge/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "progress": {
+      "name": "progress",
+      "type": "component",
+      "files": [
+        { "src": "components/progress/index.tsx", "dest": "{components}/progress/index.tsx" },
+        { "src": "components/progress/styles.css", "dest": "{components}/progress/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "spinner": {
+      "name": "spinner",
+      "type": "component",
+      "files": [
+        { "src": "components/spinner/index.tsx", "dest": "{components}/spinner/index.tsx" },
+        { "src": "components/spinner/styles.css", "dest": "{components}/spinner/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "separator": {
+      "name": "separator",
+      "type": "component",
+      "files": [
+        { "src": "components/separator/index.tsx", "dest": "{components}/separator/index.tsx" },
+        { "src": "components/separator/styles.css", "dest": "{components}/separator/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "theme": {
       "name": "theme",
       "type": "component",

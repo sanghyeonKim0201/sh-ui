@@ -7,7 +7,7 @@
   --background-muted: #F5F5F5;
   --background-inverse: #0A0A0A;
   --foreground: #0A0A0A;
-  --foreground-muted: #737373;
+  --foreground-muted: #525252;
   --foreground-subtle: #A3A3A3;
   --foreground-inverse: #FFFFFF;
   --border: #E5E5E5;
@@ -15,7 +15,7 @@
   --primary: #171717;
   --primary-foreground: #FAFAFA;
   --primary-hover: #262626;
-  --danger: #EF4444;
+  --danger: #DC2626;
   --danger-foreground: #FFFFFF;
   --radius: 0.5rem;
   --space-0: 0px;

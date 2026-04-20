@@ -311,6 +311,14 @@ ShUiToggleGroup<String>(
           { prop: "disabled", type: "boolean", default: "false" },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li><code>Enter</code> / <code>Space</code> — pressed 상태 토글</li>
+        <li><code>Tab</code> / <code>Shift+Tab</code> — 포커스 이동</li>
+        <li>Base UI가 <code>aria-pressed</code>를 자동 관리 (단독 Toggle)</li>
+        <li>ToggleGroup(single)은 라디오 시맨틱(↑↓←→ 이동), multiple은 독립 토글</li>
+      </ul>
     </main>
   );
 }

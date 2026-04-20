@@ -31,6 +31,19 @@ export default function Guidelines() {
         <li>CLI로 dogfooding: <code>apps/docs</code>에서 <code>sh-ui add &lt;name&gt;</code> 실행 → 정상 설치 확인</li>
       </ol>
 
+      <h2>접근성 · 대비</h2>
+      <p>모든 색 토큰은 WCAG 2.1 AA 기준으로 감사된다.</p>
+      <ul>
+        <li><strong>본문 텍스트</strong>: <code>foreground</code> / <code>foreground-muted</code> × 모든 <code>background*</code> 조합에서 4.5:1 이상</li>
+        <li><strong>버튼 텍스트</strong>: <code>primary-foreground × primary/primary-hover</code>, <code>danger-foreground × danger</code> 4.5:1 이상</li>
+        <li>
+          <strong>보더</strong>: <code>border</code>·<code>border-strong</code>은 의도적으로 subtle(&lt;3:1). 컴포넌트 식별은 shadow·여백·라벨로, 포커스 인디케이터는 <code>foreground</code> 색 outline으로 19:1+ 대비 확보 (WCAG 2.4.11 충족)
+        </li>
+      </ul>
+      <p>
+        감사 스크립트: <code>pnpm --filter @sh-ui/tokens audit:contrast</code>. 3개 base(neutral / zinc / slate) × 2 mode 조합에서 주요 쌍의 대비를 계산해 미달이면 exit 1.
+      </p>
+
       <h2>브레이킹 체인지</h2>
       <ul>
         <li>토큰 이름 변경, 컴포넌트 props 제거 = 메이저 버전</li>

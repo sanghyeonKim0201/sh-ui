@@ -1,0 +1,41 @@
+.sh-ui-progress {
+  position: relative;
+  width: 100%;
+  height: 0.5rem;
+  overflow: hidden;
+  background: var(--background-muted);
+  border-radius: 999px;
+}
+
+.sh-ui-progress__indicator {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+  transition: width var(--duration-base) ease;
+}
+
+/* indeterminate 모드: 바가 좌우로 왕복 */
+.sh-ui-progress[data-state="indeterminate"] .sh-ui-progress__indicator {
+  width: 40%;
+  animation: sh-ui-progress-slide 1.2s ease-in-out infinite;
+}
+
+@keyframes sh-ui-progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-progress__indicator {
+    transition: none;
+  }
+  .sh-ui-progress[data-state="indeterminate"] .sh-ui-progress__indicator {
+    /* 움직임 최소화 — 중앙에 정지된 바 */
+    animation: none;
+    transform: translateX(75%);
+  }
+}

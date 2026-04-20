@@ -224,6 +224,14 @@ ShUiPopover(
           { prop: "closeDelay", type: "number", default: "0", description: "hover 닫기 지연 (ms)." },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li>트리거 — <code>Enter</code> / <code>Space</code>로 열기</li>
+        <li><code>Esc</code> — 닫기 + 열기 트리거로 포커스 복귀</li>
+        <li>바깥 클릭 — 닫기</li>
+        <li>Base UI가 <code>aria-expanded</code>, <code>aria-controls</code>를 자동 관리. Title/Description이 있으면 <code>aria-labelledby</code>/<code>aria-describedby</code>도 자동 연결</li>
+      </ul>
     </main>
   );
 }

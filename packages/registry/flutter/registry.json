@@ -232,6 +232,96 @@
       ],
       "dependencies": [],
       "registryDependencies": ["tokens"]
+    },
+    "badge": {
+      "name": "badge",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_badge.dart", "dest": "{widgets}/sh_ui_badge.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "avatar": {
+      "name": "avatar",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_avatar.dart", "dest": "{widgets}/sh_ui_avatar.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "breadcrumb": {
+      "name": "breadcrumb",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_breadcrumb.dart", "dest": "{widgets}/sh_ui_breadcrumb.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "tooltip": {
+      "name": "tooltip",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_tooltip.dart", "dest": "{widgets}/sh_ui_tooltip.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "dropdown-menu": {
+      "name": "dropdown-menu",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_dropdown_menu.dart", "dest": "{widgets}/sh_ui_dropdown_menu.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "context-menu": {
+      "name": "context-menu",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_context_menu.dart", "dest": "{widgets}/sh_ui_context_menu.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens", "dropdown-menu"]
+    },
+    "menubar": {
+      "name": "menubar",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_menubar.dart", "dest": "{widgets}/sh_ui_menubar.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens", "dropdown-menu"]
+    },
+    "progress": {
+      "name": "progress",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_progress.dart", "dest": "{widgets}/sh_ui_progress.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "spinner": {
+      "name": "spinner",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_spinner.dart", "dest": "{widgets}/sh_ui_spinner.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
+    "separator": {
+      "name": "separator",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_separator.dart", "dest": "{widgets}/sh_ui_separator.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
     }
   }
 }

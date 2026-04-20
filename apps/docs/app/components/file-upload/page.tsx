@@ -394,6 +394,14 @@ if (_files.isNotEmpty)
           { prop: "children", type: "ReactNode", description: "있으면 기본 row 대신 렌더." },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li>Dropzone — <code>role=&quot;button&quot;</code>, <code>tabIndex=0</code>, <code>Enter</code>/<code>Space</code>로 파일 선택 창 열기</li>
+        <li>드래그 앤 드롭 외에 키보드·클릭만으로도 업로드 가능</li>
+        <li>각 파일 row의 제거 버튼은 파일명을 포함한 <code>aria-label</code>로 레이블링 (예: <code>&quot;report.pdf 제거&quot;</code>)</li>
+        <li>disabled 시 <code>aria-disabled</code> + <code>tabIndex=-1</code>로 포커스 제외</li>
+      </ul>
     </main>
   );
 }

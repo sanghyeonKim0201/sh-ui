@@ -280,6 +280,13 @@ const ShUiCheckbox(checked: true, enabled: false)`,
           { prop: "disabled", type: "boolean", default: "false" },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li><code>Space</code> — 체크 상태 토글</li>
+        <li><code>Tab</code> / <code>Shift+Tab</code> — 포커스 이동</li>
+        <li>Base UI가 <code>aria-checked</code>(<code>true</code> / <code>false</code> / <code>mixed</code>)를 자동 관리</li>
+      </ul>
     </main>
   );
 }

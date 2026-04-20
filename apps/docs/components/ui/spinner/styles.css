@@ -1,0 +1,37 @@
+.sh-ui-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  color: currentColor;
+}
+
+.sh-ui-spinner--sm { width: 0.875rem; height: 0.875rem; }
+.sh-ui-spinner--md { width: 1.125rem; height: 1.125rem; }
+.sh-ui-spinner--lg { width: 1.5rem;   height: 1.5rem;   }
+
+.sh-ui-spinner__ring {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  border-top-color: transparent;
+  opacity: 0.8;
+  animation: sh-ui-spinner-rotate 0.8s linear infinite;
+}
+
+.sh-ui-spinner--sm .sh-ui-spinner__ring {
+  border-width: 1.5px;
+}
+
+@keyframes sh-ui-spinner-rotate {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 움직임을 거의 없애되 "현재 진행 중"은 알아볼 수 있게 점선 느낌으로 유지 */
+  .sh-ui-spinner__ring {
+    animation-duration: 3s;
+  }
+}

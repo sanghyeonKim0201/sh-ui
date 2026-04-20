@@ -888,6 +888,13 @@ ShUiSidebarProvider(
         Provider 하위에서 상태를 직접 다룰 때 사용. 반환값: <code>state</code>, <code>open</code>, <code>setOpen</code>, <code>openMobile</code>, <code>setOpenMobile</code>, <code>isMobile</code>, <code>toggleSidebar</code>, <code>activePanel</code>, <code>setActivePanel</code>.
       </p>
 
+      <h2>접근성</h2>
+      <ul>
+        <li>모바일 드로어 — <code>role=&quot;dialog&quot;</code> + <code>aria-modal=&quot;true&quot;</code> + 포커스 트랩(<code>Tab</code> 순환 경계), <code>Esc</code> 닫기, 열기 트리거로 포커스 복귀</li>
+        <li>데스크탑 collapsible — <code>SidebarCollapsibleTrigger</code>가 <code>aria-expanded</code> 자동 관리</li>
+        <li>드로어 backdrop은 <code>aria-hidden</code> 처리</li>
+        <li>menu-button / menu-sub-button은 네이티브 <code>&lt;a&gt;</code> 또는 <code>&lt;button&gt;</code> 시맨틱을 유지 (<code>asChild</code>로 Link 래핑 가능)</li>
+      </ul>
     </main>
   );
 }

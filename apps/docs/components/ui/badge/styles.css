@@ -1,0 +1,57 @@
+.sh-ui-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+}
+
+/* sizes */
+.sh-ui-badge--sm {
+  height: 1.25rem;
+  font-size: 0.6875rem;
+  padding: 0 0.375rem;
+}
+.sh-ui-badge--md {
+  height: 1.5rem;
+  font-size: var(--text-xs);
+}
+
+/* variants */
+.sh-ui-badge--primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.sh-ui-badge--secondary {
+  background: var(--background-muted);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+.sh-ui-badge--success {
+  background: var(--success, #16a34a);
+  color: #fff;
+}
+
+.sh-ui-badge--warning {
+  background: var(--warning, #d97706);
+  color: #fff;
+}
+
+.sh-ui-badge--danger {
+  background: var(--danger);
+  color: var(--danger-foreground, #fff);
+}
+
+.sh-ui-badge--outline {
+  background: transparent;
+  color: var(--foreground);
+  border-color: var(--border-strong);
+}

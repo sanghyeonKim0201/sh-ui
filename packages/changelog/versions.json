@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
+  "versions": [
+    {
+      "version": "0.13.1",
+      "date": "2026-04-20",
+      "title": "토큰 대비 감사 — WCAG AA 통과",
+      "type": "patch",
+      "highlights": [
+        "light mode foreground-muted를 base.500 → base.600로 (muted 텍스트 on muted background 4.35:1 → 7.17:1)",
+        "light mode danger를 red.500 → red.600로 통일 (danger 버튼 3.76:1 → 4.83:1)",
+        "감사 스크립트 추가: pnpm --filter @sh-ui/tokens audit:contrast — 3 base × 2 mode 조합 일괄 검증",
+        "주의: 기존 설치자는 sh-ui add tokens로 tokens.css 재생성 필요"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.1"
+    },
+    {
+      "version": "0.13.0",
+      "date": "2026-04-20",
+      "title": "CLI list / remove — 설치 관리 사이클 완결",
+      "type": "minor",
+      "highlights": [
+        "sh-ui list — 설치된 컴포넌트 목록 (--all로 레지스트리 전체)",
+        "sh-ui remove <name...> — 설치 파일 삭제, 빈 폴더 자동 정리",
+        "사용자 수정 파일은 기본 보호, --force로만 강제 삭제. --dry-run 미리보기 지원"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.0"
+    },
+    {
+      "version": "0.12.0",
+      "date": "2026-04-20",
+      "title": "CLI --diff 플래그 — 업데이트 미리보기",
+      "type": "minor",
+      "highlights": [
+        "sh-ui add <name> --diff — 파일을 쓰지 않고 변경 내역(unified diff)만 출력",
+        "신규/변경/동일 파일을 분류해 요약, 수정해둔 파일이 있는지 사전 확인 가능",
+        "의존성 없는 LCS 기반 line-diff 내장 (packages/cli/src/diff.mjs)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.12.0"
+    },
+    {
+      "version": "0.11.0",
+      "date": "2026-04-20",
+      "title": "Progress / Spinner / Separator — 기본 원자 3종",
+      "type": "minor",
+      "highlights": [
+        "신규: Progress (determinate + indeterminate) — React / Flutter 양쪽",
+        "신규: Spinner (sm/md/lg) — aria-live 로딩 상태 노출",
+        "신규: Separator (horizontal/vertical) — 기본 decorative, 필요 시 role=separator"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.11.0"
+    },
+    {
+      "version": "0.10.0",
+      "date": "2026-04-20",
+      "title": "Flutter 파리티 라운드 — 최근 7종 위젯 추가",
+      "type": "minor",
+      "highlights": [
+        "신규: ShUiDropdownMenu (PopupMenuButton 기반)",
+        "신규: ShUiContextMenu (우클릭 + long-press)",
+        "신규: ShUiMenubar (가로 메뉴바)",
+        "신규: ShUiTooltip (Flutter Tooltip 래핑)",
+        "신규: ShUiBreadcrumb (items 리스트)",
+        "신규: ShUiAvatar (이미지 + fallback, 4사이즈)",
+        "신규: ShUiBadge (6 variant × 2 size)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.10.0"
+    },
+    {
+      "version": "0.9.0",
+      "date": "2026-04-20",
+      "title": "Menu 계열 완결 + Tooltip/Breadcrumb/Avatar/Badge",
+      "type": "minor",
+      "highlights": [
+        "신규: ContextMenu (우클릭/long-press)",
+        "신규: Menubar (상단 가로 메뉴바, DropdownMenu 재사용)",
+        "신규: Tooltip (hover/focus, Provider로 delay 공유)",
+        "신규: Breadcrumb (nav + ol 시맨틱 compound)",
+        "신규: Avatar (이미지 + 이니셜 fallback, 4사이즈)",
+        "신규: Badge (6 variant × 2 size)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.9.0"
+    },
+    {
+      "version": "0.8.0",
+      "date": "2026-04-20",
+      "title": "DropdownMenu 신규",
+      "type": "minor",
+      "highlights": [
+        "신규: DropdownMenu (Base UI Menu 기반 compound)",
+        "체크박스·라디오·서브메뉴·구분선 지원",
+        "키보드 네비게이션 기본 제공 (↑↓, Enter, →/←, Home/End, Esc, type-ahead)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.8.0"
+    },
+    {
+      "version": "0.7.1",
+      "date": "2026-04-19",
+      "title": "접근성 감사 라운드 1",
+      "type": "patch",
+      "highlights": [
+        "원자 8종(Button/Toggle/Radio/Checkbox/Dialog/Popover/Sidebar/Toast)에 reduced-motion 블록 추가",
+        "Carousel autoPlay: 키보드 focus 시 일시정지 (WCAG 2.2.2)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.7.1"
+    },
+    {
+      "version": "0.7.0",
+      "date": "2026-04-19",
+      "title": "Slider / CodePanel compound 전환",
+      "type": "minor",
+      "highlights": [
+        "Slider: SliderTrack / SliderRange / SliderThumb + useSliderState",
+        "CodePanel: CodePanelHeader / Filename / Copy / Body",
+        "기존 prop API 호환 유지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.7.0"
+    },
+    {
+      "version": "0.6.0",
+      "date": "2026-04-19",
+      "title": "Header + Compound 리팩터",
+      "type": "minor",
+      "highlights": [
+        "신규: Header (Flutter prop-based + React compound)",
+        "Carousel / Input / FileUpload / ColorPicker / DatePicker compound 전환"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.6.0"
+    },
+    {
+      "version": "0.5.0",
+      "date": "2026-04-19",
+      "title": "Flutter 파리티 v1",
+      "type": "minor",
+      "highlights": [
+        "Flutter 위젯 대량 추가 + API 확장 + multi-select 지원",
+        "ShUiAppShell 고수준 레이아웃 + Sidebar 개선"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.5.0"
+    },
+    {
+      "version": "0.4.0",
+      "date": "2026-04-19",
+      "title": "디자인 토큰 v2 + Flutter 쇼케이스",
+      "type": "minor",
+      "highlights": [
+        "디자인 토큰 v2 (primitives / semantic 분리)",
+        "Flutter 쇼케이스 앱 + pnpm 실행 스크립트",
+        "테마 커스터마이징 가이드 페이지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.4.0"
+    },
+    {
+      "version": "0.3.1",
+      "date": "2026-04-17",
+      "title": "Input prefix / Select className 타입 수정",
+      "type": "patch",
+      "highlights": [
+        "Input prefix 타입 충돌 해결",
+        "Select className 타입 에러 수정"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.3.1"
+    },
+    {
+      "version": "0.3.0",
+      "date": "2026-04-17",
+      "title": "컴포넌트 레지스트리 정리",
+      "type": "minor",
+      "highlights": [
+        "사이드바 네비게이션 정렬",
+        "신규 컴포넌트 레지스트리 등록"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.3.0"
+    },
+    {
+      "version": "0.2.0",
+      "date": "2026-04-17",
+      "title": "컴포넌트 확장 + 문서 강화 + 모바일 안정화",
+      "type": "minor",
+      "highlights": [
+        "컴포넌트 라인업 확장 (Tabs / Popover / Dialog / Combobox / Label / base.css)",
+        "Sidebar 보조 패널·Popover flyout·접근성 개선",
+        "모바일 레이아웃 안정화"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.2.0"
+    },
+    {
+      "version": "0.1.0",
+      "date": "2026-04-15",
+      "title": "sh-ui 초기 릴리스",
+      "type": "minor",
+      "highlights": [
+        "초기 컴포넌트 셋 + CLI 스캐폴딩",
+        "React/Flutter 듀얼 레지스트리 구조"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.1.0"
+    }
+  ]
+}

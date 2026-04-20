@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
 import "./styles.css";

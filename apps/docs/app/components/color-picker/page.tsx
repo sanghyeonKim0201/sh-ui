@@ -287,6 +287,14 @@ ShUiColorPicker(
         <li>드래그 중 HSV를 내부 상태로 유지하므로 회색/흑색에서 hue가 리셋되지 않는다.</li>
         <li><code>ColorPickerAlpha</code>는 현재 시각화/상호작용만 제공 — <code>onChange</code>는 6자리 hex(알파 제외). 알파 연동이 필요하면 compound 확장으로 hsva state를 노출하는 커스텀 파트를 추가하라.</li>
       </ul>
+
+      <h2>접근성</h2>
+      <ul>
+        <li>Saturation/Hue/Alpha는 <code>role=&quot;slider&quot;</code> + <code>aria-valuemin/max/now</code>로 키보드 조작 지원</li>
+        <li>각 슬라이더: <code>←</code>/<code>→</code> ±1, <code>Shift+</code> ±10, <code>Home</code>/<code>End</code> 최소/최대</li>
+        <li>Swatches 항목: <code>Enter</code>/<code>Space</code> 선택 + <code>aria-pressed</code>로 현재 선택 표시</li>
+        <li>Hex 입력: <code>aria-label=&quot;Hex&quot;</code>로 스크린리더 라벨 확보</li>
+      </ul>
     </main>
   );
 }

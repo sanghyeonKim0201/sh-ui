@@ -309,6 +309,13 @@ const ShUiButton(
           },
         ]}
       />
+
+      <h2>접근성</h2>
+      <ul>
+        <li><code>Tab</code> / <code>Shift+Tab</code> — 포커스 이동 (disabled 시 포커스 제외)</li>
+        <li><code>Enter</code> / <code>Space</code> — 활성화</li>
+        <li>네이티브 <code>&lt;button&gt;</code> 요소라 스크린리더에 role/상태 자동 전달</li>
+      </ul>
     </main>
   );
 }
