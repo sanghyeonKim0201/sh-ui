@@ -4,9 +4,15 @@ import { dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { buildTokensCss, buildTokensDart } from "../../tokens/build.mjs";
+import { formatUnifiedDiff } from "./diff.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "../../..");
+
+/** 컬러 출력 가능 여부: TTY + NO_COLOR 미설정. */
+function canUseColor() {
+  return Boolean(process.stdout.isTTY) && !process.env.NO_COLOR;
+}
 
 /** `{components}/button.tsx` 처럼 config.paths 값으로 치환 */
 function resolveDest(template, config) {
@@ -21,23 +27,72 @@ async function ensureDir(filePath) {
   await mkdir(dirname(filePath), { recursive: true });
 }
 
+/**
+ * 대상 파일 쓰기 래퍼. diff 모드면 기존 파일과 비교해 diff만 출력하고 skip.
+ * @returns "new" | "unchanged" | "modified" | "previewed"
+ */
+async function writeOrDiff({ dest, content, cwd, diffMode, summary, isBinary = false }) {
+  const rel = relative(cwd, dest);
+  const exists = existsSync(dest);
+
+  if (!exists) {
+    if (diffMode) {
+      summary.push({ kind: "new", rel });
+      return "previewed";
+    }
+    await ensureDir(dest);
+    await writeFile(dest, content, "utf8");
+    return "new";
+  }
+
+  if (isBinary) {
+    // 바이너리는 diff 의미가 없으므로 size만 비교
+    if (diffMode) {
+      summary.push({ kind: "binary", rel });
+      return "previewed";
+    }
+    await writeFile(dest, content, "utf8");
+    return "modified";
+  }
+
+  const existing = await readFile(dest, "utf8");
+  if (existing === content) {
+    if (diffMode) {
+      summary.push({ kind: "same", rel });
+    }
+    return "unchanged";
+  }
+
+  if (diffMode) {
+    const { text, addCount, delCount } = formatUnifiedDiff(existing, content, {
+      useColor: canUseColor(),
+    });
+    summary.push({ kind: "modified", rel, addCount, delCount, diff: text });
+    return "previewed";
+  }
+
+  await writeFile(dest, content, "utf8");
+  return "modified";
+}
+
 /** 특수 컴포넌트: 설정으로 토큰 파일 생성 */
-async function addTokens(config, cwd) {
+async function addTokens(config, cwd, diffMode, summary) {
   const destRel = config.paths?.tokens;
   if (!destRel) throw new Error("paths.tokens 가 설정에 없습니다.");
   const dest = resolve(cwd, destRel);
-  await ensureDir(dest);
 
   const content =
     config.platform === "react"
       ? await buildTokensCss(config)
       : await buildTokensDart(config);
 
-  await writeFile(dest, content, "utf8");
-  console.log(`✓ tokens → ${relative(cwd, dest)}`);
+  const result = await writeOrDiff({ dest, content, cwd, diffMode, summary });
+  if (!diffMode && result !== "unchanged") {
+    console.log(`✓ tokens → ${relative(cwd, dest)}`);
+  }
 }
 
-async function addComponent(name, config, cwd, installed, pendingDeps) {
+async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary) {
   const registryPath = resolve(
     REPO_ROOT,
     "packages/registry",
@@ -53,15 +108,17 @@ async function addComponent(name, config, cwd, installed, pendingDeps) {
   }
 
   for (const dep of entry.registryDependencies ?? []) {
-    await addOne(dep, config, cwd, installed, pendingDeps);
+    await addOne(dep, config, cwd, installed, pendingDeps, diffMode, summary);
   }
 
   for (const file of entry.files) {
     const src = resolve(REPO_ROOT, "packages/registry", config.platform, file.src);
     const dest = resolve(cwd, resolveDest(file.dest, config));
-    await ensureDir(dest);
-    await copyFile(src, dest);
-    console.log(`✓ ${name} → ${relative(cwd, dest)}`);
+    const content = await readFile(src, "utf8");
+    const result = await writeOrDiff({ dest, content, cwd, diffMode, summary });
+    if (!diffMode && result !== "unchanged") {
+      console.log(`✓ ${name} → ${relative(cwd, dest)}`);
+    }
   }
 
   for (const dep of entry.dependencies ?? []) {
@@ -116,7 +173,7 @@ function runInstall(pm, deps, cwd) {
   });
 }
 
-export async function add({ cwd, names, skipInstall = false }) {
+export async function add({ cwd, names, skipInstall = false, diffMode = false }) {
   const configPath = resolve(cwd, "sh-ui.config.json");
   let config;
   try {
@@ -129,8 +186,14 @@ export async function add({ cwd, names, skipInstall = false }) {
 
   const installed = new Set();
   const pendingDeps = new Set();
+  const summary = [];
   for (const name of names) {
-    await addOne(name, config, cwd, installed, pendingDeps);
+    await addOne(name, config, cwd, installed, pendingDeps, diffMode, summary);
+  }
+
+  if (diffMode) {
+    renderDiffReport(summary);
+    return;
   }
 
   if (pendingDeps.size === 0) return;
@@ -166,12 +229,52 @@ export async function add({ cwd, names, skipInstall = false }) {
   }
 }
 
-async function addOne(name, config, cwd, installed, pendingDeps) {
+async function addOne(name, config, cwd, installed, pendingDeps, diffMode, summary) {
   if (installed.has(name)) return;
   installed.add(name);
   if (name === "tokens") {
-    await addTokens(config, cwd);
+    await addTokens(config, cwd, diffMode, summary);
   } else {
-    await addComponent(name, config, cwd, installed, pendingDeps);
+    await addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary);
+  }
+}
+
+function renderDiffReport(summary) {
+  const created = summary.filter((s) => s.kind === "new");
+  const modified = summary.filter((s) => s.kind === "modified");
+  const same = summary.filter((s) => s.kind === "same");
+  const binary = summary.filter((s) => s.kind === "binary");
+
+  console.log("\n── 변경 미리보기 (diff 모드) ──");
+
+  if (created.length) {
+    console.log(`\n신규 ${created.length}개:`);
+    for (const s of created) console.log(`  + ${s.rel}`);
+  }
+
+  if (modified.length) {
+    console.log(`\n변경 ${modified.length}개:`);
+    for (const s of modified) {
+      console.log(`\n  ~ ${s.rel} (+${s.addCount} -${s.delCount})`);
+      console.log(s.diff);
+    }
+  }
+
+  if (binary.length) {
+    console.log(`\n바이너리(비교 생략) ${binary.length}개:`);
+    for (const s of binary) console.log(`  ~ ${s.rel}`);
+  }
+
+  if (same.length) {
+    console.log(`\n동일(변경 없음) ${same.length}개:`);
+    for (const s of same) console.log(`  = ${s.rel}`);
+  }
+
+  if (!created.length && !modified.length) {
+    console.log("\n모든 파일이 최신 상태입니다.");
+  } else {
+    console.log(
+      "\n※ diff 모드 — 파일이 실제로 쓰이지 않았습니다. 적용하려면 --diff 없이 다시 실행하세요.",
+    );
   }
 }

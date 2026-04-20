@@ -1,6 +1,6 @@
 {
   "name": "@sh-ui/cli",
-  "version": "0.6.0",
+  "version": "0.12.0",
   "private": true,
   "description": "sh-ui CLI — sh-ui init / sh-ui add",
   "type": "module",

@@ -11,6 +11,7 @@ const usage = `사용법:
                                    특수값: tokens → 설정 기반 토큰 파일 생성
   옵션:
     --skip-install                 외부 패키지 자동 설치 생략 (명령어만 안내)
+    --diff                         파일을 쓰지 않고 기존 내용과 변경 내역만 출력
 `;
 
 try {
@@ -20,13 +21,14 @@ try {
       break;
     case "add": {
       const skipInstall = rest.includes("--skip-install");
+      const diffMode = rest.includes("--diff");
       const names = rest.filter((a) => !a.startsWith("--"));
       if (names.length === 0) {
         console.error("에러: 추가할 컴포넌트 이름이 필요합니다.\n");
         console.error(usage);
         process.exit(1);
       }
-      await add({ cwd: process.cwd(), names, skipInstall });
+      await add({ cwd: process.cwd(), names, skipInstall, diffMode });
       break;
     }
     case undefined:

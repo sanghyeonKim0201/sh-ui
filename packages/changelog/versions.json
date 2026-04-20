@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.12.0",
+      "date": "2026-04-20",
+      "title": "CLI --diff 플래그 — 업데이트 미리보기",
+      "type": "minor",
+      "highlights": [
+        "sh-ui add <name> --diff — 파일을 쓰지 않고 변경 내역(unified diff)만 출력",
+        "신규/변경/동일 파일을 분류해 요약, 수정해둔 파일이 있는지 사전 확인 가능",
+        "의존성 없는 LCS 기반 line-diff 내장 (packages/cli/src/diff.mjs)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.12.0"
+    },
+    {
       "version": "0.11.0",
       "date": "2026-04-20",
       "title": "Progress / Spinner / Separator — 기본 원자 3종",

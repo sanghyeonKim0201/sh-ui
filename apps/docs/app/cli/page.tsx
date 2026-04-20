@@ -72,8 +72,27 @@ npx sh-ui add tokens`}
       <PropsTable
         rows={[
           { prop: "--skip-install", type: "boolean", description: "외부 npm 패키지 자동 설치 생략. 명령어만 출력해 수동 실행 가능." },
+          { prop: "--diff", type: "boolean", description: "파일을 쓰지 않고 기존 파일과의 변경 내역(unified diff)만 출력. 업데이트 전 미리보기용." },
         ]}
       />
+
+      <h3>업데이트 미리보기 (--diff)</h3>
+      <p>
+        이미 설치된 컴포넌트를 다시 <code>add</code>하기 전에 변경 범위를 확인하고 싶을 때 사용.
+        파일은 실제로 쓰이지 않으며, 터미널에 신규/변경/동일로 분류된 요약과 변경 파일의 unified diff가 출력된다.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# 버튼 컴포넌트에 어떤 변경이 생기는지만 확인
+npx sh-ui add button --diff
+
+# 적용하려면 --diff 없이 다시 실행
+npx sh-ui add button`}
+      />
+      <p className="muted">
+        사용자가 직접 수정해둔 파일이 있으면 "변경"으로 분류되어 덮어쓰기 전 검토할 수 있다. CI에서도 회귀 감지용으로 활용 가능.
+      </p>
 
       <h3>외부 패키지 자동 설치</h3>
       <p>
