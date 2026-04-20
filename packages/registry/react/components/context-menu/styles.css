@@ -1,0 +1,140 @@
+/* ContextMenu는 DropdownMenu와 동일한 시각 언어를 유지한다.
+   트리거만 우클릭 감지용 투명 wrapper. */
+
+.sh-ui-cm__trigger {
+  /* 기본은 투명 — 사용자가 자신의 요소를 그대로 사용 */
+  display: contents;
+}
+
+/* ───────── Positioner / Content ───────── */
+
+.sh-ui-cm__positioner {
+  outline: none;
+  z-index: var(--z-dropdown);
+}
+
+.sh-ui-cm__content {
+  min-width: 10rem;
+  max-height: min(24rem, var(--available-height, 24rem));
+  overflow-y: auto;
+  padding: var(--space-1);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.08),
+    0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  font-size: var(--text-sm);
+  transform-origin: var(--transform-origin);
+  animation: sh-ui-cm-in 140ms ease-out;
+  outline: none;
+}
+
+.sh-ui-cm__content[data-ending-style] {
+  animation: sh-ui-cm-out 100ms ease-in forwards;
+}
+
+@keyframes sh-ui-cm-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes sh-ui-cm-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.96); }
+}
+
+/* ───────── Item ───────── */
+
+.sh-ui-cm__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.5rem 0.75rem;
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: background-color 80ms;
+}
+
+.sh-ui-cm__item[data-highlighted],
+.sh-ui-cm__item:hover {
+  background: var(--background-muted);
+}
+
+.sh-ui-cm__item[data-disabled] {
+  opacity: var(--opacity-disabled);
+  pointer-events: none;
+}
+
+.sh-ui-cm__item-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sh-ui-cm__item--check {
+  padding-left: 1.75rem;
+}
+
+.sh-ui-cm__item-indicator {
+  position: absolute;
+  left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  color: var(--foreground);
+}
+
+/* ───────── Group / Label / Separator ───────── */
+
+.sh-ui-cm__group {
+  padding: 0;
+}
+
+.sh-ui-cm__label {
+  padding: var(--space-2) var(--space-2) var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--foreground-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sh-ui-cm__separator {
+  height: 1px;
+  background: var(--border);
+  margin: var(--space-1) 0;
+}
+
+/* ───────── Submenu trigger ───────── */
+
+.sh-ui-cm__sub-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  color: var(--foreground-muted);
+}
+
+.sh-ui-cm__sub-trigger[data-popup-open] {
+  background: var(--background-muted);
+}
+
+/* ───────── Reduced motion ───────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-cm__content,
+  .sh-ui-cm__content[data-ending-style] {
+    animation: none;
+  }
+  .sh-ui-cm__item {
+    transition: none;
+  }
+}

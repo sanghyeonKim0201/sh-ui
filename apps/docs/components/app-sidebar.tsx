@@ -42,6 +42,9 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
 
 const components: { title: string; href: string }[] = [
   { title: "Accordion", href: "/components/accordion" },
+  { title: "Avatar", href: "/components/avatar" },
+  { title: "Badge", href: "/components/badge" },
+  { title: "Breadcrumb", href: "/components/breadcrumb" },
   { title: "Button", href: "/components/button" },
   { title: "Card", href: "/components/card" },
   { title: "Carousel", href: "/components/carousel" },
@@ -49,6 +52,7 @@ const components: { title: string; href: string }[] = [
   { title: "CodePanel", href: "/components/code-panel" },
   { title: "ColorPicker", href: "/components/color-picker" },
   { title: "Combobox", href: "/components/combobox" },
+  { title: "ContextMenu", href: "/components/context-menu" },
   { title: "DatePicker", href: "/components/date-picker" },
   { title: "Dialog", href: "/components/dialog" },
   { title: "DropdownMenu", href: "/components/dropdown-menu" },
@@ -56,6 +60,7 @@ const components: { title: string; href: string }[] = [
   { title: "Header", href: "/components/header" },
   { title: "Input", href: "/components/input" },
   { title: "Label", href: "/components/label" },
+  { title: "Menubar", href: "/components/menubar" },
   { title: "Popover", href: "/components/popover" },
   { title: "Radio", href: "/components/radio" },
   { title: "Select", href: "/components/select" },
@@ -68,6 +73,7 @@ const components: { title: string; href: string }[] = [
   { title: "Theme", href: "/components/theme" },
   { title: "Toast", href: "/components/toast" },
   { title: "Toggle", href: "/components/toggle" },
+  { title: "Tooltip", href: "/components/tooltip" },
 ];
 
 export function AppSidebar() {
