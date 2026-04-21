@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.17.0",
+      "date": "2026-04-21",
+      "title": "@sh-ui/create — Flutter 스타터 지원",
+      "type": "minor",
+      "highlights": [
+        "sh-ui-create — 프로젝트 생성 시 플랫폼 선택(Next.js / Flutter) 신규",
+        "Flutter 선택 시 pubspec + main.dart + sh-ui.config.json + 토큰 복사본까지 완성된 스타터 제공",
+        "생성 직후 `flutter run`으로 테마 적용된 초기 화면 확인, 이어서 `sh-ui add <widget>` 로 위젯 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.17.0"
+    },
+    {
       "version": "0.16.0",
       "date": "2026-04-21",
       "title": "sh-ui-create — 프로젝트 스캐폴드 CLI",
