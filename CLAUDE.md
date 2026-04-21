@@ -1,16 +1,17 @@
 # sh-ui 작업 규칙
 
-공통 규칙은 `.claude/rules/` 서브모듈(v1.2.0)을 따른다. 이 파일은
+공통 규칙은 `.claude/rules/` 서브모듈(v1.3.0)을 따른다. 이 파일은
 **이 레포에만 적용되는 관용과 오버라이드**만 기록한다.
 
 ## 외부 규칙 적용 범위
 
-5개 폴더 각각이 이 레포에서 의미하는 범위:
+6개 폴더 각각이 이 레포에서 의미하는 범위:
 
 | 폴더 | 적용 범위 |
 |---|---|
 | `common/` | 전체 — Git·커밋·버전 컨벤션, 설계 원칙, 네이밍 |
 | `gstack/` | 전체 — 슬래시 커맨드 워크플로우(프로세스 규칙) |
+| `superpowers/` | 전체 — superpowers 플러그인 스킬 사용 시기와 gstack과의 역할 분담 |
 | `ui/` | 전체 — sh-ui 컴포넌트(React + Flutter) 설계 기준 |
 | `nextjs/design-principles.md`, `naming.md`, `separation-of-concerns.md` | 부분 — `apps/docs` 및 sh-ui 컴포넌트 TS 코드 |
 | `nextjs/data-fetching.md`, `nextjs/fsd-integration.md`, `fsd/*` | **템플릿 전용** — `packages/create/templates/` 가 생성하는 **사용자 프로젝트** 설계 기준. sh-ui 코어(apps/docs, packages/*)에는 직접 적용하지 않음 |
