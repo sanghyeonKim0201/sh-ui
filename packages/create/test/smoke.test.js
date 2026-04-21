@@ -39,7 +39,9 @@ describe('@sh-ui/create smoke tests', () => {
   // 테스트 케이스는 이후 태스크에서 추가
   it('scenario 1 — standalone, no plugins', async () => {
     prompts.input.mockResolvedValueOnce('my-app');
-    prompts.select.mockResolvedValueOnce('standalone');
+    prompts.select
+      .mockResolvedValueOnce('next')         // platform
+      .mockResolvedValueOnce('standalone');   // structure
     prompts.checkbox.mockResolvedValueOnce([]);
 
     await createProject();
@@ -59,7 +61,9 @@ describe('@sh-ui/create smoke tests', () => {
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름
       .mockResolvedValueOnce('web')        // 첫 번째 앱 이름
       .mockResolvedValueOnce('3000');      // 포트
-    prompts.select.mockResolvedValueOnce('monorepo');
+    prompts.select
+      .mockResolvedValueOnce('next')         // platform
+      .mockResolvedValueOnce('monorepo');     // structure
     prompts.checkbox.mockResolvedValueOnce([]);
 
     await createProject();
@@ -79,7 +83,9 @@ describe('@sh-ui/create smoke tests', () => {
   });
   it('scenario 3 — standalone + sentry + next-intl', async () => {
     prompts.input.mockResolvedValueOnce('my-app');
-    prompts.select.mockResolvedValueOnce('standalone');
+    prompts.select
+      .mockResolvedValueOnce('next')         // platform
+      .mockResolvedValueOnce('standalone');   // structure
     prompts.checkbox.mockResolvedValueOnce(['sentry', 'next-intl']);
 
     await createProject();
@@ -129,5 +135,32 @@ describe('@sh-ui/create smoke tests', () => {
     expect(
       await fs.pathExists(path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin')),
     ).toBe(true);
+  });
+  it('scenario 5 — flutter standalone', async () => {
+    prompts.input.mockResolvedValueOnce('my-flutter-app');
+    prompts.select.mockResolvedValueOnce('flutter');
+
+    await createProject();
+
+    const projectDir = path.join(tmpDir, 'my-flutter-app');
+    expect(await fs.pathExists(path.join(projectDir, 'pubspec.yaml'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'lib', 'main.dart'))).toBe(true);
+    expect(
+      await fs.pathExists(
+        path.join(projectDir, 'lib', 'sh_ui', 'foundation', 'sh_ui_tokens.dart'),
+      ),
+    ).toBe(true);
+
+    const cfg = await fs.readJson(path.join(projectDir, 'sh-ui.config.json'));
+    expect(cfg.platform).toBe('flutter');
+
+    const pub = await fs.readFile(path.join(projectDir, 'pubspec.yaml'), 'utf-8');
+    expect(pub).toContain('name: my-flutter-app');
+
+    const mainDart = await fs.readFile(
+      path.join(projectDir, 'lib', 'main.dart'),
+      'utf-8',
+    );
+    expect(mainDart).toContain("title: 'my-flutter-app'");
   });
 });

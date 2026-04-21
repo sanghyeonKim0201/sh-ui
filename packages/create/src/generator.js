@@ -16,6 +16,38 @@ export async function createProject() {
     default: 'my-app',
   });
 
+  const platform = await select({
+    message: '플랫폼:',
+    choices: [
+      { name: 'Next.js', value: 'next' },
+      { name: 'Flutter', value: 'flutter' },
+    ],
+  });
+
+  const targetDir = path.resolve(process.cwd(), projectName);
+
+  if (await fs.pathExists(targetDir)) {
+    const overwrite = await confirm({
+      message: `${projectName} 디렉토리가 이미 존재합니다. 덮어쓸까요?`,
+      default: false,
+    });
+    if (!overwrite) {
+      console.log('취소되었습니다.');
+      return;
+    }
+    await fs.remove(targetDir);
+  }
+
+  if (platform === 'flutter') {
+    await generateFlutter(targetDir, projectName);
+    console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
+    console.log(`\n  cd ${projectName}`);
+    console.log('  flutter pub get');
+    console.log('  flutter run\n');
+    return;
+  }
+
+  // platform === 'next' 경로 — 기존 구조/플러그인 분기
   const projectType = await select({
     message: '프로젝트 구조:',
     choices: [
@@ -32,20 +64,6 @@ export async function createProject() {
   const plugins = getPluginsByNames(selectedPlugins);
   // priority 순서대로 정렬
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
-
-  const targetDir = path.resolve(process.cwd(), projectName);
-
-  if (await fs.pathExists(targetDir)) {
-    const overwrite = await confirm({
-      message: `${projectName} 디렉토리가 이미 존재합니다. 덮어쓸까요?`,
-      default: false,
-    });
-    if (!overwrite) {
-      console.log('취소되었습니다.');
-      return;
-    }
-    await fs.remove(targetDir);
-  }
 
   if (projectType === 'standalone') {
     await generateStandalone(targetDir, projectName, plugins);
@@ -175,6 +193,11 @@ export async function addComponent(componentName, appName) {
 }
 
 // ─── Generators ───
+
+async function generateFlutter(targetDir, projectName) {
+  await fs.copy(path.join(TEMPLATES_DIR, 'flutter-standalone'), targetDir);
+  await replaceInAllFiles(targetDir, '{{project_name}}', projectName);
+}
 
 async function generateStandalone(targetDir, projectName, plugins) {
   await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-standalone'), targetDir);
