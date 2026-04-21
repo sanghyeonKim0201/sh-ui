@@ -9,11 +9,19 @@
   },
   "scripts": {
     "create": "node bin/create.js",
-    "add-app": "node bin/create.js add-app"
+    "add-app": "node bin/create.js add-app",
+    "test": "vitest run"
   },
-  "files": ["bin", "src", "templates"],
+  "files": [
+    "bin",
+    "src",
+    "templates"
+  ],
   "dependencies": {
     "@inquirer/prompts": "^7.0.0",
     "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
   }
 }
