@@ -1,0 +1,19 @@
+{
+  "name": "@sh-ui/create",
+  "version": "0.14.0",
+  "private": true,
+  "description": "sh-ui create — 프로젝트 스캐폴드 CLI (Next.js / Turborepo 모노레포)",
+  "type": "module",
+  "bin": {
+    "sh-ui-create": "./bin/create.js"
+  },
+  "scripts": {
+    "create": "node bin/create.js",
+    "add-app": "node bin/create.js add-app"
+  },
+  "files": ["bin", "src", "templates"],
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "fs-extra": "^11.2.0"
+  }
+}
