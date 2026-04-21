@@ -77,6 +77,32 @@ describe('@sh-ui/create smoke tests', () => {
     expect(appPkg.name).toBe('web');
     expect(appPkg.scripts.dev).toContain('-p 3000');
   });
-  it.todo('scenario 3 — standalone + sentry + next-intl');
+  it('scenario 3 — standalone + sentry + next-intl', async () => {
+    prompts.input.mockResolvedValueOnce('my-app');
+    prompts.select.mockResolvedValueOnce('standalone');
+    prompts.checkbox.mockResolvedValueOnce(['sentry', 'next-intl']);
+
+    await createProject();
+
+    const projectDir = path.join(tmpDir, 'my-app');
+
+    // dependencies 패치 확인
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.dependencies['@sentry/nextjs']).toBeDefined();
+    expect(pkg.dependencies['next-intl']).toBeDefined();
+
+    // .env.example 에 Sentry 키 추가 확인
+    const envExample = await fs.readFile(path.join(projectDir, '.env.example'), 'utf-8');
+    expect(envExample).toContain('SENTRY_ORG=');
+
+    // next.config.ts 에 플러그인 반영 확인
+    const nextConfig = await fs.readFile(path.join(projectDir, 'next.config.ts'), 'utf-8');
+    expect(nextConfig).toContain('withSentryConfig');
+    expect(nextConfig).toContain('createNextIntlPlugin');
+
+    // next-intl transforms: app/page.tsx → app/[locale]/page.tsx
+    expect(await fs.pathExists(path.join(projectDir, 'app', 'page.tsx'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'app', '[locale]', 'page.tsx'))).toBe(true);
+  });
   it.todo('scenario 4 — addApp in monorepo');
 });
