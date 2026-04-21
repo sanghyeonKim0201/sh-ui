@@ -104,5 +104,30 @@ describe('@sh-ui/create smoke tests', () => {
     expect(await fs.pathExists(path.join(projectDir, 'app', 'page.tsx'))).toBe(false);
     expect(await fs.pathExists(path.join(projectDir, 'app', '[locale]', 'page.tsx'))).toBe(true);
   });
-  it.todo('scenario 4 — addApp in monorepo');
+  it('scenario 4 — addApp in monorepo', async () => {
+    // minimal monorepo fixture: pnpm-workspace.yaml 만 필요
+    await fs.writeFile(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'apps/*'\n  - 'packages/*'\n",
+    );
+
+    prompts.input
+      .mockResolvedValueOnce('admin')   // 앱 이름
+      .mockResolvedValueOnce('3001');    // 포트
+    prompts.checkbox.mockResolvedValueOnce([]);
+
+    await addApp();
+
+    const appDir = path.join(tmpDir, 'apps', 'admin');
+    expect(await fs.pathExists(path.join(appDir, 'package.json'))).toBe(true);
+
+    const appPkg = await fs.readJson(path.join(appDir, 'package.json'));
+    expect(appPkg.name).toBe('admin');
+    expect(appPkg.scripts.dev).toContain('-p 3001');
+
+    // ui-app-template 이 ui-admin 으로 복사됐는지
+    expect(
+      await fs.pathExists(path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin')),
+    ).toBe(true);
+  });
 });
