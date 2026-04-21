@@ -1,5 +1,4 @@
 {
-  "$schema": "https://your-ds.dev/sh-ui.schema.json",
   "platform": "flutter",
   "style": "default",
   "theme": {
