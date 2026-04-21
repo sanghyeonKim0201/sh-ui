@@ -1,7 +1,46 @@
 # sh-ui 작업 규칙
 
-공통 규칙은 `.claude/rules/` 서브모듈을 따른다(common/nextjs/ui 등). 이 파일은
-**이 레포에만 적용되는 관용**만 기록한다.
+공통 규칙은 `.claude/rules/` 서브모듈(v1.2.0)을 따른다. 이 파일은
+**이 레포에만 적용되는 관용과 오버라이드**만 기록한다.
+
+## 외부 규칙 적용 범위
+
+5개 폴더 각각이 이 레포에서 의미하는 범위:
+
+| 폴더 | 적용 범위 |
+|---|---|
+| `common/` | 전체 — Git·커밋·버전 컨벤션, 설계 원칙, 네이밍 |
+| `gstack/` | 전체 — 슬래시 커맨드 워크플로우(프로세스 규칙) |
+| `ui/` | 전체 — sh-ui 컴포넌트(React + Flutter) 설계 기준 |
+| `nextjs/design-principles.md`, `naming.md`, `separation-of-concerns.md` | 부분 — `apps/docs` 및 sh-ui 컴포넌트 TS 코드 |
+| `nextjs/data-fetching.md`, `nextjs/fsd-integration.md`, `fsd/*` | **템플릿 전용** — `packages/create/templates/` 가 생성하는 **사용자 프로젝트** 설계 기준. sh-ui 코어(apps/docs, packages/*)에는 직접 적용하지 않음 |
+
+## sh-ui 특화 오버라이드
+
+외부 규칙과 이 레포 관행이 충돌하는 지점. 아래는 외부 규칙보다 **이 항목이 우선**.
+
+### 1. "shadcn/ui 우선 사용"은 역전된다
+
+`nextjs/design-principles.md` 의 "UI 설계" 섹션은 shadcn/ui 를 쓰라고 하지만,
+**sh-ui 자체가 shadcn 계열 대체재**이므로 이 레포에서는:
+
+- `apps/docs`, `apps/showcase` 및 `packages/create/templates/` 의 생성물은 **sh-ui 컴포넌트 우선** 사용
+- 위 섹션의 "Base UI 기반 (`@base-ui-components/react`)" 원칙은 그대로 유효 — sh-ui 컴포넌트가 실제로 Base UI 위에 빌드됨
+- 네이티브 HTML 요소(select, input, dialog 등) 직접 구현 금지 원칙도 그대로
+
+### 2. "px 등 고정 단위 사용 금지"의 해석
+
+`nextjs/design-principles.md` 는 `px` 같은 절대 단위 직접 사용을 금지한다. sh-ui에서는:
+
+- **토큰 정의부(`packages/tokens/`, 템플릿의 `tokens.css`)** 는 `--space-1: 4px` 처럼 px 원시값 사용 허용 — 이게 토큰의 본질
+- **컴포넌트 스타일(`packages/registry/*/components/*/styles.css`)** 및 **사용자 코드**는 항상 토큰 변수(`var(--space-3)`) 경유. 매직 px 하드코딩 금지
+- 불가피한 단위는 `rem`/`em`/`%`/`vw`/`vh` 우선 — 이 원칙은 그대로
+
+### 3. 브랜치 정책
+
+`common/common.md` 은 "`live` 직접 push 금지, PR 경유"를 정책으로 제시하지만,
+이 레포는 현재 **`dev` 브랜치를 작업 브랜치로 두고 직접 push**하며, `live` 머지
+시점에만 PR을 쓴다. `dev` 는 느슨하게, `live` 는 엄격히 — 이 차등을 유지.
 
 ## 변경 내역(패치노트) 자동 반영
 
