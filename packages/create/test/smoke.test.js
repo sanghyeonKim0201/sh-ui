@@ -54,7 +54,29 @@ describe('@sh-ui/create smoke tests', () => {
     expect(await fs.pathExists(path.join(projectDir, 'next.config.ts'))).toBe(true);
     expect(await fs.pathExists(path.join(projectDir, 'app'))).toBe(true);
   });
-  it.todo('scenario 2 — monorepo, no plugins');
+  it('scenario 2 — monorepo, no plugins', async () => {
+    prompts.input
+      .mockResolvedValueOnce('my-mono')   // 프로젝트 이름
+      .mockResolvedValueOnce('web')        // 첫 번째 앱 이름
+      .mockResolvedValueOnce('3000');      // 포트
+    prompts.select.mockResolvedValueOnce('monorepo');
+    prompts.checkbox.mockResolvedValueOnce([]);
+
+    await createProject();
+
+    const monoDir = path.join(tmpDir, 'my-mono');
+    expect(await fs.pathExists(path.join(monoDir, 'pnpm-workspace.yaml'))).toBe(true);
+    expect(await fs.pathExists(path.join(monoDir, 'turbo.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(monoDir, 'apps', 'web', 'package.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(monoDir, 'packages', 'ui', 'ui-apps', 'ui-web'))).toBe(true);
+
+    const rootPkg = await fs.readJson(path.join(monoDir, 'package.json'));
+    expect(rootPkg.name).toBe('my-mono');
+
+    const appPkg = await fs.readJson(path.join(monoDir, 'apps', 'web', 'package.json'));
+    expect(appPkg.name).toBe('web');
+    expect(appPkg.scripts.dev).toContain('-p 3000');
+  });
   it.todo('scenario 3 — standalone + sentry + next-intl');
   it.todo('scenario 4 — addApp in monorepo');
 });
