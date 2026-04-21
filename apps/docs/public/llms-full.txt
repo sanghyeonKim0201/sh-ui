@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.15.0 (2026-04-21) — llms.txt — AI 도구용 컴포넌트 인벤토리
+**최신 버전**: v0.15.1 (2026-04-21) — ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정
 
 ## React — Components
 
@@ -736,6 +736,12 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.15.1 — ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정 (2026-04-21)
+- setHsv 업데이터 콜백 내부에서 onChange를 호출하던 부작용을 업데이터 밖으로 이동
+- React StrictMode가 updater를 두 번 invoke할 때 발생하던 'setState while rendering' 경고 제거
+- controlled 모드에서 부모 상태를 동기화하는 시나리오(예: playground 토큰 에디터) 안정성 개선
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.1
+
 ### v0.15.0 — llms.txt — AI 도구용 컴포넌트 인벤토리 (2026-04-21)
 - apps/docs/public/llms.txt — 전 컴포넌트 한 줄 요약 + 설치 플로우 + 관용 규칙 (llms.txt 표준 따름)
 - apps/docs/public/llms-full.txt — 각 컴포넌트별 설치 커맨드/import 경로/의존성 + 최근 릴리즈 5개
@@ -762,12 +768,6 @@
 - sh-ui remove <name...> — 설치 파일 삭제, 빈 폴더 자동 정리
 - 사용자 수정 파일은 기본 보호, --force로만 강제 삭제. --dry-run 미리보기 지원
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.0
-
-### v0.12.0 — CLI --diff 플래그 — 업데이트 미리보기 (2026-04-20)
-- sh-ui add <name> --diff — 파일을 쓰지 않고 변경 내역(unified diff)만 출력
-- 신규/변경/동일 파일을 분류해 요약, 수정해둔 파일이 있는지 사전 확인 가능
-- 의존성 없는 LCS 기반 line-diff 내장 (packages/cli/src/diff.mjs)
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.12.0
 
 ## Resources
 

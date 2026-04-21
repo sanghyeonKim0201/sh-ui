@@ -7,7 +7,13 @@ export default function GettingStarted() {
   return (
     <main className="container">
       <h1>시작하기</h1>
-      <p className="muted">프로젝트에 sh-ui을 도입하는 3단계. React와 Flutter 공통 흐름.</p>
+      <p className="muted">기존 프로젝트에 sh-ui을 도입하는 3단계. React와 Flutter 공통 흐름.</p>
+
+      <p>
+        <strong>새 Next.js 프로젝트부터 시작한다면</strong> <a href="/create">프로젝트 생성</a> 페이지에서
+        <code> npx sh-ui-create</code> 로 FSD 구조 + sh-ui 설정 + 플러그인(Sentry, next-intl)이
+        미리 구성된 템플릿을 쓸 수 있다. 이 페이지는 기존 프로젝트에 수동으로 도입하는 흐름.
+      </p>
 
       <h2>1. 설정 파일 생성</h2>
       <p>프로젝트 루트에서:</p>

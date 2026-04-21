@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.15.0 (2026-04-21) — llms.txt — AI 도구용 컴포넌트 인벤토리
+**최신 버전**: v0.15.1 (2026-04-21) — ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정
 
 ## React Components
 

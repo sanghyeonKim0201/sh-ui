@@ -6,6 +6,7 @@ import {
   BookOpenIcon,
   BoxesIcon,
   BrushIcon,
+  FolderPlusIcon,
   HistoryIcon,
   PaletteIcon,
   RocketIcon,
@@ -36,6 +37,7 @@ import {
 
 const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "시작하기", href: "/getting-started", icon: RocketIcon },
+  { title: "프로젝트 생성", href: "/create", icon: FolderPlusIcon },
   { title: "CLI", href: "/cli", icon: TerminalIcon },
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
