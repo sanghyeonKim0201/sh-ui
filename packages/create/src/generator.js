@@ -113,8 +113,8 @@ export async function addComponent(componentName, appName) {
     if (!componentName) {
       componentName = await input({ message: '컴포넌트 이름:' });
     }
-    console.log(`\n📦 shadcn 컴포넌트 추가: ${componentName}`);
-    execSync(`npx shadcn@latest add ${componentName}`, { cwd, stdio: 'inherit' });
+    console.log(`\n📦 sh-ui 컴포넌트 추가: ${componentName}`);
+    execSync(`npx sh-ui add ${componentName}`, { cwd, stdio: 'inherit' });
     console.log(`\n✅ ${componentName} 추가 완료!`);
     return;
   }
@@ -164,7 +164,7 @@ export async function addComponent(componentName, appName) {
     const pkgDir = path.join(uiAppsDir, pkg);
     console.log(`\n📦 packages/ui/ui-apps/${pkg}에 ${componentName} 추가 중...`);
     try {
-      execSync(`npx shadcn@latest add ${componentName}`, { cwd: pkgDir, stdio: 'inherit' });
+      execSync(`npx sh-ui add ${componentName}`, { cwd: pkgDir, stdio: 'inherit' });
       console.log(`✅ packages/ui/ui-apps/${pkg} 완료`);
     } catch (error) {
       console.log(`❌ packages/ui/ui-apps/${pkg} 실패: ${error.message}`);

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://your-ds.dev/sh-ui.schema.json",
+  "platform": "react",
+  "style": "default",
+  "theme": {
+    "base": "neutral",
+    "radius": "md",
+    "mode": "light-dark"
+  },
+  "paths": {
+    "tokens": "src/styles/tokens.css",
+    "components": "src/components",
+    "utils": "src/lib/utils.ts"
+  }
+}

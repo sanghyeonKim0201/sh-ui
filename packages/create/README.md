@@ -1,13 +1,9 @@
-# Project Templates
+# @sh-ui/create
 
-프로젝트 생성 CLI 도구 + 템플릿 모음.
+프로젝트 생성 CLI + 템플릿 모음. sh-ui 기반 스캐폴드.
 
-## 설치
-
-```bash
-cd project-templates
-pnpm install
-```
+> sh-ui 모노레포의 `packages/create/` 에 포함된 내부 패키지. 공개 릴리즈 시
+> `npx sh-ui-create` 로 호출.
 
 ---
 
@@ -15,10 +11,12 @@ pnpm install
 
 | 명령어 | 설명 | 실행 위치 |
 |---|---|---|
-| `node bin/create.js` | 새 프로젝트 생성 (단독 / 모노레포) | 프로젝트를 만들 디렉토리 |
-| `node bin/create.js add-app` | 모노레포에 앱 추가 | 모노레포 루트 |
-| `node bin/create.js add-component <name>` | shadcn 컴포넌트 추가 | 프로젝트 루트 |
-| `node bin/create.js add-component <name> --app <app>` | 특정 앱에만 컴포넌트 추가 | 모노레포 루트 |
+| `npx sh-ui-create` | 새 프로젝트 생성 (단독 / 모노레포) | 프로젝트를 만들 디렉토리 |
+| `npx sh-ui-create add-app` | 모노레포에 앱 추가 | 모노레포 루트 |
+| `npx sh-ui-create add-component <name>` | sh-ui 컴포넌트 추가 | 프로젝트 루트 |
+| `npx sh-ui-create add-component <name> --app <app>` | 특정 앱에만 컴포넌트 추가 | 모노레포 루트 |
+
+`add-component` 는 내부적으로 `npx sh-ui add <name>` 을 위임 호출한다.
 
 ---
 
@@ -28,7 +26,7 @@ pnpm install
 
 ```bash
 cd ~/development
-node /path/to/project-templates/bin/create.js
+npx sh-ui-create
 ```
 
 ```
@@ -39,22 +37,29 @@ node /path/to/project-templates/bin/create.js
 
 ### 단독 선택 시
 
-shadcn/ui 포함된 독립 Next.js 프로젝트가 생성됩니다.
+sh-ui 설정(`sh-ui.config.json`)이 포함된 독립 Next.js 프로젝트가 생성됩니다.
 
 ```
 my-app/
 ├── app/                    # Next.js 라우트
 │   ├── layout.tsx
 │   ├── page.tsx
-│   └── globals.css
+│   └── globals.css         # sh-ui tokens.css import
 ├── src/                    # FSD 구조
 │   ├── app/                # providers, layouts
-│   ├── shared/             # ui(shadcn), lib, hooks, api, config
+│   ├── shared/
+│   │   ├── ui/             # ← sh-ui 컴포넌트가 여기로 복사됨
+│   │   ├── lib/utils.ts    # cn() 등
+│   │   ├── styles/tokens.css  # sh-ui 토큰
+│   │   ├── hooks/
+│   │   ├── api/
+│   │   ├── config/
+│   │   └── model/
 │   ├── entities/
 │   ├── features/
 │   ├── views/
 │   └── widgets/
-├── components.json         # shadcn 설정 (→ src/shared/)
+├── sh-ui.config.json       # sh-ui 설정 (platform, theme, paths)
 ├── next.config.ts
 └── ...
 ```
@@ -68,13 +73,18 @@ my-project/
 ├── apps/
 │   └── web/                # 첫 번째 Next.js 앱
 ├── packages/
-│   ├── ui-core/            # 공통 유틸 (cn 등)
-│   ├── ui-web/             # web 전용 shadcn (독립 테마)
+│   ├── ui/
+│   │   ├── ui-core/        # 공통 유틸 (cn 등)
+│   │   └── ui-apps/
+│   │       └── ui-web/     # web 전용 sh-ui 패키지 (독립 테마)
 │   ├── eslint-config/
 │   └── typescript-config/
 ├── turbo.json
 └── pnpm-workspace.yaml
 ```
+
+각 `ui-{app}/` 패키지는 자체 `sh-ui.config.json` 을 가져 앱별로 다른 테마를
+유지할 수 있습니다.
 
 ---
 
@@ -82,7 +92,7 @@ my-project/
 
 ```bash
 cd my-project
-node /path/to/project-templates/bin/create.js add-app
+npx sh-ui-create add-app
 ```
 
 ```
@@ -94,20 +104,21 @@ node /path/to/project-templates/bin/create.js add-app
 자동으로 생성되는 것:
 
 - `apps/admin/` — Next.js 앱 (FSD 구조)
-- `packages/ui-admin/` — admin 전용 shadcn 패키지 (독립 `components.json`)
+- `packages/ui/ui-apps/ui-admin/` — admin 전용 sh-ui 패키지 (독립 `sh-ui.config.json`)
 
 ---
 
-## 3. shadcn 컴포넌트 추가
+## 3. sh-ui 컴포넌트 추가
 
 ### 단독 프로젝트
 
 ```bash
 cd my-app
-node /path/to/project-templates/bin/create.js add-component button
+npx sh-ui-create add-component button
 ```
 
-`src/shared/ui/`에 컴포넌트가 생성됩니다.
+`src/shared/ui/` 에 컴포넌트가 생성됩니다. 내부적으로 `npx sh-ui add button` 이
+호출되며, `sh-ui.config.json` 의 `paths.components` 를 참조합니다.
 
 ### 모노레포
 
@@ -115,16 +126,16 @@ node /path/to/project-templates/bin/create.js add-component button
 cd my-project
 
 # 대화형: 어디에 추가할지 선택
-node /path/to/project-templates/bin/create.js add-component button
+npx sh-ui-create add-component button
 
 # 모든 ui 패키지에 추가
 # → 선택지에서 "모든 ui 패키지" 선택
 
 # 특정 앱에만 추가
-node /path/to/project-templates/bin/create.js add-component button --app web
+npx sh-ui-create add-component button --app web
 ```
 
-`packages/ui-{app}/src/components/`에 컴포넌트가 생성되며, `cn()` 등 유틸은 자동으로 `@workspace/ui-core`를 참조합니다.
+`packages/ui/ui-apps/ui-{app}/src/components/` 에 컴포넌트가 생성됩니다.
 
 ---
 
@@ -132,29 +143,33 @@ node /path/to/project-templates/bin/create.js add-component button --app web
 
 ```
 packages/
-├── ui-core/                # 기능/로직 공유 (스타일 없음)
-│   └── src/lib/utils.ts    # cn(), 공통 유틸
-│
-├── ui-web/                 # web 앱 전용 (독립 테마)
-│   ├── components.json     # style: nova, theme: blue 등
-│   └── src/
-│       ├── components/     # shadcn 컴포넌트
-│       ├── hooks/
-│       └── styles/
-│           └── globals.css # 테마 변수
-│
-└── ui-admin/               # admin 앱 전용 (독립 테마)
-    ├── components.json     # style: default, theme: neutral 등
-    └── src/
-        ├── components/
-        ├── hooks/
-        └── styles/
-            └── globals.css
+├── ui/
+│   ├── ui-core/            # 기능/로직 공유 (스타일 없음)
+│   │   └── src/lib/utils.ts    # cn(), 공통 유틸
+│   │
+│   └── ui-apps/
+│       ├── ui-web/         # web 앱 전용 (독립 테마)
+│       │   ├── sh-ui.config.json  # 앱별 테마 설정
+│       │   └── src/
+│       │       ├── components/    # sh-ui 컴포넌트
+│       │       ├── hooks/
+│       │       └── styles/
+│       │           ├── globals.css  # 테마 변수
+│       │           └── tokens.css   # sh-ui 토큰
+│       │
+│       └── ui-admin/       # admin 앱 전용 (독립 테마)
+│           ├── sh-ui.config.json
+│           └── src/
+│               ├── components/
+│               ├── hooks/
+│               └── styles/
+│                   ├── globals.css
+│                   └── tokens.css
 ```
 
 **핵심 원리:**
 - `ui-core` — 기능(로직)을 한 곳에서 관리. 수정하면 모든 앱에 반영.
-- `ui-{app}` — 스타일/테마를 앱별로 독립 관리. 각자 다른 `components.json`.
+- `ui-{app}` — 스타일/테마를 앱별로 독립 관리. 각자 다른 `sh-ui.config.json`.
 
 ---
 
