@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # npm 의존성 (pnpm workspace 루트)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 10
+    # minor·patch 는 한 PR 로 묶고, major 는 개별 PR 로 오게 둠 (수동 검토 필요)
+    groups:
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    # dev 브랜치로 PR 발행 (이 레포 정책상 live 직접 push 금지)
+    target-branch: "dev"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+  # GitHub Actions 자체 (uses: actions/checkout@v4 등) 도 업데이트
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    target-branch: "dev"
+    commit-message:
+      prefix: "chore(ci)"
