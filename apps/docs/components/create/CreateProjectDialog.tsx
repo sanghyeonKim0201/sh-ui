@@ -191,13 +191,14 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
                   <ToggleGroupItem value="monorepo">Monorepo</ToggleGroupItem>
                 </ToggleGroup>
               </div>
-              <div>
-                <Label>플러그인</Label>
+              <div role="group" aria-labelledby="plugins-label">
+                <Label id="plugins-label">플러그인</Label>
                 <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
                   <Button
                     type="button"
                     variant={plugins.has("sentry") ? "primary" : "secondary"}
                     size="sm"
+                    aria-pressed={plugins.has("sentry")}
                     onClick={() => togglePlugin("sentry")}
                   >
                     {plugins.has("sentry") ? "✓ " : ""}Sentry
@@ -206,6 +207,7 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
                     type="button"
                     variant={plugins.has("next-intl") ? "primary" : "secondary"}
                     size="sm"
+                    aria-pressed={plugins.has("next-intl")}
                     onClick={() => togglePlugin("next-intl")}
                   >
                     {plugins.has("next-intl") ? "✓ " : ""}next-intl
