@@ -10,7 +10,6 @@ import {
   HistoryIcon,
   PaletteIcon,
   RocketIcon,
-  SlidersHorizontalIcon,
   TerminalIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -41,7 +40,6 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "CLI", href: "/cli", icon: TerminalIcon },
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
-  { title: "Playground", href: "/playground", icon: SlidersHorizontalIcon },
   { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
   { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
 ];

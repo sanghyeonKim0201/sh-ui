@@ -280,7 +280,7 @@ Container(
       <h2>다음 단계</h2>
       <ul>
         <li><a href="/tokens">토큰</a> — 전체 토큰 목록과 값</li>
-        <li><a href="/playground">플레이그라운드</a> — 토큰 직접 편집 & 미리보기</li>
+        <li><a href="/create">프로젝트 생성</a> — 토큰 직접 편집 + 그 디자인으로 새 프로젝트 스캐폴드</li>
         <li><a href="/components/button">컴포넌트</a> — 설치 및 사용법</li>
       </ul>
     </main>

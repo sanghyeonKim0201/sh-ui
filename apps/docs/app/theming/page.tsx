@@ -203,7 +203,7 @@ static const light = ShUiColorTokens(
       <h2>다음 단계</h2>
       <ul>
         <li><a href="/tokens">토큰</a> — 덮을 수 있는 전체 변수 목록</li>
-        <li><a href="/playground">Playground</a> — 인터랙티브로 토큰 값 조정하며 미리보기</li>
+        <li><a href="/create">프로젝트 생성</a> — 인터랙티브로 토큰 값 조정하며 미리보기 + 디자인 그대로 새 프로젝트 생성</li>
       </ul>
     </main>
   );
