@@ -10,13 +10,13 @@ const TEMPLATES_DIR = path.join(__dirname, '..', 'templates');
 
 // ─── Create new project ───
 
-export async function createProject() {
-  const projectName = await input({
+export async function createProject(options = {}) {
+  const projectName = options.name ?? await input({
     message: '프로젝트 이름:',
     default: 'my-app',
   });
 
-  const platform = await select({
+  const platform = options.platform ?? await select({
     message: '플랫폼:',
     choices: [
       { name: 'Next.js', value: 'next' },
@@ -27,15 +27,19 @@ export async function createProject() {
   const targetDir = path.resolve(process.cwd(), projectName);
 
   if (await fs.pathExists(targetDir)) {
-    const overwrite = await confirm({
-      message: `${projectName} 디렉토리가 이미 존재합니다. 덮어쓸까요?`,
-      default: false,
-    });
-    if (!overwrite) {
-      console.log('취소되었습니다.');
-      return;
+    if (options.yes) {
+      await fs.remove(targetDir);
+    } else {
+      const overwrite = await confirm({
+        message: `${projectName} 디렉토리가 이미 존재합니다. 덮어쓸까요?`,
+        default: false,
+      });
+      if (!overwrite) {
+        console.log('취소되었습니다.');
+        return;
+      }
+      await fs.remove(targetDir);
     }
-    await fs.remove(targetDir);
   }
 
   if (platform === 'flutter') {
@@ -47,8 +51,8 @@ export async function createProject() {
     return;
   }
 
-  // platform === 'next' 경로 — 기존 구조/플러그인 분기
-  const projectType = await select({
+  // platform === 'next' 경로
+  const projectType = options.structure ?? await select({
     message: '프로젝트 구조:',
     choices: [
       { name: '단독 (Next.js standalone)', value: 'standalone' },
@@ -56,19 +60,18 @@ export async function createProject() {
     ],
   });
 
-  const selectedPlugins = await checkbox({
+  const selectedPluginNames = options.plugins ?? await checkbox({
     message: '추가 기능 선택 (Space로 선택):',
     choices: getPluginChoices(),
   });
 
-  const plugins = getPluginsByNames(selectedPlugins);
-  // priority 순서대로 정렬
+  const plugins = getPluginsByNames(selectedPluginNames);
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
 
   if (projectType === 'standalone') {
     await generateStandalone(targetDir, projectName, plugins);
   } else {
-    await generateMonorepo(targetDir, projectName, plugins);
+    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes });
   }
 
   console.log(`\n✅ ${projectName} 프로젝트가 생성되었습니다!`);
@@ -223,7 +226,7 @@ async function generateStandalone(targetDir, projectName, plugins) {
   await applyTransforms(targetDir, plugins);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -243,12 +246,12 @@ async function generateMonorepo(targetDir, projectName, plugins) {
   await fs.writeJson(turboPath, turbo, { spaces: 2 });
 
   // Create first app
-  const appName = await input({
+  const appName = yes ? 'web' : await input({
     message: '첫 번째 앱 이름:',
     default: 'web',
   });
 
-  const port = await input({
+  const port = yes ? '3000' : await input({
     message: '포트 번호:',
     default: '3000',
   });

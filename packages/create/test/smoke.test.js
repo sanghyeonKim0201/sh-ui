@@ -163,4 +163,44 @@ describe('@sh-ui/create smoke tests', () => {
     );
     expect(mainDart).toContain("title: 'my-flutter-app'");
   });
+
+  it('scenario 6 — 모든 플래그 (inquirer 호출 없음)', async () => {
+    // prompts 는 mock 된 상태 — 아무 mockResolvedValue 도 세팅 안 함
+    await createProject({
+      name: 'flaggy',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: ['sentry'],
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'flaggy');
+    expect(await fs.pathExists(projectDir)).toBe(true);
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.name).toBe('flaggy');
+    expect(pkg.dependencies['@sentry/nextjs']).toBeDefined();
+
+    // inquirer 는 한 번도 호출되지 않았어야 함
+    expect(prompts.input).not.toHaveBeenCalled();
+    expect(prompts.select).not.toHaveBeenCalled();
+    expect(prompts.checkbox).not.toHaveBeenCalled();
+  });
+
+  it('scenario 7 — 부분 플래그 (name, platform 만 제공, 나머지는 프롬프트)', async () => {
+    prompts.select.mockResolvedValueOnce('standalone'); // structure
+    prompts.checkbox.mockResolvedValueOnce([]);          // plugins
+
+    await createProject({
+      name: 'partial',
+      platform: 'next',
+    });
+
+    const projectDir = path.join(tmpDir, 'partial');
+    expect(await fs.pathExists(projectDir)).toBe(true);
+
+    // name / platform 은 프롬프트 우회
+    expect(prompts.input).not.toHaveBeenCalled();
+    // structure 는 프롬프트 호출됨 (select 1 번)
+    expect(prompts.select).toHaveBeenCalledTimes(1);
+  });
 });
