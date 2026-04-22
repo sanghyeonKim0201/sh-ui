@@ -39,6 +39,7 @@ class ShUiColorTokens {
     required this.dangerForeground,
   });
 
+  // sh-ui:theme-colors-start
   static const light = ShUiColorTokens(
     background: Color(0xFFFFFFFF),
     backgroundSubtle: Color(0xFFFAFAFA),
@@ -74,6 +75,7 @@ class ShUiColorTokens {
     danger: Color(0xFFDC2626),
     dangerForeground: Color(0xFFFFFFFF),
   );
+  // sh-ui:theme-colors-end
 }
 
 @immutable
@@ -85,7 +87,9 @@ class ShUiRadiusTokens {
   });
 
   static const tokens = ShUiRadiusTokens(
+    // sh-ui:theme-radius-start
     defaultRadius: 8.0,
+    // sh-ui:theme-radius-end
   );
 }
 
