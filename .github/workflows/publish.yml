@@ -28,6 +28,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
+      # Trusted Publishing (OIDC) 은 npm 11.5.1+ 필요. Node 20 기본 npm 은 10.x.
+      - name: Upgrade npm for Trusted Publishing support
+        run: npm install -g npm@latest
+
       - name: Install
         run: pnpm install --frozen-lockfile
 
