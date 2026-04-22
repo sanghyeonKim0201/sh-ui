@@ -15,6 +15,7 @@ vi.mock('@inquirer/prompts', () => ({
 // 모킹된 함수를 가져와 각 테스트에서 답변 큐를 세팅
 const prompts = await import('@inquirer/prompts');
 const { createProject, addApp } = await import('../src/generator.js');
+const { TOKEN_KEYS } = await import('../src/theme/decode.js');
 
 let tmpDir;
 
@@ -202,5 +203,81 @@ describe('@sh-ui/create smoke tests', () => {
     expect(prompts.input).not.toHaveBeenCalled();
     // structure 는 프롬프트 호출됨 (select 1 번)
     expect(prompts.select).toHaveBeenCalledTimes(1);
+  });
+
+  it('scenario 8 — theme 주입 (Next.js standalone)', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = { light: red, dark: blue, radius: 1 };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'themed',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: themeB64,
+      yes: true,
+    });
+
+    const cssPath = path.join(tmpDir, 'themed', 'src', 'shared', 'styles', 'tokens.css');
+    const css = await fs.readFile(cssPath, 'utf-8');
+
+    expect(css).toMatch(/:root\s*\{[^}]*--background:\s*#FF0000/s);
+    expect(css).toMatch(/\.dark\s*\{[^}]*--background:\s*#0000FF/s);
+    expect(css).toContain('--radius: 1rem;');
+    expect(css).toContain('--space-0: 0px;');
+  });
+
+  it('scenario 9 — theme 주입 (Flutter)', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = { light: red, dark: blue, radius: 0.75 };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'flutter-themed',
+      platform: 'flutter',
+      theme: themeB64,
+      yes: true,
+    });
+
+    const dartPath = path.join(
+      tmpDir, 'flutter-themed', 'lib', 'sh_ui', 'foundation', 'sh_ui_tokens.dart',
+    );
+    const dart = await fs.readFile(dartPath, 'utf-8');
+
+    expect(dart).toMatch(/static const light = ShUiColorTokens\([\s\S]*?background: Color\(0xFFFF0000\)/);
+    expect(dart).toMatch(/static const dark = ShUiColorTokens\([\s\S]*?background: Color\(0xFF0000FF\)/);
+    expect(dart).toContain('defaultRadius: 12.0,');
+    expect(dart).toContain('class ShUiSpacingTokens');
+  });
+
+  it('scenario 10 — theme 없음: 템플릿 기본값 유지', async () => {
+    await createProject({
+      name: 'no-theme',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      yes: true,
+    });
+
+    const cssPath = path.join(tmpDir, 'no-theme', 'src', 'shared', 'styles', 'tokens.css');
+    const css = await fs.readFile(cssPath, 'utf-8');
+    expect(css).toContain('--background: #FFFFFF;');
+    expect(css).toContain('--radius: 0.5rem;');
+  });
+
+  it('scenario 11 — 잘못된 theme base64 → 에러', async () => {
+    await expect(
+      createProject({
+        name: 'bad-theme',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        theme: 'not-valid-base64!!!',
+        yes: true,
+      }),
+    ).rejects.toThrow(/theme 디코드 실패/);
   });
 });

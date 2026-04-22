@@ -4,6 +4,14 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getPluginChoices, getPluginsByNames } from './plugins/index.js';
+import { decodeTheme } from './theme/decode.js';
+import {
+  replaceSection,
+  buildCssColorsBlock,
+  buildCssRadiusBlock,
+  buildDartColorsBlock,
+  buildDartRadiusBlock,
+} from './theme/inject.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = path.join(__dirname, '..', 'templates');
@@ -24,6 +32,8 @@ export async function createProject(options = {}) {
     ],
   });
 
+  const theme = options.theme ? decodeTheme(options.theme) : null;
+
   const targetDir = path.resolve(process.cwd(), projectName);
 
   if (await fs.pathExists(targetDir)) {
@@ -43,7 +53,7 @@ export async function createProject(options = {}) {
   }
 
   if (platform === 'flutter') {
-    await generateFlutter(targetDir, projectName);
+    await generateFlutter(targetDir, projectName, theme);
     console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
     console.log(`\n  cd ${projectName}`);
     console.log('  flutter pub get');
@@ -69,9 +79,9 @@ export async function createProject(options = {}) {
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
 
   if (projectType === 'standalone') {
-    await generateStandalone(targetDir, projectName, plugins);
+    await generateStandalone(targetDir, projectName, plugins, theme);
   } else {
-    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes });
+    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme });
   }
 
   console.log(`\n✅ ${projectName} 프로젝트가 생성되었습니다!`);
@@ -197,12 +207,13 @@ export async function addComponent(componentName, appName) {
 
 // ─── Generators ───
 
-async function generateFlutter(targetDir, projectName) {
+async function generateFlutter(targetDir, projectName, theme) {
   await fs.copy(path.join(TEMPLATES_DIR, 'flutter-standalone'), targetDir);
   await replaceInAllFiles(targetDir, '{{project_name}}', projectName);
+  await injectDartTheme(targetDir, theme);
 }
 
-async function generateStandalone(targetDir, projectName, plugins) {
+async function generateStandalone(targetDir, projectName, plugins, theme) {
   await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-standalone'), targetDir);
 
   // Update package.json
@@ -224,9 +235,10 @@ async function generateStandalone(targetDir, projectName, plugins) {
   await writePluginFiles(targetDir, plugins);
   await composeProviders(targetDir, plugins);
   await applyTransforms(targetDir, plugins);
+  await injectCssTheme(targetDir, theme);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -258,6 +270,8 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false }
 
   const appsDir = path.join(targetDir, 'apps', appName);
   await generateApp(appsDir, appName, port, plugins);
+  const uiAppDir = path.join(targetDir, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
+  await injectCssTheme(uiAppDir, theme);
 }
 
 async function generateApp(targetDir, appName, port, plugins) {
@@ -473,4 +487,38 @@ async function applyTransforms(targetDir, plugins) {
       }
     }
   }
+}
+
+// ─── Theme 주입 ───
+
+/** 여러 후보 경로 중 존재하는 첫 tokens.css 에 theme 주입 */
+async function injectCssTheme(projectDir, theme) {
+  if (!theme) return;
+  const candidates = [
+    'src/shared/styles/tokens.css',
+    'src/styles/tokens.css',
+  ];
+  for (const rel of candidates) {
+    const abs = path.join(projectDir, rel);
+    if (await fs.pathExists(abs)) {
+      let css = await fs.readFile(abs, 'utf-8');
+      css = replaceSection(css, 'theme-colors', '/*', '*/', buildCssColorsBlock(theme));
+      css = replaceSection(css, 'theme-radius', '/*', '*/', buildCssRadiusBlock(theme));
+      await fs.writeFile(abs, css);
+      return;
+    }
+  }
+  throw new Error(`theme 주입 실패: tokens.css 파일을 찾을 수 없음 (${projectDir})`);
+}
+
+async function injectDartTheme(projectDir, theme) {
+  if (!theme) return;
+  const abs = path.join(projectDir, 'lib/sh_ui/foundation/sh_ui_tokens.dart');
+  if (!(await fs.pathExists(abs))) {
+    throw new Error(`theme 주입 실패: sh_ui_tokens.dart 가 없음 (${abs})`);
+  }
+  let dart = await fs.readFile(abs, 'utf-8');
+  dart = replaceSection(dart, 'theme-colors', '//', '', buildDartColorsBlock(theme));
+  dart = replaceSection(dart, 'theme-radius', '//', '', buildDartRadiusBlock(theme));
+  await fs.writeFile(abs, dart);
 }
