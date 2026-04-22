@@ -1,6 +1,6 @@
 {
   "name": "@sh-ui/create",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "sh-ui create — 프로젝트 스캐폴드 CLI (Next.js / Turborepo 모노레포 / Flutter)",
   "license": "MIT",
   "repository": {

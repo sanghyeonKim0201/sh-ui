@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.18.0",
+      "date": "2026-04-22",
+      "title": "@sh-ui/create — 비대화형 플래그와 theme 주입",
+      "type": "minor",
+      "highlights": [
+        "--platform / --structure / --plugins / --theme / --yes 플래그 지원 — 완전 비대화형 실행 가능",
+        "--theme <base64> 로 커스텀 색·radius 를 프로젝트 생성 시점에 바로 주입 (플레이그라운드 연동 준비)",
+        "템플릿의 tokens.css / sh_ui_tokens.dart 에 theme 섹션 마커 삽입 — 토큰만 교체되고 다른 값(spacing 등)은 유지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.0"
+    },
+    {
       "version": "0.17.0",
       "date": "2026-04-21",
       "title": "@sh-ui/create — Flutter 스타터 지원",
