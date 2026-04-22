@@ -280,4 +280,40 @@ describe('sh-ui-create smoke tests', () => {
       }),
     ).rejects.toThrow(/theme 디코드 실패/);
   });
+
+  it('scenario 12 — theme 주입 (monorepo) → ui-web 패키지에 반영', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = { light: red, dark: blue, radius: 0.25 };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'mono-themed',
+      platform: 'next',
+      structure: 'monorepo',
+      plugins: [],
+      theme: themeB64,
+      yes: true, // web/3000 기본값으로 비대화형 진행
+    });
+
+    // monorepo 의 테마는 apps/web 이 아니라 packages/ui/ui-apps/ui-web 에 주입
+    const cssPath = path.join(
+      tmpDir,
+      'mono-themed',
+      'packages',
+      'ui',
+      'ui-apps',
+      'ui-web',
+      'src',
+      'styles',
+      'tokens.css',
+    );
+    const css = await fs.readFile(cssPath, 'utf-8');
+
+    expect(css).toMatch(/:root\s*\{[^}]*--background:\s*#FF0000/s);
+    expect(css).toMatch(/\.dark\s*\{[^}]*--background:\s*#0000FF/s);
+    expect(css).toContain('--radius: 0.25rem;');
+    // 마커 바깥 토큰(spacing 등) 는 그대로
+    expect(css).toContain('--space-0: 0px;');
+  });
 });
