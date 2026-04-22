@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.18.1",
+      "date": "2026-04-22",
+      "title": "sh-ui-create — 입력 하드닝",
+      "type": "patch",
+      "highlights": [
+        "--theme base64 입력에 10KB 상한 추가 — 큰 악성 입력을 JSON 파싱 전에 명확한 에러로 거부",
+        "플레이그라운드 Dialog 의 프로젝트 이름 검증 — 영문·숫자·'-'·'_' 만 허용, 첫 글자 영문/숫자. 잘못되면 에러 메시지 + 복사 버튼 비활성화",
+        "UX: 잘못된 이름으로 생성된 명령어를 터미널에 붙여넣는 사고 방지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.1"
+    },
+    {
       "version": "0.18.0",
       "date": "2026-04-22",
       "title": "sh-ui-create — 비대화형 플래그와 theme 주입",

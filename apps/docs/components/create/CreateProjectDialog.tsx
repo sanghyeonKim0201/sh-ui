@@ -35,6 +35,17 @@ type Props = {
 
 const SWATCH_KEYS: TokenKey[] = ["background", "foreground", "primary", "danger"];
 
+const PROJECT_NAME_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9-_]*$/;
+
+const validateProjectName = (name: string): string | null => {
+  if (name === "") return null; // 빈 문자열은 기본값 "my-app" 사용하므로 허용
+  if (name.length > 214) return "이름은 214자 이하";
+  if (!PROJECT_NAME_REGEX.test(name)) {
+    return "영문·숫자·'-'·'_' 만, 첫 글자는 영문 또는 숫자";
+  }
+  return null;
+};
+
 export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }: Props) {
   const [projectName, setProjectName] = useState("my-app");
   const [platform, setPlatform] = useState<Platform>("next");
@@ -42,6 +53,9 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
   const [packageManager, setPackageManager] = useState<PackageManager>("pnpm");
   const [copied, setCopied] = useState(false);
+
+  const nameError = useMemo(() => validateProjectName(projectName), [projectName]);
+  const canCopy = nameError === null;
 
   const theme: ThemeConfig = useMemo(() => ({ light, dark, radius }), [light, dark, radius]);
   const themeBase64 = useMemo(() => encodeTheme(theme), [theme]);
@@ -128,7 +142,22 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               placeholder="my-app"
+              aria-invalid={nameError !== null}
+              aria-describedby={nameError !== null ? "create-name-error" : undefined}
             />
+            {nameError !== null && (
+              <div
+                id="create-name-error"
+                role="alert"
+                style={{
+                  marginTop: "0.25rem",
+                  fontSize: "0.75rem",
+                  color: "var(--danger)",
+                }}
+              >
+                {nameError}
+              </div>
+            )}
           </div>
 
           {/* platform */}
@@ -227,7 +256,7 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
 
         <DialogFooter>
           <DialogClose render={<Button variant="secondary">닫기</Button>} />
-          <Button onClick={handleCopy}>{copied ? "복사됨" : "명령어 복사"}</Button>
+          <Button onClick={handleCopy} disabled={!canCopy}>{copied ? "복사됨" : "명령어 복사"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

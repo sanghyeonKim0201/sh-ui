@@ -60,4 +60,16 @@ describe('decodeTheme', () => {
     const b64 = toBase64(broken);
     expect(() => decodeTheme(b64)).toThrow(/hex/);
   });
+
+  it('10KB 초과 입력 → 크기 상한 초과 에러', () => {
+    const oversized = 'A'.repeat(10 * 1024 + 1);
+    expect(() => decodeTheme(oversized)).toThrow(/theme 크기가 허용 범위/);
+  });
+
+  it('10KB 경계 — 정확히 10KB 는 크기 검사 통과 (다른 검증에서 거부될 수 있음)', () => {
+    const boundary = 'A'.repeat(10 * 1024);
+    // 크기는 통과하지만 JSON 파싱·스키마 검증에서 거부됨
+    expect(() => decodeTheme(boundary)).toThrow(/theme 디코드 실패/);
+    expect(() => decodeTheme(boundary)).not.toThrow(/크기가 허용 범위/);
+  });
 });
