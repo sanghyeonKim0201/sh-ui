@@ -49,20 +49,59 @@ export const buildCssRadiusBlock = (theme) => {
 // ─── Dart 블록 빌더 ───
 
 const toDartColor = (hex) => `Color(0xFF${hex.replace('#', '').toUpperCase()})`;
-const toCamel = (key) => key.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-const dartColorLine = (key, value) => `    ${toCamel(key)}: ${toDartColor(value)},`;
+
+/**
+ * Dart 의 ShUiColorTokens 필드 순서 + 각 필드가 어떤 소스에서 값을 가져오는지.
+ *   self    — 현재 모드의 편집값
+ *   inverse — 반대 모드의 편집값
+ *   default — playground 가 노출하지 않음, 고정 기본값 사용
+ */
+const DART_FIELD_SOURCES = [
+  { field: 'background',           source: { kind: 'self', key: 'background' } },
+  { field: 'backgroundSubtle',     source: { kind: 'self', key: 'background-subtle' } },
+  { field: 'backgroundMuted',      source: { kind: 'self', key: 'background-muted' } },
+  { field: 'backgroundInverse',    source: { kind: 'inverse', key: 'background' } },
+  { field: 'foreground',           source: { kind: 'self', key: 'foreground' } },
+  { field: 'foregroundMuted',      source: { kind: 'self', key: 'foreground-muted' } },
+  { field: 'foregroundSubtle',     source: { kind: 'default' } },
+  { field: 'foregroundInverse',    source: { kind: 'inverse', key: 'foreground' } },
+  { field: 'border',               source: { kind: 'self', key: 'border' } },
+  { field: 'borderStrong',         source: { kind: 'self', key: 'border-strong' } },
+  { field: 'primary',              source: { kind: 'self', key: 'primary' } },
+  { field: 'primaryForeground',    source: { kind: 'self', key: 'primary-foreground' } },
+  { field: 'primaryHover',         source: { kind: 'self', key: 'primary-hover' } },
+  { field: 'danger',               source: { kind: 'self', key: 'danger' } },
+  { field: 'dangerForeground',     source: { kind: 'self', key: 'danger-foreground' } },
+];
+
+const DART_DEFAULTS = {
+  light: { foregroundSubtle: '0xFFA3A3A3' },
+  dark:  { foregroundSubtle: '0xFF737373' },
+};
+
+const buildDartStaticConst = (mode, self, opposite) => {
+  const lines = DART_FIELD_SOURCES.map(({ field, source }) => {
+    switch (source.kind) {
+      case 'self':
+        return `    ${field}: ${toDartColor(self[source.key])},`;
+      case 'inverse':
+        return `    ${field}: ${toDartColor(opposite[source.key])},`;
+      case 'default':
+        return `    ${field}: Color(${DART_DEFAULTS[mode][field]}),`;
+    }
+  }).join('\n');
+  return [
+    `  static const ${mode} = ShUiColorTokens(`,
+    lines,
+    '  );',
+  ].join('\n');
+};
 
 export const buildDartColorsBlock = (theme) => {
-  const lightLines = TOKEN_KEYS.map((k) => dartColorLine(k, theme.light[k])).join('\n');
-  const darkLines = TOKEN_KEYS.map((k) => dartColorLine(k, theme.dark[k])).join('\n');
   return [
-    '  static const light = ShUiColorTokens(',
-    lightLines,
-    '  );',
+    buildDartStaticConst('light', theme.light, theme.dark),
     '',
-    '  static const dark = ShUiColorTokens(',
-    darkLines,
-    '  );',
+    buildDartStaticConst('dark', theme.dark, theme.light),
   ].join('\n');
 };
 

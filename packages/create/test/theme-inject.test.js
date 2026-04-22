@@ -87,3 +87,25 @@ describe('buildDartRadiusBlock', () => {
     expect(buildDartRadiusBlock(theme)).toContain('defaultRadius: 12.0,');
   });
 });
+
+describe('buildDartColorsBlock — inverse/subtle', () => {
+  it('light.backgroundInverse 는 dark.background 값', () => {
+    const dart = buildDartColorsBlock(theme);
+    // theme.dark.background 가 "#000000" 이므로
+    expect(dart).toMatch(/static const light = ShUiColorTokens\([\s\S]*?backgroundInverse: Color\(0xFF000000\)/);
+  });
+  it('dark.backgroundInverse 는 light.background 값', () => {
+    const dart = buildDartColorsBlock(theme);
+    expect(dart).toMatch(/static const dark = ShUiColorTokens\([\s\S]*?backgroundInverse: Color\(0xFF111111\)/);
+  });
+  it('foregroundInverse 도 light↔dark 대칭', () => {
+    const dart = buildDartColorsBlock(theme);
+    expect(dart).toMatch(/static const light = ShUiColorTokens\([\s\S]*?foregroundInverse: Color\(0xFFFAFAFA\)/);
+    expect(dart).toMatch(/static const dark = ShUiColorTokens\([\s\S]*?foregroundInverse: Color\(0xFF0A0A0A\)/);
+  });
+  it('foregroundSubtle 은 고정 기본값', () => {
+    const dart = buildDartColorsBlock(theme);
+    expect(dart).toMatch(/static const light = ShUiColorTokens\([\s\S]*?foregroundSubtle: Color\(0xFFA3A3A3\)/);
+    expect(dart).toMatch(/static const dark = ShUiColorTokens\([\s\S]*?foregroundSubtle: Color\(0xFF737373\)/);
+  });
+});
