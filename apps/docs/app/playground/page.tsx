@@ -124,6 +124,8 @@ import {
   CarouselNext,
   CarouselIndicators,
 } from "@/components/ui/carousel";
+import { CreateProjectFab } from "@/components/playground/CreateProjectFab";
+import { CreateProjectDialog } from "@/components/playground/CreateProjectDialog";
 
 const STORAGE_KEY = "sh-ui-playground-tokens";
 
@@ -256,6 +258,7 @@ export default function PlaygroundPage() {
   const [hydrated, setHydrated] = useState(false);
   const [openKey, setOpenKey] = useState<TokenKey | null>(null);
   const previewRef = useRef<HTMLElement>(null);
+  const [createOpen, setCreateOpen] = useState(false);
 
   /* localStorage 로드 */
   useEffect(() => {
@@ -914,6 +917,15 @@ export default function PlaygroundPage() {
           </TabsContent>
         </Tabs>
       </main>
+      <CreateProjectFab onClick={() => setCreateOpen(true)} />
+      <CreateProjectDialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        light={light}
+        dark={dark}
+        radius={radius}
+        mode={mode}
+      />
     </>
   );
 }
