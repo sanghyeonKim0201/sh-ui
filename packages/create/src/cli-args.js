@@ -2,7 +2,7 @@ const VALID_PLATFORMS = ['next', 'flutter'];
 const VALID_STRUCTURES = ['standalone', 'monorepo'];
 const VALID_PLUGINS = ['sentry', 'next-intl'];
 
-const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme'];
+const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app'];
 const BOOL_FLAGS = ['yes'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
