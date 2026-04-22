@@ -406,6 +406,8 @@ sh-ui add form-yup        # Yup → Standard Schema 래퍼
 
 ### 핵심 원칙 — "라이브러리가 boss"
 
+여기서 "어댑터 모드" 는 **RHF · TanStack Form 같은 외부 라이브러리** 의 인스턴스를 `adaptXxx(...)` 로 감싸 `<Form form={...}>` 에 넘긴 경우만 가리킨다. `useShUiForm()` 은 어댑터가 아니라 **내장 모드** 로, 아래의 "무시" 규칙이 적용되지 않는다 (schema/validateOn 정상 동작).
+
 어댑터 모드일 때 sh-ui 검증 설정 무시:
 
 | sh-ui prop | 어댑터 모드 |
