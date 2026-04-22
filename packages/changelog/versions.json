@@ -3,6 +3,94 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.18.1",
+      "date": "2026-04-22",
+      "title": "sh-ui-create — 입력 하드닝",
+      "type": "patch",
+      "highlights": [
+        "--theme base64 입력에 10KB 상한 추가 — 큰 악성 입력을 JSON 파싱 전에 명확한 에러로 거부",
+        "플레이그라운드 Dialog 의 프로젝트 이름 검증 — 영문·숫자·'-'·'_' 만 허용, 첫 글자 영문/숫자. 잘못되면 에러 메시지 + 복사 버튼 비활성화",
+        "UX: 잘못된 이름으로 생성된 명령어를 터미널에 붙여넣는 사고 방지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.1"
+    },
+    {
+      "version": "0.18.0",
+      "date": "2026-04-22",
+      "title": "sh-ui-create — 비대화형 플래그와 theme 주입",
+      "type": "minor",
+      "highlights": [
+        "--platform / --structure / --plugins / --theme / --yes 플래그 지원 — 완전 비대화형 실행 가능",
+        "--theme <base64> 로 커스텀 색·radius 를 프로젝트 생성 시점에 바로 주입 (플레이그라운드 연동 준비)",
+        "템플릿의 tokens.css / sh_ui_tokens.dart 에 theme 섹션 마커 삽입 — 토큰만 교체되고 다른 값(spacing 등)은 유지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.0"
+    },
+    {
+      "version": "0.17.0",
+      "date": "2026-04-21",
+      "title": "sh-ui-create — Flutter 스타터 지원",
+      "type": "minor",
+      "highlights": [
+        "sh-ui-create — 프로젝트 생성 시 플랫폼 선택(Next.js / Flutter) 신규",
+        "Flutter 선택 시 pubspec + main.dart + sh-ui.config.json + 토큰 복사본까지 완성된 스타터 제공",
+        "생성 직후 `flutter run`으로 테마 적용된 초기 화면 확인, 이어서 `sh-ui add <widget>` 로 위젯 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.17.0"
+    },
+    {
+      "version": "0.16.0",
+      "date": "2026-04-21",
+      "title": "sh-ui-create — 프로젝트 스캐폴드 CLI",
+      "type": "minor",
+      "highlights": [
+        "sh-ui-create 신규 패키지 — npx sh-ui-create 로 sh-ui 가 사전 설정된 Next.js 프로젝트 스캐폴드",
+        "단독 / 모노레포(Turborepo + pnpm workspace) 템플릿 — FSD 폴더 구조 + sh-ui.config.json + tokens.css 선반영",
+        "Sentry / next-intl 플러그인 — 체크박스 선택으로 파일·의존성·next.config 래핑 자동 구성",
+        "add-app / add-component 보조 명령 — 모노레포 앱 추가, 앱별 ui 패키지에 sh-ui add 위임",
+        "docs: /create 페이지 추가 — 전체 레퍼런스 + 단독 vs 모노레포 구조 비교 + FSD 레이어 규칙"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.16.0"
+    },
+    {
+      "version": "0.15.1",
+      "date": "2026-04-21",
+      "title": "ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정",
+      "type": "patch",
+      "highlights": [
+        "setHsv 업데이터 콜백 내부에서 onChange를 호출하던 부작용을 업데이터 밖으로 이동",
+        "React StrictMode가 updater를 두 번 invoke할 때 발생하던 'setState while rendering' 경고 제거",
+        "controlled 모드에서 부모 상태를 동기화하는 시나리오(예: playground 토큰 에디터) 안정성 개선"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.1"
+    },
+    {
+      "version": "0.15.0",
+      "date": "2026-04-21",
+      "title": "llms.txt — AI 도구용 컴포넌트 인벤토리",
+      "type": "minor",
+      "highlights": [
+        "apps/docs/public/llms.txt — 전 컴포넌트 한 줄 요약 + 설치 플로우 + 관용 규칙 (llms.txt 표준 따름)",
+        "apps/docs/public/llms-full.txt — 각 컴포넌트별 설치 커맨드/import 경로/의존성 + 최근 릴리즈 5개",
+        "packages/llms 신규 워크스페이스 — registry.json + summaries/*.json을 읽어 자동 생성. next build 훅에 연결",
+        "pnpm gen:llms — 루트 스크립트로 수동 재생성 가능"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.0"
+    },
+    {
+      "version": "0.14.0",
+      "date": "2026-04-20",
+      "title": "Pagination — 페이지 단위 내비게이션 컴포넌트",
+      "type": "minor",
+      "highlights": [
+        "React: Pagination / PaginationContent / Item / Link / Previous / Next / Ellipsis 컴파운드 구성 — Breadcrumb와 동일한 관용",
+        "getPaginationRange({page, totalPages, siblings}) 유틸 — 현재 페이지 주변 + 양 끝 + 생략(…) 토큰 배열 생성",
+        "Flutter: ShUiPagination(page:, pageCount:, siblingCount:, onPageChanged:) — 페이지 범위 계산 내장",
+        "nav + ol/ul 시맨틱, 현재 페이지 aria-current=\"page\", 이전/다음 aria-label 자동 부여"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.14.0"
+    },
+    {
       "version": "0.13.1",
       "date": "2026-04-20",
       "title": "토큰 대비 감사 — WCAG AA 통과",

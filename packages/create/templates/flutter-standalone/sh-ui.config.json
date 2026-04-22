@@ -1,0 +1,15 @@
+{
+  "platform": "flutter",
+  "style": "default",
+  "theme": {
+    "base": "neutral",
+    "radius": "md",
+    "mode": "light-dark"
+  },
+  "paths": {
+    "tokens": "lib/sh_ui/foundation/sh_ui_tokens.dart",
+    "components": "lib/sh_ui/widgets",
+    "foundation": "lib/sh_ui/foundation",
+    "widgets": "lib/sh_ui/widgets"
+  }
+}

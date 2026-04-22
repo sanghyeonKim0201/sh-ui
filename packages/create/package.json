@@ -1,0 +1,50 @@
+{
+  "name": "sh-ui-create",
+  "version": "0.18.1",
+  "description": "sh-ui create — 프로젝트 스캐폴드 CLI (Next.js / Turborepo 모노레포 / Flutter)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanghyeonKim0201/sh-ui.git",
+    "directory": "packages/create"
+  },
+  "homepage": "https://github.com/sanghyeonKim0201/sh-ui#readme",
+  "bugs": {
+    "url": "https://github.com/sanghyeonKim0201/sh-ui/issues"
+  },
+  "keywords": [
+    "sh-ui",
+    "scaffold",
+    "cli",
+    "nextjs",
+    "flutter",
+    "create"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "bin": {
+    "sh-ui-create": "./bin/create.js"
+  },
+  "scripts": {
+    "create": "node bin/create.js",
+    "add-app": "node bin/create.js add-app",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm test"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}

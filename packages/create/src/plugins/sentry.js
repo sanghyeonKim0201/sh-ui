@@ -1,0 +1,689 @@
+export const sentryPlugin = {
+  name: 'sentry',
+  label: 'Sentry (에러 모니터링)',
+  priority: 1,
+
+  dependencies: {
+    '@sentry/nextjs': '^10.44.0',
+  },
+
+  // ─── next.config.ts 관련 ───
+
+  imports: [
+    `import { withSentryConfig } from '@sentry/nextjs';`,
+  ],
+
+  wrapExport(expr) {
+    return `withSentryConfig(${expr}, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  tunnelRoute: '/monitoring',
+  silent: !process.env.CI,
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+  },
+})`;
+  },
+
+  envVars: [
+    '# Sentry',
+    'SENTRY_ORG=',
+    'SENTRY_PROJECT=',
+    'SENTRY_AUTH_TOKEN=',
+    'NEXT_PUBLIC_SENTRY_DSN=',
+    'NEXT_PUBLIC_SENTRY_ENVIRONMENT=dev',
+  ],
+
+  turboEnvVars: [
+    'NEXT_PUBLIC_SENTRY_DSN',
+    'NEXT_PUBLIC_SENTRY_ENVIRONMENT',
+    'NEXT_RUNTIME',
+    'SENTRY_ORG',
+    'SENTRY_PROJECT',
+    'SENTRY_AUTH_TOKEN',
+  ],
+
+  // ─── 공유 파일 조각 (providers 합성용) ───
+
+  providerImports: [],
+  providerWrappers: [],
+
+  // ─── 독립 파일 ───
+
+  files: {
+    'sentry.server.config.ts': `import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? 'dev',
+  enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 0,
+  beforeSend: (event, hint) => {
+    if (event.level === 'warning' || event.level === 'info' || event.level === 'debug' || event.level === 'log') {
+      return null;
+    }
+
+    if (event.exception?.values?.[0]?.type === 'AxiosError') {
+      return null;
+    }
+
+    const error = hint?.originalException;
+
+    if (error instanceof Error && error.name === 'ApiError') {
+      const status = (error as { status?: number }).status;
+      if (status === 401) return null;
+    }
+
+    if (event.exception?.values?.[0]?.value?.includes('An error occurred in the Server Components render')) {
+      return null;
+    }
+
+    return event;
+  },
+});
+`,
+
+    'sentry.edge.config.ts': `import * as Sentry from '@sentry/nextjs';
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? 'dev',
+  enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 0,
+  beforeSend: (event) => {
+    if (event.level === 'warning' || event.level === 'info' || event.level === 'debug' || event.level === 'log') {
+      return null;
+    }
+
+    if (event.exception?.values?.[0]?.type === 'AxiosError') {
+      return null;
+    }
+
+    return event;
+  },
+});
+`,
+
+    'instrumentation.ts': `import * as Sentry from '@sentry/nextjs';
+
+export const register = async () => {
+  if (process.env.NEXT_RUNTIME === 'nodejs') {
+    await import('./sentry.server.config');
+  }
+
+  if (process.env.NEXT_RUNTIME === 'edge') {
+    await import('./sentry.edge.config');
+  }
+};
+
+export const onRequestError = (
+  ...[error, request, context]: Parameters<typeof Sentry.captureRequestError>
+) => {
+  if (error instanceof Error && (error.name === 'ApiError' || error.name === 'AxiosError')) {
+    return;
+  }
+
+  Sentry.captureRequestError(error, request, context);
+};
+`,
+
+    'instrumentation-client.ts': `import * as Sentry from '@sentry/nextjs';
+
+const IGNORED_ERROR_PATTERNS = [
+  'ResizeObserver loop',
+  'ResizeObserver loop completed with undelivered notifications',
+  'Non-Error promise rejection captured',
+  'AbortError',
+  'ChunkLoadError',
+  'Loading chunk',
+];
+
+const BROWSER_NETWORK_ERROR_PATTERNS = [
+  'Load failed',
+  'Failed to fetch',
+  'NetworkError',
+];
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? 'dev',
+  enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 0,
+  integrations: [Sentry.replayIntegration()],
+  replaysSessionSampleRate: 0,
+  replaysOnErrorSampleRate: 0.5,
+  ignoreErrors: IGNORED_ERROR_PATTERNS,
+  denyUrls: [
+    /extensions\\//i,
+    /chrome-extension:/i,
+    /safari-web-extension:/i,
+  ],
+  beforeSend: (event, hint) => {
+    if (event.level === 'warning' || event.level === 'info' || event.level === 'debug' || event.level === 'log') {
+      return null;
+    }
+
+    const error = hint?.originalException;
+
+    if (error instanceof Error && error.name === 'ApiError') {
+      return null;
+    }
+
+    if (
+      error instanceof Error &&
+      BROWSER_NETWORK_ERROR_PATTERNS.some((pattern) => error.message.includes(pattern))
+    ) {
+      return null;
+    }
+
+    return event;
+  },
+});
+
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+`,
+
+    'app/global-error.tsx': `'use client';
+
+import * as Sentry from '@sentry/nextjs';
+import { useEffect } from 'react';
+
+export default function GlobalError({
+  error,
+}: {
+  error: Error & { digest?: string };
+}) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
+  return (
+    <html>
+      <body>
+        <div className='flex min-h-screen items-center justify-center'>
+          <div className='text-center'>
+            <h1 className='text-2xl font-bold'>Something went wrong!</h1>
+            <p className='mt-2 text-gray-600'>{error.message}</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  );
+}
+`,
+
+    'app/error.tsx': `'use client';
+
+import * as Sentry from '@sentry/nextjs';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect } from 'react';
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
+  return (
+    <div className='flex min-h-screen items-center justify-center px-4'>
+      <div className='w-full max-w-md rounded-lg border p-6 shadow-lg'>
+        <div className='mb-4 flex justify-center'>
+          <div className='flex h-16 w-16 items-center justify-center rounded-full bg-red-50 dark:bg-red-950'>
+            <AlertTriangle className='h-8 w-8 text-red-600 dark:text-red-400' />
+          </div>
+        </div>
+
+        <h2 className='mb-2 text-center text-2xl font-bold'>오류가 발생했습니다</h2>
+        <p className='mb-6 text-center text-sm text-gray-500'>
+          예상치 못한 오류가 발생했습니다. 다시 시도해주세요.
+        </p>
+
+        <div className='rounded-md border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950'>
+          <p className='text-sm text-red-600 dark:text-red-400'>
+            {error.message || '알 수 없는 오류'}
+          </p>
+        </div>
+
+        <div className='mt-6 space-y-3'>
+          <button
+            onClick={reset}
+            className='flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90'
+          >
+            <RefreshCw className='h-4 w-4' />
+            다시 시도
+          </button>
+
+          <Link
+            href='/'
+            className='flex w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-accent'
+          >
+            <Home className='h-4 w-4' />
+            홈으로 이동
+          </Link>
+        </div>
+
+        {process.env.NODE_ENV === 'development' && error.digest && (
+          <div className='mt-4 rounded-md bg-gray-50 p-3 dark:bg-gray-900'>
+            <p className='text-xs text-gray-600 dark:text-gray-400'>
+              Error ID: {error.digest}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+`,
+
+    'src/shared/ui/FallbackBoundary/index.tsx': `import React, {
+  Component,
+  ComponentType,
+  ErrorInfo,
+  ReactNode,
+  Suspense,
+} from 'react';
+import * as Sentry from '@sentry/nextjs';
+import { ApiError } from '../../api/error';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
+
+interface ErrorFallbackProps {
+  error: Error | null;
+  resetErrorBoundary: () => void;
+}
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  fallback?: React.ElementType<ErrorFallbackProps>;
+  onReset: () => void;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false, error: null };
+
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.resetErrorBoundary = this.resetErrorBoundary.bind(this);
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    if (error instanceof ApiError) {
+      return;
+    }
+
+    Sentry.withScope((scope) => {
+      scope.setTag('boundary', 'ErrorBoundary');
+      scope.setFingerprint(['ErrorBoundary', error.name, error.message]);
+
+      if (errorInfo.componentStack) {
+        scope.setContext('react', {
+          componentStack: errorInfo.componentStack,
+        });
+      }
+      Sentry.captureException(error);
+    });
+  }
+
+  resetErrorBoundary() {
+    this.props.onReset();
+    this.setState({ hasError: false, error: null });
+  }
+
+  render() {
+    const { hasError, error } = this.state;
+    const { children, fallback: Fallback } = this.props;
+
+    if (hasError && Fallback) {
+      return (
+        <Fallback error={error} resetErrorBoundary={this.resetErrorBoundary} />
+      );
+    }
+
+    return children;
+  }
+}
+
+interface FallbackBoundaryProps {
+  children: ReactNode;
+  errorFallback?: ComponentType<ErrorFallbackProps>;
+  suspenseFallback?: ReactNode;
+}
+
+export function FallbackBoundary({
+  children,
+  errorFallback,
+  suspenseFallback,
+}: FallbackBoundaryProps) {
+  return (
+    <QueryErrorResetBoundary>
+      {({ reset }) => (
+        <ErrorBoundary onReset={reset} fallback={errorFallback}>
+          <Suspense fallback={suspenseFallback}>{children}</Suspense>
+        </ErrorBoundary>
+      )}
+    </QueryErrorResetBoundary>
+  );
+}
+`,
+
+    'src/shared/api/apiTypes.ts': `export interface ApiErrorBody {
+  code: string;
+  message: string;
+}
+
+export interface ApiResponse<T = unknown> {
+  result: 'SUCCESS' | 'ERROR';
+  data: T | null;
+  error: ApiErrorBody | null;
+}
+`,
+
+    'src/shared/api/error.ts': `import type { ApiErrorBody } from './apiTypes';
+
+export class ApiError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly code: string,
+    public readonly data: ApiErrorBody | null,
+  ) {
+    super(data?.message ?? \`API 요청 실패 (\${status})\`);
+    this.name = 'ApiError';
+  }
+}
+`,
+
+    'src/shared/api/apiCore.ts': `import * as Sentry from '@sentry/nextjs';
+
+type ApiErrorLogParams = {
+  url: string;
+  method: string;
+  status: number | undefined;
+  requestHeaders?: Record<string, string | undefined>;
+  requestBody?: unknown;
+  responseBody?: unknown;
+};
+
+export const logApiError = (prefix: string, params: ApiErrorLogParams): void => {
+  const { url, method, status, requestHeaders, requestBody, responseBody } = params;
+
+  console.error(\`❌ [\${prefix} ERROR REPORT]\`);
+  console.error(\`- URL: \${method} \${url}\`);
+  console.error(\`- Status: \${status ?? 'N/A'}\`);
+
+  if (requestHeaders) {
+    const { Authorization: _, ...safeHeaders } = requestHeaders;
+    console.error('- Request Headers:', safeHeaders);
+  }
+
+  if (requestBody) {
+    console.error('- Request Body:', requestBody);
+  }
+
+  if (responseBody) {
+    console.error('- Response Body:', responseBody);
+  }
+};
+
+type ApiSentryCapture = {
+  url: string;
+  apiPath: string;
+  method: string;
+  status: number | undefined;
+  responseBody?: unknown;
+};
+
+export const captureApiError = (params: ApiSentryCapture): void => {
+  const { url, apiPath, method, status, responseBody } = params;
+
+  if (!status || status < 500) return;
+
+  Sentry.withScope((scope) => {
+    scope.setTag('error.type', 'api');
+    scope.setContext('API Request', { method, url });
+    scope.setContext('API Response', {
+      status,
+      body: JSON.stringify(responseBody),
+    });
+    scope.setFingerprint([method, apiPath, String(status)]);
+
+    Sentry.captureException(
+      new Error(\`[API] \${method} \${apiPath} \${status}\`),
+    );
+  });
+};
+`,
+
+    'src/shared/api/http.ts': `import axios from 'axios';
+import { ApiError } from './error';
+import type { ApiResponse } from './apiTypes';
+import { captureApiError, logApiError } from './apiCore';
+
+const IS_SERVER = typeof window === 'undefined';
+const API_URL = process.env.API_URL || 'http://localhost:8080/api';
+const HTTP_TIMEOUT = 10_000;
+
+const http = axios.create({
+  baseURL: IS_SERVER ? API_URL : '/api/proxy',
+  timeout: HTTP_TIMEOUT,
+});
+
+http.interceptors.response.use(
+  (response) => {
+    const body = response.data as ApiResponse;
+
+    if (body && typeof body === 'object' && 'result' in body) {
+      if (body.result === 'ERROR') {
+        return Promise.reject(
+          new ApiError(response.status, body.error?.code ?? '', body.error),
+        );
+      }
+      response.data = body.data;
+    }
+
+    return response;
+  },
+  (error) => {
+    if (axios.isAxiosError(error)) {
+      const { config, response } = error;
+
+      const fullUrl = \`\${config?.baseURL ?? ''}\${config?.url ?? ''}\`;
+      const apiPath = config?.url ?? '';
+
+      const body = response?.data as ApiResponse | undefined;
+      const errorBody = body?.error ?? null;
+
+      if (process.env.NODE_ENV === 'development') {
+        logApiError('API', {
+          url: fullUrl,
+          method: config?.method?.toUpperCase() ?? 'UNKNOWN',
+          status: response?.status,
+          requestBody: config?.data,
+          responseBody: response?.data,
+        });
+      }
+
+      if (IS_SERVER) {
+        captureApiError({
+          url: fullUrl,
+          apiPath,
+          method: config?.method?.toUpperCase() ?? 'UNKNOWN',
+          status: response?.status,
+          responseBody: response?.data,
+        });
+      }
+
+      return Promise.reject(
+        new ApiError(
+          response?.status ?? 0,
+          errorBody?.code ?? '',
+          errorBody,
+        ),
+      );
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export { http };
+`,
+
+    'src/shared/api/index.ts': `export { http } from './http';
+export { ApiError } from './error';
+export type { ApiErrorBody, ApiResponse } from './apiTypes';
+export { captureApiError, logApiError } from './apiCore';
+`,
+
+    'app/api/proxy/[...path]/route.ts': `import { NextResponse, type NextRequest } from 'next/server';
+import {
+  logApiError,
+  captureApiError,
+} from '@/src/shared/api/apiCore';
+
+const API_URL = process.env.API_URL || 'http://localhost:8080/api';
+
+const proxyRequest = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ path: string[] }> },
+  method: string,
+) => {
+  const { path } = await params;
+  const apiPath = path.join('/');
+  const url = new URL(\`\${API_URL}/\${apiPath}\`);
+
+  request.nextUrl.searchParams.forEach((value, key) => {
+    url.searchParams.set(key, value);
+  });
+
+  const headers: HeadersInit = {
+    'Accept-Language': request.headers.get('Accept-Language') || 'ko',
+  };
+
+  const contentType = request.headers.get('Content-Type');
+  let body: BodyInit | undefined;
+
+  if (method !== 'GET') {
+    if (contentType?.includes('multipart/form-data')) {
+      body = await request.formData();
+    } else {
+      headers['Content-Type'] = 'application/json';
+      body = await request.text();
+    }
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(url.toString(), { method, headers, body });
+  } catch (error) {
+    console.error(\`❌ [PROXY] \${method} \${url.toString()} — Network Error:\`, error);
+    return NextResponse.json(
+      { result: 'ERROR', data: null, error: { code: 'NETWORK_ERROR', message: '서버에 연결할 수 없습니다.' } },
+      { status: 502 },
+    );
+  }
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    logApiError('PROXY', {
+      url: url.toString(),
+      method,
+      status: response.status,
+      requestHeaders: headers as Record<string, string>,
+      requestBody: typeof body === 'string' ? body : undefined,
+      responseBody: data,
+    });
+
+    captureApiError({
+      url: url.toString(),
+      apiPath,
+      method,
+      status: response.status,
+      responseBody: data,
+    });
+  }
+
+  return NextResponse.json(data, { status: response.status });
+};
+
+export const GET = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
+  proxyRequest(req, ctx, 'GET');
+
+export const POST = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
+  proxyRequest(req, ctx, 'POST');
+
+export const PUT = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
+  proxyRequest(req, ctx, 'PUT');
+
+export const PATCH = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
+  proxyRequest(req, ctx, 'PATCH');
+
+export const DELETE = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
+  proxyRequest(req, ctx, 'DELETE');
+`,
+
+    'src/shared/hooks/useAppMutation.ts': `import {
+  useMutation,
+  type UseMutationOptions,
+  type DefaultError,
+} from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { ApiError } from '../api/error';
+
+type AppMutationOptions<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown,
+> = UseMutationOptions<TData, TError, TVariables, TContext> & {
+  errorMessage?: string;
+  showErrorToast?: boolean;
+};
+
+export const useAppMutation = <
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown,
+>(
+  options: AppMutationOptions<TData, TError, TVariables, TContext>,
+) => {
+  const { errorMessage, showErrorToast = true, onError, ...rest } = options;
+
+  return useMutation({
+    ...rest,
+    onError: (...args) => {
+      onError?.(...args);
+
+      if (!showErrorToast) return;
+
+      const [error] = args;
+      const message =
+        error instanceof ApiError
+          ? error.data?.message ?? errorMessage
+          : errorMessage;
+
+      if (message) {
+        toast.error(message);
+      }
+    },
+  });
+};
+`,
+  },
+};

@@ -6,10 +6,10 @@ import {
   BookOpenIcon,
   BoxesIcon,
   BrushIcon,
+  FolderPlusIcon,
   HistoryIcon,
   PaletteIcon,
   RocketIcon,
-  SlidersHorizontalIcon,
   TerminalIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -36,10 +36,10 @@ import {
 
 const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "시작하기", href: "/getting-started", icon: RocketIcon },
+  { title: "프로젝트 생성", href: "/create", icon: FolderPlusIcon },
   { title: "CLI", href: "/cli", icon: TerminalIcon },
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
-  { title: "Playground", href: "/playground", icon: SlidersHorizontalIcon },
   { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
   { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
 ];
@@ -65,6 +65,7 @@ const components: { title: string; href: string }[] = [
   { title: "Input", href: "/components/input" },
   { title: "Label", href: "/components/label" },
   { title: "Menubar", href: "/components/menubar" },
+  { title: "Pagination", href: "/components/pagination" },
   { title: "Popover", href: "/components/popover" },
   { title: "Progress", href: "/components/progress" },
   { title: "Radio", href: "/components/radio" },

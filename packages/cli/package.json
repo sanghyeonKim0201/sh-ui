@@ -1,11 +1,38 @@
 {
-  "name": "@sh-ui/cli",
-  "version": "0.13.0",
-  "private": true,
-  "description": "sh-ui CLI — sh-ui init / sh-ui add",
+  "name": "sh-ui-cli",
+  "version": "0.14.0",
+  "description": "sh-ui CLI — 디자인 시스템 컴포넌트를 프로젝트로 복사하는 CLI (sh-ui init / add / list / remove)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanghyeonKim0201/sh-ui.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/sanghyeonKim0201/sh-ui#readme",
+  "bugs": {
+    "url": "https://github.com/sanghyeonKim0201/sh-ui/issues"
+  },
+  "keywords": [
+    "sh-ui",
+    "cli",
+    "design-system",
+    "registry",
+    "components"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "bin": {
     "sh-ui": "./bin/sh-ui.mjs"
   },
-  "files": ["bin", "src"]
+  "scripts": {
+    "prepublishOnly": "node --check bin/sh-ui.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "LICENSE",
+    "README.md"
+  ]
 }

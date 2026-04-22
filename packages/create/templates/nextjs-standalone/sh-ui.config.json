@@ -1,0 +1,19 @@
+{
+  "platform": "react",
+  "style": "default",
+  "theme": {
+    "base": "neutral",
+    "radius": "md",
+    "mode": "light-dark"
+  },
+  "paths": {
+    "tokens": "src/shared/styles/tokens.css",
+    "components": "src/shared/ui",
+    "utils": "src/shared/lib/utils.ts"
+  },
+  "aliases": {
+    "components": "@/src/shared/ui",
+    "utils": "@/src/shared/lib/utils",
+    "ui": "@/src/shared/ui"
+  }
+}

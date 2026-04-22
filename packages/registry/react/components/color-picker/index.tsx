@@ -176,16 +176,14 @@ export function ColorPicker({
 
   const setHsv = React.useCallback(
     (partial: Partial<HSV>) => {
-      setHsva((prev) => {
-        const next: HSVA = { ...prev, ...partial };
-        const hex = hsvToHex(next);
-        lastEmittedRef.current = hex;
-        if (!isControlled) setInternal(hex);
-        onChange?.(hex);
-        return next;
-      });
+      const next: HSVA = { ...hsva, ...partial };
+      const hex = hsvToHex(next);
+      lastEmittedRef.current = hex;
+      setHsva(next);
+      if (!isControlled) setInternal(hex);
+      onChange?.(hex);
     },
-    [isControlled, onChange],
+    [hsva, isControlled, onChange],
   );
 
   const setAlpha = React.useCallback((a: number) => {

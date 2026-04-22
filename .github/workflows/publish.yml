@@ -1,0 +1,62 @@
+name: Publish to npm
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # npm Trusted Publisher OIDC + provenance
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [create, cli]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Test (if script exists)
+        working-directory: packages/${{ matrix.package }}
+        run: |
+          if node -e "process.exit(require('./package.json').scripts?.test ? 0 : 1)"; then
+            pnpm test
+          else
+            echo "No test script in packages/${{ matrix.package }} — skipping"
+          fi
+
+      - name: Check if already published
+        id: check
+        working-directory: packages/${{ matrix.package }}
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "✔ $NAME@$VERSION already on registry — skipping"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "→ Will publish $NAME@$VERSION"
+          fi
+
+      - name: Publish
+        if: steps.check.outputs.skip == 'false'
+        working-directory: packages/${{ matrix.package }}
+        run: pnpm publish --no-git-checks --provenance --access public

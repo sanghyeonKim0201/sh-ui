@@ -260,6 +260,15 @@
       "dependencies": [],
       "registryDependencies": ["tokens"]
     },
+    "pagination": {
+      "name": "pagination",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_pagination.dart", "dest": "{widgets}/sh_ui_pagination.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
     "tooltip": {
       "name": "tooltip",
       "type": "widget",

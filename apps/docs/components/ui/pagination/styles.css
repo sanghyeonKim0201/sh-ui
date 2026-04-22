@@ -1,0 +1,105 @@
+.sh-ui-pagination {
+  display: flex;
+  justify-content: center;
+  font-size: var(--text-sm);
+  color: var(--foreground);
+}
+
+.sh-ui-pagination__content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sh-ui-pagination__item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sh-ui-pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border-radius: calc(var(--radius) - 2px);
+  border: var(--border-width) solid transparent;
+  background: transparent;
+  color: var(--foreground);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast),
+    border-color var(--duration-fast),
+    color var(--duration-fast);
+  cursor: pointer;
+  user-select: none;
+}
+
+.sh-ui-pagination__link[data-size="sm"] {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+}
+
+.sh-ui-pagination__link:hover {
+  background: var(--background-muted);
+}
+
+.sh-ui-pagination__link:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.sh-ui-pagination__link[data-active] {
+  background: var(--foreground);
+  color: var(--background);
+  font-weight: var(--weight-medium);
+}
+
+.sh-ui-pagination__link[data-active]:hover {
+  background: var(--foreground);
+  opacity: 0.9;
+}
+
+.sh-ui-pagination__link[aria-disabled="true"],
+.sh-ui-pagination__link[data-disabled] {
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.sh-ui-pagination__nav {
+  padding: 0 0.625rem;
+}
+
+.sh-ui-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--foreground-muted);
+}
+
+.sh-ui-pagination__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-pagination__link {
+    transition: none;
+  }
+}

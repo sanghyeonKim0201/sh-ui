@@ -1,0 +1,5 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "packages/ui/ui-core"
+  - "packages/ui/ui-apps/*"
