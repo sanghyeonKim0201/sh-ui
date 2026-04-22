@@ -1,0 +1,20 @@
+{
+  "name": "sh-ui-react-registry",
+  "version": "1.0.0",
+  "description": "sh-ui React component registry — source of truth for component implementations",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "jsdom": "^25.0.1",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/node": "^22.10.0"
+  }
+}
