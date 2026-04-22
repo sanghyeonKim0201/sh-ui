@@ -5,7 +5,7 @@
     {
       "version": "0.18.0",
       "date": "2026-04-22",
-      "title": "@sh-ui/create — 비대화형 플래그와 theme 주입",
+      "title": "sh-ui-create — 비대화형 플래그와 theme 주입",
       "type": "minor",
       "highlights": [
         "--platform / --structure / --plugins / --theme / --yes 플래그 지원 — 완전 비대화형 실행 가능",
@@ -17,7 +17,7 @@
     {
       "version": "0.17.0",
       "date": "2026-04-21",
-      "title": "@sh-ui/create — Flutter 스타터 지원",
+      "title": "sh-ui-create — Flutter 스타터 지원",
       "type": "minor",
       "highlights": [
         "sh-ui-create — 프로젝트 생성 시 플랫폼 선택(Next.js / Flutter) 신규",
@@ -32,7 +32,7 @@
       "title": "sh-ui-create — 프로젝트 스캐폴드 CLI",
       "type": "minor",
       "highlights": [
-        "@sh-ui/create 신규 패키지 — npx sh-ui-create 로 sh-ui 가 사전 설정된 Next.js 프로젝트 스캐폴드",
+        "sh-ui-create 신규 패키지 — npx sh-ui-create 로 sh-ui 가 사전 설정된 Next.js 프로젝트 스캐폴드",
         "단독 / 모노레포(Turborepo + pnpm workspace) 템플릿 — FSD 폴더 구조 + sh-ui.config.json + tokens.css 선반영",
         "Sentry / next-intl 플러그인 — 체크박스 선택으로 파일·의존성·next.config 래핑 자동 구성",
         "add-app / add-component 보조 명령 — 모노레포 앱 추가, 앱별 ui 패키지에 sh-ui add 위임",

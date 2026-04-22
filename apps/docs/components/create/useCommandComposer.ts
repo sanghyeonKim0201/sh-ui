@@ -15,10 +15,10 @@ export type ComposerOptions = {
 };
 
 const packageManagerPrefix: Record<PackageManager, string> = {
-  pnpm: "pnpm dlx @sh-ui/create",
-  npm: "npx @sh-ui/create",
-  yarn: "yarn dlx @sh-ui/create",
-  bun: "bunx @sh-ui/create",
+  pnpm: "pnpm dlx sh-ui-create",
+  npm: "npx sh-ui-create",
+  yarn: "yarn dlx sh-ui-create",
+  bun: "bunx sh-ui-create",
 };
 
 export const composeCommand = (opts: ComposerOptions): string => {

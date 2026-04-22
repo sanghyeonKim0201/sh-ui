@@ -1,4 +1,4 @@
-# @sh-ui/create
+# sh-ui-create
 
 sh-ui 기반 Next.js / Flutter 프로젝트 스캐폴드 CLI.
 
@@ -7,7 +7,7 @@ sh-ui 기반 Next.js / Flutter 프로젝트 스캐폴드 CLI.
 ```bash
 npm create @sh-ui my-app
 # 또는
-npx @sh-ui/create
+npx sh-ui-create
 ```
 
 ## 대화형 프롬프트
@@ -59,7 +59,7 @@ npx sh-ui add card input
 ## 더 알아보기
 
 - sh-ui 디자인 시스템: https://github.com/sanghyeonKim0201/sh-ui
-- `@sh-ui/cli` (컴포넌트 추가 CLI): https://www.npmjs.com/package/@sh-ui/cli
+- `sh-ui-cli` (컴포넌트 추가 CLI): https://www.npmjs.com/package/sh-ui-cli
 
 ## 라이선스
 

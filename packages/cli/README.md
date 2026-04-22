@@ -1,4 +1,4 @@
-# @sh-ui/cli
+# sh-ui-cli
 
 sh-ui 디자인 시스템의 컴포넌트를 프로젝트로 복사하는 CLI. shadcn 방식 — 프로젝트가 소스를 소유한다.
 
@@ -6,10 +6,10 @@ sh-ui 디자인 시스템의 컴포넌트를 프로젝트로 복사하는 CLI. s
 
 ```bash
 # 프로젝트 dev 의존성으로
-npm i -D @sh-ui/cli
+npm i -D sh-ui-cli
 
 # 또는 ad-hoc 실행
-npx @sh-ui/cli <command>
+npx sh-ui-cli <command>
 ```
 
 ## 사용법
@@ -74,7 +74,7 @@ npx sh-ui remove button
 ## 더 알아보기
 
 - sh-ui 디자인 시스템: https://github.com/sanghyeonKim0201/sh-ui
-- `@sh-ui/create` (프로젝트 스캐폴드): https://www.npmjs.com/package/@sh-ui/create
+- `sh-ui-create` (프로젝트 스캐폴드): https://www.npmjs.com/package/sh-ui-create
 
 ## 라이선스
 

@@ -12,8 +12,8 @@ export default function CliPage() {
         sh-ui 는 두 개의 CLI 를 제공한다.
       </p>
       <ul>
-        <li><strong><a href="#sh-ui-create"><code>sh-ui-create</code></a></strong> — 새 프로젝트 스캐폴드 (<code>@sh-ui/create</code> 패키지). 인터랙티브로 만들고 싶으면 <a href="/create">프로젝트 생성</a> 페이지의 UI 빌더를 사용.</li>
-        <li><strong><a href="#sh-ui"><code>sh-ui</code></a></strong> — 컴포넌트 설치·설정 (<code>@sh-ui/cli</code> 패키지). 기존 프로젝트에 토큰·컴포넌트를 복사.</li>
+        <li><strong><a href="#sh-ui-create"><code>sh-ui-create</code></a></strong> — 새 프로젝트 스캐폴드 (<code>sh-ui-create</code> 패키지). 인터랙티브로 만들고 싶으면 <a href="/create">프로젝트 생성</a> 페이지의 UI 빌더를 사용.</li>
+        <li><strong><a href="#sh-ui"><code>sh-ui</code></a></strong> — 컴포넌트 설치·설정 (<code>sh-ui-cli</code> 패키지). 기존 프로젝트에 토큰·컴포넌트를 복사.</li>
       </ul>
 
       {/* ───────── sh-ui-create ───────── */}
@@ -56,7 +56,7 @@ export default function CliPage() {
         language="bash"
         showLineNumbers={false}
         code={`# 완전 비대화형
-pnpm dlx @sh-ui/create my-app --platform next --structure standalone --plugins sentry --yes`}
+pnpm dlx sh-ui-create my-app --platform next --structure standalone --plugins sentry --yes`}
       />
 
       <h3>프로젝트 구조 선택</h3>
