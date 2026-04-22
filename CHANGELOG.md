@@ -1,0 +1,194 @@
+# Changelog
+
+이 파일은 `packages/changelog/versions.json` 으로부터 자동 생성된다.
+편집하지 말 것 — `pnpm gen:changelog` 로 재생성.
+
+## [v0.18.1](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.1) — sh-ui-create — 입력 하드닝
+
+_2026-04-22 · patch_
+
+- --theme base64 입력에 10KB 상한 추가 — 큰 악성 입력을 JSON 파싱 전에 명확한 에러로 거부
+- 플레이그라운드 Dialog 의 프로젝트 이름 검증 — 영문·숫자·'-'·'_' 만 허용, 첫 글자 영문/숫자. 잘못되면 에러 메시지 + 복사 버튼 비활성화
+- UX: 잘못된 이름으로 생성된 명령어를 터미널에 붙여넣는 사고 방지
+
+## [v0.18.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.0) — sh-ui-create — 비대화형 플래그와 theme 주입
+
+_2026-04-22 · minor_
+
+- --platform / --structure / --plugins / --theme / --yes 플래그 지원 — 완전 비대화형 실행 가능
+- --theme <base64> 로 커스텀 색·radius 를 프로젝트 생성 시점에 바로 주입 (플레이그라운드 연동 준비)
+- 템플릿의 tokens.css / sh_ui_tokens.dart 에 theme 섹션 마커 삽입 — 토큰만 교체되고 다른 값(spacing 등)은 유지
+
+## [v0.17.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.17.0) — sh-ui-create — Flutter 스타터 지원
+
+_2026-04-21 · minor_
+
+- sh-ui-create — 프로젝트 생성 시 플랫폼 선택(Next.js / Flutter) 신규
+- Flutter 선택 시 pubspec + main.dart + sh-ui.config.json + 토큰 복사본까지 완성된 스타터 제공
+- 생성 직후 `flutter run`으로 테마 적용된 초기 화면 확인, 이어서 `sh-ui add <widget>` 로 위젯 추가
+
+## [v0.16.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.16.0) — sh-ui-create — 프로젝트 스캐폴드 CLI
+
+_2026-04-21 · minor_
+
+- sh-ui-create 신규 패키지 — npx sh-ui-create 로 sh-ui 가 사전 설정된 Next.js 프로젝트 스캐폴드
+- 단독 / 모노레포(Turborepo + pnpm workspace) 템플릿 — FSD 폴더 구조 + sh-ui.config.json + tokens.css 선반영
+- Sentry / next-intl 플러그인 — 체크박스 선택으로 파일·의존성·next.config 래핑 자동 구성
+- add-app / add-component 보조 명령 — 모노레포 앱 추가, 앱별 ui 패키지에 sh-ui add 위임
+- docs: /create 페이지 추가 — 전체 레퍼런스 + 단독 vs 모노레포 구조 비교 + FSD 레이어 규칙
+
+## [v0.15.1](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.1) — ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정
+
+_2026-04-21 · patch_
+
+- setHsv 업데이터 콜백 내부에서 onChange를 호출하던 부작용을 업데이터 밖으로 이동
+- React StrictMode가 updater를 두 번 invoke할 때 발생하던 'setState while rendering' 경고 제거
+- controlled 모드에서 부모 상태를 동기화하는 시나리오(예: playground 토큰 에디터) 안정성 개선
+
+## [v0.15.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.0) — llms.txt — AI 도구용 컴포넌트 인벤토리
+
+_2026-04-21 · minor_
+
+- apps/docs/public/llms.txt — 전 컴포넌트 한 줄 요약 + 설치 플로우 + 관용 규칙 (llms.txt 표준 따름)
+- apps/docs/public/llms-full.txt — 각 컴포넌트별 설치 커맨드/import 경로/의존성 + 최근 릴리즈 5개
+- packages/llms 신규 워크스페이스 — registry.json + summaries/*.json을 읽어 자동 생성. next build 훅에 연결
+- pnpm gen:llms — 루트 스크립트로 수동 재생성 가능
+
+## [v0.14.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.14.0) — Pagination — 페이지 단위 내비게이션 컴포넌트
+
+_2026-04-20 · minor_
+
+- React: Pagination / PaginationContent / Item / Link / Previous / Next / Ellipsis 컴파운드 구성 — Breadcrumb와 동일한 관용
+- getPaginationRange({page, totalPages, siblings}) 유틸 — 현재 페이지 주변 + 양 끝 + 생략(…) 토큰 배열 생성
+- Flutter: ShUiPagination(page:, pageCount:, siblingCount:, onPageChanged:) — 페이지 범위 계산 내장
+- nav + ol/ul 시맨틱, 현재 페이지 aria-current="page", 이전/다음 aria-label 자동 부여
+
+## [v0.13.1](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.1) — 토큰 대비 감사 — WCAG AA 통과
+
+_2026-04-20 · patch_
+
+- light mode foreground-muted를 base.500 → base.600로 (muted 텍스트 on muted background 4.35:1 → 7.17:1)
+- light mode danger를 red.500 → red.600로 통일 (danger 버튼 3.76:1 → 4.83:1)
+- 감사 스크립트 추가: pnpm --filter @sh-ui/tokens audit:contrast — 3 base × 2 mode 조합 일괄 검증
+- 주의: 기존 설치자는 sh-ui add tokens로 tokens.css 재생성 필요
+
+## [v0.13.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.0) — CLI list / remove — 설치 관리 사이클 완결
+
+_2026-04-20 · minor_
+
+- sh-ui list — 설치된 컴포넌트 목록 (--all로 레지스트리 전체)
+- sh-ui remove <name...> — 설치 파일 삭제, 빈 폴더 자동 정리
+- 사용자 수정 파일은 기본 보호, --force로만 강제 삭제. --dry-run 미리보기 지원
+
+## [v0.12.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.12.0) — CLI --diff 플래그 — 업데이트 미리보기
+
+_2026-04-20 · minor_
+
+- sh-ui add <name> --diff — 파일을 쓰지 않고 변경 내역(unified diff)만 출력
+- 신규/변경/동일 파일을 분류해 요약, 수정해둔 파일이 있는지 사전 확인 가능
+- 의존성 없는 LCS 기반 line-diff 내장 (packages/cli/src/diff.mjs)
+
+## [v0.11.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.11.0) — Progress / Spinner / Separator — 기본 원자 3종
+
+_2026-04-20 · minor_
+
+- 신규: Progress (determinate + indeterminate) — React / Flutter 양쪽
+- 신규: Spinner (sm/md/lg) — aria-live 로딩 상태 노출
+- 신규: Separator (horizontal/vertical) — 기본 decorative, 필요 시 role=separator
+
+## [v0.10.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.10.0) — Flutter 파리티 라운드 — 최근 7종 위젯 추가
+
+_2026-04-20 · minor_
+
+- 신규: ShUiDropdownMenu (PopupMenuButton 기반)
+- 신규: ShUiContextMenu (우클릭 + long-press)
+- 신규: ShUiMenubar (가로 메뉴바)
+- 신규: ShUiTooltip (Flutter Tooltip 래핑)
+- 신규: ShUiBreadcrumb (items 리스트)
+- 신규: ShUiAvatar (이미지 + fallback, 4사이즈)
+- 신규: ShUiBadge (6 variant × 2 size)
+
+## [v0.9.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.9.0) — Menu 계열 완결 + Tooltip/Breadcrumb/Avatar/Badge
+
+_2026-04-20 · minor_
+
+- 신규: ContextMenu (우클릭/long-press)
+- 신규: Menubar (상단 가로 메뉴바, DropdownMenu 재사용)
+- 신규: Tooltip (hover/focus, Provider로 delay 공유)
+- 신규: Breadcrumb (nav + ol 시맨틱 compound)
+- 신규: Avatar (이미지 + 이니셜 fallback, 4사이즈)
+- 신규: Badge (6 variant × 2 size)
+
+## [v0.8.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.8.0) — DropdownMenu 신규
+
+_2026-04-20 · minor_
+
+- 신규: DropdownMenu (Base UI Menu 기반 compound)
+- 체크박스·라디오·서브메뉴·구분선 지원
+- 키보드 네비게이션 기본 제공 (↑↓, Enter, →/←, Home/End, Esc, type-ahead)
+
+## [v0.7.1](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.7.1) — 접근성 감사 라운드 1
+
+_2026-04-19 · patch_
+
+- 원자 8종(Button/Toggle/Radio/Checkbox/Dialog/Popover/Sidebar/Toast)에 reduced-motion 블록 추가
+- Carousel autoPlay: 키보드 focus 시 일시정지 (WCAG 2.2.2)
+
+## [v0.7.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.7.0) — Slider / CodePanel compound 전환
+
+_2026-04-19 · minor_
+
+- Slider: SliderTrack / SliderRange / SliderThumb + useSliderState
+- CodePanel: CodePanelHeader / Filename / Copy / Body
+- 기존 prop API 호환 유지
+
+## [v0.6.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.6.0) — Header + Compound 리팩터
+
+_2026-04-19 · minor_
+
+- 신규: Header (Flutter prop-based + React compound)
+- Carousel / Input / FileUpload / ColorPicker / DatePicker compound 전환
+
+## [v0.5.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.5.0) — Flutter 파리티 v1
+
+_2026-04-19 · minor_
+
+- Flutter 위젯 대량 추가 + API 확장 + multi-select 지원
+- ShUiAppShell 고수준 레이아웃 + Sidebar 개선
+
+## [v0.4.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.4.0) — 디자인 토큰 v2 + Flutter 쇼케이스
+
+_2026-04-19 · minor_
+
+- 디자인 토큰 v2 (primitives / semantic 분리)
+- Flutter 쇼케이스 앱 + pnpm 실행 스크립트
+- 테마 커스터마이징 가이드 페이지
+
+## [v0.3.1](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.3.1) — Input prefix / Select className 타입 수정
+
+_2026-04-17 · patch_
+
+- Input prefix 타입 충돌 해결
+- Select className 타입 에러 수정
+
+## [v0.3.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.3.0) — 컴포넌트 레지스트리 정리
+
+_2026-04-17 · minor_
+
+- 사이드바 네비게이션 정렬
+- 신규 컴포넌트 레지스트리 등록
+
+## [v0.2.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.2.0) — 컴포넌트 확장 + 문서 강화 + 모바일 안정화
+
+_2026-04-17 · minor_
+
+- 컴포넌트 라인업 확장 (Tabs / Popover / Dialog / Combobox / Label / base.css)
+- Sidebar 보조 패널·Popover flyout·접근성 개선
+- 모바일 레이아웃 안정화
+
+## [v0.1.0](https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.1.0) — sh-ui 초기 릴리스
+
+_2026-04-15 · minor_
+
+- 초기 컴포넌트 셋 + CLI 스캐폴딩
+- React/Flutter 듀얼 레지스트리 구조

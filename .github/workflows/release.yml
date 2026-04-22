@@ -1,0 +1,83 @@
+name: Create GitHub Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name (예: v0.18.1)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            echo "name=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build release body from versions.json
+        id: notes
+        env:
+          TAG: ${{ steps.tag.outputs.name }}
+        run: |
+          VERSION="${TAG#v}"
+          node <<'EOF' > release-body.md
+          const fs = require('fs');
+          const tag = process.env.TAG;
+          const version = tag.replace(/^v/, '');
+          const data = JSON.parse(fs.readFileSync('packages/changelog/versions.json', 'utf-8'));
+          const entry = data.versions.find(v => v.version === version);
+          if (!entry) {
+            console.error(`versions.json 에 ${version} 엔트리 없음`);
+            process.exit(1);
+          }
+          const lines = [];
+          lines.push(`## ${entry.title}`);
+          lines.push('');
+          if (entry.highlights?.length) {
+            for (const h of entry.highlights) lines.push(`- ${h}`);
+            lines.push('');
+          }
+          lines.push('---');
+          lines.push(`릴리즈 날짜: ${entry.date} · 종류: ${entry.type}`);
+          process.stdout.write(lines.join('\n'));
+          EOF
+          echo "path=release-body.md" >> $GITHUB_OUTPUT
+          echo "title=$(node -p "JSON.parse(require('fs').readFileSync('packages/changelog/versions.json','utf-8')).versions.find(v => v.version === '${VERSION}').title")" >> $GITHUB_OUTPUT
+
+      - name: Check if release exists
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✔ Release $TAG 이미 존재 — skip"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.name }}
+          TITLE: ${{ steps.notes.outputs.title }}
+        run: |
+          gh release create "$TAG" \
+            --title "$TAG — $TITLE" \
+            --notes-file release-body.md
