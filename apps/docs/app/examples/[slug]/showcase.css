@@ -1,0 +1,68 @@
+/* 루트 layout(<AppShell>) 안쪽에서도 풀스크린 느낌을 내도록
+   showcase-root가 AppShell의 좌측 사이드바·상단 헤더를 시각적으로 덮는다.
+   (사이드바 자체는 DOM에 남지만 showcase-root가 position:fixed로 덮는 형태.)
+*/
+.sh-ui-showcase-root {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sh-ui-showcase-topbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+}
+.sh-ui-showcase-topbar__back {
+  color: var(--foreground-muted);
+  text-decoration: none;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+}
+.sh-ui-showcase-topbar__back:hover {
+  background: var(--background-subtle);
+  color: var(--foreground);
+}
+.sh-ui-showcase-topbar__back:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+.sh-ui-showcase-topbar__meta {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.sh-ui-showcase-topbar__cat {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--foreground-muted);
+}
+.sh-ui-showcase-topbar__title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sh-ui-showcase-topbar__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.sh-ui-showcase-stage {
+  flex: 1 1 auto;
+  overflow: auto;
+  position: relative;
+}
