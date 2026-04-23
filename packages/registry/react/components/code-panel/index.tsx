@@ -6,7 +6,8 @@ function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
 
-export interface CodePanelProps {
+export interface CodePanelProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** 하이라이팅할 코드 문자열. 자식(compound)을 제공하지 않을 때 필수. */
   code?: string;
   /** shiki가 지원하는 언어 ID (e.g. "tsx", "typescript", "bash", "json"). */
@@ -17,7 +18,6 @@ export interface CodePanelProps {
   showLineNumbers?: boolean;
   /** 복사 버튼 숨기기. */
   hideCopy?: boolean;
-  className?: string;
   /** 직접 구성할 경우 CodePanelHeader / CodePanelBody 등 하위 컴포넌트를 넘긴다. */
   children?: React.ReactNode;
 }
@@ -37,11 +37,16 @@ export async function CodePanel({
   hideCopy,
   className,
   children,
+  ...rest
 }: CodePanelProps) {
   const classes = cx("sh-ui-code", className);
 
   if (children !== undefined) {
-    return <div className={classes}>{children}</div>;
+    return (
+      <div className={classes} {...rest}>
+        {children}
+      </div>
+    );
   }
 
   if (code === undefined) {
@@ -51,7 +56,7 @@ export async function CodePanel({
   const trimmed = code.replace(/\n$/, "");
 
   return (
-    <div className={classes}>
+    <div className={classes} {...rest}>
       {filename ? (
         <CodePanelHeader>
           <CodePanelFilename>{filename}</CodePanelFilename>
@@ -118,11 +123,14 @@ export function CodePanelCopy({ code }: CodePanelCopyProps) {
  * shiki로 코드를 하이라이팅하여 렌더하는 async 컴포넌트.
  */
 
-export interface CodePanelBodyProps {
+export interface CodePanelBodyProps
+  extends Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    "children" | "dangerouslySetInnerHTML"
+  > {
   code: string;
   language?: string;
   showLineNumbers?: boolean;
-  className?: string;
 }
 
 export async function CodePanelBody({
@@ -130,6 +138,7 @@ export async function CodePanelBody({
   language = "text",
   showLineNumbers = true,
   className,
+  ...rest
 }: CodePanelBodyProps) {
   const trimmed = code.replace(/\n$/, "");
   const html = await codeToHtml(trimmed, {
@@ -143,6 +152,7 @@ export async function CodePanelBody({
       className={cx("sh-ui-code__body", className)}
       data-line-numbers={showLineNumbers || undefined}
       dangerouslySetInnerHTML={{ __html: html }}
+      {...rest}
     />
   );
 }

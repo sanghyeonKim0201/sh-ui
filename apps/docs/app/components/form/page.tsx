@@ -1121,6 +1121,40 @@ function AddressFields({ namePrefix, legend }) {
         ]}
       />
 
+      <h3>간격 / 레이아웃</h3>
+      <p>
+        Form · Form.Section · Form.Field 는 기본적으로 세로 flex 레이아웃 + 토큰
+        간격(<code>--space-4</code>, <code>--space-1</code>)을 쓴다. 덮어쓰고 싶으면{" "}
+        <code>style</code> · <code>className</code> 으로 직접. 별도 CSS 변수나
+        prop 은 없다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "style / className / 외부 CSS",
+            language: "tsx",
+            code: `// 필드 간 간격
+<Form style={{ gap: "2rem" }}>
+
+// 필드 내부(label/control/error) 간격
+<Form.Field name="email" style={{ gap: "0.5rem" }}>
+
+// Tailwind 같은 utility
+<Form className="gap-8">
+<Form.Field name="email" className="gap-2">
+
+// 아예 레이아웃 교체
+<Form style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+<Form.Field name="email" style={{ flexDirection: "row", alignItems: "center" }}>
+
+// 여러 Field 에 일괄 적용하고 싶으면 외부 CSS 로
+// .my-form .sh-ui-form-field { gap: 0.5rem; }
+<Form className="my-form">`,
+          },
+        ]}
+      />
+
       <h3>타입</h3>
       <CodeTabs
         items={[
