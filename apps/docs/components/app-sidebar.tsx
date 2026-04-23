@@ -8,6 +8,7 @@ import {
   BrushIcon,
   FolderPlusIcon,
   HistoryIcon,
+  LayoutTemplateIcon,
   PaletteIcon,
   RocketIcon,
   TerminalIcon,
@@ -41,6 +42,7 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
   { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
+  { title: "실전 예제", href: "/examples", icon: LayoutTemplateIcon },
   { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
 ];
 
