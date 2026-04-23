@@ -5,8 +5,14 @@
       "name": "button",
       "type": "component",
       "files": [
-        { "src": "components/button/index.tsx", "dest": "{components}/button/index.tsx" },
-        { "src": "components/button/styles.css", "dest": "{components}/button/styles.css" }
+        {
+          "src": "components/button/index.tsx",
+          "dest": "{components}/button/index.tsx"
+        },
+        {
+          "src": "components/button/styles.css",
+          "dest": "{components}/button/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -15,8 +21,14 @@
       "name": "card",
       "type": "component",
       "files": [
-        { "src": "components/card/index.tsx", "dest": "{components}/card/index.tsx" },
-        { "src": "components/card/styles.css", "dest": "{components}/card/styles.css" }
+        {
+          "src": "components/card/index.tsx",
+          "dest": "{components}/card/index.tsx"
+        },
+        {
+          "src": "components/card/styles.css",
+          "dest": "{components}/card/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -25,8 +37,14 @@
       "name": "input",
       "type": "component",
       "files": [
-        { "src": "components/input/index.tsx", "dest": "{components}/input/index.tsx" },
-        { "src": "components/input/styles.css", "dest": "{components}/input/styles.css" }
+        {
+          "src": "components/input/index.tsx",
+          "dest": "{components}/input/index.tsx"
+        },
+        {
+          "src": "components/input/styles.css",
+          "dest": "{components}/input/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -35,49 +53,160 @@
       "name": "file-upload",
       "type": "component",
       "files": [
-        { "src": "components/file-upload/index.tsx", "dest": "{components}/file-upload/index.tsx" },
-        { "src": "components/file-upload/styles.css", "dest": "{components}/file-upload/styles.css" }
+        {
+          "src": "components/file-upload/index.tsx",
+          "dest": "{components}/file-upload/index.tsx"
+        },
+        {
+          "src": "components/file-upload/styles.css",
+          "dest": "{components}/file-upload/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
+    },
+    "form": {
+      "name": "form",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/form/index.tsx",
+          "dest": "{components}/form/index.tsx"
+        },
+        {
+          "src": "components/form/form.tsx",
+          "dest": "{components}/form/form.tsx"
+        },
+        {
+          "src": "components/form/field.tsx",
+          "dest": "{components}/form/field.tsx"
+        },
+        {
+          "src": "components/form/steps.tsx",
+          "dest": "{components}/form/steps.tsx"
+        },
+        {
+          "src": "components/form/store.ts",
+          "dest": "{components}/form/store.ts"
+        },
+        {
+          "src": "components/form/use-sh-ui-form.ts",
+          "dest": "{components}/form/use-sh-ui-form.ts"
+        },
+        {
+          "src": "components/form/context.ts",
+          "dest": "{components}/form/context.ts"
+        },
+        {
+          "src": "components/form/validation.ts",
+          "dest": "{components}/form/validation.ts"
+        },
+        {
+          "src": "components/form/utils.ts",
+          "dest": "{components}/form/utils.ts"
+        },
+        {
+          "src": "components/form/types.ts",
+          "dest": "{components}/form/types.ts"
+        },
+        {
+          "src": "components/form/focus-first-error.ts",
+          "dest": "{components}/form/focus-first-error.ts"
+        },
+        {
+          "src": "components/form/styles.css",
+          "dest": "{components}/form/styles.css"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "form-yup": {
+      "name": "form-yup",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/form-yup/index.tsx",
+          "dest": "{components}/form-yup/index.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "form"
+      ]
     },
     "code-panel": {
       "name": "code-panel",
       "type": "component",
       "files": [
-        { "src": "components/code-panel/index.tsx", "dest": "{components}/code-panel/index.tsx" },
-        { "src": "components/code-panel/copy.tsx", "dest": "{components}/code-panel/copy.tsx" },
-        { "src": "components/code-panel/styles.css", "dest": "{components}/code-panel/styles.css" }
+        {
+          "src": "components/code-panel/index.tsx",
+          "dest": "{components}/code-panel/index.tsx"
+        },
+        {
+          "src": "components/code-panel/copy.tsx",
+          "dest": "{components}/code-panel/copy.tsx"
+        },
+        {
+          "src": "components/code-panel/styles.css",
+          "dest": "{components}/code-panel/styles.css"
+        }
       ],
-      "dependencies": ["shiki"],
+      "dependencies": [
+        "shiki"
+      ],
       "registryDependencies": []
     },
     "select": {
       "name": "select",
       "type": "component",
       "files": [
-        { "src": "components/select/index.tsx", "dest": "{components}/select/index.tsx" },
-        { "src": "components/select/styles.css", "dest": "{components}/select/styles.css" }
+        {
+          "src": "components/select/index.tsx",
+          "dest": "{components}/select/index.tsx"
+        },
+        {
+          "src": "components/select/styles.css",
+          "dest": "{components}/select/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "sidebar": {
       "name": "sidebar",
       "type": "component",
       "files": [
-        { "src": "components/sidebar/index.tsx", "dest": "{components}/sidebar/index.tsx" },
-        { "src": "components/sidebar/styles.css", "dest": "{components}/sidebar/styles.css" }
+        {
+          "src": "components/sidebar/index.tsx",
+          "dest": "{components}/sidebar/index.tsx"
+        },
+        {
+          "src": "components/sidebar/styles.css",
+          "dest": "{components}/sidebar/styles.css"
+        }
       ],
-      "dependencies": ["lucide-react"],
-      "registryDependencies": ["popover"]
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "popover"
+      ]
     },
     "header": {
       "name": "header",
       "type": "component",
       "files": [
-        { "src": "components/header/index.tsx", "dest": "{components}/header/index.tsx" },
-        { "src": "components/header/styles.css", "dest": "{components}/header/styles.css" }
+        {
+          "src": "components/header/index.tsx",
+          "dest": "{components}/header/index.tsx"
+        },
+        {
+          "src": "components/header/styles.css",
+          "dest": "{components}/header/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -86,7 +215,10 @@
       "name": "base",
       "type": "utility",
       "files": [
-        { "src": "components/base/base.css", "dest": "{styles}/base.css" }
+        {
+          "src": "components/base/base.css",
+          "dest": "{styles}/base.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -95,7 +227,10 @@
       "name": "breakpoints",
       "type": "utility",
       "files": [
-        { "src": "components/breakpoints/breakpoints.css", "dest": "{styles}/breakpoints.css" }
+        {
+          "src": "components/breakpoints/breakpoints.css",
+          "dest": "{styles}/breakpoints.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -104,7 +239,10 @@
       "name": "focus-ring",
       "type": "utility",
       "files": [
-        { "src": "components/focus-ring/focus-ring.css", "dest": "{styles}/focus-ring.css" }
+        {
+          "src": "components/focus-ring/focus-ring.css",
+          "dest": "{styles}/focus-ring.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -113,7 +251,10 @@
       "name": "z-index",
       "type": "utility",
       "files": [
-        { "src": "components/z-index/z-index.css", "dest": "{styles}/z-index.css" }
+        {
+          "src": "components/z-index/z-index.css",
+          "dest": "{styles}/z-index.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -122,7 +263,10 @@
       "name": "animations",
       "type": "utility",
       "files": [
-        { "src": "components/animations/animations.css", "dest": "{styles}/animations.css" }
+        {
+          "src": "components/animations/animations.css",
+          "dest": "{styles}/animations.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -131,7 +275,10 @@
       "name": "cn",
       "type": "lib",
       "files": [
-        { "src": "lib/cn.ts", "dest": "{lib}/cn.ts" }
+        {
+          "src": "lib/cn.ts",
+          "dest": "{lib}/cn.ts"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -140,7 +287,10 @@
       "name": "use-media-query",
       "type": "hook",
       "files": [
-        { "src": "hooks/use-media-query.ts", "dest": "{hooks}/use-media-query.ts" }
+        {
+          "src": "hooks/use-media-query.ts",
+          "dest": "{hooks}/use-media-query.ts"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -149,7 +299,10 @@
       "name": "use-active-section",
       "type": "hook",
       "files": [
-        { "src": "hooks/use-active-section.ts", "dest": "{hooks}/use-active-section.ts" }
+        {
+          "src": "hooks/use-active-section.ts",
+          "dest": "{hooks}/use-active-section.ts"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -158,8 +311,14 @@
       "name": "label",
       "type": "component",
       "files": [
-        { "src": "components/label/index.tsx", "dest": "{components}/label/index.tsx" },
-        { "src": "components/label/styles.css", "dest": "{components}/label/styles.css" }
+        {
+          "src": "components/label/index.tsx",
+          "dest": "{components}/label/index.tsx"
+        },
+        {
+          "src": "components/label/styles.css",
+          "dest": "{components}/label/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -168,8 +327,14 @@
       "name": "color-picker",
       "type": "component",
       "files": [
-        { "src": "components/color-picker/index.tsx", "dest": "{components}/color-picker/index.tsx" },
-        { "src": "components/color-picker/styles.css", "dest": "{components}/color-picker/styles.css" }
+        {
+          "src": "components/color-picker/index.tsx",
+          "dest": "{components}/color-picker/index.tsx"
+        },
+        {
+          "src": "components/color-picker/styles.css",
+          "dest": "{components}/color-picker/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -178,8 +343,14 @@
       "name": "slider",
       "type": "component",
       "files": [
-        { "src": "components/slider/index.tsx", "dest": "{components}/slider/index.tsx" },
-        { "src": "components/slider/styles.css", "dest": "{components}/slider/styles.css" }
+        {
+          "src": "components/slider/index.tsx",
+          "dest": "{components}/slider/index.tsx"
+        },
+        {
+          "src": "components/slider/styles.css",
+          "dest": "{components}/slider/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -188,88 +359,160 @@
       "name": "tabs",
       "type": "component",
       "files": [
-        { "src": "components/tabs/index.tsx", "dest": "{components}/tabs/index.tsx" },
-        { "src": "components/tabs/styles.css", "dest": "{components}/tabs/styles.css" }
+        {
+          "src": "components/tabs/index.tsx",
+          "dest": "{components}/tabs/index.tsx"
+        },
+        {
+          "src": "components/tabs/styles.css",
+          "dest": "{components}/tabs/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "combobox": {
       "name": "combobox",
       "type": "component",
       "files": [
-        { "src": "components/combobox/index.tsx", "dest": "{components}/combobox/index.tsx" },
-        { "src": "components/combobox/styles.css", "dest": "{components}/combobox/styles.css" }
+        {
+          "src": "components/combobox/index.tsx",
+          "dest": "{components}/combobox/index.tsx"
+        },
+        {
+          "src": "components/combobox/styles.css",
+          "dest": "{components}/combobox/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "popover": {
       "name": "popover",
       "type": "component",
       "files": [
-        { "src": "components/popover/index.tsx", "dest": "{components}/popover/index.tsx" },
-        { "src": "components/popover/styles.css", "dest": "{components}/popover/styles.css" }
+        {
+          "src": "components/popover/index.tsx",
+          "dest": "{components}/popover/index.tsx"
+        },
+        {
+          "src": "components/popover/styles.css",
+          "dest": "{components}/popover/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "dialog": {
       "name": "dialog",
       "type": "component",
       "files": [
-        { "src": "components/dialog/index.tsx", "dest": "{components}/dialog/index.tsx" },
-        { "src": "components/dialog/styles.css", "dest": "{components}/dialog/styles.css" }
+        {
+          "src": "components/dialog/index.tsx",
+          "dest": "{components}/dialog/index.tsx"
+        },
+        {
+          "src": "components/dialog/styles.css",
+          "dest": "{components}/dialog/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "dropdown-menu": {
       "name": "dropdown-menu",
       "type": "component",
       "files": [
-        { "src": "components/dropdown-menu/index.tsx", "dest": "{components}/dropdown-menu/index.tsx" },
-        { "src": "components/dropdown-menu/styles.css", "dest": "{components}/dropdown-menu/styles.css" }
+        {
+          "src": "components/dropdown-menu/index.tsx",
+          "dest": "{components}/dropdown-menu/index.tsx"
+        },
+        {
+          "src": "components/dropdown-menu/styles.css",
+          "dest": "{components}/dropdown-menu/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "context-menu": {
       "name": "context-menu",
       "type": "component",
       "files": [
-        { "src": "components/context-menu/index.tsx", "dest": "{components}/context-menu/index.tsx" },
-        { "src": "components/context-menu/styles.css", "dest": "{components}/context-menu/styles.css" }
+        {
+          "src": "components/context-menu/index.tsx",
+          "dest": "{components}/context-menu/index.tsx"
+        },
+        {
+          "src": "components/context-menu/styles.css",
+          "dest": "{components}/context-menu/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "menubar": {
       "name": "menubar",
       "type": "component",
       "files": [
-        { "src": "components/menubar/index.tsx", "dest": "{components}/menubar/index.tsx" },
-        { "src": "components/menubar/styles.css", "dest": "{components}/menubar/styles.css" }
+        {
+          "src": "components/menubar/index.tsx",
+          "dest": "{components}/menubar/index.tsx"
+        },
+        {
+          "src": "components/menubar/styles.css",
+          "dest": "{components}/menubar/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
-      "registryDependencies": ["dropdown-menu"]
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
+      "registryDependencies": [
+        "dropdown-menu"
+      ]
     },
     "tooltip": {
       "name": "tooltip",
       "type": "component",
       "files": [
-        { "src": "components/tooltip/index.tsx", "dest": "{components}/tooltip/index.tsx" },
-        { "src": "components/tooltip/styles.css", "dest": "{components}/tooltip/styles.css" }
+        {
+          "src": "components/tooltip/index.tsx",
+          "dest": "{components}/tooltip/index.tsx"
+        },
+        {
+          "src": "components/tooltip/styles.css",
+          "dest": "{components}/tooltip/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "breadcrumb": {
       "name": "breadcrumb",
       "type": "component",
       "files": [
-        { "src": "components/breadcrumb/index.tsx", "dest": "{components}/breadcrumb/index.tsx" },
-        { "src": "components/breadcrumb/styles.css", "dest": "{components}/breadcrumb/styles.css" }
+        {
+          "src": "components/breadcrumb/index.tsx",
+          "dest": "{components}/breadcrumb/index.tsx"
+        },
+        {
+          "src": "components/breadcrumb/styles.css",
+          "dest": "{components}/breadcrumb/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -278,8 +521,14 @@
       "name": "pagination",
       "type": "component",
       "files": [
-        { "src": "components/pagination/index.tsx", "dest": "{components}/pagination/index.tsx" },
-        { "src": "components/pagination/styles.css", "dest": "{components}/pagination/styles.css" }
+        {
+          "src": "components/pagination/index.tsx",
+          "dest": "{components}/pagination/index.tsx"
+        },
+        {
+          "src": "components/pagination/styles.css",
+          "dest": "{components}/pagination/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -288,18 +537,32 @@
       "name": "avatar",
       "type": "component",
       "files": [
-        { "src": "components/avatar/index.tsx", "dest": "{components}/avatar/index.tsx" },
-        { "src": "components/avatar/styles.css", "dest": "{components}/avatar/styles.css" }
+        {
+          "src": "components/avatar/index.tsx",
+          "dest": "{components}/avatar/index.tsx"
+        },
+        {
+          "src": "components/avatar/styles.css",
+          "dest": "{components}/avatar/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "badge": {
       "name": "badge",
       "type": "component",
       "files": [
-        { "src": "components/badge/index.tsx", "dest": "{components}/badge/index.tsx" },
-        { "src": "components/badge/styles.css", "dest": "{components}/badge/styles.css" }
+        {
+          "src": "components/badge/index.tsx",
+          "dest": "{components}/badge/index.tsx"
+        },
+        {
+          "src": "components/badge/styles.css",
+          "dest": "{components}/badge/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -308,8 +571,14 @@
       "name": "progress",
       "type": "component",
       "files": [
-        { "src": "components/progress/index.tsx", "dest": "{components}/progress/index.tsx" },
-        { "src": "components/progress/styles.css", "dest": "{components}/progress/styles.css" }
+        {
+          "src": "components/progress/index.tsx",
+          "dest": "{components}/progress/index.tsx"
+        },
+        {
+          "src": "components/progress/styles.css",
+          "dest": "{components}/progress/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -318,8 +587,14 @@
       "name": "spinner",
       "type": "component",
       "files": [
-        { "src": "components/spinner/index.tsx", "dest": "{components}/spinner/index.tsx" },
-        { "src": "components/spinner/styles.css", "dest": "{components}/spinner/styles.css" }
+        {
+          "src": "components/spinner/index.tsx",
+          "dest": "{components}/spinner/index.tsx"
+        },
+        {
+          "src": "components/spinner/styles.css",
+          "dest": "{components}/spinner/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -328,8 +603,14 @@
       "name": "separator",
       "type": "component",
       "files": [
-        { "src": "components/separator/index.tsx", "dest": "{components}/separator/index.tsx" },
-        { "src": "components/separator/styles.css", "dest": "{components}/separator/styles.css" }
+        {
+          "src": "components/separator/index.tsx",
+          "dest": "{components}/separator/index.tsx"
+        },
+        {
+          "src": "components/separator/styles.css",
+          "dest": "{components}/separator/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -338,7 +619,10 @@
       "name": "theme",
       "type": "component",
       "files": [
-        { "src": "components/theme/index.tsx", "dest": "{components}/theme/index.tsx" }
+        {
+          "src": "components/theme/index.tsx",
+          "dest": "{components}/theme/index.tsx"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -347,48 +631,86 @@
       "name": "checkbox",
       "type": "component",
       "files": [
-        { "src": "components/checkbox/index.tsx", "dest": "{components}/checkbox/index.tsx" },
-        { "src": "components/checkbox/styles.css", "dest": "{components}/checkbox/styles.css" }
+        {
+          "src": "components/checkbox/index.tsx",
+          "dest": "{components}/checkbox/index.tsx"
+        },
+        {
+          "src": "components/checkbox/styles.css",
+          "dest": "{components}/checkbox/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "radio": {
       "name": "radio",
       "type": "component",
       "files": [
-        { "src": "components/radio/index.tsx", "dest": "{components}/radio/index.tsx" },
-        { "src": "components/radio/styles.css", "dest": "{components}/radio/styles.css" }
+        {
+          "src": "components/radio/index.tsx",
+          "dest": "{components}/radio/index.tsx"
+        },
+        {
+          "src": "components/radio/styles.css",
+          "dest": "{components}/radio/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "switch": {
       "name": "switch",
       "type": "component",
       "files": [
-        { "src": "components/switch/index.tsx", "dest": "{components}/switch/index.tsx" },
-        { "src": "components/switch/styles.css", "dest": "{components}/switch/styles.css" }
+        {
+          "src": "components/switch/index.tsx",
+          "dest": "{components}/switch/index.tsx"
+        },
+        {
+          "src": "components/switch/styles.css",
+          "dest": "{components}/switch/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "toggle": {
       "name": "toggle",
       "type": "component",
       "files": [
-        { "src": "components/toggle/index.tsx", "dest": "{components}/toggle/index.tsx" },
-        { "src": "components/toggle/styles.css", "dest": "{components}/toggle/styles.css" }
+        {
+          "src": "components/toggle/index.tsx",
+          "dest": "{components}/toggle/index.tsx"
+        },
+        {
+          "src": "components/toggle/styles.css",
+          "dest": "{components}/toggle/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "textarea": {
       "name": "textarea",
       "type": "component",
       "files": [
-        { "src": "components/textarea/index.tsx", "dest": "{components}/textarea/index.tsx" },
-        { "src": "components/textarea/styles.css", "dest": "{components}/textarea/styles.css" }
+        {
+          "src": "components/textarea/index.tsx",
+          "dest": "{components}/textarea/index.tsx"
+        },
+        {
+          "src": "components/textarea/styles.css",
+          "dest": "{components}/textarea/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -397,8 +719,14 @@
       "name": "toast",
       "type": "component",
       "files": [
-        { "src": "components/toast/index.tsx", "dest": "{components}/toast/index.tsx" },
-        { "src": "components/toast/styles.css", "dest": "{components}/toast/styles.css" }
+        {
+          "src": "components/toast/index.tsx",
+          "dest": "{components}/toast/index.tsx"
+        },
+        {
+          "src": "components/toast/styles.css",
+          "dest": "{components}/toast/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -407,18 +735,32 @@
       "name": "date-picker",
       "type": "component",
       "files": [
-        { "src": "components/date-picker/index.tsx", "dest": "{components}/date-picker/index.tsx" },
-        { "src": "components/date-picker/styles.css", "dest": "{components}/date-picker/styles.css" }
+        {
+          "src": "components/date-picker/index.tsx",
+          "dest": "{components}/date-picker/index.tsx"
+        },
+        {
+          "src": "components/date-picker/styles.css",
+          "dest": "{components}/date-picker/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "skeleton": {
       "name": "skeleton",
       "type": "component",
       "files": [
-        { "src": "components/skeleton/index.tsx", "dest": "{components}/skeleton/index.tsx" },
-        { "src": "components/skeleton/styles.css", "dest": "{components}/skeleton/styles.css" }
+        {
+          "src": "components/skeleton/index.tsx",
+          "dest": "{components}/skeleton/index.tsx"
+        },
+        {
+          "src": "components/skeleton/styles.css",
+          "dest": "{components}/skeleton/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
@@ -427,21 +769,67 @@
       "name": "accordion",
       "type": "component",
       "files": [
-        { "src": "components/accordion/index.tsx", "dest": "{components}/accordion/index.tsx" },
-        { "src": "components/accordion/styles.css", "dest": "{components}/accordion/styles.css" }
+        {
+          "src": "components/accordion/index.tsx",
+          "dest": "{components}/accordion/index.tsx"
+        },
+        {
+          "src": "components/accordion/styles.css",
+          "dest": "{components}/accordion/styles.css"
+        }
       ],
-      "dependencies": ["@base-ui-components/react"],
+      "dependencies": [
+        "@base-ui-components/react"
+      ],
       "registryDependencies": []
     },
     "carousel": {
       "name": "carousel",
       "type": "component",
       "files": [
-        { "src": "components/carousel/index.tsx", "dest": "{components}/carousel/index.tsx" },
-        { "src": "components/carousel/styles.css", "dest": "{components}/carousel/styles.css" }
+        {
+          "src": "components/carousel/index.tsx",
+          "dest": "{components}/carousel/index.tsx"
+        },
+        {
+          "src": "components/carousel/styles.css",
+          "dest": "{components}/carousel/styles.css"
+        }
       ],
       "dependencies": [],
       "registryDependencies": []
+    },
+    "form-rhf": {
+      "name": "form-rhf",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/form-rhf/index.tsx",
+          "dest": "{components}/form-rhf/index.tsx"
+        }
+      ],
+      "dependencies": [
+        "react-hook-form"
+      ],
+      "registryDependencies": [
+        "form"
+      ]
+    },
+    "form-tanstack": {
+      "name": "form-tanstack",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/form-tanstack/index.tsx",
+          "dest": "{components}/form-tanstack/index.tsx"
+        }
+      ],
+      "dependencies": [
+        "@tanstack/react-form"
+      ],
+      "registryDependencies": [
+        "form"
+      ]
     }
   }
 }

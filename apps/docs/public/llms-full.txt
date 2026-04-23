@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.15.1 (2026-04-21) — ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정
+**최신 버전**: v0.18.1 (2026-04-22) — sh-ui-create — 입력 하드닝
 
 ## React — Components
 
@@ -57,6 +57,21 @@
 - Install: `npx sh-ui add file-upload`
 - Import: `@/components/ui/file-upload`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/file-upload
+
+### form
+
+- Type: component
+- Install: `npx sh-ui add form`
+- Import: `@/components/ui/form`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/form
+
+### form-yup
+
+- Type: component
+- Install: `npx sh-ui add form-yup`
+- Registry deps: form (자동 설치됨)
+- Import: `@/components/ui/form-yup`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/form-yup
 
 ### code-panel
 
@@ -341,6 +356,24 @@
 - Install: `npx sh-ui add carousel`
 - Import: `@/components/ui/carousel`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/carousel
+
+### form-rhf
+
+- Type: component
+- Install: `npx sh-ui add form-rhf`
+- npm/pub deps: react-hook-form
+- Registry deps: form (자동 설치됨)
+- Import: `@/components/ui/form-rhf`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/form-rhf
+
+### form-tanstack
+
+- Type: component
+- Install: `npx sh-ui add form-tanstack`
+- npm/pub deps: @tanstack/react-form
+- Registry deps: form (자동 설치됨)
+- Import: `@/components/ui/form-tanstack`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/form-tanstack
 
 ## React — 유틸 / 훅 / 스타일 기반
 
@@ -736,38 +769,37 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.18.1 — sh-ui-create — 입력 하드닝 (2026-04-22)
+- --theme base64 입력에 10KB 상한 추가 — 큰 악성 입력을 JSON 파싱 전에 명확한 에러로 거부
+- 플레이그라운드 Dialog 의 프로젝트 이름 검증 — 영문·숫자·'-'·'_' 만 허용, 첫 글자 영문/숫자. 잘못되면 에러 메시지 + 복사 버튼 비활성화
+- UX: 잘못된 이름으로 생성된 명령어를 터미널에 붙여넣는 사고 방지
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.1
+
+### v0.18.0 — sh-ui-create — 비대화형 플래그와 theme 주입 (2026-04-22)
+- --platform / --structure / --plugins / --theme / --yes 플래그 지원 — 완전 비대화형 실행 가능
+- --theme <base64> 로 커스텀 색·radius 를 프로젝트 생성 시점에 바로 주입 (플레이그라운드 연동 준비)
+- 템플릿의 tokens.css / sh_ui_tokens.dart 에 theme 섹션 마커 삽입 — 토큰만 교체되고 다른 값(spacing 등)은 유지
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.18.0
+
+### v0.17.0 — sh-ui-create — Flutter 스타터 지원 (2026-04-21)
+- sh-ui-create — 프로젝트 생성 시 플랫폼 선택(Next.js / Flutter) 신규
+- Flutter 선택 시 pubspec + main.dart + sh-ui.config.json + 토큰 복사본까지 완성된 스타터 제공
+- 생성 직후 `flutter run`으로 테마 적용된 초기 화면 확인, 이어서 `sh-ui add <widget>` 로 위젯 추가
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.17.0
+
+### v0.16.0 — sh-ui-create — 프로젝트 스캐폴드 CLI (2026-04-21)
+- sh-ui-create 신규 패키지 — npx sh-ui-create 로 sh-ui 가 사전 설정된 Next.js 프로젝트 스캐폴드
+- 단독 / 모노레포(Turborepo + pnpm workspace) 템플릿 — FSD 폴더 구조 + sh-ui.config.json + tokens.css 선반영
+- Sentry / next-intl 플러그인 — 체크박스 선택으로 파일·의존성·next.config 래핑 자동 구성
+- add-app / add-component 보조 명령 — 모노레포 앱 추가, 앱별 ui 패키지에 sh-ui add 위임
+- docs: /create 페이지 추가 — 전체 레퍼런스 + 단독 vs 모노레포 구조 비교 + FSD 레이어 규칙
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.16.0
+
 ### v0.15.1 — ColorPicker — StrictMode 렌더 중 부모 setState 경고 수정 (2026-04-21)
 - setHsv 업데이터 콜백 내부에서 onChange를 호출하던 부작용을 업데이터 밖으로 이동
 - React StrictMode가 updater를 두 번 invoke할 때 발생하던 'setState while rendering' 경고 제거
 - controlled 모드에서 부모 상태를 동기화하는 시나리오(예: playground 토큰 에디터) 안정성 개선
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.1
-
-### v0.15.0 — llms.txt — AI 도구용 컴포넌트 인벤토리 (2026-04-21)
-- apps/docs/public/llms.txt — 전 컴포넌트 한 줄 요약 + 설치 플로우 + 관용 규칙 (llms.txt 표준 따름)
-- apps/docs/public/llms-full.txt — 각 컴포넌트별 설치 커맨드/import 경로/의존성 + 최근 릴리즈 5개
-- packages/llms 신규 워크스페이스 — registry.json + summaries/*.json을 읽어 자동 생성. next build 훅에 연결
-- pnpm gen:llms — 루트 스크립트로 수동 재생성 가능
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.15.0
-
-### v0.14.0 — Pagination — 페이지 단위 내비게이션 컴포넌트 (2026-04-20)
-- React: Pagination / PaginationContent / Item / Link / Previous / Next / Ellipsis 컴파운드 구성 — Breadcrumb와 동일한 관용
-- getPaginationRange({page, totalPages, siblings}) 유틸 — 현재 페이지 주변 + 양 끝 + 생략(…) 토큰 배열 생성
-- Flutter: ShUiPagination(page:, pageCount:, siblingCount:, onPageChanged:) — 페이지 범위 계산 내장
-- nav + ol/ul 시맨틱, 현재 페이지 aria-current="page", 이전/다음 aria-label 자동 부여
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.14.0
-
-### v0.13.1 — 토큰 대비 감사 — WCAG AA 통과 (2026-04-20)
-- light mode foreground-muted를 base.500 → base.600로 (muted 텍스트 on muted background 4.35:1 → 7.17:1)
-- light mode danger를 red.500 → red.600로 통일 (danger 버튼 3.76:1 → 4.83:1)
-- 감사 스크립트 추가: pnpm --filter @sh-ui/tokens audit:contrast — 3 base × 2 mode 조합 일괄 검증
-- 주의: 기존 설치자는 sh-ui add tokens로 tokens.css 재생성 필요
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.1
-
-### v0.13.0 — CLI list / remove — 설치 관리 사이클 완결 (2026-04-20)
-- sh-ui list — 설치된 컴포넌트 목록 (--all로 레지스트리 전체)
-- sh-ui remove <name...> — 설치 파일 삭제, 빈 폴더 자동 정리
-- 사용자 수정 파일은 기본 보호, --force로만 강제 삭제. --dry-run 미리보기 지원
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.13.0
 
 ## Resources
 

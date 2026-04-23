@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.19.0",
+      "date": "2026-04-23",
+      "title": "Form 컴포넌트 — 라이브러리 비종속 + 멀티스텝·섹션 1급",
+      "type": "minor",
+      "highlights": [
+        "Form + Form.Field / Section / Steps / Step — compound API 로 멀티스텝·멀티섹션 폼 지원 (값은 스텝 이동에도 보존)",
+        "3가지 사용 모드 (네이티브 / useShUiForm / RHF·TanStack·Yup 어댑터) 를 FormStore 인터페이스로 통일",
+        "재사용 블록은 Form 루트 없이 Section 패턴으로 이식 가능 — AddressFields 스타일 권장",
+        "Standard Schema 표준 채택 (Zod v3.24+/Valibot/Arktype 네이티브, Yup 은 form-yup 래퍼)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.19.0"
+    },
+    {
       "version": "0.18.1",
       "date": "2026-04-22",
       "title": "sh-ui-create — 입력 하드닝",
