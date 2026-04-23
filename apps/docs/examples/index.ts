@@ -9,6 +9,8 @@ import { meta as settingsPage } from "./settings-page/meta";
 import { Example as SettingsPageExample } from "./settings-page/Example";
 import { meta as checkoutFlow } from "./checkout-flow/meta";
 import { Example as CheckoutFlowExample } from "./checkout-flow/Example";
+import { meta as onboardingFlow } from "./onboarding-flow/meta";
+import { Example as OnboardingFlowExample } from "./onboarding-flow/Example";
 
 export const examples: ExampleEntry[] = [
   {
@@ -35,6 +37,11 @@ export const examples: ExampleEntry[] = [
     ...checkoutFlow,
     Component: CheckoutFlowExample,
     sourceFiles: ["checkout-flow/Example.tsx", "checkout-flow/example.css"],
+  },
+  {
+    ...onboardingFlow,
+    Component: OnboardingFlowExample,
+    sourceFiles: ["onboarding-flow/Example.tsx", "onboarding-flow/example.css"],
   },
 ];
 
