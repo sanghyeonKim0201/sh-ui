@@ -101,6 +101,7 @@ function FormElement({
   formElRef,
   children,
   onSubmit,
+  className,
   ...rest
 }: {
   formElRef: React.RefObject<HTMLFormElement | null>;
@@ -113,6 +114,7 @@ function FormElement({
       ref={formElRef}
       aria-busy={state.submitting || undefined}
       onSubmit={onSubmit}
+      className={`sh-ui-form${className ? ` ${className}` : ""}`}
       {...rest}
     >
       {children}
@@ -130,6 +132,7 @@ function Section({
   name,
   schema,
   as = "div",
+  className,
   children,
   ...rest
 }: FormSectionProps) {
@@ -147,7 +150,11 @@ function Section({
 
   return (
     <SectionContext.Provider value={{ path }}>
-      <Tag role={role} {...rest}>
+      <Tag
+        role={role}
+        className={`sh-ui-form-section${className ? ` ${className}` : ""}`}
+        {...rest}
+      >
         {children}
       </Tag>
     </SectionContext.Provider>

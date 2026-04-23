@@ -16,7 +16,8 @@ import { scopedPath } from "./utils";
 // Field
 // ─────────────────────────────────────────────
 
-export interface FieldProps {
+export interface FieldProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   name: string;
   validate?: FieldValidate;
   validateOn?: ValidateOn;
@@ -33,7 +34,9 @@ export function Field({
   required,
   disabled,
   readOnly,
+  className,
   children,
+  ...rest
 }: FieldProps) {
   const store = React.useContext(FormContext);
   if (!store) throw new Error("<Form.Field> must be inside <Form>");
@@ -73,9 +76,10 @@ export function Field({
       }}
     >
       <div
-        className="sh-ui-form-field"
+        className={`sh-ui-form-field${className ? ` ${className}` : ""}`}
         data-disabled={effectiveDisabled || undefined}
         data-readonly={readOnly || undefined}
+        {...rest}
       >
         {children}
       </div>
@@ -115,15 +119,20 @@ FormDescription.displayName = "Form.Description";
 // Error
 // ─────────────────────────────────────────────
 
-export interface FormErrorProps {
+export interface FormErrorProps
+  extends Omit<React.HTMLAttributes<HTMLParagraphElement>, "children"> {
   children?:
     | React.ReactNode
     | ((err: { message: string; type?: string }) => React.ReactNode);
   matches?: string;
-  className?: string;
 }
 
-export function FormError({ children, matches, className }: FormErrorProps) {
+export function FormError({
+  children,
+  matches,
+  className,
+  ...rest
+}: FormErrorProps) {
   const ctx = React.useContext(FieldContext);
   if (!ctx) throw new Error("<Form.Error> must be inside <Form.Field>");
   const field = useFormField(ctx.path);
@@ -143,6 +152,7 @@ export function FormError({ children, matches, className }: FormErrorProps) {
       className={`sh-ui-form-error${className ? ` ${className}` : ""}`}
       role="alert"
       aria-live="polite"
+      {...rest}
     >
       {content}
     </p>

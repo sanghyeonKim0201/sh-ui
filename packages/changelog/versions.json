@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.20.0",
+      "date": "2026-04-23",
+      "title": "Form 기본 레이아웃 + 루트 컴포넌트 style/className 개방",
+      "type": "minor",
+      "highlights": [
+        "Form · Form.Section · Form.Field 에 기본 세로 flex 레이아웃 적용 — 수동 margin 없이 토큰 간격(--space-4, --space-1)으로 자동 정렬",
+        "Form.Field / Form.Error 가 HTMLAttributes 를 그대로 수용 — <Form.Field style={{ gap: \"0.5rem\" }}> · className=\"gap-2\" 같이 네이티브 CSS 경로로 직접 덮어쓰기",
+        "CodePanel · CodePanel.Body · ColorPicker 루트가 HTMLAttributes 확장 — style · className · data-* 로 바로 오버라이드 가능",
+        "FileUpload 루트 래퍼에 style prop 추가 (ref 는 기존대로 input 유지)",
+        "CSS 변수 API 최소화 원칙 — 컴포넌트별 간격 변수는 노출하지 않고 style/className/외부 CSS 로 일관"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.20.0"
+    },
+    {
       "version": "0.19.1",
       "date": "2026-04-23",
       "title": "Form 타입 정밀화 + placeholder 색 완화 + 문서 확장",

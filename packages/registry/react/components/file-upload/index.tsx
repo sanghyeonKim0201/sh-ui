@@ -72,6 +72,8 @@ export interface FileUploadProps {
    */
   showFileList?: boolean;
   className?: string;
+  /** 루트 래퍼 div 에 적용할 인라인 스타일. */
+  style?: React.CSSProperties;
   id?: string;
   name?: string;
   children?: React.ReactNode;
@@ -94,6 +96,7 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
       hint,
       showFileList = true,
       className,
+      style,
       id,
       name,
       children,
@@ -176,7 +179,7 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
 
     return (
       <FileUploadContext.Provider value={ctx}>
-        <div className={cx("sh-ui-file-upload", className)}>
+        <div className={cx("sh-ui-file-upload", className)} style={style}>
           {/* 공유 네이티브 input. Trigger/Dropzone 모두 이를 통해 파일 선택을 연다. */}
           <input
             ref={inputRef}

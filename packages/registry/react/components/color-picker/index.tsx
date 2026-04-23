@@ -15,14 +15,17 @@ interface HSVA extends HSV {
   a: number; // 0~1
 }
 
-export interface ColorPickerProps {
+export interface ColorPickerProps
+  extends Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    "onChange" | "defaultValue" | "children"
+  > {
   /** 현재 색상 (hex, e.g. "#FF8800"). */
   value?: string;
   /** 변경 콜백. 항상 6자리 대문자 hex. */
   onChange?: (hex: string) => void;
   /** 비제어 모드 초기값. */
   defaultValue?: string;
-  className?: string;
   /**
    * children 없이 렌더하면 기본 compound 레이아웃
    * (Saturation + Hue + Hex)이 자동 렌더된다. 백워드 호환용.
@@ -149,6 +152,7 @@ export function ColorPicker({
   defaultValue = "#000000",
   className,
   children,
+  ...rest
 }: ColorPickerProps) {
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = React.useState(defaultValue);
@@ -221,7 +225,10 @@ export function ColorPicker({
 
   return (
     <ColorPickerContext.Provider value={ctx}>
-      <div className={["sh-ui-color-picker", className].filter(Boolean).join(" ")}>
+      <div
+        className={["sh-ui-color-picker", className].filter(Boolean).join(" ")}
+        {...rest}
+      >
         {children ?? (
           <>
             <ColorPickerSaturation />

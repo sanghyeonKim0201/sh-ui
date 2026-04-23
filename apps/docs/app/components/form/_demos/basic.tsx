@@ -23,9 +23,9 @@ export function BasicFormDemo() {
         </Form.Control>
         <Form.Error />
       </Form.Field>
-      <div style={{ marginTop: "var(--space-3)" }}>
-        <Button type="submit">가입</Button>
-      </div>
+      <Button type="submit" style={{ alignSelf: "flex-start" }}>
+        가입
+      </Button>
     </Form>
   );
 }
