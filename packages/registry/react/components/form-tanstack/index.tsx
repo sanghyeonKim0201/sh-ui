@@ -1,3 +1,4 @@
+import type { ReactFormExtendedApi } from "@tanstack/react-form";
 import type {
   FormStore,
   FormStoreState,
@@ -9,7 +10,15 @@ import type {
 import { flatten, getByPath } from "../form/utils";
 import { runFieldValidate } from "../form/validation";
 
-// TanStack Form v1 API (store.subscribe 는 { unsubscribe } 를 반환)
+/**
+ * TanStack Form 의 `useForm()` 반환 타입은 12 개의 제네릭을 받는다. 우리 어댑터는
+ * `TFormData` 만 알면 충분하므로 나머지 11 개는 any 로 두어 사용자 측에서 캐스트
+ * 없이 바로 넘길 수 있게 한다. `T` 추론은 유지된다.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyTanStackForm<T> = ReactFormExtendedApi<T, any, any, any, any, any, any, any, any, any, any, any>;
+
+// TanStack Form v1 API (store.subscribe 는 { unsubscribe } 를 반환) — 어댑터가 실제로 사용하는 멤버만 기술
 interface TanStackFieldMeta {
   isTouched?: boolean;
   isDirty?: boolean;
@@ -75,9 +84,11 @@ export interface AdapterConfig<T> {
  * - notify() 가 React useSyncExternalStore 리스너를 직접 호출해 re-render 유발
  */
 export function adaptTanStackForm<T extends Record<string, unknown>>(
-  ts: TanStackFormApi<T>,
+  tsForm: AnyTanStackForm<T>,
   config: AdapterConfig<T> = {}
 ): FormStore<T> {
+  // 내부에선 좁은 interface 로 취급 — 실제 호출하는 멤버만 쓰므로 안전
+  const ts = tsForm as unknown as TanStackFormApi<T>;
   const meta: AdapterMeta = {
     fieldsByStep: new Map(),
     fieldsBySection: new Map(),

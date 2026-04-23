@@ -7,11 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export function TanStackFormDemo() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ts = useForm({
     defaultValues: { email: "", name: "" },
     onSubmit: async () => {},
-  }) as any;
+  });
 
   const form = adaptTanStackForm(ts, {
     onSubmit: (values) => {

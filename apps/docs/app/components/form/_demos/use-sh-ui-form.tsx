@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { Form, useShUiForm, type StandardSchemaV1 } from "@/components/ui/form";
+import { Form, useShUiForm } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -16,8 +16,7 @@ type FormValues = z.infer<typeof schema>;
 export function UseShUiFormDemo() {
   const form = useShUiForm<FormValues>({
     defaultValues: { username: "", email: "", password: "" },
-    // Zod v4의 PathSegment 타입이 StandardSchemaV1와 미세하게 불일치 — as cast 처리
-    schema: schema as unknown as StandardSchemaV1<FormValues>,
+    schema,
     validateOn: "blur",
   });
 

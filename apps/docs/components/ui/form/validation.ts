@@ -21,7 +21,13 @@ export async function runSchema(
   if ("value" in result) return {};
   const errors: Record<string, FieldError> = {};
   for (const issue of result.issues) {
-    const path = (issue.path ?? []).map(String).join(".");
+    const path = (issue.path ?? [])
+      .map((seg) =>
+        typeof seg === "object" && seg !== null
+          ? String((seg as { key: PropertyKey }).key)
+          : String(seg)
+      )
+      .join(".");
     if (!errors[path]) {
       errors[path] = { message: issue.message, source };
     }

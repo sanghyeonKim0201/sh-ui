@@ -1,20 +1,23 @@
 "use client";
 
 import { z } from "zod";
-import { Form, type StandardSchemaV1 } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const schema = z.object({
   name: z.string().min(1, "이름을 입력하세요"),
   email: z.string().email("이메일 형식이 아닙니다"),
-  age: z.coerce.number().min(18, "만 18세 이상이어야 합니다"),
+  age: z
+    .string()
+    .regex(/^\d+$/, "숫자만 입력하세요")
+    .refine((v) => Number(v) >= 18, "만 18세 이상이어야 합니다"),
 });
 
 export function ZodSchemaDemo() {
   return (
     <Form
-      schema={schema as unknown as StandardSchemaV1}
+      schema={schema}
       defaultValues={{ name: "", email: "", age: "" }}
       onSubmit={(values) => alert(JSON.stringify(values, null, 2))}
       style={{
