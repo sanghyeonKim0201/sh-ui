@@ -94,3 +94,53 @@ describe("Form root", () => {
     expect(document.activeElement).toBe(screen.getByTestId("a"));
   });
 });
+
+describe("Form-level states", () => {
+  it("sets aria-busy while submitting", async () => {
+    const { screen } = await import("@testing-library/react");
+    const userEvent = (await import("@testing-library/user-event")).default;
+    const { Field } = await import("./field");
+    const { FormControl } = await import("./field");
+
+    const user = userEvent.setup();
+    let resolveSubmit: () => void;
+    const blocker = new Promise<void>((r) => (resolveSubmit = r));
+
+    render(
+      <Form
+        onSubmit={async () => {
+          await blocker;
+        }}
+      >
+        <Field name="x" validate={() => undefined}>
+          <FormControl>
+            <input />
+          </FormControl>
+        </Field>
+        <button type="submit">go</button>
+      </Form>
+    );
+    const form = document.querySelector("form")!;
+    await user.click(screen.getByText("go"));
+    await new Promise((r) => setTimeout(r, 30));
+    expect(form.getAttribute("aria-busy")).toBe("true");
+    resolveSubmit!();
+  });
+
+  it("Form disabled disables all controls", async () => {
+    const { screen } = await import("@testing-library/react");
+    const { Field } = await import("./field");
+    const { FormControl } = await import("./field");
+
+    render(
+      <Form disabled>
+        <Field name="x">
+          <FormControl>
+            <input data-testid="i" />
+          </FormControl>
+        </Field>
+      </Form>
+    );
+    expect((screen.getByTestId("i") as HTMLInputElement).disabled).toBe(true);
+  });
+});

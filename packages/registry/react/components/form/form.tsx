@@ -6,6 +6,7 @@ import {
   FormContext,
   SectionContext,
   DisabledContext,
+  useFormState,
 } from "./context";
 import type { FormStore, StandardSchemaV1 } from "./types";
 import { scopedPath } from "./utils";
@@ -60,37 +61,62 @@ function FormInner<T>({
 
   const formElRef = React.useRef<HTMLFormElement | null>(null);
 
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    void (async () => {
+      await store.submit();
+      const s = store.getState();
+      const hasErrors = Object.values(s.errors).some(Boolean);
+      if (
+        hasErrors &&
+        store._config.focusFirstError &&
+        formElRef.current
+      ) {
+        focusFirstError(
+          store,
+          formElRef.current,
+          store._config.scrollToFirstError
+        );
+      }
+    })();
+  };
+
   return (
     <FormContext.Provider value={store as FormStore<unknown>}>
       <DisabledContext.Provider value={disabled ?? false}>
-        <form
-          ref={formElRef}
+        <FormElement
+          formElRef={formElRef}
+          onSubmit={handleSubmit}
           noValidate
           {...rest}
-          onSubmit={(e) => {
-            e.preventDefault();
-            void (async () => {
-              await store.submit();
-              const s = store.getState();
-              const hasErrors = Object.values(s.errors).some(Boolean);
-              if (
-                hasErrors &&
-                store._config.focusFirstError &&
-                formElRef.current
-              ) {
-                focusFirstError(
-                  store,
-                  formElRef.current,
-                  store._config.scrollToFirstError
-                );
-              }
-            })();
-          }}
         >
           {children}
-        </form>
+        </FormElement>
       </DisabledContext.Provider>
     </FormContext.Provider>
+  );
+}
+
+function FormElement({
+  formElRef,
+  children,
+  onSubmit,
+  ...rest
+}: {
+  formElRef: React.RefObject<HTMLFormElement | null>;
+  children?: React.ReactNode;
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
+} & Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit">) {
+  const state = useFormState();
+  return (
+    <form
+      ref={formElRef}
+      aria-busy={state.submitting || undefined}
+      onSubmit={onSubmit}
+      {...rest}
+    >
+      {children}
+    </form>
   );
 }
 
