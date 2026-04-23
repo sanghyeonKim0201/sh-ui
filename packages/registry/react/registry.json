@@ -61,6 +61,15 @@
       "dependencies": [],
       "registryDependencies": []
     },
+    "form-yup": {
+      "name": "form-yup",
+      "type": "component",
+      "files": [
+        { "src": "components/form-yup/index.tsx", "dest": "{components}/form-yup/index.tsx" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["form"]
+    },
     "code-panel": {
       "name": "code-panel",
       "type": "component",
