@@ -66,4 +66,31 @@ describe("Form root", () => {
     }).toThrow(/cannot be nested/i);
     console.error = originalError;
   });
+
+  it("focuses first errored field after submit", async () => {
+    const { screen } = await import("@testing-library/react");
+    const userEvent = (await import("@testing-library/user-event")).default;
+    const { Field } = await import("./field");
+    const { FormControl } = await import("./field");
+
+    const user = userEvent.setup();
+    render(
+      <Form>
+        <Field name="a" validate={(v) => (v ? undefined : "req")}>
+          <FormControl>
+            <input data-testid="a" />
+          </FormControl>
+        </Field>
+        <Field name="b" validate={(v) => (v ? undefined : "req")}>
+          <FormControl>
+            <input data-testid="b" />
+          </FormControl>
+        </Field>
+        <button type="submit">go</button>
+      </Form>
+    );
+    await user.click(screen.getByText("go"));
+    await new Promise((r) => setTimeout(r, 50));
+    expect(document.activeElement).toBe(screen.getByTestId("a"));
+  });
 });

@@ -9,6 +9,7 @@ import {
 } from "./context";
 import type { FormStore, StandardSchemaV1 } from "./types";
 import { scopedPath } from "./utils";
+import { focusFirstError } from "./focus-first-error";
 
 export interface FormProps<T = unknown>
   extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> {
@@ -31,7 +32,7 @@ function FormInner<T>({
   onSubmit,
   onInvalid,
   scrollToFirstError,
-  focusFirstError,
+  focusFirstError: focusFirstErrorProp,
   disabled,
   children,
   ...rest
@@ -52,20 +53,38 @@ function FormInner<T>({
       onSubmit,
       onInvalid,
       scrollToFirstError,
-      focusFirstError,
+      focusFirstError: focusFirstErrorProp,
     });
   }
   const store = (externalForm ?? internalStoreRef.current) as FormStore<T>;
+
+  const formElRef = React.useRef<HTMLFormElement | null>(null);
 
   return (
     <FormContext.Provider value={store as FormStore<unknown>}>
       <DisabledContext.Provider value={disabled ?? false}>
         <form
+          ref={formElRef}
           noValidate
           {...rest}
           onSubmit={(e) => {
             e.preventDefault();
-            void store.submit();
+            void (async () => {
+              await store.submit();
+              const s = store.getState();
+              const hasErrors = Object.values(s.errors).some(Boolean);
+              if (
+                hasErrors &&
+                store._config.focusFirstError &&
+                formElRef.current
+              ) {
+                focusFirstError(
+                  store,
+                  formElRef.current,
+                  store._config.scrollToFirstError
+                );
+              }
+            })();
           }}
         >
           {children}
