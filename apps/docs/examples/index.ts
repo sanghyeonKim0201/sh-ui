@@ -1,13 +1,11 @@
-import dynamic from "next/dynamic";
 import type { ExampleEntry } from "./types";
 import { meta as loginCard } from "./login-card/meta";
+import { Example as LoginCardExample } from "./login-card/Example";
 
 export const examples: ExampleEntry[] = [
   {
     ...loginCard,
-    Component: dynamic(() =>
-      import("./login-card/Example").then((m) => m.Example),
-    ),
+    Component: LoginCardExample,
     sourceFiles: ["login-card/Example.tsx", "login-card/example.css"],
   },
 ];
