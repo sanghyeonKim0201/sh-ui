@@ -155,7 +155,11 @@ export function createFormStore<T = unknown>(
         // Stale check — if value changed while awaiting, bail
         if (state.values[path] !== valueAtStart) return !state.errors[path];
         if (fieldErr) {
-          state = { ...state, errors: { ...state.errors, [path]: fieldErr } };
+          state = {
+            ...state,
+            errors: { ...state.errors, [path]: fieldErr },
+            revalidateOnChange: new Set(state.revalidateOnChange).add(path),
+          };
           notify();
           return false;
         }
@@ -170,9 +174,15 @@ export function createFormStore<T = unknown>(
             const relativePath = path.slice(sectionPath.length + 1);
             const err = errors[relativePath];
             const nextErrors = { ...state.errors };
-            if (err) nextErrors[path] = err;
-            else delete nextErrors[path];
-            state = { ...state, errors: nextErrors };
+            const nextRevalidate = new Set(state.revalidateOnChange);
+            if (err) {
+              nextErrors[path] = err;
+              nextRevalidate.add(path);
+            } else {
+              delete nextErrors[path];
+              nextRevalidate.delete(path);
+            }
+            state = { ...state, errors: nextErrors, revalidateOnChange: nextRevalidate };
             notify();
             return !err;
           }
@@ -185,9 +195,15 @@ export function createFormStore<T = unknown>(
           if (state.values[path] !== valueAtStart) return !state.errors[path];
           const err = errors[path];
           const nextErrors = { ...state.errors };
-          if (err) nextErrors[path] = err;
-          else delete nextErrors[path];
-          state = { ...state, errors: nextErrors };
+          const nextRevalidate = new Set(state.revalidateOnChange);
+          if (err) {
+            nextErrors[path] = err;
+            nextRevalidate.add(path);
+          } else {
+            delete nextErrors[path];
+            nextRevalidate.delete(path);
+          }
+          state = { ...state, errors: nextErrors, revalidateOnChange: nextRevalidate };
           notify();
           return !err;
         }
@@ -195,7 +211,9 @@ export function createFormStore<T = unknown>(
         // 4. No validation — clear any existing error
         const nextErrors = { ...state.errors };
         delete nextErrors[path];
-        state = { ...state, errors: nextErrors };
+        const nextRevalidate = new Set(state.revalidateOnChange);
+        nextRevalidate.delete(path);
+        state = { ...state, errors: nextErrors, revalidateOnChange: nextRevalidate };
         notify();
         return true;
       } finally {
