@@ -232,6 +232,13 @@ ShUiPopover(
         <li>바깥 클릭 — 닫기</li>
         <li>Base UI가 <code>aria-expanded</code>, <code>aria-controls</code>를 자동 관리. Title/Description이 있으면 <code>aria-labelledby</code>/<code>aria-describedby</code>도 자동 연결</li>
       </ul>
+
+      <h2>스타일 커스터마이즈</h2>
+      <p className="muted">
+        PopoverContent · PopoverTitle · PopoverDescription 모두 네이티브 HTML
+        속성을 그대로 받는다. 폭·패딩·화살표 등 조정은 <code>style</code> /
+        <code>className</code> 으로 직접 — <a href="/guidelines">가이드라인</a> 참조.
+      </p>
     </main>
   );
 }

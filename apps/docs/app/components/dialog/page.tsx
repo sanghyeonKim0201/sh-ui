@@ -290,6 +290,14 @@ ShUiDialog(
           { prop: "render", type: "ReactElement", description: "닫기 버튼으로 렌더할 요소. 예: render={<Button variant=\"secondary\" />}." },
         ]}
       />
+
+      <h2>스타일 커스터마이즈</h2>
+      <p className="muted">
+        모든 파트가 네이티브 HTML 속성(<code>style</code>·<code>className</code>·
+        <code>data-*</code>)을 그대로 받는다. Dialog 폭·패딩·간격 조정은
+        <code>style</code> 또는 <code>className</code> 으로 직접 — 자세한 패턴은{" "}
+        <a href="/guidelines">가이드라인</a> 의 "스타일 커스터마이즈" 섹션 참조.
+      </p>
     </main>
   );
 }

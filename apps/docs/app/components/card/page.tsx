@@ -300,7 +300,10 @@ ShUiCard(
 
       <h2>API Reference</h2>
       <p className="muted">
-        각 구성 컴포넌트는 자신의 네이티브 HTML 속성을 그대로 받는다. 별도 prop은 없다.
+        각 구성 컴포넌트는 자신의 네이티브 HTML 속성을 그대로 받는다. 별도 prop은
+        없다. 간격·패딩·레이아웃 조정은 <code>style</code> / <code>className</code> 으로
+        직접 — 자세한 패턴은 <a href="/guidelines">가이드라인</a> 의 "스타일
+        커스터마이즈" 섹션 참조.
       </p>
     </main>
   );
