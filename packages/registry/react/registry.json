@@ -814,6 +814,22 @@
       "registryDependencies": [
         "form"
       ]
+    },
+    "form-tanstack": {
+      "name": "form-tanstack",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/form-tanstack/index.tsx",
+          "dest": "{components}/form-tanstack/index.tsx"
+        }
+      ],
+      "dependencies": [
+        "@tanstack/react-form"
+      ],
+      "registryDependencies": [
+        "form"
+      ]
     }
   }
 }
