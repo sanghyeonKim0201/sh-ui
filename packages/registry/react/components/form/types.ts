@@ -1,15 +1,22 @@
-// Standard Schema v1 최소 타입 (외부 의존 없이 정의)
+// Standard Schema v1 최소 타입 — https://standardschema.dev 스펙과 동일
+export interface StandardSchemaPathSegment {
+  readonly key: PropertyKey;
+}
+export type StandardSchemaPath = ReadonlyArray<PropertyKey | StandardSchemaPathSegment>;
+export interface StandardSchemaIssue {
+  readonly message: string;
+  readonly path?: StandardSchemaPath;
+}
 export interface StandardSchemaV1<TInput = unknown, TOutput = TInput> {
   readonly "~standard": {
     readonly version: 1;
     readonly vendor: string;
-    readonly validate: (value: unknown) =>
+    readonly validate: (
+      value: unknown
+    ) =>
       | { value: TOutput }
-      | { issues: ReadonlyArray<{ path?: ReadonlyArray<PropertyKey>; message: string }> }
-      | Promise<
-          | { value: TOutput }
-          | { issues: ReadonlyArray<{ path?: ReadonlyArray<PropertyKey>; message: string }> }
-        >;
+      | { issues: ReadonlyArray<StandardSchemaIssue> }
+      | Promise<{ value: TOutput } | { issues: ReadonlyArray<StandardSchemaIssue> }>;
   };
 }
 

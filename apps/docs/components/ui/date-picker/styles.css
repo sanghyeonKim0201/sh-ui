@@ -56,7 +56,7 @@
 }
 
 .sh-ui-date-picker__placeholder {
-  color: var(--foreground-muted);
+  color: var(--foreground-subtle);
 }
 
 .sh-ui-date-picker__icon {

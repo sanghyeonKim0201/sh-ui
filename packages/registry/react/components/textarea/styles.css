@@ -22,7 +22,7 @@
 }
 
 .sh-ui-textarea::placeholder {
-  color: var(--foreground-muted);
+  color: var(--foreground-subtle);
 }
 
 .sh-ui-textarea:hover:not(:disabled):not(:focus) {

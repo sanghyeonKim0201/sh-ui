@@ -23,7 +23,7 @@
 }
 
 .sh-ui-input::placeholder {
-  color: var(--foreground-muted);
+  color: var(--foreground-subtle);
 }
 
 .sh-ui-input:hover:not(:disabled):not(:focus) {

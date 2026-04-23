@@ -45,7 +45,7 @@
 }
 
 .sh-ui-select__placeholder {
-  color: var(--foreground-muted);
+  color: var(--foreground-subtle);
 }
 
 .sh-ui-select__icon {
