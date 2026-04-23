@@ -15,7 +15,7 @@
   transition: border-color var(--duration-fast);
 }
 .sh-ui-combobox__input::placeholder {
-  color: var(--foreground-muted);
+  color: var(--foreground-subtle);
 }
 .sh-ui-combobox__input:hover:not(:disabled) {
   border-color: var(--border-strong);
