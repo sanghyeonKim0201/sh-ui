@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.19.1",
+      "date": "2026-04-23",
+      "title": "Form 타입 정밀화 + placeholder 색 완화 + 문서 확장",
+      "type": "patch",
+      "highlights": [
+        "Zod v4 호환 — StandardSchemaV1.path 에 PathSegment 객체 형태 허용, schema 캐스트 없이 Form schema/useShUiForm schema 에 직접 전달",
+        "TanStack Form 어댑터 — adaptTanStackForm 이 useForm 반환을 캐스트 없이 수용 (ReactFormExtendedApi 의 12개 제네릭 중 TFormData 만 추론 유지)",
+        "placeholder 색 완화 — Input·Textarea·Select·Combobox·DatePicker 에서 --foreground-muted → --foreground-subtle 로 입력값과 명도 차이 확대",
+        "Form 문서 대폭 확장 — 데모 9종 추가 (useShUiForm·Zod·TanStack·Yup·async validate·서버 에러·교차 필드·checked 바인딩·custom render), 사용 모드 비교·검증·API 레퍼런스 섹션 정리"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.19.1"
+    },
+    {
       "version": "0.19.0",
       "date": "2026-04-23",
       "title": "Form 컴포넌트 — 라이브러리 비종속 + 멀티스텝·섹션 1급",
