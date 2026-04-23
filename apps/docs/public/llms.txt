@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.18.0 (2026-04-22) — @sh-ui/create — 비대화형 플래그와 theme 주입
+**최신 버전**: v0.18.1 (2026-04-22) — sh-ui-create — 입력 하드닝
 
 ## React Components
 
@@ -30,6 +30,8 @@
 - **card** — 카드 컨테이너 — compound (Card.Header / Card.Body / Card.Footer / Card.Title / Card.Description).
 - **input** — 단일 행 텍스트 입력 — hasError 지원.
 - **file-upload** — 파일 업로드 — 드롭존, 다중 파일, 진행률.
+- **form** — Form 컴포넌트.
+- **form-yup** — FormYup 컴포넌트.
 - **code-panel** — Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.
 - **select** — 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
 - **sidebar** — 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
@@ -63,6 +65,8 @@
 - **skeleton** — 스켈레톤 로딩 플레이스홀더.
 - **accordion** — 펼침/접힘 아코디언 — single/multiple (Base UI).
 - **carousel** — 슬라이드 캐러셀 — Embla 기반, autoplay/autoscroll.
+- **form-rhf** — FormRhf 컴포넌트.
+- **form-tanstack** — FormTanstack 컴포넌트.
 
 ## React — 유틸 / 훅 / 스타일 기반
 
