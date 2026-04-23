@@ -61,6 +61,7 @@ const components: { title: string; href: string }[] = [
   { title: "Dialog", href: "/components/dialog" },
   { title: "DropdownMenu", href: "/components/dropdown-menu" },
   { title: "FileUpload", href: "/components/file-upload" },
+  { title: "Form", href: "/components/form" },
   { title: "Header", href: "/components/header" },
   { title: "Input", href: "/components/input" },
   { title: "Label", href: "/components/label" },
