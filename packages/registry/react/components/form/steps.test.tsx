@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { Form } from "./form";
@@ -46,7 +46,10 @@ describe("Form.Steps", () => {
       </Form>
     );
     await user.click(screen.getByText("next"));
-    expect(screen.getByTestId("active").textContent).toBe("b");
+    // next() is fired-and-forgotten from onClick (void next()) so await the async chain
+    await waitFor(() =>
+      expect(screen.getByTestId("active").textContent).toBe("b")
+    );
     expect(screen.queryByTestId("b")).toBeInTheDocument();
   });
 
@@ -66,6 +69,8 @@ describe("Form.Steps", () => {
       </Form>
     );
     await user.click(screen.getByText("next"));
+    // Give next()'s async chain a chance to settle, then assert it stayed on "a"
+    await new Promise((r) => setTimeout(r, 0));
     expect(screen.getByTestId("active").textContent).toBe("a");
   });
 });
@@ -90,7 +95,12 @@ describe("value persistence across step navigation", () => {
     const input = screen.getByTestId("i") as HTMLInputElement;
     await user.type(input, "a@b.com");
     await user.click(screen.getByText("next"));
+    // next() fires async — wait for step b to mount
+    await waitFor(() =>
+      expect(screen.getByTestId("active").textContent).toBe("b")
+    );
     await user.click(screen.getByText("prev"));
+    await waitFor(() => expect(screen.queryByTestId("i")).toBeInTheDocument());
     expect((screen.getByTestId("i") as HTMLInputElement).value).toBe("a@b.com");
   });
 });
