@@ -1,0 +1,132 @@
+.sh-ui-ex-checkout {
+  min-height: 100%;
+  padding: var(--space-8) var(--space-6);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, #4060ff 10%, transparent), transparent 30%),
+    var(--background);
+}
+.sh-ui-ex-checkout__wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  display: grid;
+  gap: var(--space-6);
+}
+
+.sh-ui-ex-checkout__steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+.sh-ui-ex-checkout__step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--foreground-muted);
+}
+.sh-ui-ex-checkout__step[data-state="active"] {
+  color: var(--foreground);
+}
+.sh-ui-ex-checkout__step[data-state="done"] {
+  color: var(--primary);
+}
+.sh-ui-ex-checkout__step-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: var(--background-subtle);
+  border: 1px solid var(--border);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+}
+.sh-ui-ex-checkout__step[data-state="active"] .sh-ui-ex-checkout__step-dot {
+  background: color-mix(in oklab, var(--primary) 20%, var(--background));
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.sh-ui-ex-checkout__step[data-state="done"] .sh-ui-ex-checkout__step-dot {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.sh-ui-ex-checkout__bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--background-subtle);
+  overflow: hidden;
+}
+.sh-ui-ex-checkout__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4060ff, #ba58ff);
+  transition: width var(--duration-base) var(--ease-standard);
+}
+
+.sh-ui-ex-checkout__panel {
+  padding: var(--space-5);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--background);
+}
+.sh-ui-ex-checkout__form {
+  display: grid;
+  gap: var(--space-4);
+}
+.sh-ui-ex-checkout__form h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.sh-ui-ex-checkout__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.sh-ui-ex-checkout__field {
+  display: grid;
+  gap: var(--space-1);
+}
+.sh-ui-ex-checkout__field--wide {
+  grid-column: 1 / -1;
+}
+.sh-ui-ex-checkout__radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+}
+.sh-ui-ex-checkout__summary {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+}
+.sh-ui-ex-checkout__summary > div {
+  display: flex;
+  justify-content: space-between;
+}
+.sh-ui-ex-checkout__summary dt {
+  color: var(--foreground-muted);
+}
+.sh-ui-ex-checkout__summary dd {
+  margin: 0;
+  font-weight: var(--weight-semibold);
+}
+.sh-ui-ex-checkout__total {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+.sh-ui-ex-checkout__actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-ex-checkout__bar-fill {
+    transition: none;
+  }
+}
