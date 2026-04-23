@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { examples, findExample } from "@/examples";
 import { ExampleTopBar } from "@/components/examples/example-topbar";
 
@@ -30,7 +31,9 @@ interface Source {
   language: string;
 }
 
-const EXAMPLES_ROOT = join(process.cwd(), "examples");
+const EXAMPLES_ROOT = fileURLToPath(
+  new URL("../../../examples/", import.meta.url),
+);
 
 const languageOf = (path: string): string => {
   if (path.endsWith(".tsx")) return "tsx";
