@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@base-ui-components/react": "latest",
+    "@tanstack/react-form": "^1.29.1",
     "embla-carousel": "^8.6.0",
     "embla-carousel-auto-scroll": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
@@ -22,7 +23,9 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.73.1",
-    "shiki": "latest"
+    "shiki": "latest",
+    "yup": "^1.7.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^22",

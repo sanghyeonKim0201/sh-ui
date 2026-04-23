@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.18.1 (2026-04-22) — sh-ui-create — 입력 하드닝
+**최신 버전**: v0.19.0 (2026-04-23) — Form 컴포넌트 — 라이브러리 비종속 + 멀티스텝·섹션 1급
 
 ## React Components
 
