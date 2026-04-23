@@ -41,6 +41,26 @@
       "dependencies": [],
       "registryDependencies": []
     },
+    "form": {
+      "name": "form",
+      "type": "component",
+      "files": [
+        { "src": "components/form/index.tsx", "dest": "{components}/form/index.tsx" },
+        { "src": "components/form/form.tsx", "dest": "{components}/form/form.tsx" },
+        { "src": "components/form/field.tsx", "dest": "{components}/form/field.tsx" },
+        { "src": "components/form/steps.tsx", "dest": "{components}/form/steps.tsx" },
+        { "src": "components/form/store.ts", "dest": "{components}/form/store.ts" },
+        { "src": "components/form/use-sh-ui-form.ts", "dest": "{components}/form/use-sh-ui-form.ts" },
+        { "src": "components/form/context.ts", "dest": "{components}/form/context.ts" },
+        { "src": "components/form/validation.ts", "dest": "{components}/form/validation.ts" },
+        { "src": "components/form/utils.ts", "dest": "{components}/form/utils.ts" },
+        { "src": "components/form/types.ts", "dest": "{components}/form/types.ts" },
+        { "src": "components/form/focus-first-error.ts", "dest": "{components}/form/focus-first-error.ts" },
+        { "src": "components/form/styles.css", "dest": "{components}/form/styles.css" }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "code-panel": {
       "name": "code-panel",
       "type": "component",
