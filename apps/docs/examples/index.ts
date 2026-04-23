@@ -3,6 +3,8 @@ import { meta as loginCard } from "./login-card/meta";
 import { Example as LoginCardExample } from "./login-card/Example";
 import { meta as pricingCard } from "./pricing-card/meta";
 import { Example as PricingCardExample } from "./pricing-card/Example";
+import { meta as saasDashboard } from "./saas-dashboard/meta";
+import { Example as SaasDashboardExample } from "./saas-dashboard/Example";
 
 export const examples: ExampleEntry[] = [
   {
@@ -14,6 +16,11 @@ export const examples: ExampleEntry[] = [
     ...pricingCard,
     Component: PricingCardExample,
     sourceFiles: ["pricing-card/Example.tsx", "pricing-card/example.css"],
+  },
+  {
+    ...saasDashboard,
+    Component: SaasDashboardExample,
+    sourceFiles: ["saas-dashboard/Example.tsx", "saas-dashboard/example.css"],
   },
 ];
 
