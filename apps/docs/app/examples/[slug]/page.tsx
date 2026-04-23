@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { examples, findExample } from "@/examples";
-import { ExampleTopBar } from "@/components/examples/example-topbar";
+import {
+  ExampleTopBar,
+  type ExampleSource,
+} from "@/components/examples/example-topbar";
+import { CodePanel } from "@/components/ui/code-panel";
 
 export const dynamicParams = false;
 
@@ -23,12 +27,6 @@ export async function generateMetadata({
     title: `${entry.title} — sh-ui 실전 예제`,
     description: entry.description,
   };
-}
-
-interface Source {
-  path: string;
-  code: string;
-  language: string;
 }
 
 const EXAMPLES_ROOT = fileURLToPath(
@@ -51,12 +49,17 @@ export default async function ExampleShowcasePage({
   const entry = findExample(slug);
   if (!entry) notFound();
 
-  const sources: Source[] = await Promise.all(
-    entry.sourceFiles.map(async (rel) => ({
-      path: rel,
-      code: await readFile(join(EXAMPLES_ROOT, rel), "utf8"),
-      language: languageOf(rel),
-    })),
+  const sources: ExampleSource[] = await Promise.all(
+    entry.sourceFiles.map(async (rel) => {
+      const code = await readFile(join(EXAMPLES_ROOT, rel), "utf8");
+      const language = languageOf(rel);
+      return {
+        path: rel,
+        node: (
+          <CodePanel code={code} language={language} filename={rel} />
+        ),
+      };
+    }),
   );
 
   const { Component } = entry;
