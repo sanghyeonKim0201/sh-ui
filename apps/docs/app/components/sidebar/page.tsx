@@ -895,6 +895,15 @@ ShUiSidebarProvider(
         <li>드로어 backdrop은 <code>aria-hidden</code> 처리</li>
         <li>menu-button / menu-sub-button은 네이티브 <code>&lt;a&gt;</code> 또는 <code>&lt;button&gt;</code> 시맨틱을 유지 (<code>asChild</code>로 Link 래핑 가능)</li>
       </ul>
+
+      <h2>스타일 커스터마이즈</h2>
+      <p className="muted">
+        Sidebar 는 <code>--sidebar-width</code>·<code>--sidebar-bg</code>·
+        <code>--sidebar-fg</code> 등 cascade 변수를 노출한다 (다수 내부 rule 에서
+        DRY 재사용 + 후손 cascade 가 필요한 케이스 — 예외 정당). 그 외 일반적인
+        스타일 조정은 <code>style</code> / <code>className</code> 으로 직접 —
+        <a href="/guidelines">가이드라인</a> 의 "스타일 커스터마이즈" 섹션 참조.
+      </p>
     </main>
   );
 }

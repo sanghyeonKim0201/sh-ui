@@ -386,6 +386,14 @@ ShUiAccordion(
         <code>String?</code>, <code>multiple</code>이면{" "}
         <code>List&lt;String&gt;</code>이다.
       </p>
+
+      <h2>스타일 커스터마이즈</h2>
+      <p className="muted">
+        Accordion · AccordionItem · AccordionTrigger · AccordionContent 모두
+        네이티브 HTML 속성을 그대로 받는다. 보더·패딩·간격 조정은
+        <code>style</code> / <code>className</code> 으로 직접 —{" "}
+        <a href="/guidelines">가이드라인</a> 참조.
+      </p>
     </main>
   );
 }

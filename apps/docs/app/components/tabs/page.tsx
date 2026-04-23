@@ -298,6 +298,14 @@ ShUiTabs(
           { prop: "keepMounted", type: "boolean", default: "false", description: "비활성 패널도 DOM에 유지." },
         ]}
       />
+
+      <h2>스타일 커스터마이즈</h2>
+      <p className="muted">
+        Tabs · TabsList · TabsTrigger · TabsContent 모두 네이티브 HTML 속성
+        (<code>style</code>·<code>className</code>·<code>data-*</code>)을 그대로 받는다.
+        탭 정렬·간격·인디케이터 위치 조정은 <code>style</code> / <code>className</code>
+        으로 직접 — <a href="/guidelines">가이드라인</a> 참조.
+      </p>
     </main>
   );
 }
