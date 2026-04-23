@@ -72,6 +72,7 @@ describe("Form.Steps", () => {
 
 describe("value persistence across step navigation", () => {
   it("keeps value when navigating away and back", async () => {
+    // Store keeps field values even when Step unmounts — values live in FormStore, not DOM
     const user = userEvent.setup();
     render(
       <Form defaultValues={{ email: "" }}>
