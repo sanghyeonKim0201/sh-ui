@@ -13,7 +13,7 @@ import { scopedPath } from "./utils";
 import { focusFirstError } from "./focus-first-error";
 
 export interface FormProps<T = unknown>
-  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> {
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "onInvalid"> {
   form?: FormStore<T>;
   defaultValues?: CreateFormStoreOptions<T>["defaultValues"];
   schema?: CreateFormStoreOptions<T>["schema"];
@@ -73,7 +73,7 @@ function FormInner<T>({
         formElRef.current
       ) {
         focusFirstError(
-          store,
+          store as unknown as FormStore<unknown>,
           formElRef.current,
           store._config.scrollToFirstError
         );
@@ -82,7 +82,7 @@ function FormInner<T>({
   };
 
   return (
-    <FormContext.Provider value={store as FormStore<unknown>}>
+    <FormContext.Provider value={store as unknown as FormStore<unknown>}>
       <DisabledContext.Provider value={disabled ?? false}>
         <FormElement
           formElRef={formElRef}

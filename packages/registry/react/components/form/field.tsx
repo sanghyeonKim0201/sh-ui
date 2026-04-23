@@ -222,5 +222,5 @@ export function FormControl({
   if (render) return render(ctrl);
   if (!children) return null;
   const child = React.Children.only(children);
-  return React.cloneElement(child, ctrl as Record<string, unknown>);
+  return React.cloneElement(child, ctrl as unknown as Record<string, unknown>);
 }

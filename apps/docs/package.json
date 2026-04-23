@@ -21,6 +21,7 @@
     "next": "^16.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.73.1",
     "shiki": "latest"
   },
   "devDependencies": {
