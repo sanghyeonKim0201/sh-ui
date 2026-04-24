@@ -68,13 +68,13 @@
 }
 
 .sh-ui-example-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--background);
-  text-decoration: none;
   color: inherit;
   transition:
     transform var(--duration-fast) var(--ease-standard),
@@ -84,9 +84,22 @@
   transform: translateY(-2px);
   border-color: var(--primary);
 }
-.sh-ui-example-card:focus-visible {
+.sh-ui-example-card:has(.sh-ui-example-card__title-link:focus-visible) {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
+}
+
+.sh-ui-example-card__title-link {
+  text-decoration: none;
+  color: inherit;
+}
+.sh-ui-example-card__title-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.sh-ui-example-card__title-link:focus-visible {
+  outline: none;
 }
 
 .sh-ui-example-card__preview {

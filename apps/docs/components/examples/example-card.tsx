@@ -7,8 +7,9 @@ export interface ExampleCardProps {
 
 export function ExampleCard({ entry }: ExampleCardProps) {
   const { slug, title, category, description, Component } = entry;
+  const titleId = `sh-ui-example-card-title-${slug}`;
   return (
-    <Link href={`/examples/${slug}`} className="sh-ui-example-card">
+    <article className="sh-ui-example-card" aria-labelledby={titleId}>
       <div className="sh-ui-example-card__preview" aria-hidden="true">
         <div className="sh-ui-example-card__preview-inner">
           <Component />
@@ -20,9 +21,13 @@ export function ExampleCard({ entry }: ExampleCardProps) {
         >
           {category}
         </span>
-        <h3 className="sh-ui-example-card__title">{title}</h3>
+        <h3 id={titleId} className="sh-ui-example-card__title">
+          <Link href={`/examples/${slug}`} className="sh-ui-example-card__title-link">
+            {title}
+          </Link>
+        </h3>
         <p className="sh-ui-example-card__desc">{description}</p>
       </div>
-    </Link>
+    </article>
   );
 }
