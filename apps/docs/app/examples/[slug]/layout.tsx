@@ -6,5 +6,14 @@ export default function ExampleShowcaseLayout({
 }: {
   children: ReactNode;
 }) {
-  return <div className="sh-ui-showcase-root">{children}</div>;
+  return (
+    <div
+      className="sh-ui-showcase-root"
+      role="dialog"
+      aria-modal="true"
+      aria-label="실전 예제 쇼케이스"
+    >
+      {children}
+    </div>
+  );
 }

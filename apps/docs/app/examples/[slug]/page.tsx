@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { examples, findExample } from "@/examples";
 import {
@@ -9,6 +8,7 @@ import {
 } from "@/components/examples/example-topbar";
 import { CodePanel } from "@/components/ui/code-panel";
 
+export const dynamic = "force-static";
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -29,9 +29,7 @@ export async function generateMetadata({
   };
 }
 
-const EXAMPLES_ROOT = fileURLToPath(
-  new URL("../../../examples/", import.meta.url),
-);
+const EXAMPLES_ROOT = join(process.cwd(), "examples");
 
 const languageOf = (path: string): string => {
   if (path.endsWith(".tsx")) return "tsx";
@@ -66,7 +64,11 @@ export default async function ExampleShowcasePage({
 
   return (
     <>
-      <ExampleTopBar entry={entry} sources={sources} />
+      <ExampleTopBar
+        category={entry.category}
+        title={entry.title}
+        sources={sources}
+      />
       <div className="sh-ui-showcase-stage">
         <Component />
       </div>

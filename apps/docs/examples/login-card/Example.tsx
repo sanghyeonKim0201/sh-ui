@@ -23,7 +23,7 @@ import "./example.css";
 export function Example() {
   return (
     <div className="sh-ui-ex-login">
-      <div className="sh-ui-ex-login__aurora" aria-hidden />
+      <div className="sh-ui-ex-login__aurora" aria-hidden="true" />
       <Card className="sh-ui-ex-login__card">
         <CardHeader>
           <CardTitle>어서오세요</CardTitle>

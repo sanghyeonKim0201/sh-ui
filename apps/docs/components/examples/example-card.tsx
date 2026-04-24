@@ -9,7 +9,7 @@ export function ExampleCard({ entry }: ExampleCardProps) {
   const { slug, title, category, description, Component } = entry;
   return (
     <Link href={`/examples/${slug}`} className="sh-ui-example-card">
-      <div className="sh-ui-example-card__preview" aria-hidden>
+      <div className="sh-ui-example-card__preview" aria-hidden="true">
         <div className="sh-ui-example-card__preview-inner">
           <Component />
         </div>

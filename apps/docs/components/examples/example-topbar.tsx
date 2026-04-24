@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
-import type { ExampleEntry } from "@/examples/types";
+import type { ExampleCategory } from "@/examples/types";
 import { ExampleSourcePanel } from "./example-source-panel";
 
 export interface ExampleSource {
@@ -11,11 +11,12 @@ export interface ExampleSource {
 }
 
 export interface ExampleTopBarProps {
-  entry: ExampleEntry;
+  category: ExampleCategory;
+  title: string;
   sources: ExampleSource[];
 }
 
-export function ExampleTopBar({ entry, sources }: ExampleTopBarProps) {
+export function ExampleTopBar({ category, title, sources }: ExampleTopBarProps) {
   const [open, setOpen] = useState(false);
   return (
     <header className="sh-ui-showcase-topbar">
@@ -23,8 +24,8 @@ export function ExampleTopBar({ entry, sources }: ExampleTopBarProps) {
         ← 갤러리로
       </Link>
       <div className="sh-ui-showcase-topbar__meta">
-        <span className="sh-ui-showcase-topbar__cat">{entry.category}</span>
-        <h1 className="sh-ui-showcase-topbar__title">{entry.title}</h1>
+        <span className="sh-ui-showcase-topbar__cat">{category}</span>
+        <h1 className="sh-ui-showcase-topbar__title">{title}</h1>
       </div>
       <div className="sh-ui-showcase-topbar__actions">
         <button
