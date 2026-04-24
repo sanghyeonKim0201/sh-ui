@@ -29,6 +29,7 @@ export async function generateMetadata({
   };
 }
 
+// 빌드 cwd가 apps/docs 일 때만 안정적. `pnpm --filter @sh-ui/docs build` 경로 전제.
 const EXAMPLES_ROOT = join(process.cwd(), "examples");
 
 const languageOf = (path: string): string => {
