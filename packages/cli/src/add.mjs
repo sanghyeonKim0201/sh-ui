@@ -1,13 +1,16 @@
-import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, resolve, relative } from "node:path";
-import { fileURLToPath } from "node:url";
+import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
-import { buildTokensCss, buildTokensDart } from "../../tokens/build.mjs";
 import { formatUnifiedDiff } from "./diff.mjs";
+import { getRegistryRoot, getTokensRoot } from "./paths.mjs";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(__dirname, "../../..");
+// tokens/build.mjs 는 모노레포·출고 모드에 따라 위치가 달라서 동적 import.
+async function loadTokensBuilder() {
+  const url = pathToFileURL(resolve(getTokensRoot(), "build.mjs")).href;
+  return import(url);
+}
 
 /** 컬러 출력 가능 여부: TTY + NO_COLOR 미설정. */
 function canUseColor() {
@@ -81,6 +84,7 @@ async function addTokens(config, cwd, diffMode, summary) {
   if (!destRel) throw new Error("paths.tokens 가 설정에 없습니다.");
   const dest = resolve(cwd, destRel);
 
+  const { buildTokensCss, buildTokensDart } = await loadTokensBuilder();
   const content =
     config.platform === "react"
       ? await buildTokensCss(config)
@@ -93,13 +97,10 @@ async function addTokens(config, cwd, diffMode, summary) {
 }
 
 async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary) {
-  const registryPath = resolve(
-    REPO_ROOT,
-    "packages/registry",
-    config.platform,
-    "registry.json",
+  const registryRoot = getRegistryRoot(config.platform);
+  const registry = JSON.parse(
+    await readFile(resolve(registryRoot, "registry.json"), "utf8"),
   );
-  const registry = JSON.parse(await readFile(registryPath, "utf8"));
   const entry = registry.components?.[name];
   if (!entry) {
     throw new Error(
@@ -112,7 +113,7 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   }
 
   for (const file of entry.files) {
-    const src = resolve(REPO_ROOT, "packages/registry", config.platform, file.src);
+    const src = resolve(registryRoot, file.src);
     const dest = resolve(cwd, resolveDest(file.dest, config));
     const content = await readFile(src, "utf8");
     const result = await writeOrDiff({ dest, content, cwd, diffMode, summary });

@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.21.0",
+      "date": "2026-04-27",
+      "title": "MCP 서버 + standalone CLI — AI 친화 세팅",
+      "type": "minor",
+      "highlights": [
+        "sh-ui mcp 서브커맨드 — IDE-내 AI(Claude Code, Cursor 등)가 stdio MCP 로 컴포넌트 검색·설치·삭제. 등록 한 줄(`npx -y sh-ui-cli mcp`)로 AI 가 sh-ui 를 자동 인지",
+        "MCP 툴 7개 — describe_init / init / list_components / get_component / add_component / remove_component / get_changelog. 자연어 의도(\"다크 모던\")를 enum 값으로 매핑하는 describe_init 포함",
+        "출고 모드 데이터 번들 — 그동안 `npx sh-ui-cli`가 모노레포 밖에서 동작하지 않던 문제 수정. prepublishOnly 가 registry/tokens/summaries/versions 를 패키지에 포함",
+        "paths.mjs 헬퍼 — 모노레포·출고 모드 자동 감지로 add/list/remove 가 양쪽에서 동일하게 동작"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.21.0"
+    },
+    {
       "version": "0.20.1",
       "date": "2026-04-27",
       "title": "TSDoc·dartdoc 보강 — IDE 호버 안내 강화",

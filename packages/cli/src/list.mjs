@@ -1,10 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { dirname, resolve, relative } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(__dirname, "../../..");
+import { resolve, relative } from "node:path";
+import { getRegistryRoot } from "./paths.mjs";
 
 function resolveDest(template, config) {
   return template.replace(/\{([a-zA-Z0-9_]+)\}/g, (m, key) => {
@@ -26,12 +23,7 @@ async function loadConfig(cwd) {
 }
 
 async function loadRegistry(platform) {
-  const registryPath = resolve(
-    REPO_ROOT,
-    "packages/registry",
-    platform,
-    "registry.json",
-  );
+  const registryPath = resolve(getRegistryRoot(platform), "registry.json");
   return JSON.parse(await readFile(registryPath, "utf8"));
 }
 

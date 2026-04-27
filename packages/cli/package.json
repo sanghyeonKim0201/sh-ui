@@ -1,6 +1,6 @@
 {
   "name": "sh-ui-cli",
-  "version": "0.15.0",
+  "version": "0.21.0",
   "description": "sh-ui CLI — 디자인 시스템 컴포넌트를 프로젝트로 복사하는 CLI (sh-ui init / add / list / remove)",
   "license": "MIT",
   "repository": {
@@ -15,10 +15,15 @@
   "keywords": [
     "sh-ui",
     "cli",
+    "mcp",
     "design-system",
     "registry",
     "components"
   ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.25.0"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -27,11 +32,13 @@
     "sh-ui": "./bin/sh-ui.mjs"
   },
   "scripts": {
-    "prepublishOnly": "node --check bin/sh-ui.mjs"
+    "bundle-data": "node scripts/copy-data.mjs",
+    "prepublishOnly": "node scripts/copy-data.mjs && node --check bin/sh-ui.mjs"
   },
   "files": [
     "bin",
     "src",
+    "data",
     "LICENSE",
     "README.md"
   ]

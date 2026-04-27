@@ -13,6 +13,7 @@ const usage = `사용법:
                                    특수값: tokens → 설정 기반 토큰 파일 생성
   sh-ui list                       현재 설치된 컴포넌트 목록 표시
   sh-ui remove <component...>      설치된 컴포넌트 파일 삭제
+  sh-ui mcp                        MCP 서버(stdio) 시작 — IDE-내 AI용
   옵션:
     --skip-install                 (add) 외부 패키지 자동 설치 생략
     --diff                         (add) 파일을 쓰지 않고 변경 내역만 출력
@@ -41,6 +42,11 @@ try {
     case "list": {
       const all = rest.includes("--all");
       await list({ cwd: process.cwd(), all });
+      break;
+    }
+    case "mcp": {
+      const { startMcpServer } = await import("../src/mcp.mjs");
+      await startMcpServer();
       break;
     }
     case "remove":
