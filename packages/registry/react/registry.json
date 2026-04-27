@@ -171,7 +171,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -369,7 +369,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -387,7 +387,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -405,7 +405,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -423,7 +423,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -441,7 +441,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -459,7 +459,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -477,7 +477,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "dropdown-menu"
@@ -497,7 +497,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -547,7 +547,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -641,7 +641,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -659,7 +659,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -677,7 +677,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -695,7 +695,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -745,7 +745,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },
@@ -779,7 +779,7 @@
         }
       ],
       "dependencies": [
-        "@base-ui-components/react"
+        "@base-ui/react"
       ],
       "registryDependencies": []
     },

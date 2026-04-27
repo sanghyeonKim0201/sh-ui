@@ -130,7 +130,7 @@ Column(children: [
       </p>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui-components/react` },
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui/react` },
           { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `# 추가 의존성 없음 — Material 기반` },
         ]}
       />

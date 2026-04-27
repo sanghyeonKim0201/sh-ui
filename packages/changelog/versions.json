@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.21.2",
+      "date": "2026-04-27",
+      "title": "@base-ui-components/react → @base-ui/react 마이그레이션",
+      "type": "patch",
+      "highlights": [
+        "Base UI 패키지명 변경에 대응 — @base-ui-components/react (deprecated, RC만 존재) → @base-ui/react ^1.4.1 (stable). 17개 컴포넌트 + docs 듀얼 카피 + registry.json + peer-versions.json 일괄 갱신",
+        "deprecation 워닝 제거 — 신규 사용자가 sh-ui add 시 deprecated 패키지 경고 없이 stable 1.4.1 자동 설치",
+        "submodule 경로(@base-ui/react/dialog 등)는 동일하므로 사용자 코드 호환성 유지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.21.2"
+    },
+    {
       "version": "0.21.1",
       "date": "2026-04-27",
       "title": "외부 패키지 자동 설치 버전 해석",

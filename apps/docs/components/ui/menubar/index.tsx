@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Menubar as BaseMenubar } from "@base-ui-components/react/menubar";
+import { Menubar as BaseMenubar } from "@base-ui/react/menubar";
 import "./styles.css";
 
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };

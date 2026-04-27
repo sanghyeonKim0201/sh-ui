@@ -12,7 +12,7 @@
     "sh-ui:install": "node ../../packages/cli/bin/sh-ui.mjs add tokens button"
   },
   "dependencies": {
-    "@base-ui-components/react": "latest",
+    "@base-ui/react": "latest",
     "@tanstack/react-form": "^1.29.1",
     "embla-carousel": "^8.6.0",
     "embla-carousel-auto-scroll": "^8.6.0",

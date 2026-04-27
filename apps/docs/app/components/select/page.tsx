@@ -119,7 +119,7 @@ ShUiSelect<String>(
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `pnpm add @base-ui-components/react`,
+            code: `pnpm add @base-ui/react`,
           },
           {
             value: "flutter",

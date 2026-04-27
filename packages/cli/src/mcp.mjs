@@ -102,7 +102,7 @@ function resolveCwd(input) {
 
 export async function startMcpServer() {
   const server = new McpServer(
-    { name: "sh-ui", version: "0.21.1" },
+    { name: "sh-ui", version: "0.21.2" },
     { capabilities: { tools: {} } },
   );
 

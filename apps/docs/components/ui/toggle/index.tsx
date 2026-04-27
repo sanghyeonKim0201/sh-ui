@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Toggle as BaseToggle } from "@base-ui-components/react/toggle";
-import { ToggleGroup as BaseToggleGroup } from "@base-ui-components/react/toggle-group";
+import { Toggle as BaseToggle } from "@base-ui/react/toggle";
+import { ToggleGroup as BaseToggleGroup } from "@base-ui/react/toggle-group";
 import "./styles.css";
 
 function cx(...args: (string | undefined | false)[]) {

@@ -212,7 +212,7 @@ npx sh-ui-create add-component button --app web`,
           { prop: "Next.js 16 + React 19", type: "core", description: "App Router, React Compiler, standalone 출력." },
           { prop: "TypeScript 5.9", type: "core", description: "strict, ES2022." },
           { prop: "Tailwind CSS 4", type: "style", description: "@theme inline 으로 sh-ui 토큰 매핑 — bg-background 등 사용 가능." },
-          { prop: "@base-ui-components/react", type: "peer", description: "sh-ui 가 의존하는 언스타일드 primitive." },
+          { prop: "@base-ui/react", type: "peer", description: "sh-ui 가 의존하는 언스타일드 primitive." },
           { prop: "TanStack React Query + Axios", type: "data", description: "데이터 페칭." },
           { prop: "Zustand", type: "state", description: "상태 관리." },
           { prop: "next-themes + Sonner", type: "ui", description: "다크 모드 토글 + 토스트." },
@@ -316,7 +316,7 @@ npx sh-ui add button`}
 
       <h4>외부 패키지 자동 설치</h4>
       <p>
-        Base UI를 쓰는 컴포넌트(Dialog, Popover, Select, DropdownMenu, Tooltip 등)는 <code>@base-ui-components/react</code>가 필요하다.
+        Base UI를 쓰는 컴포넌트(Dialog, Popover, Select, DropdownMenu, Tooltip 등)는 <code>@base-ui/react</code>가 필요하다.
         CLI가 <code>package.json</code>에 없는 의존성만 감지해 자동 설치한다.
       </p>
       <p>패키지 매니저는 lockfile로 감지:</p>

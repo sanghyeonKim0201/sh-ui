@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Popover as BasePopover } from "@base-ui-components/react/popover";
+import { Popover as BasePopover } from "@base-ui/react/popover";
 import "./styles.css";
 
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };

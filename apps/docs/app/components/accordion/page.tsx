@@ -121,7 +121,7 @@ export default function AccordionPage() {
       <h3>Manual</h3>
       <p className="muted">
         registry에서 아래 파일을 <code>components/ui/accordion/</code>로
-        복사한다. <code>@base-ui-components/react</code>가 필요하다.
+        복사한다. <code>@base-ui/react</code>가 필요하다.
       </p>
       <ul>
         <li><code>index.tsx</code></li>
