@@ -59,15 +59,18 @@ npx sh-ui remove button
 
 #### 자동 등록 (권장, v0.22.0+)
 
+빈 폴더에서도 바로 — `sh-ui-cli` 설치 불필요, `-y` 플래그로 자동 확인:
+
 ```bash
-# 프로젝트 루트에서 — IDE 별로 한 줄
-npx sh-ui mcp init --client claude-code      # → .mcp.json
-npx sh-ui mcp init --client cursor           # → .cursor/mcp.json
-npx sh-ui mcp init --client claude-desktop   # → 사용자 전역 (재시작 필요)
+npx -y sh-ui-cli mcp init --client claude-code      # → .mcp.json
+npx -y sh-ui-cli mcp init --client cursor           # → .cursor/mcp.json
+npx -y sh-ui-cli mcp init --client claude-desktop   # → 사용자 전역 (재시작 필요)
 
 # 사용자 전역 설정에 등록하려면
-npx sh-ui mcp init --client claude-code --scope user
+npx -y sh-ui-cli mcp init --client claude-code --scope user
 ```
+
+> 참고: 위 다른 명령들의 `npx sh-ui ...` 표기는 `sh-ui-cli` 가 dev 의존성으로 설치된 상태를 가정한다. 빈 폴더에서 한 번에 쓰려면 동일하게 `npx -y sh-ui-cli ...` 로 호출.
 
 기존 설정 파일이 있으면 다른 MCP 서버 엔트리를 보존하며 `sh-ui` 만 머지·갱신.
 
