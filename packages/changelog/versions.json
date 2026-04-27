@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.20.1",
+      "date": "2026-04-27",
+      "title": "TSDoc·dartdoc 보강 — IDE 호버 안내 강화",
+      "type": "patch",
+      "highlights": [
+        "React 24개 컴포넌트의 prop·옵션별 한글 TSDoc 추가 — IDE 호버에서 variant/size/orientation 등 enum 옵션별 의미가 즉시 표시",
+        "Flutter 4개 위젯(button·header·sidebar·app_shell)의 클래스·필드 dartdoc 보강 — `[paramName]` 참조와 옵션 설명 정리",
+        "isValidBRN·getPaginationRange·yupSchema 등 유틸 함수에 @param·@returns·@example 추가 — 자동완성 시그니처 헬프에서 인자 의미 안내",
+        "런타임 동작 변경 없음 (docs only). registry와 docs/showcase 듀얼 카피 동기화"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.20.1"
+    },
+    {
       "version": "0.20.0",
       "date": "2026-04-23",
       "title": "Form 기본 레이아웃 + 루트 컴포넌트 style/className 개방",
