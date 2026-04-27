@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.22.0",
+      "date": "2026-04-27",
+      "title": "sh-ui mcp init — IDE MCP 설정 자동 등록",
+      "type": "minor",
+      "highlights": [
+        "sh-ui mcp init --client <claude-code|cursor|claude-desktop> 추가 — IDE 별 MCP 설정 파일을 자동으로 찾아 sh-ui 엔트리 머지",
+        "스코프 분기 — 기본 project(.mcp.json / .cursor/mcp.json), --scope user 로 전역(~/.claude/mcp.json 등) 선택 가능. claude-desktop 은 user 전용(OS 별 경로 자동 분기)",
+        "기존 JSON 보존 — 다른 MCP 서버 엔트리·기타 키를 건드리지 않고 sh-ui 만 머지·갱신",
+        "수동 JSON 편집 없이 npx sh-ui mcp init --client cursor 한 줄로 끝"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.0"
+    },
+    {
       "version": "0.21.2",
       "date": "2026-04-27",
       "title": "@base-ui-components/react → @base-ui/react 마이그레이션",

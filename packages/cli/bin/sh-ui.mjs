@@ -14,6 +14,8 @@ const usage = `사용법:
   sh-ui list                       현재 설치된 컴포넌트 목록 표시
   sh-ui remove <component...>      설치된 컴포넌트 파일 삭제
   sh-ui mcp                        MCP 서버(stdio) 시작 — IDE-내 AI용
+  sh-ui mcp init --client <name>   IDE MCP 설정 파일에 sh-ui 엔트리 자동 추가
+                                   (claude-code | cursor | claude-desktop)
   옵션:
     --skip-install                 (add) 외부 패키지 자동 설치 생략
     --diff                         (add) 파일을 쓰지 않고 변경 내역만 출력
@@ -45,8 +47,15 @@ try {
       break;
     }
     case "mcp": {
-      const { startMcpServer } = await import("../src/mcp.mjs");
-      await startMcpServer();
+      // `sh-ui mcp init ...` → 설정 파일에 엔트리 추가
+      // `sh-ui mcp`         → MCP 서버 시작
+      if (rest[0] === "init") {
+        const { mcpInit } = await import("../src/mcp-init.mjs");
+        await mcpInit({ cwd: process.cwd(), args: rest.slice(1) });
+      } else {
+        const { startMcpServer } = await import("../src/mcp.mjs");
+        await startMcpServer();
+      }
       break;
     }
     case "remove":

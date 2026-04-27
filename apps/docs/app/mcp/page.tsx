@@ -21,6 +21,24 @@ export default function McpPage() {
       </p>
 
       <h2>등록 방법</h2>
+
+      <h3>자동 등록 (권장, v0.22.0+)</h3>
+      <p>
+        IDE 별로 적절한 설정 파일을 자동으로 찾아 sh-ui 엔트리를 추가한다. 기존 다른 MCP 서버 설정은 보존.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# 프로젝트 루트에서
+npx sh-ui mcp init --client claude-code      # → .mcp.json
+npx sh-ui mcp init --client cursor           # → .cursor/mcp.json
+npx sh-ui mcp init --client claude-desktop   # → 사용자 전역
+
+# 사용자 전역 설정에 등록하려면
+npx sh-ui mcp init --client claude-code --scope user`}
+      />
+
+      <h3>수동 등록</h3>
       <p className="muted">
         IDE 별로 설정 파일 위치가 다르다. JSON 한 블록을 추가하면 끝.
       </p>

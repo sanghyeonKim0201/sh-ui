@@ -57,7 +57,21 @@ npx sh-ui remove button
 
 **한 번만 등록하면 끝** — 빈 폴더에서도 _"다크 모던 sh-ui 로 세팅하고 button 추가해줘"_ 만 말하면 AI 가 알아서 처리.
 
-#### 등록 방법
+#### 자동 등록 (권장, v0.22.0+)
+
+```bash
+# 프로젝트 루트에서 — IDE 별로 한 줄
+npx sh-ui mcp init --client claude-code      # → .mcp.json
+npx sh-ui mcp init --client cursor           # → .cursor/mcp.json
+npx sh-ui mcp init --client claude-desktop   # → 사용자 전역 (재시작 필요)
+
+# 사용자 전역 설정에 등록하려면
+npx sh-ui mcp init --client claude-code --scope user
+```
+
+기존 설정 파일이 있으면 다른 MCP 서버 엔트리를 보존하며 `sh-ui` 만 머지·갱신.
+
+#### 수동 등록
 
 **Claude Code** — `~/.claude/mcp.json` 또는 프로젝트 `.mcp.json`:
 

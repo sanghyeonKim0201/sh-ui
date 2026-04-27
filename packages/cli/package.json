@@ -1,6 +1,6 @@
 {
   "name": "sh-ui-cli",
-  "version": "0.21.2",
+  "version": "0.22.0",
   "description": "sh-ui CLI — 디자인 시스템 컴포넌트를 프로젝트로 복사하는 CLI (sh-ui init / add / list / remove)",
   "license": "MIT",
   "repository": {
