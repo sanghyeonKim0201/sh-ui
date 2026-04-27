@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.22.2",
+      "date": "2026-04-28",
+      "title": "에이전트 UX — MCP 라우팅 + sh-ui-create 비대화형 가드",
+      "type": "patch",
+      "highlights": [
+        "MCP 서버 initialize 응답에 instructions 추가 — IDE-내 AI 가 빈 폴더/새 프로젝트 요청 시 create-next-app + sh_ui_init 우회 대신 npx sh-ui-create 로 바로 가도록 안내",
+        "sh-ui-create --help / -h 추가 — 누락 플래그 안내 + 비대화형 사용 예시 출력",
+        "sh-ui-create 가 TTY 없는 환경에서 필수 플래그(--platform, --structure, name) 누락 시 prompt 대신 즉시 에러로 종료 — 에이전트/CI 가 stuck 에 빠지지 않음",
+        "sh-ui-create 의 --plugins 는 미지정 시 prompt 없이 빈 배열 기본값 — 플러그인은 --plugins sentry,next-intl 로 명시 활성화"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.2"
+    },
+    {
       "version": "0.22.1",
       "date": "2026-04-27",
       "title": "mcp init claude-code user 스코프 경로 수정",

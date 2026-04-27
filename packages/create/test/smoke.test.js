@@ -24,6 +24,11 @@ beforeEach(async () => {
   await fs.ensureDir(tmpDir);
   vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
   vi.spyOn(console, 'log').mockImplementation(() => {});
+  // vitest 는 TTY 가 없으므로 prompt-기반 시나리오를 검증하려면 TTY 를 흉내낸다.
+  Object.defineProperty(process.stdin, 'isTTY', {
+    value: true,
+    configurable: true,
+  });
 });
 
 afterEach(async () => {
@@ -83,13 +88,13 @@ describe('sh-ui-create smoke tests', () => {
     expect(appPkg.scripts.dev).toContain('-p 3000');
   });
   it('scenario 3 — standalone + sentry + next-intl', async () => {
-    prompts.input.mockResolvedValueOnce('my-app');
-    prompts.select
-      .mockResolvedValueOnce('next')         // platform
-      .mockResolvedValueOnce('standalone');   // structure
-    prompts.checkbox.mockResolvedValueOnce(['sentry', 'next-intl']);
-
-    await createProject();
+    // 플러그인은 이제 prompt 가 없고 --plugins 플래그로만 지정
+    await createProject({
+      name: 'my-app',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: ['sentry', 'next-intl'],
+    });
 
     const projectDir = path.join(tmpDir, 'my-app');
 
@@ -315,5 +320,50 @@ describe('sh-ui-create smoke tests', () => {
     expect(css).toContain('--radius: 0.25rem;');
     // 마커 바깥 토큰(spacing 등) 는 그대로
     expect(css).toContain('--space-0: 0px;');
+  });
+
+  describe('비대화형 환경 가드 (no-TTY)', () => {
+    beforeEach(() => {
+      Object.defineProperty(process.stdin, 'isTTY', {
+        value: false,
+        configurable: true,
+      });
+    });
+
+    it('name 누락 → 에러', async () => {
+      await expect(createProject({ platform: 'next', structure: 'standalone' }))
+        .rejects.toThrow(/<project-name>/);
+    });
+
+    it('--platform 누락 → 에러', async () => {
+      await expect(createProject({ name: 'x' }))
+        .rejects.toThrow(/--platform/);
+    });
+
+    it('next 인데 --structure 누락 → 에러', async () => {
+      await expect(createProject({ name: 'x', platform: 'next' }))
+        .rejects.toThrow(/--structure/);
+    });
+
+    it('flutter 는 --structure 불필요', async () => {
+      await expect(createProject({
+        name: 'flutter-no-tty',
+        platform: 'flutter',
+        yes: true,
+      })).resolves.not.toThrow();
+      const projectDir = path.join(tmpDir, 'flutter-no-tty');
+      expect(await fs.pathExists(projectDir)).toBe(true);
+    });
+
+    it('필수 플래그 모두 제공 → 성공', async () => {
+      await expect(createProject({
+        name: 'no-tty-app',
+        platform: 'next',
+        structure: 'standalone',
+        yes: true,
+      })).resolves.not.toThrow();
+      const projectDir = path.join(tmpDir, 'no-tty-app');
+      expect(await fs.pathExists(projectDir)).toBe(true);
+    });
   });
 });

@@ -3,7 +3,7 @@ const VALID_STRUCTURES = ['standalone', 'monorepo'];
 const VALID_PLUGINS = ['sentry', 'next-intl'];
 
 const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app'];
-const BOOL_FLAGS = ['yes'];
+const BOOL_FLAGS = ['yes', 'help'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
 
@@ -19,6 +19,10 @@ export const parseArgs = (argv) => {
 
   for (let i = 0; i < rest.length; i++) {
     const arg = rest[i];
+    if (arg === '-h') {
+      flags.help = true;
+      continue;
+    }
     if (!arg.startsWith('--')) {
       positional.push(arg);
       continue;

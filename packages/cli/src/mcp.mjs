@@ -100,10 +100,60 @@ function resolveCwd(input) {
   return input?.cwd ? resolve(input.cwd) : process.cwd();
 }
 
+const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter 디자인 시스템.
+
+## 새 프로젝트를 만드는 경우 (이 MCP 툴 호출 금지)
+
+빈 폴더에서 시작하거나 사용자가 "Next.js 앱 만들어줘", "Flutter 프로젝트 새로", "sh-ui 로 시작" 처럼 **스캐폴드부터** 요청하면 \`sh-ui-create\` 사용:
+
+  npm create sh-ui my-app          # 권장 (대화형)
+  npx sh-ui-create my-app          # 동일
+
+비대화형(에이전트/CI)은 **모든 필수 플래그를 명시**해야 한다 — \`sh-ui-create\` 는 \`--help\` 가 없고, 누락 시 prompt 에서 멈춘다:
+
+  # Next.js 단독:
+  npx sh-ui-create my-app --platform next --structure standalone --plugins "" --yes
+  # Next.js 모노레포 (Turborepo):
+  npx sh-ui-create my-app --platform next --structure monorepo --plugins "" --yes
+  # Flutter:
+  npx sh-ui-create my-app --platform flutter --yes
+
+플래그:
+- \`--platform\` next | flutter (필수)
+- \`--structure\` standalone | monorepo (next 일 때 필수)
+- \`--plugins\` 콤마 구분 (sentry,next-intl) — 없으면 \`""\` 명시 (필수)
+- \`--theme\` base64 인코딩된 테마 JSON (선택)
+- \`--yes\` 디렉토리 덮어쓰기/모노레포 기본값 자동 채택
+
+이게 한 번에 해주는 일:
+- Next.js (standalone / Turborepo 모노레포) 또는 Flutter 프로젝트 스캐폴드
+- FSD 폴더 구조, 토큰, \`sh-ui.config.json\` 일괄 생성
+- 옵션 플러그인 (Sentry, next-intl)
+
+\`create-next-app\` + \`sh_ui_init\` 조합은 **쓰지 말 것** — 위 명령이 더 짧고 sh-ui 관용에 맞다.
+
+## 이미 있는 프로젝트에 sh-ui 를 얹는 경우 (MCP 툴 사용)
+
+기존 Next.js/Vite/Flutter 프로젝트에 sh-ui 컴포넌트만 추가하고 싶을 때:
+1. \`sh_ui_describe_init\` — 자연어 의도("다크 모던")를 enum 으로 매핑
+2. \`sh_ui_init\` — \`sh-ui.config.json\` 생성
+3. \`sh_ui_add_component\` — \`tokens\` 먼저, 그다음 컴포넌트
+
+## 컴포넌트 작업
+
+- \`sh_ui_list_components\` — 어떤 게 있는지
+- \`sh_ui_get_component\` — props/소스 확인 (코드 작성 전)
+- \`sh_ui_add_component\` / \`sh_ui_remove_component\` — 설치/삭제
+- \`sh_ui_get_changelog\` — 최근 변경 내역
+`;
+
 export async function startMcpServer() {
   const server = new McpServer(
-    { name: "sh-ui", version: "0.22.1" },
-    { capabilities: { tools: {} } },
+    { name: "sh-ui", version: "0.22.2" }, // sh-ui-cli 와 동기화
+    {
+      capabilities: { tools: {} },
+      instructions: SERVER_INSTRUCTIONS,
+    },
   );
 
   server.registerTool(
@@ -121,6 +171,8 @@ export async function startMcpServer() {
     "sh_ui_init",
     {
       description:
+        "⚠️ 빈 폴더/새 프로젝트면 이 툴 대신 `npx sh-ui-create` 사용 — 스캐폴드 + 토큰 + config 일괄 처리. " +
+        "이 툴은 **이미 있는** Next.js/Vite/Flutter 프로젝트에 sh-ui 만 얹을 때. " +
         "현재 디렉토리(또는 cwd)에 sh-ui.config.json 을 생성. 비대화형 — 누락된 값은 기본값 사용. " +
         "선택지 의미가 헷갈리면 먼저 sh_ui_describe_init 호출 권장.",
       inputSchema: {

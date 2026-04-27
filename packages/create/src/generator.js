@@ -18,7 +18,27 @@ const TEMPLATES_DIR = path.join(__dirname, '..', 'templates');
 
 // ─── Create new project ───
 
+// 비대화형 환경(TTY 없음 — 에이전트, CI, 파이프) 에서는 prompt 가 멈추므로
+// 누락된 필수 인자가 있으면 즉시 에러로 종료한다. 호출 시점에 평가해 테스트가
+// `process.stdin.isTTY = true` 로 prompt 흐름을 그대로 검증할 수 있게 한다.
+function assertNoTtyFlag(value, flagLabel) {
+  if (value === undefined || value === null) {
+    throw new Error(
+      `비대화형 환경(TTY 없음)에서는 ${flagLabel} 가 필요합니다. ` +
+      `sh-ui-create --help 참고.`,
+    );
+  }
+}
+
 export async function createProject(options = {}) {
+  if (!process.stdin.isTTY) {
+    assertNoTtyFlag(options.name, '<project-name> (positional)');
+    assertNoTtyFlag(options.platform, '--platform');
+    if (options.platform === 'next') {
+      assertNoTtyFlag(options.structure, '--structure');
+    }
+  }
+
   const projectName = options.name ?? await input({
     message: '프로젝트 이름:',
     default: 'my-app',
@@ -70,10 +90,9 @@ export async function createProject(options = {}) {
     ],
   });
 
-  const selectedPluginNames = options.plugins ?? await checkbox({
-    message: '추가 기능 선택 (Space로 선택):',
-    choices: getPluginChoices(),
-  });
+  // plugins 는 미지정시 기본 빈 배열 — prompt 띄우지 않는다.
+  // (플러그인을 쓰려면 명시적으로 --plugins sentry,next-intl 사용)
+  const selectedPluginNames = options.plugins ?? [];
 
   const plugins = getPluginsByNames(selectedPluginNames);
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));

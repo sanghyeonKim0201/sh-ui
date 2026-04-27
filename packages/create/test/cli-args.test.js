@@ -58,4 +58,9 @@ describe('parseArgs', () => {
     expect(() => parseArgs(['node', 'create.js', '--platform', 'django']))
       .toThrow(/--platform/);
   });
+
+  it('--help / -h → flags.help = true', () => {
+    expect(parseArgs(['node', 'create.js', '--help']).flags.help).toBe(true);
+    expect(parseArgs(['node', 'create.js', '-h']).flags.help).toBe(true);
+  });
 });
