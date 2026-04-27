@@ -18,11 +18,11 @@
     "embla-carousel-auto-scroll": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
-    "lucide-react": "^1.8.0",
+    "lucide-react": "^1.11.0",
     "next": "^16.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hook-form": "^7.73.1",
+    "react-hook-form": "^7.74.0",
     "shiki": "latest",
     "yup": "^1.7.1",
     "zod": "^4.3.6"
