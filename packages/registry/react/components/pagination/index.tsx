@@ -66,7 +66,18 @@ export const PaginationItem = React.forwardRef<
 
 export interface PaginationLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /**
+   * 현재 페이지 표시. `true`면 `aria-current="page"`가 자동 부여되고 시각적으로 강조된다.
+   * @default false
+   */
   isActive?: boolean;
+  /**
+   * 크기.
+   * - `sm` — 컴팩트
+   * - `md` — 일반 (기본)
+   *
+   * @default "md"
+   */
   size?: "sm" | "md";
 }
 
@@ -172,15 +183,27 @@ export type PaginationToken = number | "dots";
 /**
  * 1-based `page`/`totalPages`로부터 렌더할 토큰 배열을 만든다.
  * 양 끝과 현재 주변 `siblings`개를 보여주고, 끊긴 구간엔 `"dots"`를 넣어준다.
- * 예: page=5, totalPages=10, siblings=1 → `[1, "dots", 4, 5, 6, "dots", 10]`.
+ *
+ * @param args.page - 1-based 현재 페이지.
+ * @param args.siblings - 현재 페이지 양옆에 보일 페이지 개수.
+ * @returns 렌더 토큰 배열. 숫자 또는 문자열 `"dots"`로 구성.
+ * @example
+ * getPaginationRange({ page: 5, totalPages: 10, siblings: 1 })
+ * // [1, "dots", 4, 5, 6, "dots", 10]
  */
 export function getPaginationRange({
   page,
   totalPages,
   siblings = 1,
 }: {
+  /** 1-based 현재 페이지. */
   page: number;
+  /** 전체 페이지 수. */
   totalPages: number;
+  /**
+   * 현재 페이지 양옆에 보일 페이지 개수.
+   * @default 1
+   */
   siblings?: number;
 }): PaginationToken[] {
   if (totalPages <= 0) return [];

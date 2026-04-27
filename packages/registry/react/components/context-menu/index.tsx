@@ -41,6 +41,10 @@ export interface ContextMenuContentProps
   extends WithStringClassName<
     React.ComponentPropsWithoutRef<typeof BaseContextMenu.Popup>
   > {
+  /**
+   * Portal이 마운트될 DOM 노드.
+   * @default document.body
+   */
   container?: React.ComponentPropsWithoutRef<
     typeof BaseContextMenu.Portal
   >["container"];

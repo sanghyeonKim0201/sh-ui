@@ -46,36 +46,52 @@ function useFileUpload() {
 /* ───────────── root ───────────── */
 
 export interface FileUploadProps {
-  /** 제어 모드. 있으면 컴포넌트는 순수 제어 컴포넌트로 동작한다. */
+  /** 제어 모드 파일 배열. 지정 시 순수 제어 컴포넌트로 동작한다. */
   value?: File[];
   /** 비제어 모드 초기값. */
   defaultValue?: File[];
+  /** 파일 목록 변경 콜백. 추가/제거/대체 모두 이 콜백으로 통보된다. */
   onValueChange?: (files: File[]) => void;
-  /** onFiles — onValueChange 별칭 (compound API 호환). */
+  /** `onValueChange` 별칭 (compound API 호환). 보통 `onValueChange` 사용 권장. */
   onFiles?: (files: File[]) => void;
+  /**
+   * 다중 선택 허용. `false`면 새 파일이 기존 파일을 대체한다.
+   * @default false
+   */
   multiple?: boolean;
-  /** `accept` 속성 (e.g. "image/*", ".pdf,.docx"). */
+  /**
+   * 네이티브 `<input accept>`. MIME 또는 확장자.
+   * @example "image/*", ".pdf,.docx"
+   */
   accept?: string;
-  /** 파일당 최대 바이트. 초과 시 onError. */
+  /** 파일당 최대 바이트. 초과 시 `onError`로 알림 후 해당 파일은 거부된다. */
   maxSize?: number;
-  /** 총 파일 개수 상한. */
+  /** 총 파일 개수 상한. 초과 시 `onError` 후 잘려서 보관. */
   maxFiles?: number;
+  /** 비활성. 클릭/드롭 모두 차단. */
   disabled?: boolean;
+  /** 검증 실패(크기·개수 초과) 시 한국어 메시지가 전달된다. 토스트 등에 연결. */
   onError?: (message: string) => void;
-  /** 드롭존 중앙 텍스트 커스터마이즈 (자식이 없을 때만 사용됨). */
+  /** 기본 dropzone 중앙 텍스트 커스터마이즈. children 미지정 시에만 적용. */
   placeholder?: React.ReactNode;
-  /** 드롭존 하단 힌트 (자식이 없을 때만 사용됨). */
+  /** 기본 dropzone 하단 힌트. children 미지정 시에만 적용. */
   hint?: React.ReactNode;
   /**
-   * 내장 파일 목록 표시 여부. 자식이 없을 때(backward-compat default 레이아웃)만 적용.
-   * compound 사용 시에는 FileUploadList의 존재 여부로 결정.
+   * 기본 레이아웃에서 파일 목록 노출 여부. children 조립 모드에서는 FileUploadList 존재 여부로 결정.
+   * @default true
    */
   showFileList?: boolean;
   className?: string;
-  /** 루트 래퍼 div 에 적용할 인라인 스타일. */
+  /** 루트 래퍼 div에 적용할 인라인 스타일. */
   style?: React.CSSProperties;
+  /** 네이티브 input의 `id`. `<Label htmlFor>`와 연결할 때 사용. */
   id?: string;
+  /** 네이티브 input의 `name`. form submit 시 필드명. */
   name?: string;
+  /**
+   * compound 모드. 미지정 시 기본 dropzone+목록 레이아웃이 자동 렌더된다.
+   * 직접 조립하려면 `FileUploadDropzone`/`FileUploadTrigger`/`FileUploadList`/`FileUploadItem`을 자식으로 넘긴다.
+   */
   children?: React.ReactNode;
 }
 
@@ -333,13 +349,22 @@ export const FileUploadTrigger = React.forwardRef<
 export interface FileUploadListProps
   extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
   /**
-   * 커스텀 렌더. 없으면 내부에서 파일당 FileUploadItem을 자동 렌더한다.
-   * render prop 형태로 files를 노출한다.
+   * 직접 노드를 넘기거나, 함수를 넘기면 현재 files와 remove 함수를 받아 직접 렌더할 수 있다.
+   * 미지정 시 파일당 `FileUploadItem`이 자동 렌더된다.
+   *
+   * @example
+   * <FileUploadList>
+   *   {({ files, remove }) => files.map((f, i) => (
+   *     <li key={i}>{f.name} <button onClick={() => remove(i)}>x</button></li>
+   *   ))}
+   * </FileUploadList>
    */
   children?:
     | React.ReactNode
     | ((args: {
+        /** 현재 보관 중인 파일 목록. */
         files: File[];
+        /** 인덱스 기반 파일 제거. */
         remove: (idx: number) => void;
       }) => React.ReactNode);
 }
@@ -376,9 +401,11 @@ export const FileUploadList = React.forwardRef<
 
 export interface FileUploadItemProps
   extends Omit<React.LiHTMLAttributes<HTMLLIElement>, "children"> {
+  /** 표시할 파일 객체. */
   file: File;
-  /** files 배열 내 index. remove 버튼에서 사용. */
+  /** files 배열 내 index. 내부 remove 버튼이 사용한다. */
   index: number;
+  /** 미지정 시 기본 레이아웃(아이콘 + 이름 + 크기 + 제거 버튼). */
   children?: React.ReactNode;
 }
 

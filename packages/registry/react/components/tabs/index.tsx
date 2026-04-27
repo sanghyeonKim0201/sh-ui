@@ -20,7 +20,14 @@ const TabsContext = React.createContext<TabsContextValue>({ variant: "underline"
 export type TabsProps = WithStringClassName<
   React.ComponentPropsWithoutRef<typeof BaseTabs.Root>
 > & {
-  /** 외형 변형. 기본 `underline`. */
+  /**
+   * 외형 변형.
+   * - `underline` — 활성 탭 하단 underline (기본). 일반 탭 UI
+   * - `pill` — 활성 탭 둥근 배경. 세그먼트 컨트롤 스타일
+   * - `plain` — 시각 강조 없음. 직접 스타일링용
+   *
+   * @default "underline"
+   */
   variant?: TabsVariant;
 };
 

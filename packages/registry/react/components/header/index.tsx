@@ -34,8 +34,14 @@ function useHeader(): HeaderCtx {
 export const Header = React.forwardRef<
   HTMLElement,
   React.HTMLAttributes<HTMLElement> & {
+    /**
+     * 모바일 drawer 초기 상태 (비제어 모드).
+     * @default false
+     */
     defaultOpen?: boolean;
+    /** 모바일 drawer 열림 상태 (제어 모드). 지정 시 내부 state 대신 이 값이 우선. */
     open?: boolean;
+    /** drawer 열림 변경 콜백. 제어 모드에서는 이 안에서 외부 상태를 업데이트해야 한다. */
     onOpenChange?: (open: boolean) => void;
   }
 >(function Header(
@@ -185,6 +191,12 @@ export const HeaderNav = React.forwardRef<
 export const HeaderItem = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+    /**
+     * 현재 페이지 표시. `true`면 시각적으로 강조된다.
+     * 라우터 활성 상태와 직접 연결해 사용 (예: `active={pathname === href}`).
+     *
+     * @default false
+     */
     active?: boolean;
   }
 >(function HeaderItem({ className, active, onClick, href, ...props }, ref) {

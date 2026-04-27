@@ -22,15 +22,34 @@ export const PopoverClose = BasePopover.Close;
 
 export interface PopoverContentProps
   extends WithStringClassName<React.ComponentPropsWithoutRef<typeof BasePopover.Popup>> {
-  /** Trigger에 대한 배치 방향. */
+  /**
+   * Trigger 기준 배치 방향. 공간 부족 시 자동으로 반대편으로 뒤집힌다.
+   * @default "bottom"
+   */
   side?: "top" | "right" | "bottom" | "left";
-  /** 정렬. */
+  /**
+   * 트리거 축에서의 정렬.
+   * - `start` — 트리거 시작 가장자리 정렬
+   * - `center` — 가운데 (기본)
+   * - `end` — 트리거 끝 가장자리 정렬
+   *
+   * @default "center"
+   */
   align?: "start" | "center" | "end";
-  /** Trigger-Popup 간격(px). 기본 8. */
+  /**
+   * Trigger와 Popup 사이 간격(px).
+   * @default 8
+   */
   sideOffset?: number;
-  /** portal이 마운트될 노드. 기본 body. */
+  /**
+   * Portal이 마운트될 DOM 노드.
+   * @default document.body
+   */
   container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
-  /** popup 바깥을 가리키는 화살표 표시 여부. 기본 false. */
+  /**
+   * Trigger를 가리키는 화살표 표시 여부.
+   * @default false
+   */
   showArrow?: boolean;
 }
 

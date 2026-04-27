@@ -4,7 +4,9 @@ import * as React from "react";
 import "./styles.css";
 
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
+  /** input 우측에 부착할 보조 노드(아이콘·단위·버튼 등). 더 많은 슬롯이 필요하면 InputGroup 사용. */
   suffix?: React.ReactNode;
+  /** input 좌측에 부착할 보조 노드. */
   prefix?: React.ReactNode;
 }
 
@@ -36,9 +38,12 @@ function useInputGroup() {
 }
 
 export interface InputGroupProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** invalid 상태를 그룹 전체에 적용. */
+  /**
+   * invalid 상태를 그룹 전체에 적용. 자식 input의 보더가 위험색으로 바뀌고,
+   * 스크린리더에 오류 상태가 노출된다.
+   */
   "aria-invalid"?: boolean | "true" | "false";
-  /** disabled 상태를 그룹 전체에 적용. */
+  /** disabled 상태를 그룹 전체에 적용. 그룹 내 input/Adornment 모두에 전파된다. */
   disabled?: boolean;
 }
 
@@ -98,7 +103,12 @@ InputGroup.displayName = "InputGroup";
 
 export interface InputAdornmentProps
   extends React.HTMLAttributes<HTMLSpanElement> {
-  /** 클릭이 input으로 버블링되지 않도록. 버튼을 담을 때 유용. */
+  /**
+   * 클릭이 input으로 버블링되지 않도록 한다. 버튼·체크박스 등 인터랙티브 요소를
+   * Adornment에 담을 때 켤 것 — 그러지 않으면 클릭이 input 포커스로 가로채진다.
+   *
+   * @default false
+   */
   interactive?: boolean;
 }
 
@@ -186,7 +196,11 @@ function EyeOffIcon() {
 }
 
 export interface PasswordInputProps extends Omit<InputProps, "type" | "suffix"> {
-
+  /**
+   * 비밀번호 표시 토글 버튼을 숨긴다. 비밀번호를 절대 노출하면 안 되는 화면(결제 등)에서 사용.
+   *
+   * @default false
+   */
   hideToggle?: boolean;
 }
 
@@ -229,14 +243,25 @@ PasswordInput.displayName = "PasswordInput";
 
 export interface NumberInputProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "type"> {
+  /** 제어 모드 값. `undefined`는 빈 입력. */
   value?: number;
+  /** 비제어 모드 초기값. */
   defaultValue?: number;
+  /** 값 변경 콜백. 빈 입력일 때 `undefined`가 전달된다. */
   onValueChange?: (value: number | undefined) => void;
-
+  /**
+   * 천 단위 콤마 자동 포맷.
+   * @default true
+   */
   thousandsSeparator?: boolean;
+  /** 허용 최솟값. blur 시 자동 클램프된다. */
   min?: number;
+  /** 허용 최댓값. blur 시 자동 클램프된다. */
   max?: number;
-
+  /**
+   * 음수 입력 허용 여부.
+   * @default true
+   */
   allowNegative?: boolean;
 }
 
@@ -356,10 +381,11 @@ const formatPhoneKR = (digits: string): string => {
 
 export interface PhoneInputProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "type"> {
-
+  /** 제어 모드 값. 하이픈 포함/제외 모두 허용 — 표시용으로 자동 포맷됨. */
   value?: string;
+  /** 비제어 모드 초기값. */
   defaultValue?: string;
-
+  /** 값 변경 콜백. 하이픈을 뺀 숫자 문자열만 전달된다. */
   onValueChange?: (digits: string) => void;
 }
 
@@ -410,7 +436,14 @@ const formatBRN = (digits: string): string => {
 };
 
 
-/** 한국 사업자등록번호(10자리) 체크섬 검증. 하이픈 포함/제외 모두 허용. */
+/**
+ * 한국 사업자등록번호(10자리) 체크섬 검증.
+ * @param digits - 검증할 사업자번호 문자열. 하이픈 포함/제외 모두 허용.
+ * @returns 체크섬 통과 여부. 길이가 10이 아니면 항상 `false`.
+ * @example
+ * isValidBRN("123-45-67890") // false
+ * isValidBRN("1234567890") // 체크섬에 따라
+ */
 export function isValidBRN(digits: string): boolean {
   const d = digits.replace(/\D/g, "");
   if (d.length !== 10) return false;
@@ -424,10 +457,18 @@ export function isValidBRN(digits: string): boolean {
 
 export interface BusinessNumberInputProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "type"> {
+  /** 제어 모드 값. 하이픈 포함/제외 모두 허용. */
   value?: string;
+  /** 비제어 모드 초기값. */
   defaultValue?: string;
+  /** 값 변경 콜백. 하이픈을 뺀 숫자 문자열만 전달된다. */
   onValueChange?: (digits: string) => void;
-
+  /**
+   * 켜면 10자리 입력 시 사업자번호 체크섬을 검증해 `aria-invalid`를 자동 부여한다.
+   * 외부에서 `aria-invalid`를 명시하면 그 값이 우선한다.
+   *
+   * @default false
+   */
   validateChecksum?: boolean;
 }
 

@@ -20,15 +20,18 @@ export interface ColorPickerProps
     React.HTMLAttributes<HTMLDivElement>,
     "onChange" | "defaultValue" | "children"
   > {
-  /** 현재 색상 (hex, e.g. "#FF8800"). */
+  /** 제어 모드 색상값 (hex, 예: `"#FF8800"`). 6자리 / 3자리 / `#` 생략 모두 허용. */
   value?: string;
-  /** 변경 콜백. 항상 6자리 대문자 hex. */
+  /** 색상 변경 콜백. 항상 6자리 대문자 hex(`"#RRGGBB"`)로 통일되어 전달된다. */
   onChange?: (hex: string) => void;
-  /** 비제어 모드 초기값. */
+  /**
+   * 비제어 모드 초기값.
+   * @default "#000000"
+   */
   defaultValue?: string;
   /**
-   * children 없이 렌더하면 기본 compound 레이아웃
-   * (Saturation + Hue + Hex)이 자동 렌더된다. 백워드 호환용.
+   * compound 모드. 미지정 시 기본 레이아웃(Saturation + Hue + Hex)이 자동 렌더된다.
+   * 직접 조립하려면 `ColorPickerSaturation`/`Hue`/`Alpha`/`Hex`/`Swatches`를 자식으로 넘긴다.
    */
   children?: React.ReactNode;
 }
@@ -361,7 +364,10 @@ export function ColorPickerAlpha({ className, style, ...rest }: ColorPickerAlpha
 
 export interface ColorPickerHexProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
-  /** 왼쪽 swatch 표시 여부. 기본 true. */
+  /**
+   * input 좌측에 현재 색상 미리보기 swatch 표시 여부.
+   * @default true
+   */
   showSwatch?: boolean;
 }
 
@@ -418,6 +424,10 @@ export function ColorPickerHex({
 
 export interface ColorPickerSwatchesProps
   extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * 표시할 hex 색상 목록. 항목 클릭 시 해당 색상으로 즉시 commit된다.
+   * 형식은 `"#RRGGBB"` 권장 (입력 시 대소문자는 자동 정규화).
+   */
   colors: string[];
 }
 

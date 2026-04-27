@@ -25,12 +25,20 @@ import '../foundation/sh_ui_tokens.dart';
 /// Header 배치 모드.
 enum ShUiHeaderMode { auto, inline, drawer }
 
-/// Header 네비게이션 아이템.
+/// Header 네비게이션 아이템 모델.
 @immutable
 class ShUiHeaderItem {
+  /// 표시 텍스트.
   final String label;
+
+  /// 라벨 좌측에 붙는 아이콘 (선택).
   final IconData? icon;
+
+  /// 탭 콜백. `null`이면 비활성처럼 렌더링.
   final VoidCallback? onTap;
+
+  /// 현재 페이지/섹션 표시. `true`면 시각적으로 강조된다.
+  /// 라우터 활성 상태와 직접 연결해 사용 (예: `isActive: location == '/docs'`).
   final bool isActive;
 
   const ShUiHeaderItem({
@@ -46,13 +54,25 @@ class ShUiHeaderItem {
 /// 데스크탑에서는 inline nav, 모바일에서는 햄버거 + drawer로 자동 전환된다.
 /// 강제로 한 모드를 고정하려면 [mode]를 [ShUiHeaderMode.inline] 또는 [ShUiHeaderMode.drawer]로 지정.
 class ShUiHeader extends StatefulWidget {
+  /// 좌측 브랜드 로고. SVG/이미지/[Icon] 모두 가능.
   final Widget? logo;
+
+  /// 브랜드 텍스트 타이틀. [logo] 옆에 표시된다.
   final String? title;
+
+  /// 네비게이션 항목 목록.
   final List<ShUiHeaderItem> items;
+
+  /// 우측 트레일링 액션. 검색·테마 토글·로그인 버튼 등을 둔다.
   final List<Widget>? trailing;
+
+  /// 배치 모드.
+  /// - [ShUiHeaderMode.auto] — 화면 폭 기준 자동 (기본)
+  /// - [ShUiHeaderMode.inline] — 항상 가로 나열
+  /// - [ShUiHeaderMode.drawer] — 항상 햄버거 + drawer
   final ShUiHeaderMode mode;
 
-  /// drawer 모드에서 슬라이드되는 패널의 폭.
+  /// drawer 모드에서 슬라이드되는 패널의 폭. 기본 280.
   final double drawerWidth;
 
   /// 헤더 자체의 높이. 기본 [ShUiControlTokens.md].

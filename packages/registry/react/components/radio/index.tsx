@@ -40,6 +40,13 @@ export type RadioGroupProps = Omit<
   "className"
 > & {
   className?: string;
+  /**
+   * 그룹 내 항목 배치 방향.
+   * - `vertical` — 세로 나열 (기본)
+   * - `horizontal` — 가로 나열. 짧은 라벨 2~3개에만 권장
+   *
+   * @default "vertical"
+   */
   orientation?: "horizontal" | "vertical";
 };
 

@@ -40,7 +40,10 @@ export function DialogFooter({ className, ...props }: React.HTMLAttributes<HTMLD
 
 export interface DialogContentProps
   extends WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseDialog.Popup>> {
-  /** Portal이 마운트될 노드. 기본 body. */
+  /**
+   * Portal이 마운트될 DOM 노드. 모달이 다른 stacking context에 갇혀야 할 때 지정한다.
+   * @default document.body
+   */
   container?: React.ComponentPropsWithoutRef<typeof BaseDialog.Portal>["container"];
 }
 

@@ -25,9 +25,21 @@ enum ShUiButtonSize { sm, md, lg }
 /// )
 /// ```
 class ShUiButton extends StatefulWidget {
+  /// 버튼 안에 표시될 콘텐츠. 보통 [Text] 또는 [Icon]+[Text]를 [Row]로 묶어 사용.
   final Widget child;
+
+  /// 탭 콜백. `null`이면 비활성 상태로 렌더되며 hover/press 효과도 제거된다.
   final VoidCallback? onPressed;
+
+  /// 시각 위계.
+  /// - [ShUiButtonVariant.primary] — 페이지의 1차 액션 (기본)
+  /// - [ShUiButtonVariant.secondary] — 보조 액션
+  /// - [ShUiButtonVariant.ghost] — 배경 없는 hover 강조
+  /// - [ShUiButtonVariant.danger] — 파괴적 액션
+  /// - [ShUiButtonVariant.link] — 텍스트 링크 스타일
   final ShUiButtonVariant variant;
+
+  /// 크기. [ShUiButtonSize.sm] / [ShUiButtonSize.md] (기본) / [ShUiButtonSize.lg].
   final ShUiButtonSize size;
 
   const ShUiButton({

@@ -2,7 +2,12 @@ import * as React from "react";
 import "./styles.css";
 
 export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  /** 필수 필드 표시. true이면 ::after로 * 표시. Input에 required가 있으면 CSS :has()로 자동 감지되므로 보통 불필요. */
+  /**
+   * 필수 필드 표시. `true`면 `::after`로 `*` 표시가 붙는다.
+   * Input에 `required` 속성이 있으면 CSS `:has()`로 자동 감지되므로 보통 명시 불필요.
+   *
+   * @default false
+   */
   isRequired?: boolean;
 }
 

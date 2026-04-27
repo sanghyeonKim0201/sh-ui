@@ -54,9 +54,16 @@ enum ShUiSidebarMode { auto, inline, drawer }
 /// expanded/collapsed 폭을 자식 트리에 공유한다. [ShUiSidebar]를 사용하는 영역
 /// 바깥에 한 번 두어야 하며, 자식에서 [ShUiSidebar.of]로 상태에 접근한다.
 class ShUiSidebarProvider extends StatefulWidget {
+  /// Provider 영역의 자식 트리. 보통 [Row]로 [ShUiSidebar]+메인 콘텐츠를 묶는다.
   final Widget child;
+
+  /// 초기 열림 상태. 영속화가 필요하면 외부에서 저장값을 읽어 주입한다.
   final bool defaultOpen;
+
+  /// 펼침 상태일 때 사이드바 폭(px). 기본 256.
   final double expandedWidth;
+
+  /// 접힘 상태(icon 모드)일 때 사이드바 폭(px). 기본 56.
   final double collapsedWidth;
 
   const ShUiSidebarProvider({
@@ -140,11 +147,22 @@ class _ShUiSidebarScope extends InheritedWidget {
 
 /// [useSidebar]가 반환하는 스냅샷. open/toggle·폭·activePanel 정보를 담는 불변 데이터 객체.
 class ShUiSidebarState {
+  /// 사이드바 펼침 상태.
   final bool open;
+
+  /// 펼침/접힘 토글. 자식 위젯에서 직접 호출 가능.
   final VoidCallback toggle;
+
+  /// 펼침 상태 폭(px).
   final double expandedWidth;
+
+  /// 접힘 상태 폭(px).
   final double collapsedWidth;
+
+  /// 현재 열린 보조 패널 id. 없으면 `null`.
   final String? activePanelId;
+
+  /// 보조 패널 id 설정. 같은 id를 다시 주면 닫힘(토글), `null`이면 명시적으로 닫음.
   final ValueChanged<String?> setActivePanel;
 
   const ShUiSidebarState({
@@ -178,10 +196,25 @@ ShUiSidebarState? useSidebar(BuildContext context) {
 /// [variant]로 외형(sidebar/floating/inset), [mode]로 inline/drawer 동작을 결정한다.
 /// 자식은 [ShUiSidebarHeader]/[ShUiSidebarGroup]/[ShUiSidebarFooter] 등으로 구성한다.
 class ShUiSidebar extends StatefulWidget {
+  /// 사이드바 상단 영역. 보통 [ShUiSidebarHeader]로 감싼 로고/앱 이름.
   final Widget? header;
+
+  /// 사이드바 하단 영역. 보통 [ShUiSidebarFooter]로 감싼 사용자 정보·테마 토글.
   final Widget? footer;
+
+  /// 메뉴 본문. [ShUiSidebarGroup]/[ShUiSidebarItem]/[ShUiSidebarSeparator] 등을 순서대로 나열.
   final List<Widget> children;
+
+  /// 외형 변형.
+  /// - [ShUiSidebarVariant.sidebar] — 가장자리 부착 (기본)
+  /// - [ShUiSidebarVariant.floating] — 카드처럼 띄움
+  /// - [ShUiSidebarVariant.inset] — 메인 콘텐츠가 둥근 카드
   final ShUiSidebarVariant variant;
+
+  /// 배치 모드.
+  /// - [ShUiSidebarMode.auto] — 화면 폭 기준 자동 (기본)
+  /// - [ShUiSidebarMode.inline] — 항상 inline
+  /// - [ShUiSidebarMode.drawer] — 항상 drawer
   final ShUiSidebarMode mode;
 
   const ShUiSidebar({
@@ -408,6 +441,7 @@ class _ShUiSidebarState extends State<ShUiSidebar>
 
 /// [ShUiSidebar] 옆의 메인 영역을 카드 형태로 감싼다. variant=inset과 짝으로 사용한다.
 class ShUiSidebarInset extends StatelessWidget {
+  /// 카드로 감쌀 메인 콘텐츠.
   final Widget child;
 
   const ShUiSidebarInset({super.key, required this.child});
@@ -467,6 +501,7 @@ class ShUiSidebarTrigger extends StatelessWidget {
 
 /// Sidebar 상단 영역. 보통 로고/앱 이름을 둔다. 접힘 상태에서는 좌우 padding이 자동으로 줄어든다.
 class ShUiSidebarHeader extends StatelessWidget {
+  /// 헤더 안에 표시될 콘텐츠 (로고·타이틀·트리거 등).
   final Widget child;
 
   const ShUiSidebarHeader({super.key, required this.child});
@@ -495,6 +530,7 @@ class ShUiSidebarHeader extends StatelessWidget {
 
 /// Sidebar 하단 영역. 사용자 정보·테마 토글 등을 둔다.
 class ShUiSidebarFooter extends StatelessWidget {
+  /// 푸터 안에 표시될 콘텐츠.
   final Widget child;
 
   const ShUiSidebarFooter({super.key, required this.child});
@@ -524,7 +560,10 @@ class ShUiSidebarFooter extends StatelessWidget {
 /// 의미적으로 묶이는 메뉴 그룹. [label]을 주면 카테고리 헤더가 표시되고,
 /// [collapsible]을 켜면 라벨 탭으로 접기/펼치기가 가능하다.
 class ShUiSidebarGroup extends StatefulWidget {
+  /// 그룹 카테고리 라벨. 미지정 시 라벨 없이 자식만 노출.
   final String? label;
+
+  /// 그룹에 속한 자식 위젯들. 보통 [ShUiSidebarItem]을 나열.
   final List<Widget> children;
 
   /// `true`면 label 탭으로 접기/펼치기 가능. `label`이 있어야 의미가 있다.
@@ -647,12 +686,25 @@ class _ShUiSidebarGroupState extends State<ShUiSidebarGroup>
 /// [panelId]를 주면 탭 시 같은 id의 [ShUiSidebarPanel]을 토글하고,
 /// [children]을 주면 서브메뉴처럼 확장/축소되는 트리 항목이 된다.
 class ShUiSidebarItem extends StatefulWidget {
+  /// 라벨 좌측 아이콘 (선택). 접힘 상태(icon 모드)에서는 이것만 보인다.
   final IconData? icon;
+
+  /// 메뉴 텍스트. 펼침 상태에서만 표시.
   final String label;
+
+  /// 활성 상태 표시. 라우터 활성 경로와 직접 연결해 사용 (예: `isActive: route == '/home'`).
+  /// [panelId]가 지정되면 `activePanelId == panelId`일 때 자동으로 강조된다.
   final bool isActive;
+
+  /// 탭 콜백. [panelId]가 같이 지정된 경우 패널 토글이 먼저 실행된 뒤 이 콜백이 호출된다.
   final VoidCallback? onTap;
+
+  /// 보조 패널 id. 지정 시 탭으로 같은 id의 [ShUiSidebarPanel]을 토글한다.
   final String? panelId;
+
+  /// 서브메뉴 항목들. 지정 시 탭으로 확장/축소 되며 들여쓰기되어 렌더된다.
   final List<ShUiSidebarItem>? children;
+
   final int _depth;
 
   const ShUiSidebarItem({
@@ -889,8 +941,13 @@ class ShUiSidebarSeparator extends StatelessWidget {
 
 /// [ShUiSidebarTOC]의 항목 모델. id로 활성 섹션을 매칭하고 [children]으로 트리를 구성한다.
 class ShUiSidebarTOCItem {
+  /// 활성 섹션 매칭에 사용되는 식별자. 보통 페이지 내 섹션 키.
   final String id;
+
+  /// 표시 텍스트.
   final String label;
+
+  /// 서브 항목들. 지정 시 들여쓰기되어 트리로 렌더된다.
   final List<ShUiSidebarTOCItem>? children;
 
   const ShUiSidebarTOCItem({
@@ -903,8 +960,13 @@ class ShUiSidebarTOCItem {
 /// 페이지 내 섹션 링크를 트리로 렌더한다. Flutter에는 IntersectionObserver가 없으므로
 /// 활성 섹션은 호출자가 [activeId]로 직접 주입한다. 탭 시 [onItemTap] 콜백을 받는다.
 class ShUiSidebarTOC extends StatelessWidget {
+  /// TOC 항목 목록. 문서 등장 순서대로 나열.
   final List<ShUiSidebarTOCItem> items;
+
+  /// 현재 활성 섹션 id. 호출자가 스크롤 위치 등에서 직접 계산해 주입한다.
   final String? activeId;
+
+  /// 항목 탭 콜백. 보통 해당 섹션으로 스크롤하는 동작을 연결한다.
   final ValueChanged<String>? onItemTap;
 
   const ShUiSidebarTOC({
@@ -1012,8 +1074,13 @@ class _TOCNodeState extends State<_TOCNode> {
 /// [ShUiSidebarItem]의 panelId와 매칭되는 id로 열리는 보조 확장 패널.
 /// 사이드바와 메인 콘텐츠 사이의 Row에 배치하며, activePanelId가 일치할 때만 보인다.
 class ShUiSidebarPanel extends StatelessWidget {
+  /// 트리거가 될 [ShUiSidebarItem.panelId]와 매칭되는 식별자.
   final String panelId;
+
+  /// 패널 내부 콘텐츠.
   final Widget child;
+
+  /// 패널 폭(px). 기본 320.
   final double width;
 
   const ShUiSidebarPanel({

@@ -12,6 +12,18 @@ interface YupValidationError {
 /**
  * yup 스키마를 sh-ui Form이 사용하는 Standard Schema(v1)로 감싼다.
  * yup은 peerDependency라 직접 import하지 않으므로, 호출 측에서 만든 스키마를 그대로 넘기면 된다.
+ *
+ * @param schema - yup 스키마 객체 (`yup.object({...}).required()` 등).
+ * @returns Form의 `validation` prop에 그대로 넘길 수 있는 Standard Schema.
+ * @example
+ * import * as yup from "yup";
+ * import { yupSchema } from "@/components/ui/form-yup";
+ *
+ * const validation = yupSchema(yup.object({
+ *   email: yup.string().email().required(),
+ * }));
+ *
+ * <Form validation={validation}>...</Form>
  */
 export function yupSchema<T>(schema: YupLikeSchema<T>): StandardSchemaV1<T> {
   return {

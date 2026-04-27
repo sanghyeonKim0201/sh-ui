@@ -10,15 +10,31 @@ type ToastVariant = "default" | "success" | "danger" | "warning";
 
 interface ToastItem {
   id: string;
+  /** 짧은 제목. 한 줄 굵게 표시. */
   title?: React.ReactNode;
+  /** 본문 설명. 줄바꿈 가능. */
   description?: React.ReactNode;
   variant: ToastVariant;
   duration: number;
+  /** 우측에 표시될 액션 노드(예: "다시 시도" 버튼). */
   action?: React.ReactNode;
 }
 
 type ToastInput = Omit<ToastItem, "id" | "variant" | "duration"> & {
+  /**
+   * 토스트 종류.
+   * - `default` — 정보성 알림
+   * - `success` — 성공
+   * - `warning` — 주의
+   * - `danger` — 오류 (스크린리더에 즉시 읽힘)
+   *
+   * @default "default"
+   */
   variant?: ToastVariant;
+  /**
+   * 자동 닫힘 시간(ms). `0` 이하면 자동 닫힘 비활성.
+   * @default 4000
+   */
   duration?: number;
 };
 
@@ -73,6 +89,12 @@ function useToastStore() {
  * 토스트 알림을 발생시키는 명령형 API. 문자열만 전달하면 description으로 사용된다.
  * variant별 헬퍼(`toast.success` 등)와 `toast.dismiss(id)`도 함께 노출된다.
  * 사용 전에 앱 어딘가에 `<Toaster />`가 마운트되어 있어야 화면에 보인다.
+ *
+ * @param input - 문자열(빠른 알림) 또는 `{ title, description, variant, duration, action }`.
+ * @returns 생성된 토스트 id. `toast.dismiss(id)`로 수동 닫을 때 사용.
+ * @example
+ * toast.success("저장 완료");
+ * toast({ title: "오류", description: e.message, variant: "danger" });
  */
 export function toast(input: ToastInput | string): string {
   if (typeof input === "string") return addToast({ description: input });
@@ -181,9 +203,17 @@ export type ToastPosition =
   | "bottom-center";
 
 export interface ToasterProps {
-  /** 토스트 표시 위치. 기본 "bottom-right". */
+  /**
+   * 토스트 표시 위치.
+   * `top-*` 위치는 새 토스트가 위에 쌓이고, `bottom-*` 위치는 아래에 쌓인다.
+   *
+   * @default "bottom-right"
+   */
   position?: ToastPosition;
-  /** 컨테이너 DOM 노드. 기본 document.body. */
+  /**
+   * Portal이 마운트될 DOM 노드.
+   * @default document.body
+   */
   container?: Element | null;
 }
 

@@ -19,7 +19,19 @@ export type ToggleProps = Omit<
   "className"
 > & {
   className?: string;
+  /**
+   * 외형 변형.
+   * - `ghost` — 배경 없음, 눌림 시만 강조 (기본)
+   * - `outline` — 항상 border 표시
+   *
+   * @default "ghost"
+   */
   variant?: ToggleVariant;
+  /**
+   * 크기. `sm` / `md` / `lg`.
+   *
+   * @default "md"
+   */
   size?: ToggleSize;
 };
 
@@ -50,7 +62,15 @@ export type ToggleGroupProps = Omit<
   "className"
 > & {
   className?: string;
+  /**
+   * 그룹 내 모든 항목에 적용될 외형. 자식 ToggleGroupItem이 자동 상속한다.
+   * @default "ghost"
+   */
   variant?: ToggleVariant;
+  /**
+   * 그룹 내 모든 항목에 적용될 크기. 자식 ToggleGroupItem이 자동 상속한다.
+   * @default "md"
+   */
   size?: ToggleSize;
 };
 

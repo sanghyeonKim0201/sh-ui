@@ -35,11 +35,16 @@ import 'sh_ui_sidebar.dart';
 /// 사이드바 그룹 선언.
 @immutable
 class ShUiAppShellGroup {
+  /// 그룹 카테고리 라벨. 미지정 시 라벨 없이 항목만 노출.
   final String? label;
+
+  /// 그룹에 속한 메뉴 항목 목록.
   final List<ShUiAppShellItem> items;
 
-  /// 그룹 라벨 탭으로 접기/펼치기.
+  /// 그룹 라벨 탭으로 접기/펼치기 가능.
   final bool collapsible;
+
+  /// [collapsible] 활성 시 초기 확장 여부.
   final bool initiallyExpanded;
 
   const ShUiAppShellGroup({
@@ -53,10 +58,13 @@ class ShUiAppShellGroup {
 /// 사이드바 아이템 선언. 탭하면 [builder]가 메인 영역에 렌더된다.
 @immutable
 class ShUiAppShellItem {
+  /// 라벨 좌측에 붙는 아이콘 (선택).
   final IconData? icon;
+
+  /// 메뉴 라벨. AppBar 타이틀로도 사용된다(item 선택 시 자동 갱신).
   final String label;
 
-  /// 선택 시 메인 영역에 표시할 위젯을 반환. Scaffold 없이 body-only 위젯을 반환해야 한다.
+  /// 선택 시 메인 영역에 표시할 위젯을 반환. [Scaffold] 없이 body-only 위젯을 반환해야 한다.
   final WidgetBuilder builder;
 
   const ShUiAppShellItem({

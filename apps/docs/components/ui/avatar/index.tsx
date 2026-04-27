@@ -14,7 +14,15 @@ export interface AvatarProps
   extends WithStringClassName<
     React.ComponentPropsWithoutRef<typeof BaseAvatar.Root>
   > {
-  /** 크기 변형. 기본 `md`. */
+  /**
+   * 크기.
+   * - `sm` (24px) — 댓글·리스트 행
+   * - `md` (32px) — 일반 (기본)
+   * - `lg` (40px) — 헤더·프로필 카드
+   * - `xl` (56px) — 프로필 페이지
+   *
+   * @default "md"
+   */
   size?: AvatarSize;
 }
 

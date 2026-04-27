@@ -8,17 +8,34 @@ function cx(...args: (string | undefined | false | null)[]) {
 
 export interface CodePanelProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  /** 하이라이팅할 코드 문자열. 자식(compound)을 제공하지 않을 때 필수. */
+  /** 하이라이팅할 코드 문자열. children을 제공하지 않을 때 필수. */
   code?: string;
-  /** shiki가 지원하는 언어 ID (e.g. "tsx", "typescript", "bash", "json"). */
+  /**
+   * shiki가 지원하는 언어 ID (예: `"tsx"`, `"typescript"`, `"bash"`, `"json"`).
+   * 미지원 언어면 plain text로 폴백.
+   *
+   * @default "text"
+   */
   language?: string;
-  /** 상단 헤더에 표시할 파일명. 있으면 헤더가 그려지고 없으면 우상단 플로팅 복사 버튼만. */
+  /**
+   * 상단 헤더에 표시할 파일명. 지정하면 헤더가 그려지고 그 안에 복사 버튼이 들어가며,
+   * 미지정 시 우상단에 floating 복사 버튼만 표시된다.
+   */
   filename?: string;
-  /** 줄 번호 표시 여부. 기본 true. */
+  /**
+   * 좌측 줄 번호 표시 여부.
+   * @default true
+   */
   showLineNumbers?: boolean;
-  /** 복사 버튼 숨기기. */
+  /**
+   * 복사 버튼 숨기기. 코드 발췌가 클립보드 복사용이 아닐 때 사용.
+   * @default false
+   */
   hideCopy?: boolean;
-  /** 직접 구성할 경우 CodePanelHeader / CodePanelBody 등 하위 컴포넌트를 넘긴다. */
+  /**
+   * compound 모드. 직접 `CodePanelHeader`/`CodePanelFilename`/`CodePanelCopy`/`CodePanelBody`를
+   * 조합해 헤더 액션 추가나 복사 버튼 위치 변경 등을 한다. 지정 시 `code`/`language` 등은 무시.
+   */
   children?: React.ReactNode;
 }
 
@@ -113,7 +130,7 @@ export function CodePanelFilename({
  */
 
 export interface CodePanelCopyProps {
-  /** 복사할 코드 문자열. 부모가 명시적으로 전달한다. */
+  /** 클립보드에 복사할 코드 문자열. 부모(주로 CodePanel)가 명시적으로 전달한다. */
   code: string;
 }
 
@@ -131,8 +148,17 @@ export interface CodePanelBodyProps
     React.HTMLAttributes<HTMLDivElement>,
     "children" | "dangerouslySetInnerHTML"
   > {
+  /** 하이라이팅할 코드 문자열. */
   code: string;
+  /**
+   * shiki 언어 ID.
+   * @default "text"
+   */
   language?: string;
+  /**
+   * 좌측 줄 번호 표시 여부.
+   * @default true
+   */
   showLineNumbers?: boolean;
 }
 

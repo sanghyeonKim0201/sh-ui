@@ -120,16 +120,26 @@ export function useSidebar() {
 /* ───────────── Provider ───────────── */
 
 export interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 초기 열림 상태. 쿠키 기반 영속화와 함께 쓰려면 서버 컴포넌트에서
-   *  `cookies().get("sidebar_state")`를 읽어 주입해야 하이드레이션 레이아웃 시프트가 없다.
-   *  예(Next.js):
-   *    const s = (await cookies()).get("sidebar_state")?.value;
-   *    <SidebarProvider defaultOpen={s !== "false"}>...</SidebarProvider>
+  /**
+   * 초기 열림 상태 (비제어 모드). 쿠키 기반 영속화와 함께 쓰려면 서버 컴포넌트에서
+   * `cookies().get("sidebar_state")`를 읽어 주입해야 hydration 레이아웃 시프트가 없다.
+   *
+   * @default true
+   * @example
+   * // Next.js App Router
+   * const s = (await cookies()).get("sidebar_state")?.value;
+   * <SidebarProvider defaultOpen={s !== "false"}>...</SidebarProvider>
    */
   defaultOpen?: boolean;
+  /** 열림 상태 (제어 모드). 지정 시 내부 state 대신 이 값이 우선. */
   open?: boolean;
+  /** 열림 변경 콜백. 제어 모드에서는 이 안에서 외부 상태를 업데이트해야 한다. */
   onOpenChange?: (open: boolean) => void;
-  /** 부모 컨테이너 안에 임베드. min-height/100svh 대신 부모 크기를 따른다. (문서 데모용) */
+  /**
+   * 부모 컨테이너 안에 임베드. `100svh` 대신 부모 크기를 따른다. 문서 데모·iframe 등에 사용.
+   *
+   * @default false
+   */
   embedded?: boolean;
 }
 
@@ -229,8 +239,28 @@ const SidebarRenderContext = React.createContext<SidebarRenderCtx>({
 export const useSidebarRender = () => React.useContext(SidebarRenderContext);
 
 export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * 좌/우 배치.
+   * @default "left"
+   */
   side?: "left" | "right";
+  /**
+   * 외형 변형.
+   * - `sidebar` — 가장자리에 붙는 기본 사이드바 (기본)
+   * - `floating` — 카드처럼 띄워 여백·radius 적용
+   * - `inset` — 사이드바는 가장자리에 붙고 메인 콘텐츠(`SidebarInset`)가 둥근 카드
+   *
+   * @default "sidebar"
+   */
   variant?: "sidebar" | "floating" | "inset";
+  /**
+   * 접힘(collapsed) 동작.
+   * - `offcanvas` — 사이드바가 화면 밖으로 슬라이드 아웃 (기본)
+   * - `icon` — 아이콘만 보이는 좁은 폭으로 축소. hover 시 메뉴 flyout
+   * - `none` — 접기 비활성. 항상 펼친 상태
+   *
+   * @default "offcanvas"
+   */
   collapsible?: "offcanvas" | "icon" | "none";
 }
 
@@ -367,7 +397,10 @@ export function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerP
  */
 
 export interface SidebarPanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** SidebarMenuButton의 panelId와 매칭되는 식별자. */
+  /**
+   * `SidebarMenuButton`의 `panelId`와 매칭되는 식별자.
+   * 이 id를 가진 버튼이 클릭되면 패널이 열린다.
+   */
   id: string;
 }
 
@@ -545,12 +578,35 @@ export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HT
 }
 
 export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * 활성 상태(현재 페이지/섹션). 명시 안 해도 `sectionId`/`panelId` 매칭으로 자동 추론된다.
+   */
   isActive?: boolean;
+  /**
+   * 크기.
+   * - `sm` — 컴팩트 메뉴
+   * - `md` — 일반 (기본)
+   * - `lg` — 강조 메뉴
+   *
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
+  /**
+   * Radix asChild 패턴. children에 `<a>` 등 다른 요소를 넘겨 button 스타일만 입힐 때 사용.
+   * Next.js Link와 결합 시 유용 (`<SidebarMenuButton asChild><Link href=...>`).
+   *
+   * @default false
+   */
   asChild?: boolean;
-  /** SidebarTOC 안에서 사용할 때, 이 값과 활성 섹션 id가 같으면 자동으로 isActive가 true가 된다. */
+  /**
+   * `SidebarTOC` 안에서 활성 섹션 id를 자동 동기화. 이 값과 TOC active id가 일치하면
+   * `isActive`가 자동으로 `true`가 된다.
+   */
   sectionId?: string;
-  /** 보조 패널 트리거. 클릭 시 같은 id의 SidebarPanel을 토글한다. isActive는 activePanel === panelId로 자동 결정. */
+  /**
+   * 보조 패널 트리거. 지정 시 클릭으로 같은 id의 `SidebarPanel`을 토글하고,
+   * `activePanel === panelId`일 때 `isActive`가 자동으로 `true`가 된다.
+   */
   panelId?: string;
 }
 
@@ -640,10 +696,19 @@ export function SidebarMenuSubItem({ className, ...props }: React.HTMLAttributes
 }
 
 export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** 활성 상태. 명시 안 해도 `sectionId` 매칭으로 자동 추론된다. */
   isActive?: boolean;
+  /**
+   * 크기.
+   * @default "md"
+   */
   size?: "sm" | "md";
+  /**
+   * Radix asChild 패턴. children에 다른 anchor 컴포넌트(예: Next.js Link)를 넘길 때 사용.
+   * @default false
+   */
   asChild?: boolean;
-  /** SidebarTOC 안에서 사용할 때, 이 값과 활성 섹션 id가 같으면 자동으로 isActive가 true가 된다. */
+  /** `SidebarTOC`의 활성 섹션 id 자동 동기화. 일치하면 `isActive`가 자동으로 `true`. */
   sectionId?: string;
 }
 
@@ -709,8 +774,14 @@ function useCollapsible() {
 }
 
 export interface SidebarCollapsibleProps {
+  /**
+   * 초기 펼침 상태 (비제어 모드).
+   * @default false
+   */
   defaultOpen?: boolean;
+  /** 펼침 상태 (제어 모드). 지정 시 내부 state 대신 이 값이 우선. */
   open?: boolean;
+  /** 펼침 변경 콜백. */
   onOpenChange?: (open: boolean) => void;
   children: React.ReactNode;
 }
@@ -771,6 +842,10 @@ export function SidebarCollapsible({
 }
 
 export interface SidebarCollapsibleTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * 크기. 부모 메뉴와 시각 위계를 맞춘다.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
 }
 
@@ -888,15 +963,26 @@ function useTOCActiveId(): string | undefined {
 }
 
 export interface SidebarTOCProps {
-  /** 감시할 섹션의 DOM id 목록 (문서 등장 순서). */
+  /** 감시할 섹션의 DOM `id` 목록. 문서 등장 순서대로 나열할 것. */
   sectionIds: string[];
-  /** IntersectionObserver rootMargin. 기본값은 뷰포트 상단 20% 지점에서 활성 전환. */
+  /**
+   * `IntersectionObserver` rootMargin. 어느 지점에서 섹션이 "활성"으로 전환되는지 결정.
+   * 기본값은 뷰포트 상단 20% / 하단 70% 지점.
+   *
+   * @default "-20% 0px -70% 0px"
+   */
   rootMargin?: string;
-  /** 관측 대상이 될 스크롤 컨테이너. 기본은 viewport. */
+  /**
+   * 관측 대상 스크롤 컨테이너.
+   * @default null (뷰포트)
+   */
   root?: Element | null;
-  /** 초기 활성 섹션. 지정하지 않으면 sectionIds[0]. */
+  /**
+   * 초기 활성 섹션 id.
+   * @default sectionIds[0]
+   */
   defaultActiveId?: string;
-  /** 외부에서 활성 섹션 변경을 관찰하고 싶을 때. (URL 해시 동기화 등) */
+  /** 활성 섹션 변경 콜백. URL 해시 동기화 등 외부 연동 용도. */
   onActiveChange?: (id: string | undefined) => void;
   children: React.ReactNode;
 }

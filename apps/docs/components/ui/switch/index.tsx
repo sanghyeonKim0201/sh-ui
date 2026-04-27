@@ -13,6 +13,13 @@ export type SwitchProps = Omit<
   "className"
 > & {
   className?: string;
+  /**
+   * 크기.
+   * - `sm` — 조밀한 폼이나 툴바
+   * - `md` — 일반 (기본)
+   *
+   * @default "md"
+   */
   size?: "sm" | "md";
 };
 
