@@ -1,0 +1,10 @@
+{
+  "$description": "registry.json 의 dependencies 에 등장하는 npm 패키지의 버전 범위. CLI 가 add 시 npm install <name>@<range> 로 호출하기 위함.",
+  "versions": {
+    "@base-ui-components/react": "^1.0.0-rc.0",
+    "@tanstack/react-form": "^1.29.1",
+    "lucide-react": "^1.11.0",
+    "react-hook-form": "^7.74.0",
+    "shiki": "^4.0.2"
+  }
+}

@@ -33,6 +33,13 @@ export function getTokensRoot() {
     : resolve(MONOREPO_PACKAGES, "tokens");
 }
 
+/** registry.json deps 에 등장하는 npm 패키지의 버전 범위 맵 */
+export function getPeerVersionsPath(platform) {
+  return isBundled
+    ? resolve(BUNDLED_DATA, "registry", platform, "peer-versions.json")
+    : resolve(MONOREPO_PACKAGES, "registry", platform, "peer-versions.json");
+}
+
 /** llms 요약 JSON (platform별) */
 export function getSummariesPath(platform) {
   return isBundled

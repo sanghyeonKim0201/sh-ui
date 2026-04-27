@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.21.1",
+      "date": "2026-04-27",
+      "title": "외부 패키지 자동 설치 버전 해석",
+      "type": "patch",
+      "highlights": [
+        "registry/react/peer-versions.json — registry.json deps 의 패키지명을 실제 버전 범위로 매핑하는 단일 출처 추가",
+        "sh-ui add 가 npm install <name>@<range> 로 호출 — RC 만 있는 패키지(@base-ui-components/react 등) 자동 설치 시 latest 못 찾아 ETARGET 으로 실패하던 사전 이슈 수정",
+        "패키지명에 이미 @version 이 포함돼 있거나 peer-versions 맵에 없는 경우는 그대로 통과 (Flutter·기타 platform 호환)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.21.1"
+    },
+    {
       "version": "0.21.0",
       "date": "2026-04-27",
       "title": "MCP 서버 + standalone CLI — AI 친화 세팅",

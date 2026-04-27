@@ -4,7 +4,30 @@ import { dirname, resolve, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { formatUnifiedDiff } from "./diff.mjs";
-import { getRegistryRoot, getTokensRoot } from "./paths.mjs";
+import { getRegistryRoot, getTokensRoot, getPeerVersionsPath } from "./paths.mjs";
+
+/**
+ * `dependencies` 에 적힌 패키지명을 peer-versions.json 의 버전 범위와 결합.
+ * 패키지 자체에 이미 `@version` 이 붙어 있거나 맵에 없으면 그대로 둔다.
+ *
+ * 왜: registry.json 은 deps 를 패키지명만 적어 두고, 실제 호환 버전은
+ * peer-versions.json 가 단일 출처로 관리한다. 이게 없으면 npm install 이
+ * latest 태그를 찾는데, RC 만 있는 패키지(@base-ui-components/react 등)
+ * 에서 ETARGET 으로 실패한다.
+ */
+async function resolveDepVersions(deps, platform) {
+  let map = {};
+  try {
+    const data = JSON.parse(await readFile(getPeerVersionsPath(platform), "utf8"));
+    map = data.versions ?? {};
+  } catch {
+    // peer-versions.json 이 없는 platform 은 그대로 패스 (Flutter 등)
+  }
+  return deps.map((d) => {
+    if (d.includes("@", 1)) return d; // 이미 name@range 형식
+    return map[d] ? `${d}@${map[d]}` : d;
+  });
+}
 
 // tokens/build.mjs 는 모노레포·출고 모드에 따라 위치가 달라서 동적 import.
 async function loadTokensBuilder() {
@@ -209,22 +232,24 @@ export async function add({ cwd, names, skipInstall = false, diffMode = false })
     return;
   }
 
+  const versioned = await resolveDepVersions(missing, config.platform);
+
   if (skipInstall) {
     const pm = detectPackageManager(cwd);
     const addCmd = pm === "npm" ? "install" : "add";
     console.log(
-      `\n  ⚠ 외부 패키지 필요. 다음을 실행하세요:\n    ${pm} ${addCmd} ${missing.join(" ")}`,
+      `\n  ⚠ 외부 패키지 필요. 다음을 실행하세요:\n    ${pm} ${addCmd} ${versioned.join(" ")}`,
     );
     return;
   }
 
   const pm = detectPackageManager(cwd);
   try {
-    await runInstall(pm, missing, cwd);
+    await runInstall(pm, versioned, cwd);
   } catch (err) {
     const addCmd = pm === "npm" ? "install" : "add";
     console.error(
-      `\n✗ 자동 설치 실패 (${err.message}). 수동으로 실행하세요:\n    ${pm} ${addCmd} ${missing.join(" ")}`,
+      `\n✗ 자동 설치 실패 (${err.message}). 수동으로 실행하세요:\n    ${pm} ${addCmd} ${versioned.join(" ")}`,
     );
     throw err;
   }
