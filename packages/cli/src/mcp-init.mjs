@@ -1,9 +1,14 @@
 // sh-ui mcp init — 타깃 IDE 의 MCP 설정 파일에 sh-ui 엔트리를 자동 추가.
 //
 // 지원 클라이언트:
-//   claude-code     — project: <cwd>/.mcp.json,           user: ~/.claude/mcp.json
+//   claude-code     — project: <cwd>/.mcp.json,           user: ~/.claude.json
 //   cursor          — project: <cwd>/.cursor/mcp.json,    user: ~/.cursor/mcp.json
 //   claude-desktop  — user 만 (OS 별 경로 자동 분기)
+//
+// 주의: Claude Code 의 user-scope 설정은 `~/.claude/mcp.json` 같은 별도
+// 파일이 아니라 사용자 settings 전체가 들어가는 단일 JSON `~/.claude.json`
+// 이다. 이 파일에는 mcpServers 외에도 projects·history 등 다른 키가 같이
+// 들어 있으므로, 머지 시 다른 키를 절대 건드리지 않아야 한다.
 //
 // 동작: 기존 JSON 의 mcpServers.sh-ui 를 머지(있으면 덮어쓰기), 디렉토리 자동 생성.
 
@@ -24,7 +29,7 @@ function resolveConfigPath(client, scope, cwd) {
   const home = homedir();
   if (client === "claude-code") {
     return scope === "user"
-      ? resolve(home, ".claude", "mcp.json")
+      ? resolve(home, ".claude.json")
       : resolve(cwd, ".mcp.json");
   }
   if (client === "cursor") {

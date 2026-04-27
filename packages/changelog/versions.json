@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.22.1",
+      "date": "2026-04-27",
+      "title": "mcp init claude-code user 스코프 경로 수정",
+      "type": "patch",
+      "highlights": [
+        "sh-ui mcp init --client claude-code --scope user 가 잘못된 경로(~/.claude/mcp.json)에 쓰던 문제 수정 — Claude Code 가 실제로 읽지 않는 파일이라 등록 후에도 /mcp 화면에 sh-ui 가 안 보였음",
+        "올바른 경로 ~/.claude.json (사용자 settings 전체 파일) 로 머지 — mcpServers 외 projects·history 등 다른 키는 그대로 보존",
+        "0.22.0 으로 user 스코프 등록한 사용자는 새 버전으로 다시 실행 후 ~/.claude/mcp.json 수동 삭제"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.1"
+    },
+    {
       "version": "0.22.0",
       "date": "2026-04-27",
       "title": "sh-ui mcp init — IDE MCP 설정 자동 등록",
