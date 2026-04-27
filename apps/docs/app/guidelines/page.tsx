@@ -55,7 +55,7 @@ export default function Guidelines() {
       </ul>
 
       <p className="muted">
-        자세한 원칙은 <code>.claude/rules/ui/component-api.md</code> 의 "스타일 오버라이드
+        자세한 원칙은 <code>.ai/rules/ui/component-api.md</code> 의 "스타일 오버라이드
         노출 방식" 섹션 참조.
       </p>
 

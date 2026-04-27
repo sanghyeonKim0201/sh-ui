@@ -203,7 +203,7 @@ const topLinks = [
   `/examples/[slug]` 8개 전부 정적 생성.
 - **라우팅**: `/examples` 200. 각 slug 200. 잘못된 slug 는 `notFound()`.
 - **성능**: 갤러리 초기 렌더 ≤ 3s (8개 기준, 라이브 미니프리뷰 포함).
-- **접근성** (`.claude/rules/ui/accessibility.md`):
+- **접근성** (`.ai/rules/ui/accessibility.md`):
   - 갤러리 탭 필터 `←` `→` `Home` `End` 지원, 포커스 링 유지.
   - 카드 키보드 포커스 + `Enter` 이동.
   - 쇼케이스 상단 바 포커스 순서: 돌아가기 → 코드 보기.
@@ -211,7 +211,7 @@ const topLinks = [
     복귀.
 - **다크모드**: 기존 토글과 공존. `themes/*` 는 scoped override 라 전역
   다크모드에 영향 없음.
-- **UI 상태** (`.claude/rules/ui/ui-states.md`): 갤러리 empty(필터 결과 0개)
+- **UI 상태** (`.ai/rules/ui/ui-states.md`): 갤러리 empty(필터 결과 0개)
   안내 + 필터 초기화 버튼.
 
 ## 7. Out of scope (v1 명시 제외)

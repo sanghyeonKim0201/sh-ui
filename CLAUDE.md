@@ -1,20 +1,39 @@
 # sh-ui 작업 규칙
 
-공통 규칙은 `.claude/rules/` 서브모듈(v1.3.0)을 따른다. 이 파일은
+공통 규칙은 `.ai/rules/` 서브모듈(v1.6.0+)을 따른다. 이 파일은
 **이 레포에만 적용되는 관용과 오버라이드**만 기록한다.
+
+## 적용 규칙
+
+서브모듈에 체크아웃된 규칙 파일 링크. 본문은 복사하지 않고, 변경은 원본 저장소(`.ai/rules`)에서 수정한다.
+
+- [공통 규칙](.ai/rules/common/common.md)
+- [gstack 사용 규칙](.ai/rules/gstack/gstack.md)
+- [Next.js 네이밍](.ai/rules/nextjs/naming.md)
+- [Next.js 설계 원칙](.ai/rules/nextjs/design-principles.md)
+- [Next.js 관심사 분리](.ai/rules/nextjs/separation-of-concerns.md)
+- [Next.js 데이터 페칭](.ai/rules/nextjs/data-fetching.md) — 템플릿 전용
+- [Next.js FSD 통합](.ai/rules/nextjs/fsd-integration.md) — 템플릿 전용
+- [FSD 아키텍처](.ai/rules/fsd/fsd-architecture.md) — 템플릿 전용
+- [FSD 관심사 분리](.ai/rules/fsd/separation-of-concerns.md) — 템플릿 전용
+- [UI 접근성](.ai/rules/ui/accessibility.md)
+- [UI 컴포넌트 API](.ai/rules/ui/component-api.md)
+- [UI 컴포지션](.ai/rules/ui/composition.md)
+- [UI 디자인 토큰](.ai/rules/ui/design-tokens.md)
+- [UI 상태](.ai/rules/ui/ui-states.md)
 
 ## 외부 규칙 적용 범위
 
-6개 폴더 각각이 이 레포에서 의미하는 범위:
+각 폴더가 이 레포에서 의미하는 범위:
 
 | 폴더 | 적용 범위 |
 |---|---|
 | `common/` | 전체 — Git·커밋·버전 컨벤션, 설계 원칙, 네이밍 |
-| `gstack/` | 전체 — 슬래시 커맨드 워크플로우(프로세스 규칙) |
-| `superpowers/` | 전체 — superpowers 플러그인 스킬 사용 시기와 gstack과의 역할 분담 |
+| `gstack/` | 전체 — 슬래시 커맨드 워크플로우(신호 기반 호출 트리거) |
 | `ui/` | 전체 — sh-ui 컴포넌트(React + Flutter) 설계 기준 |
 | `nextjs/design-principles.md`, `naming.md`, `separation-of-concerns.md` | 부분 — `apps/docs` 및 sh-ui 컴포넌트 TS 코드 |
 | `nextjs/data-fetching.md`, `nextjs/fsd-integration.md`, `fsd/*` | **템플릿 전용** — `packages/create/templates/` 가 생성하는 **사용자 프로젝트** 설계 기준. sh-ui 코어(apps/docs, packages/*)에는 직접 적용하지 않음 |
+| `templates/` | 미사용 — 신규 프로젝트 엔트리포인트(`AGENTS.md`/`CLAUDE.md` 등) 시작용 템플릿. 이 레포는 자체 `CLAUDE.md`를 유지하므로 직접 적용하지 않음 |
 
 ## sh-ui 특화 오버라이드
 
@@ -52,7 +71,7 @@ showcase(Flutter)가 그 파일을 읽어 "변경 내역" 페이지를 렌더한
 
 ### 트리거 — 언제 엔트리를 추가하는가
 
-공통 규칙(`.claude/rules/common/common.md`)의 버전 범프 기준과 동일:
+공통 규칙(`.ai/rules/common/common.md`)의 버전 범프 기준과 동일:
 
 | 변경 성격 | 버전 | versions.json |
 |---|---|---|
