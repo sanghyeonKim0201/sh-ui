@@ -42,6 +42,10 @@ export interface InputGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   disabled?: boolean;
 }
 
+/**
+ * Input과 좌우 보조 요소(`InputAdornment`)를 한 박스로 묶는 컴파운드 래퍼.
+ * 그룹 영역 어디를 클릭해도 내부 input에 포커스가 이동하고, `aria-invalid`/`disabled`가 자식 전체에 전파된다.
+ */
 export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(
   (
     {
@@ -98,6 +102,10 @@ export interface InputAdornmentProps
   interactive?: boolean;
 }
 
+/**
+ * InputGroup 안에 들어가는 보조 슬롯. 위치는 children 순서로 결정한다.
+ * 버튼 등 인터랙티브 요소를 담을 때는 `interactive`를 켜 input 포커스 가로채기를 막을 것.
+ */
 export const InputAdornment = React.forwardRef<
   HTMLSpanElement,
   InputAdornmentProps
@@ -113,6 +121,10 @@ export const InputAdornment = React.forwardRef<
 });
 InputAdornment.displayName = "InputAdornment";
 
+/**
+ * 한 줄 텍스트 입력. `prefix`/`suffix`로 아이콘이나 단위 등을 한 input 안에 붙일 수 있고,
+ * 더 많은 보조 요소가 필요하면 `InputGroup`+`InputAdornment` 조합을 사용한다.
+ */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = "text", prefix, suffix, ...props }, ref) => {
     const group = useInputGroup();
@@ -178,6 +190,10 @@ export interface PasswordInputProps extends Omit<InputProps, "type" | "suffix"> 
   hideToggle?: boolean;
 }
 
+/**
+ * 비밀번호 입력. 기본으로 표시 토글 버튼이 suffix에 부착되며 `hideToggle`로 숨길 수 있다.
+ * 토글은 `aria-pressed`로 상태가 노출되고 Tab 흐름에서 제외(`tabIndex=-1`)된다.
+ */
 export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ hideToggle, ...props }, ref) => {
     const [visible, setVisible] = React.useState(false);
@@ -242,6 +258,10 @@ const parseNumber = (s: string): number | undefined => {
   return Number.isFinite(n) ? n : undefined;
 };
 
+/**
+ * 정수 입력 + 천 단위 콤마 자동 포맷. `value`는 `number | undefined`이고 표시 문자열과 분리되어 있다.
+ * blur 시 `min`/`max` 범위로 자동 클램프되며, 음수 허용은 `allowNegative`로 토글한다.
+ */
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   (
     {
@@ -343,6 +363,10 @@ export interface PhoneInputProps
   onValueChange?: (digits: string) => void;
 }
 
+/**
+ * 한국 휴대폰·지역번호용 자동 하이픈 입력(010/02/031 등). `onValueChange`는 하이픈을 뺀
+ * 숫자 문자열만 콜백한다. 국제화가 필요하면 별도 컴포넌트로 분리해 사용할 것.
+ */
 export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
   ({ value, defaultValue, onValueChange, onBlur, ...rest }, ref) => {
     const isControlled = value !== undefined;
@@ -386,6 +410,7 @@ const formatBRN = (digits: string): string => {
 };
 
 
+/** 한국 사업자등록번호(10자리) 체크섬 검증. 하이픈 포함/제외 모두 허용. */
 export function isValidBRN(digits: string): boolean {
   const d = digits.replace(/\D/g, "");
   if (d.length !== 10) return false;
@@ -406,6 +431,10 @@ export interface BusinessNumberInputProps
   validateChecksum?: boolean;
 }
 
+/**
+ * 한국 사업자등록번호(XXX-XX-XXXXX) 자동 하이픈 입력. `validateChecksum`을 켜면
+ * 10자리 입력 시 체크섬을 검증해 `aria-invalid`를 자동 부여한다(외부에서 `aria-invalid`를 명시하면 우선).
+ */
 export const BusinessNumberInput = React.forwardRef<HTMLInputElement, BusinessNumberInputProps>(
   (
     { value, defaultValue, onValueChange, validateChecksum, onBlur, "aria-invalid": ariaInvalidProp, ...rest },

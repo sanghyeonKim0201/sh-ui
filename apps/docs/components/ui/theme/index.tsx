@@ -17,6 +17,7 @@ type ThemeContextValue = {
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
+/** 현재 테마와 setter를 반환한다. ThemeProvider 안에서만 호출 가능. */
 export function useTheme() {
   const ctx = React.useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme must be used within a ThemeProvider.");
@@ -37,6 +38,10 @@ export interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
+/**
+ * 다크/라이트 테마 컨텍스트와 `<html class="dark">` 토글, 쿠키 영속화를 담당하는 Provider.
+ * SSR 하이드레이션 시프트를 피하려면 서버에서 쿠키를 읽어 `defaultTheme`로 주입할 것.
+ */
 export function ThemeProvider({
   defaultTheme = "light",
   theme: themeProp,

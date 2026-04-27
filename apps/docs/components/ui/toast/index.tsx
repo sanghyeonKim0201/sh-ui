@@ -69,6 +69,11 @@ function useToastStore() {
 
 /* ───────── Public API ───────── */
 
+/**
+ * 토스트 알림을 발생시키는 명령형 API. 문자열만 전달하면 description으로 사용된다.
+ * variant별 헬퍼(`toast.success` 등)와 `toast.dismiss(id)`도 함께 노출된다.
+ * 사용 전에 앱 어딘가에 `<Toaster />`가 마운트되어 있어야 화면에 보인다.
+ */
 export function toast(input: ToastInput | string): string {
   if (typeof input === "string") return addToast({ description: input });
   return addToast(input);
@@ -182,6 +187,10 @@ export interface ToasterProps {
   container?: Element | null;
 }
 
+/**
+ * `toast()`로 발생한 알림을 그리는 viewport. 앱 루트에 한 번만 마운트한다.
+ * `danger` variant는 `role="alert"`+`aria-live="assertive"`로 즉시 읽히고, 그 외는 `polite`로 큐잉된다.
+ */
 export function Toaster({ position = "bottom-right", container }: ToasterProps) {
   const items = useToastStore();
   const [mounted, setMounted] = React.useState(false);

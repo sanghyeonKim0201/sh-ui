@@ -23,6 +23,10 @@ export type ToggleProps = Omit<
   size?: ToggleSize;
 };
 
+/**
+ * 눌린 상태(pressed)를 가진 버튼. 툴바의 "굵게/기울임" 같은 즉시 토글 액션에 적합.
+ * 시각만으로 상태를 구분하지 말고 `aria-label`이나 아이콘 옆 텍스트로 의미를 명확히 할 것.
+ */
 export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
   ({ className, variant = "ghost", size = "md", ...props }, ref) => (
     <BaseToggle
@@ -62,6 +66,10 @@ const ToggleGroupContext = React.createContext<ToggleGroupContextValue>({
 
 export const useToggleGroupStyle = () => React.useContext(ToggleGroupContext);
 
+/**
+ * 여러 ToggleGroupItem을 묶는 컨테이너. `toggleMultiple` 옵션으로 단일/다중 선택을
+ * 결정하고, 그룹 단위로 variant·size를 적용한다. 항목들은 반드시 `ToggleGroupItem`을 사용할 것.
+ */
 export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
   ({ className, variant = "ghost", size = "md", ...props }, ref) => (
     <ToggleGroupContext.Provider value={{ variant, size }}>
@@ -84,6 +92,7 @@ export type ToggleGroupItemProps = Omit<
   className?: string;
 };
 
+/** ToggleGroup의 자식 항목. 부모 그룹의 variant·size를 자동으로 상속한다. */
 export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupItemProps>(
   ({ className, ...props }, ref) => {
     const { variant, size } = useToggleGroupStyle();

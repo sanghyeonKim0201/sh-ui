@@ -110,6 +110,7 @@ type SidebarContextValue = {
 
 const SidebarContext = React.createContext<SidebarContextValue | null>(null);
 
+/** Sidebar의 open/state·toggle·activePanel 등을 읽고 쓰기 위한 훅. SidebarProvider 내부에서만 호출 가능. */
 export function useSidebar() {
   const ctx = React.useContext(SidebarContext);
   if (!ctx) throw new Error("useSidebar must be used within a SidebarProvider.");
@@ -132,6 +133,10 @@ export interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElemen
   embedded?: boolean;
 }
 
+/**
+ * Sidebar 영역 전체를 감싸는 Provider. open/closed 상태 관리, 모바일 감지, ⌘/Ctrl+B 단축키,
+ * 쿠키 영속화, 보조 패널 상태를 담당한다. 반드시 Sidebar 사용 영역 바깥에 한 번 두어야 한다.
+ */
 export function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -220,6 +225,7 @@ const SidebarRenderContext = React.createContext<SidebarRenderCtx>({
   variant: "sidebar",
   side: "left",
 });
+/** 부모 Sidebar의 collapsible/variant/side를 자식에서 읽는 훅. Collapsible 등 내부에서 사용. */
 export const useSidebarRender = () => React.useContext(SidebarRenderContext);
 
 export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -228,6 +234,11 @@ export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   collapsible?: "offcanvas" | "icon" | "none";
 }
 
+/**
+ * 좌/우 사이드바 컨테이너. `collapsible`로 접힘 동작(offcanvas/icon/none),
+ * `variant`로 외형(sidebar/floating/inset), `side`로 좌우 배치를 결정한다. 모바일에서는
+ * 자동으로 drawer로 전환되며 포커스 트랩·Esc 닫힘이 활성화된다.
+ */
 export function Sidebar({
   side = "left",
   variant = "sidebar",
@@ -330,6 +341,7 @@ function MobileSidebar({
 
 export interface SidebarTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
+/** Sidebar 토글 버튼. 데스크탑에서는 expand/collapse, 모바일에서는 drawer open/close. */
 export function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
   const { toggleSidebar } = useSidebar();
   return (
@@ -359,6 +371,10 @@ export interface SidebarPanelProps extends React.HTMLAttributes<HTMLDivElement> 
   id: string;
 }
 
+/**
+ * SidebarMenuButton의 `panelId`로 열고 닫는 보조 패널. 데스크탑에서는 인라인 영역,
+ * 모바일에서는 dialog 오버레이로 전환되며 포커스 트랩과 Esc 닫힘이 자동 적용된다.
+ */
 export function SidebarPanel({ id, className, children, ...props }: SidebarPanelProps) {
   const { activePanel, setActivePanel, isMobile } = useSidebar();
   const open = activePanel === id;
@@ -400,6 +416,7 @@ export function SidebarPanel({ id, className, children, ...props }: SidebarPanel
   );
 }
 
+/** SidebarPanel 상단 헤더 슬롯. */
 export function SidebarPanelHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -409,6 +426,7 @@ export function SidebarPanelHeader({ className, ...props }: React.HTMLAttributes
   );
 }
 
+/** SidebarPanel의 본문 영역. */
 export function SidebarPanelContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -420,6 +438,7 @@ export function SidebarPanelContent({ className, ...props }: React.HTMLAttribute
 
 /* ───────────── Inset (main content area, paired with variant=inset) ───────────── */
 
+/** Sidebar 옆 메인 컨텐츠 영역(`<main>`). variant="inset"과 짝을 이뤄 사용. */
 export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
   return (
     <main
@@ -431,6 +450,7 @@ export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLE
 
 /* ───────────── Header / Footer / Content / Separator ───────────── */
 
+/** Sidebar 상단 영역. 보통 로고/검색을 둔다. */
 export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -440,6 +460,7 @@ export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTML
   );
 }
 
+/** Sidebar 하단 영역. 사용자 정보·테마 토글 등을 둔다. */
 export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -449,6 +470,7 @@ export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTML
   );
 }
 
+/** Sidebar의 스크롤 영역. 메뉴/그룹 목록을 둔다. */
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -458,6 +480,7 @@ export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTM
   );
 }
 
+/** Sidebar 영역 사이의 시각적 구분선(`<hr>`). */
 export function SidebarSeparator({ className, ...props }: React.HTMLAttributes<HTMLHRElement>) {
   return (
     <hr
@@ -469,6 +492,7 @@ export function SidebarSeparator({ className, ...props }: React.HTMLAttributes<H
 
 /* ───────────── Group ───────────── */
 
+/** 의미적으로 묶이는 메뉴 그룹. SidebarGroupLabel + SidebarGroupContent와 함께 사용. */
 export function SidebarGroup({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -478,6 +502,7 @@ export function SidebarGroup({ className, ...props }: React.HTMLAttributes<HTMLD
   );
 }
 
+/** 그룹의 카테고리 라벨. */
 export function SidebarGroupLabel({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -487,6 +512,7 @@ export function SidebarGroupLabel({ className, ...props }: React.HTMLAttributes<
   );
 }
 
+/** 그룹 내부의 항목 컨테이너. */
 export function SidebarGroupContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -498,6 +524,7 @@ export function SidebarGroupContent({ className, ...props }: React.HTMLAttribute
 
 /* ───────────── Menu ───────────── */
 
+/** 메뉴 리스트(`<ul>`). SidebarMenuItem을 자식으로 갖는다. */
 export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
@@ -507,6 +534,7 @@ export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUL
   );
 }
 
+/** 메뉴 항목(`<li>`). SidebarMenuButton과 (선택) SidebarMenuSub를 자식으로 둔다. */
 export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
@@ -526,6 +554,10 @@ export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLB
   panelId?: string;
 }
 
+/**
+ * 메뉴 한 줄을 누를 수 있는 버튼. `asChild`로 `<a>` 등 다른 요소에 스타일만 입힐 수 있고,
+ * `sectionId`(SidebarTOC 활성 동기화) / `panelId`(SidebarPanel 토글)를 지정해 활성 상태를 자동 결정한다.
+ */
 export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
   function SidebarMenuButton(
     { className, isActive, size = "md", asChild, sectionId, panelId, onClick, children, ...props },
@@ -587,6 +619,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
 
 /* ───────────── Sub menu ───────────── */
 
+/** 메뉴 항목 내부의 서브 메뉴 리스트. SidebarMenuItem 안에 둔다. */
 export function SidebarMenuSub({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
@@ -596,6 +629,7 @@ export function SidebarMenuSub({ className, ...props }: React.HTMLAttributes<HTM
   );
 }
 
+/** 서브 메뉴 항목(`<li>`). */
 export function SidebarMenuSubItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
@@ -613,6 +647,7 @@ export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HT
   sectionId?: string;
 }
 
+/** 서브 메뉴 항목 내부의 링크(`<a>`). `sectionId`로 SidebarTOC 활성 상태와 연동. */
 export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarMenuSubButtonProps>(
   function SidebarMenuSubButton(
     { className, isActive, size = "md", asChild, sectionId, children, ...props },
@@ -680,6 +715,10 @@ export interface SidebarCollapsibleProps {
   children: React.ReactNode;
 }
 
+/**
+ * 메뉴 안에서 펼침/접힘 상태를 가진 그룹. Sidebar가 icon-축소 상태이면 자동으로 flyout(Popover) 모드로
+ * 전환되어 hover/focus 시 우측에 메뉴를 띄운다.
+ */
 export function SidebarCollapsible({
   defaultOpen = false,
   open: openProp,
@@ -735,6 +774,7 @@ export interface SidebarCollapsibleTriggerProps extends React.ButtonHTMLAttribut
   size?: "sm" | "md" | "lg";
 }
 
+/** Collapsible을 토글하는 메뉴 버튼. flyout 모드면 Popover Trigger로 자동 위임된다. */
 export function SidebarCollapsibleTrigger({
   className,
   size = "md",
@@ -801,6 +841,7 @@ export function SidebarCollapsibleTrigger({
   );
 }
 
+/** Collapsible의 펼쳐지는 본문. flyout 모드면 PopoverContent로 자동 래핑된다. */
 export function SidebarCollapsibleContent({ children }: { children: React.ReactNode }) {
   const { open, flyoutMode } = useCollapsible();
   const render = useSidebarRender();
@@ -860,6 +901,10 @@ export interface SidebarTOCProps {
   children: React.ReactNode;
 }
 
+/**
+ * 페이지 내 섹션 스크롤 위치를 IntersectionObserver로 추적해 활성 섹션 id를 자식에게 전달한다.
+ * 자식 SidebarMenuButton/SidebarMenuSubButton에 `sectionId`만 지정하면 활성 강조가 자동 동기화된다.
+ */
 export function SidebarTOC({
   sectionIds,
   rootMargin = "-20% 0px -70% 0px",

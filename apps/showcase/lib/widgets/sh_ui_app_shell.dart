@@ -66,6 +66,10 @@ class ShUiAppShellItem {
   });
 }
 
+/// shUi App Shell 위젯. 위 파일 헤더 dartdoc 참고.
+///
+/// 사이드바 그룹/아이템과 AppBar 상수 옵션만 선언하면 한 줄로 앱 셸이 완성된다.
+/// 항상 한 화면에서 콘텐츠를 스위칭하는 단일 쉘 패턴에 사용한다.
 class ShUiAppShell extends StatefulWidget {
   /// AppBar 좌측 로고/아이콘. 사이드바 헤더에도 동일하게 노출된다.
   final Widget? logo;

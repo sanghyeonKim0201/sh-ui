@@ -315,6 +315,10 @@ export interface DatePickerProps {
   children?: React.ReactNode;
 }
 
+/**
+ * 단일 날짜 선택. 트리거 클릭 시 popover 캘린더가 열리고 키보드 화살표로 이동한다.
+ * children을 생략하면 기본 레이아웃이 자동 렌더되며, 직접 조립하려면 DatePickerTrigger/Content/Calendar/Footer를 사용한다.
+ */
 export function DatePicker({
   value,
   defaultValue,
@@ -416,6 +420,10 @@ export interface DatePickerTriggerProps
       }) => React.ReactNode);
 }
 
+/**
+ * 캘린더 popover를 여는 트리거 버튼. children에 함수를 넘기면 현재 값/포맷 문자열/placeholder를
+ * 받아 직접 렌더할 수 있다.
+ */
 export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerTriggerProps>(
   function DatePickerTrigger({ className, children, onClick, ...props }, ref) {
     const ctx = useDatePickerContext("DatePickerTrigger");
@@ -476,6 +484,7 @@ export interface DatePickerContentProps
   align?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["align"];
 }
 
+/** 캘린더 popover 본문. portal로 마운트되며 `disabled`/`readOnly`이면 렌더되지 않는다. */
 export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerContentProps>(
   function DatePickerContent(
     { className, children, sideOffset = 4, side = "bottom", align = "start", ...props },
@@ -507,6 +516,7 @@ export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerCont
 
 /* ───────── DatePickerCalendar ───────── */
 
+/** 월 단위 날짜 그리드. 화살표 키 이동, Home/End, Enter/Space 선택을 지원한다. */
 export function DatePickerCalendar() {
   const ctx = useDatePickerContext("DatePickerCalendar");
 
@@ -531,6 +541,7 @@ export function DatePickerCalendar() {
 
 export interface DatePickerFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/** popover 하단 액션 영역. "오늘", "지우기" 같은 커스텀 버튼을 두는 슬롯. */
 export const DatePickerFooter = React.forwardRef<HTMLDivElement, DatePickerFooterProps>(
   function DatePickerFooter({ className, ...props }, ref) {
     return (
@@ -545,6 +556,7 @@ export const DatePickerFooter = React.forwardRef<HTMLDivElement, DatePickerFoote
 
 /* ───────── useDatePicker (for custom footer actions) ───────── */
 
+/** 커스텀 footer 액션에서 값/open 상태를 직접 다룰 때 사용. DatePicker 내부에서만 호출 가능. */
 export function useDatePicker() {
   const ctx = useDatePickerContext("useDatePicker");
   return {
@@ -579,6 +591,10 @@ export interface DateRangePickerProps {
   className?: string;
 }
 
+/**
+ * 시작·종료일을 선택하는 범위 picker. 첫 클릭으로 시작일, 두 번째 클릭으로 종료일이 결정된다.
+ * 호버 시 미리보기 범위가 시각화되고 두 번째 선택과 동시에 popover가 닫힌다.
+ */
 export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePickerProps>(
   function DateRangePicker(
     {

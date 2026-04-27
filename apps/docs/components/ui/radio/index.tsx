@@ -16,6 +16,10 @@ export type RadioProps = Omit<
   className?: string;
 };
 
+/**
+ * 단일 선택지. 단독으로 쓰지 않고 반드시 `RadioGroup` 안에 두 개 이상을 묶어 사용한다.
+ * 단일 선택이지만 즉시 적용되는 설정에는 Switch를, 다중 선택에는 Checkbox를 권장.
+ */
 export const Radio = React.forwardRef<HTMLElement, RadioProps>(
   ({ className, ...props }, ref) => (
     <BaseRadio.Root
@@ -39,6 +43,10 @@ export type RadioGroupProps = Omit<
   orientation?: "horizontal" | "vertical";
 };
 
+/**
+ * 여러 Radio를 묶는 컨테이너. 같은 `name` 아래 단일 선택을 보장하고,
+ * 키보드 화살표로 항목 간 이동이 가능하다. 그룹 라벨은 외부 `<Label>`로 제공할 것.
+ */
 export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
   ({ className, orientation = "vertical", ...props }, ref) => (
     <BaseRadioGroup

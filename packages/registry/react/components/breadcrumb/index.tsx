@@ -9,6 +9,10 @@ function cx(...args: (string | undefined | false | null)[]) {
  * 시맨틱: <nav aria-label="Breadcrumb"><ol>...</ol></nav>.
  */
 
+/**
+ * 현재 페이지의 위치를 사이트 계층 위에서 보여주는 내비게이션. 항상 `BreadcrumbList`로
+ * 감싸고, 마지막 항목은 링크 대신 `BreadcrumbPage`로 표기해 현재 위치를 알린다.
+ */
 export const Breadcrumb = React.forwardRef<
   HTMLElement,
   React.HTMLAttributes<HTMLElement>
@@ -25,6 +29,7 @@ export const Breadcrumb = React.forwardRef<
 
 /* ───────── List (ol) ───────── */
 
+/** 항목들을 담는 정렬 리스트(`<ol>`). Breadcrumb 직계 자식으로 사용. */
 export const BreadcrumbList = React.forwardRef<
   HTMLOListElement,
   React.OlHTMLAttributes<HTMLOListElement>
@@ -40,6 +45,7 @@ export const BreadcrumbList = React.forwardRef<
 
 /* ───────── Item (li) ───────── */
 
+/** 한 단계의 항목(`<li>`). 안에 `BreadcrumbLink` 또는 `BreadcrumbPage`를 둔다. */
 export const BreadcrumbItem = React.forwardRef<
   HTMLLIElement,
   React.LiHTMLAttributes<HTMLLIElement>
@@ -55,6 +61,7 @@ export const BreadcrumbItem = React.forwardRef<
 
 /* ───────── Link ───────── */
 
+/** 상위 단계로 이동하는 링크. 라우터 사용 시 `asChild` 패턴 대신 직접 `<a>` 속성으로 전달. */
 export const BreadcrumbLink = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement>
@@ -70,6 +77,7 @@ export const BreadcrumbLink = React.forwardRef<
 
 /* ───────── Page (현재 위치 — 링크 아님) ───────── */
 
+/** 마지막(현재) 항목. 링크가 아니므로 `aria-current="page"`가 자동 부여된다. */
 export const BreadcrumbPage = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
@@ -88,6 +96,7 @@ export const BreadcrumbPage = React.forwardRef<
 
 /* ───────── Separator ───────── */
 
+/** 항목 사이 구분자. 기본은 `>` 아이콘이며 children으로 교체 가능. 스크린리더에서는 무시된다. */
 export const BreadcrumbSeparator = React.forwardRef<
   HTMLLIElement,
   React.LiHTMLAttributes<HTMLLIElement>
@@ -107,6 +116,7 @@ export const BreadcrumbSeparator = React.forwardRef<
 
 /* ───────── Ellipsis — 중간 항목 축약 ───────── */
 
+/** 깊은 경로에서 중간 항목들을 축약하는 점 3개 표시. 클릭 가능한 전체 경로 메뉴와 함께 쓰면 유용. */
 export const BreadcrumbEllipsis = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>

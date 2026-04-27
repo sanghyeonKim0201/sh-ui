@@ -35,6 +35,10 @@ export interface TooltipContentProps
   >["container"];
 }
 
+/**
+ * Tooltip의 본문. portal로 마운트되어 트리거 옆에 자동 위치 조정된다.
+ * 내용은 짧게 — 긴 설명이 필요하면 Popover를 사용할 것.
+ */
 export const TooltipContent = React.forwardRef<
   HTMLDivElement,
   TooltipContentProps

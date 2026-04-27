@@ -9,6 +9,10 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: Size;
 }
 
+/**
+ * 사용자 액션을 트리거하는 기본 버튼. variant로 시각적 위계(primary/secondary/ghost/danger/link)를,
+ * size로 크기를 결정한다. 페이지 이동 목적이면 anchor를 감싼 `link` variant를 사용할 것.
+ */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", className, ...props }, ref) => {
     const classes = [

@@ -41,6 +41,10 @@ class ShUiHeaderItem {
   });
 }
 
+/// shUi Header 위젯. 위 파일 헤더 dartdoc 참고.
+///
+/// 데스크탑에서는 inline nav, 모바일에서는 햄버거 + drawer로 자동 전환된다.
+/// 강제로 한 모드를 고정하려면 [mode]를 [ShUiHeaderMode.inline] 또는 [ShUiHeaderMode.drawer]로 지정.
 class ShUiHeader extends StatefulWidget {
   final Widget? logo;
   final String? title;

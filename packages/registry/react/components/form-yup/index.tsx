@@ -9,6 +9,10 @@ interface YupValidationError {
   inner: Array<{ path?: string; message: string }>;
 }
 
+/**
+ * yup 스키마를 sh-ui Form이 사용하는 Standard Schema(v1)로 감싼다.
+ * yup은 peerDependency라 직접 import하지 않으므로, 호출 측에서 만든 스키마를 그대로 넘기면 된다.
+ */
 export function yupSchema<T>(schema: YupLikeSchema<T>): StandardSchemaV1<T> {
   return {
     "~standard": {

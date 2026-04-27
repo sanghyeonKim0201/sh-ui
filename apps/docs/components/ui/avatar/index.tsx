@@ -18,6 +18,10 @@ export interface AvatarProps
   size?: AvatarSize;
 }
 
+/**
+ * 사용자/엔티티를 대표하는 원형 이미지. `Avatar` 안에 `AvatarImage`와
+ * `AvatarFallback`을 함께 둬, 이미지 로드 실패 시 자동으로 fallback이 표시되도록 한다.
+ */
 export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
   function Avatar({ className, size = "md", ...props }, ref) {
     return (
@@ -30,6 +34,7 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
   },
 );
 
+/** Avatar 내부의 실제 이미지. 로드 실패 시 자동으로 가려지고 fallback이 노출된다. */
 export const AvatarImage = React.forwardRef<
   HTMLImageElement,
   WithStringClassName<
@@ -45,6 +50,7 @@ export const AvatarImage = React.forwardRef<
   );
 });
 
+/** 이미지가 로드되지 않을 때 표시되는 대체 콘텐츠. 이니셜이나 아이콘을 권장. */
 export const AvatarFallback = React.forwardRef<
   HTMLSpanElement,
   WithStringClassName<

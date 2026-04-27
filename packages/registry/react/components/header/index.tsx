@@ -27,6 +27,10 @@ function useHeader(): HeaderCtx {
  * 이 컴포넌트는 open/close 상태만 관리한다.
  */
 
+/**
+ * 사이트 상단 헤더(`<header>`). 데스크탑에서는 inline nav, 모바일에서는 햄버거 + drawer로
+ * CSS가 자동 전환한다. 컴포넌트는 open/close 상태와 body 스크롤 잠금만 담당.
+ */
 export const Header = React.forwardRef<
   HTMLElement,
   React.HTMLAttributes<HTMLElement> & {
@@ -75,6 +79,7 @@ export const Header = React.forwardRef<
 
 /* ───────── Brand / Logo / Title ───────── */
 
+/** 좌측 브랜드 영역. HeaderLogo + HeaderTitle을 묶을 때 사용. */
 export const HeaderBrand = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -82,6 +87,7 @@ export const HeaderBrand = React.forwardRef<
   return <div ref={ref} className={cx("sh-ui-header__brand", className)} {...props} />;
 });
 
+/** 브랜드 로고 슬롯. SVG 또는 이미지를 자식으로 둔다. */
 export const HeaderLogo = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
@@ -89,6 +95,7 @@ export const HeaderLogo = React.forwardRef<
   return <span ref={ref} className={cx("sh-ui-header__logo", className)} {...props} />;
 });
 
+/** 브랜드 텍스트 타이틀. */
 export const HeaderTitle = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
@@ -100,6 +107,7 @@ export const HeaderTitle = React.forwardRef<
  * 햄버거 버튼. 모바일에서만 표시(CSS로 제어). 클릭 시 drawer 토글.
  */
 
+/** 모바일 햄버거 토글 버튼. CSS 미디어 쿼리로 모바일에서만 노출되며 drawer 열림을 제어한다. */
 export const HeaderTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
@@ -131,6 +139,10 @@ export const HeaderTrigger = React.forwardRef<
  * CSS가 뷰포트에 맞춰 하나만 보이도록 처리한다.
  */
 
+/**
+ * 내비게이션 영역. 자식을 inline nav와 mobile drawer 두 곳에 동시에 렌더하며
+ * CSS가 뷰포트에 따라 한 쪽만 보여준다.
+ */
 export const HeaderNav = React.forwardRef<
   HTMLElement,
   React.HTMLAttributes<HTMLElement>
@@ -169,6 +181,7 @@ export const HeaderNav = React.forwardRef<
 
 /* ───────── Item ───────── */
 
+/** 내비 한 항목(`<a>`). 클릭 시 모바일 drawer가 자동으로 닫힌다. `active`로 현재 위치 강조. */
 export const HeaderItem = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -193,6 +206,7 @@ export const HeaderItem = React.forwardRef<
 
 /* ───────── Actions (우측 트레일링) ───────── */
 
+/** 우측 트레일링 액션 영역. 검색·테마 토글·로그인 버튼 등을 둔다. */
 export const HeaderActions = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>

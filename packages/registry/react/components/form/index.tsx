@@ -11,6 +11,11 @@ import {
 } from "./field";
 import { Steps, Step } from "./steps";
 
+/**
+ * sh-ui Form의 compound 진입점. `Form.Field`, `Form.Label`, `Form.Description`,
+ * `Form.Error`, `Form.Control`, `Form.Section`, `Form.SectionTitle`, `Form.Steps`, `Form.Step` 으로
+ * 구조를 조립한다. 검증은 Standard Schema(yup/zod 등) 또는 inline 함수로 부착한다.
+ */
 type FormType = typeof FormRoot & {
   Section: typeof Section;
   SectionTitle: typeof SectionTitle;

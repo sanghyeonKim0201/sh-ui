@@ -80,6 +80,7 @@ export async function CodePanel({
 
 /* ───────── CodePanelHeader ───────── */
 
+/** 파일명·복사 버튼 등을 담는 코드 블록 상단 바. CodePanel 자식으로 사용. */
 export function CodePanelHeader({
   className,
   children,
@@ -94,6 +95,7 @@ export function CodePanelHeader({
 
 /* ───────── CodePanelFilename ───────── */
 
+/** CodePanelHeader 안에 표시되는 파일명 라벨. */
 export function CodePanelFilename({
   className,
   children,
@@ -115,6 +117,7 @@ export interface CodePanelCopyProps {
   code: string;
 }
 
+/** 클립보드 복사 버튼. 부모가 복사할 코드 문자열을 명시적으로 전달한다. */
 export function CodePanelCopy({ code }: CodePanelCopyProps) {
   return <CodePanelCopyButton code={code} />;
 }
@@ -133,6 +136,10 @@ export interface CodePanelBodyProps
   showLineNumbers?: boolean;
 }
 
+/**
+ * shiki로 코드를 SSR 하이라이팅하여 렌더하는 async 컴포넌트.
+ * 라이트/다크 테마는 `github-light`/`github-dark`를 사용하며, 부모 테마 클래스에 따라 자동 전환된다.
+ */
 export async function CodePanelBody({
   code,
   language = "text",

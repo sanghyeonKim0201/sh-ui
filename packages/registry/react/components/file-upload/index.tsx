@@ -79,6 +79,11 @@ export interface FileUploadProps {
   children?: React.ReactNode;
 }
 
+/**
+ * 파일 선택·드래그앤드롭 업로드. children 없이 쓰면 기본 dropzone+목록 레이아웃이 자동으로 그려지고,
+ * 직접 조립하려면 FileUploadDropzone/Trigger/List/Item을 자식으로 사용한다.
+ * 파일은 컴포넌트가 보관할 뿐 실제 업로드는 호출 측에서 onValueChange로 받아 처리한다.
+ */
 export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
   (
     {
@@ -246,6 +251,9 @@ export interface FileUploadDropzoneProps
   children?: React.ReactNode;
 }
 
+/**
+ * 파일을 드롭하거나 클릭해 파일 선택창을 여는 영역. 키보드 Enter/Space로도 동작.
+ */
 export const FileUploadDropzone = React.forwardRef<
   HTMLDivElement,
   FileUploadDropzoneProps
@@ -297,6 +305,7 @@ export const FileUploadDropzone = React.forwardRef<
 export interface FileUploadTriggerProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
+/** 파일 선택창을 여는 버튼. Dropzone 내부에 두면 클릭 버블링이 자동 차단된다. */
 export const FileUploadTrigger = React.forwardRef<
   HTMLButtonElement,
   FileUploadTriggerProps
@@ -335,6 +344,10 @@ export interface FileUploadListProps
       }) => React.ReactNode);
 }
 
+/**
+ * 선택된 파일 목록(`<ul>`). children에 함수를 넘기면 files·remove를 받아 직접 렌더할 수 있고,
+ * 생략하면 파일당 FileUploadItem이 자동 렌더된다.
+ */
 export const FileUploadList = React.forwardRef<
   HTMLUListElement,
   FileUploadListProps
@@ -369,6 +382,7 @@ export interface FileUploadItemProps
   children?: React.ReactNode;
 }
 
+/** 파일 목록의 한 항목. 기본 레이아웃은 아이콘 + 이름 + 크기 + 제거 버튼이다. */
 export const FileUploadItem = React.forwardRef<
   HTMLLIElement,
   FileUploadItemProps
