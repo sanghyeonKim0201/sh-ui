@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.28.0",
+      "date": "2026-04-28",
+      "title": "RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar",
+      "type": "minor",
+      "highlights": [
+        "RichTextEditor 신규 — Tiptap 3 (StarterKit + Placeholder + Link) 위에 sh-ui 토큰 테마와 기본 toolbar 를 얹은 controlled WYSIWYG. value 는 HTML 문자열로 입출력",
+        "툴바: 헤딩(H1~H3) · 리스트(불릿/숫자) · 인용 · 코드(인라인/블록) · 링크 · 강조(B/I/S) · 구분선 · undo/redo. 본문 포커스를 잃지 않도록 mousedown 가로채기",
+        "SSR 안전 — `immediatelyRender: false` 로 Next 15+ stricter SSR 환경에서 hydration mismatch 없음. readOnly·hideToolbar·minHeight/maxHeight prop 지원",
+        "추가 확장(이미지·테이블·멘션 등)은 registry 카피본을 직접 수정해 `extensions` 배열에 끼워 넣는 방식으로 확장"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.0"
+    },
+    {
       "version": "0.27.0",
       "date": "2026-04-28",
       "title": "MarkdownEditor 컴포넌트 — CodeEditor + react-markdown 라이브 프리뷰",

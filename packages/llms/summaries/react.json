@@ -40,6 +40,7 @@
     "code-panel": "Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.",
     "code-editor": "CodeMirror 6 기반 controlled 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight.",
     "markdown-editor": "마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어.",
+    "rich-text-editor": "Tiptap 3 기반 WYSIWYG 에디터 — controlled HTML, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder.",
     "base": "CSS 리셋 — base.css.",
     "breakpoints": "반응형 미디어 쿼리 토큰 — breakpoints.css.",
     "focus-ring": "공용 포커스 링 스타일 — focus-ring.css.",

@@ -78,6 +78,7 @@ const components: { title: string; href: string }[] = [
   { title: "Popover", href: "/components/popover" },
   { title: "Progress", href: "/components/progress" },
   { title: "Radio", href: "/components/radio" },
+  { title: "RichTextEditor", href: "/components/rich-text-editor" },
   { title: "Select", href: "/components/select" },
   { title: "Separator", href: "/components/separator" },
   { title: "Sidebar", href: "/components/sidebar" },

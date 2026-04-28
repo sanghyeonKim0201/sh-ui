@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.27.0 (2026-04-28) — MarkdownEditor 컴포넌트 — CodeEditor + react-markdown 라이브 프리뷰
+**최신 버전**: v0.28.0 (2026-04-28) — RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar
 
 ## React — Components
 
@@ -100,6 +100,15 @@
 - Registry deps: code-editor (자동 설치됨)
 - Import: `@/components/ui/markdown-editor`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/markdown-editor
+
+### rich-text-editor
+
+- Type: component
+- Summary: Tiptap 3 기반 WYSIWYG 에디터 — controlled HTML, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder.
+- Install: `npx sh-ui add rich-text-editor`
+- npm/pub deps: @tiptap/react, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-placeholder, @tiptap/extension-link, lucide-react
+- Import: `@/components/ui/rich-text-editor`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/rich-text-editor
 
 ### select
 
@@ -788,6 +797,13 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.28.0 — RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar (2026-04-28)
+- RichTextEditor 신규 — Tiptap 3 (StarterKit + Placeholder + Link) 위에 sh-ui 토큰 테마와 기본 toolbar 를 얹은 controlled WYSIWYG. value 는 HTML 문자열로 입출력
+- 툴바: 헤딩(H1~H3) · 리스트(불릿/숫자) · 인용 · 코드(인라인/블록) · 링크 · 강조(B/I/S) · 구분선 · undo/redo. 본문 포커스를 잃지 않도록 mousedown 가로채기
+- SSR 안전 — `immediatelyRender: false` 로 Next 15+ stricter SSR 환경에서 hydration mismatch 없음. readOnly·hideToolbar·minHeight/maxHeight prop 지원
+- 추가 확장(이미지·테이블·멘션 등)은 registry 카피본을 직접 수정해 `extensions` 배열에 끼워 넣는 방식으로 확장
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.0
+
 ### v0.27.0 — MarkdownEditor 컴포넌트 — CodeEditor + react-markdown 라이브 프리뷰 (2026-04-28)
 - MarkdownEditor 신규 — CodeEditor(소스) + react-markdown(미리보기) 합성, GFM(테이블·체크리스트·strikethrough) 지원
 - raw HTML 은 react-markdown 기본 동작으로 차단 — 사용자 입력 마크다운으로부터의 XSS 자동 방어
@@ -814,12 +830,6 @@
 - next-intl 플러그인 적용 시에도 동일 패턴 — RootLayout 이 locale 검증·hasLocale·notFound 까지 담당하고 app/[locale]/layout.tsx 는 params forward 만
 - 사용자가 layout 로직을 확장할 때 entrypoint(layout.tsx) 와 컴포넌트(RootLayout) 책임이 분리돼 FSD 관습에 맞게 정렬
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.24.0
-
-### v0.23.1 — sh-ui-create 패키지 완전 삭제 — 단일 sh-ui-cli (2026-04-28)
-- 베타 단계라 sh-ui-create 사용자가 없으므로 deprecate shim 도 폐기 — packages/create 디렉토리 + npm 의 sh-ui-create 패키지 둘 다 정리
-- publish workflow 매트릭스에서 create 제거 — 앞으로 sh-ui-cli 만 발행
-- 문서 일괄 갱신: README, getting-started, CLI 레퍼런스, 플레이그라운드 명령 컴포저 모두 `npx sh-ui-cli create` 로 통일
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.23.1
 
 ## Resources
 

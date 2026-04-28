@@ -203,6 +203,29 @@
         "code-editor"
       ]
     },
+    "rich-text-editor": {
+      "name": "rich-text-editor",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/rich-text-editor/index.tsx",
+          "dest": "{components}/rich-text-editor/index.tsx"
+        },
+        {
+          "src": "components/rich-text-editor/styles.css",
+          "dest": "{components}/rich-text-editor/styles.css"
+        }
+      ],
+      "dependencies": [
+        "@tiptap/react",
+        "@tiptap/pm",
+        "@tiptap/starter-kit",
+        "@tiptap/extension-placeholder",
+        "@tiptap/extension-link",
+        "lucide-react"
+      ],
+      "registryDependencies": []
+    },
     "select": {
       "name": "select",
       "type": "component",
