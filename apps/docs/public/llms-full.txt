@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.28.0 (2026-04-28) — RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar
+**최신 버전**: v0.29.0 (2026-04-28) — Header — 서브메뉴·그룹·a11y 보강 + variant/stickyHide(beta)
 
 ## React — Components
 
@@ -132,7 +132,7 @@
 ### header
 
 - Type: component
-- Summary: 앱 헤더 — 로고/네비/액션 compound.
+- Summary: 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨). variant·stickyHide 베타.
 - Install: `npx sh-ui add header`
 - Import: `@/components/ui/header`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/header
@@ -797,6 +797,18 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.29.0 — Header — 서브메뉴·그룹·a11y 보강 + variant/stickyHide(beta) (2026-04-28)
+- a11y — drawer 가 열릴 때 focus trap · ESC 닫기 · 닫힐 때 트리거로 포커스 복원 자동화. drawer 패널에 role=dialog + aria-modal=true 부여
+- HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 절대 위치 dropdown(클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리
+- HeaderNavGroup(label) — drawer 안에서 nav 항목을 섹션으로 묶음(라벨 + 들여쓰기). inline 모드는 display:contents 로 자식만 평면 렌더, 데스크탑 레이아웃 무영향
+- 베타 — variant="solid"|"transparent"|"blur" 로 헤더 배경 표현 전환, stickyHide+stickyHideThreshold 로 스크롤 다운 시 자동 숨김. API 가 v1 전에 바뀔 수 있음을 docs·JSDoc 에 명시
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.29.0
+
+### v0.28.1 — RichTextEditor — Link 버튼이 빈 선택에서 호출돼도 anchor 가 생기도록 수정 (2026-04-28)
+- Link 버튼: 텍스트 선택이 없고 기존 링크 위도 아닐 때 URL 자체를 anchor 텍스트로 삽입 — 빈 link 마크만 걸려 사용자가 추가로 타이핑해야 했던 어색한 상태 제거
+- 선택이 있거나 기존 링크 위에서 호출하면 종전과 동일하게 selection·기존 링크에 setLink
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.1
+
 ### v0.28.0 — RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar (2026-04-28)
 - RichTextEditor 신규 — Tiptap 3 (StarterKit + Placeholder + Link) 위에 sh-ui 토큰 테마와 기본 toolbar 를 얹은 controlled WYSIWYG. value 는 HTML 문자열로 입출력
 - 툴바: 헤딩(H1~H3) · 리스트(불릿/숫자) · 인용 · 코드(인라인/블록) · 링크 · 강조(B/I/S) · 구분선 · undo/redo. 본문 포커스를 잃지 않도록 mousedown 가로채기
@@ -817,19 +829,6 @@
 - 컬러·여백을 sh-ui 토큰(--background/--foreground/--border/--background-muted 등)으로 매핑 — `.dark` 스코프에서 다크 테마 자동 추종
 - CLI 레지스트리에 `npx sh-ui add code-editor` 등록, docs 사이드바 Components 섹션에 진입점 추가
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.26.0
-
-### v0.25.0 — Next.js 템플릿에 http 골격 + BFF proxy 추가 — IS_SERVER 분기 제거 (2026-04-28)
-- nextjs-app · nextjs-standalone 템플릿에 axios 단일 인스턴스(src/shared/api/http.ts)와 BFF 라우트 핸들러(app/api/proxy/[...path]/route.ts) 추가 — 클라/서버 모두 /api/proxy 경유, IS_SERVER 분기 없음
-- 인증 · 토큰 refresh · Sentry · 로그인 쿠키 특례 처리는 의도적으로 제외해 인증 비종속 골격으로 유지 — 프로젝트별 추가는 apps/docs/recipes 가이드로 분리
-- 레시피 9종 추가 (apps/docs/app/recipes/): api-layer, auth, file-upload, tanstack-query, async-boundary, i18n, sentry, testing, deployment
-- 사이드바에 '레시피' 진입점 추가
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.25.0
-
-### v0.24.0 — Next.js 템플릿 RootLayout 분리 — app/layout.tsx 는 thin wrapper (2026-04-28)
-- nextjs-standalone / nextjs-app 모두 src/app/layouts/RootLayout.tsx 로 layout 본체 분리, app/layout.tsx 는 metadata + thin wrapper 만 유지
-- next-intl 플러그인 적용 시에도 동일 패턴 — RootLayout 이 locale 검증·hasLocale·notFound 까지 담당하고 app/[locale]/layout.tsx 는 params forward 만
-- 사용자가 layout 로직을 확장할 때 entrypoint(layout.tsx) 와 컴포넌트(RootLayout) 책임이 분리돼 FSD 관습에 맞게 정렬
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.24.0
 
 ## Resources
 
