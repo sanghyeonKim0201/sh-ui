@@ -36,11 +36,15 @@ export function StickyHideDemo() {
           <HeaderTitle>Acme</HeaderTitle>
         </HeaderBrand>
         <HeaderNav>
-          <HeaderItem href="#" active>
+          <HeaderItem href="#" active onClick={(e) => e.preventDefault()}>
             홈
           </HeaderItem>
-          <HeaderItem href="#">제품</HeaderItem>
-          <HeaderItem href="#">문서</HeaderItem>
+          <HeaderItem href="#" onClick={(e) => e.preventDefault()}>
+            제품
+          </HeaderItem>
+          <HeaderItem href="#" onClick={(e) => e.preventDefault()}>
+            문서
+          </HeaderItem>
         </HeaderNav>
         <HeaderActions>
           <Button variant="secondary" size="sm">

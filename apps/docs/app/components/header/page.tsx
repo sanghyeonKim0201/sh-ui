@@ -21,6 +21,7 @@ import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { StickyHideDemo } from "./_demos/sticky-hide";
+import { NoNav } from "./_demos/no-nav";
 
 export default function HeaderPage() {
   return (
@@ -32,28 +33,30 @@ export default function HeaderPage() {
 
       <Preview>
         <Preview.Demo>
-          <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
-            <Header>
-              <HeaderTrigger />
-              <HeaderBrand>
-                <HeaderLogo>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                    <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-                  </svg>
-                </HeaderLogo>
-                <HeaderTitle>sh-ui</HeaderTitle>
-              </HeaderBrand>
-              <HeaderNav>
-                <HeaderItem href="#" active>홈</HeaderItem>
-                <HeaderItem href="#">문서</HeaderItem>
-                <HeaderItem href="#">컴포넌트</HeaderItem>
-                <HeaderItem href="#">가격</HeaderItem>
-              </HeaderNav>
-              <HeaderActions>
-                <Button variant="secondary" size="sm">로그인</Button>
-              </HeaderActions>
-            </Header>
-          </div>
+          <NoNav>
+            <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
+              <Header>
+                <HeaderTrigger />
+                <HeaderBrand>
+                  <HeaderLogo>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                      <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
+                    </svg>
+                  </HeaderLogo>
+                  <HeaderTitle>sh-ui</HeaderTitle>
+                </HeaderBrand>
+                <HeaderNav>
+                  <HeaderItem href="#" active>홈</HeaderItem>
+                  <HeaderItem href="#">문서</HeaderItem>
+                  <HeaderItem href="#">컴포넌트</HeaderItem>
+                  <HeaderItem href="#">가격</HeaderItem>
+                </HeaderNav>
+                <HeaderActions>
+                  <Button variant="secondary" size="sm">로그인</Button>
+                </HeaderActions>
+              </Header>
+            </div>
+          </NoNav>
         </Preview.Demo>
         <CodeTabs
           items={[
@@ -147,34 +150,36 @@ ShUiHeader(
       </p>
       <Preview>
         <Preview.Demo>
-          <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
-            <Header>
-              <HeaderTrigger />
-              <HeaderBrand>
-                <HeaderTitle>Acme</HeaderTitle>
-              </HeaderBrand>
-              <HeaderNav>
-                <HeaderItem href="#">홈</HeaderItem>
-                <HeaderMenu>
-                  <HeaderMenuTrigger>Products</HeaderMenuTrigger>
-                  <HeaderMenuContent>
-                    <HeaderItem href="#">Studio</HeaderItem>
-                    <HeaderItem href="#">Cloud</HeaderItem>
-                    <HeaderItem href="#">CLI</HeaderItem>
-                  </HeaderMenuContent>
-                </HeaderMenu>
-                <HeaderMenu>
-                  <HeaderMenuTrigger>Resources</HeaderMenuTrigger>
-                  <HeaderMenuContent>
-                    <HeaderItem href="#">Docs</HeaderItem>
-                    <HeaderItem href="#">Blog</HeaderItem>
-                    <HeaderItem href="#">Changelog</HeaderItem>
-                  </HeaderMenuContent>
-                </HeaderMenu>
-                <HeaderItem href="#">Pricing</HeaderItem>
-              </HeaderNav>
-            </Header>
-          </div>
+          <NoNav>
+            <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
+              <Header>
+                <HeaderTrigger />
+                <HeaderBrand>
+                  <HeaderTitle>Acme</HeaderTitle>
+                </HeaderBrand>
+                <HeaderNav>
+                  <HeaderItem href="#">홈</HeaderItem>
+                  <HeaderMenu>
+                    <HeaderMenuTrigger>Products</HeaderMenuTrigger>
+                    <HeaderMenuContent>
+                      <HeaderItem href="#">Studio</HeaderItem>
+                      <HeaderItem href="#">Cloud</HeaderItem>
+                      <HeaderItem href="#">CLI</HeaderItem>
+                    </HeaderMenuContent>
+                  </HeaderMenu>
+                  <HeaderMenu>
+                    <HeaderMenuTrigger>Resources</HeaderMenuTrigger>
+                    <HeaderMenuContent>
+                      <HeaderItem href="#">Docs</HeaderItem>
+                      <HeaderItem href="#">Blog</HeaderItem>
+                      <HeaderItem href="#">Changelog</HeaderItem>
+                    </HeaderMenuContent>
+                  </HeaderMenu>
+                  <HeaderItem href="#">Pricing</HeaderItem>
+                </HeaderNav>
+              </Header>
+            </div>
+          </NoNav>
         </Preview.Demo>
         <CodePanel
           language="tsx"
@@ -231,25 +236,27 @@ ShUiHeader(
       </p>
       <Preview>
         <Preview.Demo>
-          <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
-            <Header>
-              <HeaderTrigger />
-              <HeaderBrand>
-                <HeaderTitle>Acme</HeaderTitle>
-              </HeaderBrand>
-              <HeaderNav>
-                <HeaderNavGroup label="Product">
-                  <HeaderItem href="#">Studio</HeaderItem>
-                  <HeaderItem href="#">Cloud</HeaderItem>
-                  <HeaderItem href="#">CLI</HeaderItem>
-                </HeaderNavGroup>
-                <HeaderNavGroup label="Resources">
-                  <HeaderItem href="#">Docs</HeaderItem>
-                  <HeaderItem href="#">Blog</HeaderItem>
-                </HeaderNavGroup>
-              </HeaderNav>
-            </Header>
-          </div>
+          <NoNav>
+            <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
+              <Header>
+                <HeaderTrigger />
+                <HeaderBrand>
+                  <HeaderTitle>Acme</HeaderTitle>
+                </HeaderBrand>
+                <HeaderNav>
+                  <HeaderNavGroup label="Product">
+                    <HeaderItem href="#">Studio</HeaderItem>
+                    <HeaderItem href="#">Cloud</HeaderItem>
+                    <HeaderItem href="#">CLI</HeaderItem>
+                  </HeaderNavGroup>
+                  <HeaderNavGroup label="Resources">
+                    <HeaderItem href="#">Docs</HeaderItem>
+                    <HeaderItem href="#">Blog</HeaderItem>
+                  </HeaderNavGroup>
+                </HeaderNav>
+              </Header>
+            </div>
+          </NoNav>
         </Preview.Demo>
         <CodePanel
           language="tsx"
@@ -277,19 +284,21 @@ ShUiHeader(
       <h3>solid (기본)</h3>
       <Preview>
         <Preview.Demo>
-          <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
-            <Header variant="solid">
-              <HeaderTrigger />
-              <HeaderBrand>
-                <HeaderTitle>Acme</HeaderTitle>
-              </HeaderBrand>
-              <HeaderNav>
-                <HeaderItem href="#" active>홈</HeaderItem>
-                <HeaderItem href="#">제품</HeaderItem>
-                <HeaderItem href="#">가격</HeaderItem>
-              </HeaderNav>
-            </Header>
-          </div>
+          <NoNav>
+            <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
+              <Header variant="solid">
+                <HeaderTrigger />
+                <HeaderBrand>
+                  <HeaderTitle>Acme</HeaderTitle>
+                </HeaderBrand>
+                <HeaderNav>
+                  <HeaderItem href="#" active>홈</HeaderItem>
+                  <HeaderItem href="#">제품</HeaderItem>
+                  <HeaderItem href="#">가격</HeaderItem>
+                </HeaderNav>
+              </Header>
+            </div>
+          </NoNav>
         </Preview.Demo>
         <CodePanel language="tsx" code={`<Header variant="solid">...</Header>`} />
       </Preview>
@@ -297,40 +306,42 @@ ShUiHeader(
       <h3>transparent — hero 위에 얹기</h3>
       <Preview>
         <Preview.Demo>
-          <div
-            style={{
-              width: "100%",
-              borderRadius: "var(--radius)",
-              overflow: "hidden",
-              background:
-                "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)",
-            }}
-          >
-            <Header variant="transparent">
-              <HeaderTrigger />
-              <HeaderBrand>
-                <HeaderTitle style={{ color: "white" }}>Aurora</HeaderTitle>
-              </HeaderBrand>
-              <HeaderNav>
-                <HeaderItem href="#" style={{ color: "rgba(255,255,255,0.9)" }} active>
-                  홈
-                </HeaderItem>
-                <HeaderItem href="#" style={{ color: "rgba(255,255,255,0.75)" }}>
-                  소개
-                </HeaderItem>
-                <HeaderItem href="#" style={{ color: "rgba(255,255,255,0.75)" }}>
-                  연락
-                </HeaderItem>
-              </HeaderNav>
-              <HeaderActions>
-                <Button variant="secondary" size="sm">시작하기</Button>
-              </HeaderActions>
-            </Header>
-            <div style={{ padding: "var(--space-6) var(--space-4)", color: "white", textAlign: "center" }}>
-              <h3 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700 }}>Hero 섹션</h3>
-              <p style={{ margin: "var(--space-1) 0 0", opacity: 0.85 }}>헤더의 배경·보더가 모두 투명이라 hero 그라디언트가 그대로 노출된다.</p>
+          <NoNav>
+            <div
+              style={{
+                width: "100%",
+                borderRadius: "var(--radius)",
+                overflow: "hidden",
+                background:
+                  "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)",
+              }}
+            >
+              <Header variant="transparent">
+                <HeaderTrigger />
+                <HeaderBrand>
+                  <HeaderTitle style={{ color: "white" }}>Aurora</HeaderTitle>
+                </HeaderBrand>
+                <HeaderNav>
+                  <HeaderItem href="#" style={{ color: "rgba(255,255,255,0.9)" }} active>
+                    홈
+                  </HeaderItem>
+                  <HeaderItem href="#" style={{ color: "rgba(255,255,255,0.75)" }}>
+                    소개
+                  </HeaderItem>
+                  <HeaderItem href="#" style={{ color: "rgba(255,255,255,0.75)" }}>
+                    연락
+                  </HeaderItem>
+                </HeaderNav>
+                <HeaderActions>
+                  <Button variant="secondary" size="sm">시작하기</Button>
+                </HeaderActions>
+              </Header>
+              <div style={{ padding: "var(--space-6) var(--space-4)", color: "white", textAlign: "center" }}>
+                <h3 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700 }}>Hero 섹션</h3>
+                <p style={{ margin: "var(--space-1) 0 0", opacity: 0.85 }}>헤더의 배경·보더가 모두 투명이라 hero 그라디언트가 그대로 노출된다.</p>
+              </div>
             </div>
-          </div>
+          </NoNav>
         </Preview.Demo>
         <CodePanel language="tsx" code={`<Header variant="transparent">...</Header>`} />
       </Preview>
@@ -338,34 +349,36 @@ ShUiHeader(
       <h3>blur — sticky 헤더 위로 콘텐츠가 흐려져 보임</h3>
       <Preview>
         <Preview.Demo>
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              height: 220,
-              borderRadius: "var(--radius)",
-              overflow: "hidden",
-              backgroundImage:
-                "radial-gradient(circle at 20% 20%, #f59e0b 0%, transparent 40%), radial-gradient(circle at 80% 30%, #ef4444 0%, transparent 40%), radial-gradient(circle at 50% 80%, #6366f1 0%, transparent 50%)",
-              backgroundColor: "var(--background)",
-            }}
-          >
-            <Header variant="blur" style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }}>
-              <HeaderTrigger />
-              <HeaderBrand>
-                <HeaderTitle>Glass</HeaderTitle>
-              </HeaderBrand>
-              <HeaderNav>
-                <HeaderItem href="#" active>홈</HeaderItem>
-                <HeaderItem href="#">갤러리</HeaderItem>
-              </HeaderNav>
-            </Header>
-            <div style={{ padding: "calc(var(--control-md) + var(--space-4)) var(--space-4) var(--space-4)", color: "var(--foreground)" }}>
-              <p style={{ margin: 0, fontSize: "0.875rem", opacity: 0.85 }}>
-                헤더가 85% opacity + <code>backdrop-filter: saturate(180%) blur(16px)</code> 라 뒤 컬러가 부드럽게 비친다.
-              </p>
+          <NoNav>
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: 220,
+                borderRadius: "var(--radius)",
+                overflow: "hidden",
+                backgroundImage:
+                  "radial-gradient(circle at 20% 20%, #f59e0b 0%, transparent 40%), radial-gradient(circle at 80% 30%, #ef4444 0%, transparent 40%), radial-gradient(circle at 50% 80%, #6366f1 0%, transparent 50%)",
+                backgroundColor: "var(--background)",
+              }}
+            >
+              <Header variant="blur" style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 2 }}>
+                <HeaderTrigger />
+                <HeaderBrand>
+                  <HeaderTitle>Glass</HeaderTitle>
+                </HeaderBrand>
+                <HeaderNav>
+                  <HeaderItem href="#" active>홈</HeaderItem>
+                  <HeaderItem href="#">갤러리</HeaderItem>
+                </HeaderNav>
+              </Header>
+              <div style={{ padding: "calc(var(--control-md) + var(--space-4)) var(--space-4) var(--space-4)", color: "var(--foreground)" }}>
+                <p style={{ margin: 0, fontSize: "0.875rem", opacity: 0.85 }}>
+                  헤더가 85% opacity + <code>backdrop-filter: saturate(180%) blur(16px)</code> 라 뒤 컬러가 부드럽게 비친다.
+                </p>
+              </div>
             </div>
-          </div>
+          </NoNav>
         </Preview.Demo>
         <CodePanel language="tsx" code={`<Header variant="blur">...</Header>`} />
       </Preview>
