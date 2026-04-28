@@ -329,7 +329,7 @@ ShUiHeader(
             </Header>
             <div style={{ padding: "calc(var(--control-md) + var(--space-4)) var(--space-4) var(--space-4)", color: "var(--foreground)" }}>
               <p style={{ margin: 0, fontSize: "0.875rem", opacity: 0.85 }}>
-                헤더가 70% opacity + <code>backdrop-filter: blur(12px)</code> 라 뒤 컬러가 부드럽게 비친다.
+                헤더가 85% opacity + <code>backdrop-filter: saturate(180%) blur(16px)</code> 라 뒤 컬러가 부드럽게 비친다.
               </p>
             </div>
           </div>

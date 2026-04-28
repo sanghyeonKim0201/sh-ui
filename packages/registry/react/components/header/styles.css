@@ -25,9 +25,9 @@
   --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
 }
 .sh-ui-header--blur {
-  background: color-mix(in srgb, var(--background) 70%, transparent);
-  backdrop-filter: saturate(180%) blur(12px);
-  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  background: color-mix(in srgb, var(--background) 85%, transparent);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
   --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
 }
 
