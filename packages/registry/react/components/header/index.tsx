@@ -130,6 +130,24 @@ export interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
  * 사이트 상단 헤더(`<header>`). 데스크탑에서는 inline nav, 모바일에서는 햄버거 + drawer 로
  * CSS 가 자동 전환된다. drawer 가 열리면 focus trap · ESC 닫기 · 트리거로 포커스 복원이 활성.
  */
+/** 가장 가까운 스크롤 가능 조상을 찾는다. 없으면 window 폴백. */
+function findScrollParent(el: HTMLElement | null): HTMLElement | Window {
+  let node = el?.parentElement ?? null;
+  while (node) {
+    const style = window.getComputedStyle(node);
+    const oy = style.overflowY;
+    if ((oy === "auto" || oy === "scroll" || oy === "overlay") && node.scrollHeight > node.clientHeight) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return window;
+}
+
+function getScrollY(target: HTMLElement | Window): number {
+  return target instanceof Window ? target.scrollY : target.scrollTop;
+}
+
 export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header(
   {
     children,
@@ -148,6 +166,16 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
   const [internal, setInternal] = React.useState(defaultOpen);
   const open = isControlled ? openProp : internal;
   const triggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const headerRef = React.useRef<HTMLElement | null>(null);
+
+  const setRefs = React.useCallback(
+    (node: HTMLElement | null) => {
+      headerRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) (ref as React.MutableRefObject<HTMLElement | null>).current = node;
+    },
+    [ref],
+  );
 
   const setOpen = React.useCallback(
     (v: boolean) => {
@@ -172,13 +200,14 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
       setHidden(false);
       return;
     }
-    let lastY = window.scrollY;
+    const target = findScrollParent(headerRef.current);
+    let lastY = getScrollY(target);
     let ticking = false;
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const y = window.scrollY;
+        const y = getScrollY(target);
         const delta = y - lastY;
         if (y < stickyHideThreshold) {
           setHidden(false);
@@ -191,8 +220,8 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
         ticking = false;
       });
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    target.addEventListener("scroll", onScroll, { passive: true });
+    return () => target.removeEventListener("scroll", onScroll);
   }, [stickyHide, stickyHideThreshold]);
 
   const ctx = React.useMemo<HeaderCtx>(
@@ -203,7 +232,7 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
   return (
     <HeaderContext.Provider value={ctx}>
       <header
-        ref={ref}
+        ref={setRefs}
         className={cx("sh-ui-header", `sh-ui-header--${variant}`, className)}
         data-drawer-open={open ? "" : undefined}
         data-sticky-hide={stickyHide ? "" : undefined}
