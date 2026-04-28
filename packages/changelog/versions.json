@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.31.1",
+      "date": "2026-04-28",
+      "title": "Header drawer 그룹 라벨을 사이드바와 동일한 캡션 스타일로 정렬",
+      "type": "patch",
+      "highlights": [
+        "HeaderNavGroup 의 drawer 라벨이 uppercase + letter-spacing 으로 두드러져 같은 모바일 메뉴 안의 HeaderMenu 트리거(서브메뉴 헤더)와 시각적으로 헷갈리던 문제 해결",
+        "스타일을 Sidebar 의 group-label 과 동일하게 통일 — text-xs / weight-medium / foreground-muted, height 2rem, padding 0 var(--space-2) (uppercase·letter-spacing 제거)",
+        "그룹 라벨은 \"섹션 캡션\", 메뉴 트리거는 \"클릭 가능한 nav 항목\" 으로 역할이 명확히 갈라짐"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.31.1"
+    },
+    {
       "version": "0.31.0",
       "date": "2026-04-28",
       "title": "Editor 3종(Code/Markdown/RichText) uncontrolled 모드 추가",
