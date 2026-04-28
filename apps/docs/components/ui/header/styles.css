@@ -10,6 +10,8 @@
   border-bottom: 1px solid var(--border);
   transition: transform var(--duration-base) var(--ease-standard),
     background-color var(--duration-base) var(--ease-standard);
+  /* hover/active 배경 — transparent/blur variant 가 currentColor 기반으로 재정의 */
+  --sh-ui-header-hover-bg: var(--background-muted);
 }
 
 /* variant (beta) */
@@ -19,11 +21,14 @@
 .sh-ui-header--transparent {
   background: transparent;
   border-bottom-color: transparent;
+  /* 컬러풀 배경 위에서도 자연스러운 hover — 텍스트 색의 14% 오버레이 */
+  --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
 }
 .sh-ui-header--blur {
   background: color-mix(in srgb, var(--background) 70%, transparent);
   backdrop-filter: saturate(180%) blur(12px);
   -webkit-backdrop-filter: saturate(180%) blur(12px);
+  --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
 }
 
 /* sticky-hide (beta) — sticky 컨텍스트는 사용자가 직접 (예: position:sticky; top:0) 적용. */
@@ -66,7 +71,7 @@
   transition: background-color var(--duration-fast);
 }
 .sh-ui-header__trigger:hover {
-  background: var(--background-muted);
+  background: var(--sh-ui-header-hover-bg);
 }
 .sh-ui-header__trigger:focus-visible {
   outline: var(--border-width-strong) solid var(--foreground);
@@ -106,7 +111,7 @@
 }
 .sh-ui-header__item:hover {
   color: var(--foreground);
-  background: var(--background-muted);
+  background: var(--sh-ui-header-hover-bg);
 }
 .sh-ui-header__item[data-active] {
   color: var(--foreground);
@@ -180,7 +185,7 @@
 .sh-ui-header__menu-trigger:hover,
 .sh-ui-header__menu-trigger[data-open] {
   color: var(--foreground);
-  background: var(--background-muted);
+  background: var(--sh-ui-header-hover-bg);
 }
 .sh-ui-header__menu-trigger:focus-visible {
   outline: var(--border-width-strong) solid var(--foreground);
