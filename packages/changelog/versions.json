@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.23.1",
+      "date": "2026-04-28",
+      "title": "sh-ui-create 패키지 완전 삭제 — 단일 sh-ui-cli",
+      "type": "patch",
+      "highlights": [
+        "베타 단계라 sh-ui-create 사용자가 없으므로 deprecate shim 도 폐기 — packages/create 디렉토리 + npm 의 sh-ui-create 패키지 둘 다 정리",
+        "publish workflow 매트릭스에서 create 제거 — 앞으로 sh-ui-cli 만 발행",
+        "문서 일괄 갱신: README, getting-started, CLI 레퍼런스, 플레이그라운드 명령 컴포저 모두 `npx sh-ui-cli create` 로 통일"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.23.1"
+    },
+    {
       "version": "0.23.0",
       "date": "2026-04-28",
       "title": "sh-ui-create 가 sh-ui-cli 로 통합 — 단일 CLI",

@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [create, cli]
+        package: [cli]
     steps:
       - uses: actions/checkout@v6
 

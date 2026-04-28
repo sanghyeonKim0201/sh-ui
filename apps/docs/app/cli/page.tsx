@@ -9,24 +9,27 @@ export default function CliPage() {
     <main className="container">
       <h1>CLI 레퍼런스</h1>
       <p className="muted">
-        sh-ui 는 두 개의 CLI 를 제공한다.
+        sh-ui 는 단일 CLI <code>sh-ui-cli</code> 를 제공한다 — 프로젝트 스캐폴드(<code>create</code>) +
+        컴포넌트 추가(<code>init/add/list/remove</code>) + IDE-내 AI 용 MCP 서버(<code>mcp</code>) 가 한 패키지.
       </p>
       <ul>
-        <li><strong><a href="#sh-ui-create"><code>sh-ui-create</code></a></strong> — 새 프로젝트 스캐폴드 (<code>sh-ui-create</code> 패키지). 인터랙티브로 만들고 싶으면 <a href="/create">프로젝트 생성</a> 페이지의 UI 빌더를 사용.</li>
-        <li><strong><a href="#sh-ui"><code>sh-ui</code></a></strong> — 컴포넌트 설치·설정 (<code>sh-ui-cli</code> 패키지). 기존 프로젝트에 토큰·컴포넌트를 복사.</li>
+        <li><strong><a href="#sh-ui-create"><code>sh-ui-cli create</code></a></strong> — 새 프로젝트 스캐폴드. 인터랙티브로 테마까지 디자인하려면 <a href="/create">프로젝트 생성</a> 페이지의 UI 빌더 사용.</li>
+        <li><strong><a href="#sh-ui"><code>sh-ui-cli init/add/list/remove</code></a></strong> — 기존 프로젝트에 토큰·컴포넌트를 복사·관리.</li>
       </ul>
 
-      {/* ───────── sh-ui-create ───────── */}
+      {/* ───────── sh-ui create ───────── */}
 
-      <h2 id="sh-ui-create">sh-ui-create — 프로젝트 스캐폴드</h2>
+      <h2 id="sh-ui-create">sh-ui-cli create — 프로젝트 스캐폴드</h2>
       <p className="muted">
         sh-ui 가 미리 설정된 Next.js 또는 Flutter 프로젝트를 생성한다. FSD 폴더 구조, <code>sh-ui.config.json</code>,
         기본 토큰 파일, 자주 쓰는 플러그인(Sentry, next-intl)까지 한 번에.
       </p>
 
       <h3>빠른 시작</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-create`} />
-      <p>대화형 프롬프트로 프로젝트 이름, 구조(단독/모노레포), 플러그인을 선택하면 현재 디렉토리에 프로젝트가 생성된다.</p>
+      <CodePanel language="bash" showLineNumbers={false} code={`npm create sh-ui my-app
+# 또는
+npx sh-ui-cli create`} />
+      <p>대화형 프롬프트로 프로젝트 이름, 구조(단독/모노레포)를 선택하면 현재 디렉토리에 프로젝트가 생성된다.</p>
       <p className="muted">
         미리 디자인한 테마까지 한 번에 반영하고 싶다면 <a href="/create">프로젝트 생성</a> 페이지에서 색·radius 를 편집한 뒤 생성된 CLI 명령어를 복사하면 된다.
       </p>
@@ -34,20 +37,20 @@ export default function CliPage() {
       <h3>명령 개요</h3>
       <PropsTable
         rows={[
-          { prop: "sh-ui-create [name]", type: "command", description: "새 프로젝트 생성 (단독 또는 모노레포)." },
-          { prop: "sh-ui-create add-app", type: "command", description: "모노레포 루트에서 앱을 추가한다 (apps/{name} + packages/ui/ui-apps/ui-{name})." },
-          { prop: "sh-ui-create add-component <name>", type: "command", description: "sh-ui 컴포넌트를 설치. 내부적으로 sh-ui add 를 위임 호출." },
-          { prop: "sh-ui-create add-component <name> --app <app>", type: "command", description: "모노레포에서 특정 앱의 ui 패키지에만 추가." },
+          { prop: "sh-ui-cli create [name]", type: "command", description: "새 프로젝트 생성 (단독 또는 모노레포)." },
+          { prop: "sh-ui-cli create add-app", type: "command", description: "모노레포 루트에서 앱을 추가한다 (apps/{name} + packages/ui/ui-apps/ui-{name})." },
+          { prop: "sh-ui-cli create add-component <name>", type: "command", description: "sh-ui 컴포넌트를 설치. 내부적으로 sh-ui add 를 위임 호출." },
+          { prop: "sh-ui-cli create add-component <name> --app <app>", type: "command", description: "모노레포에서 특정 앱의 ui 패키지에만 추가." },
         ]}
       />
 
-      <h3>비대화형 플래그 (v0.18.0+)</h3>
-      <p>플래그로 값을 주면 해당 프롬프트는 스킵된다. 모든 플래그를 주면 완전 비대화형 실행.</p>
+      <h3>비대화형 플래그</h3>
+      <p>플래그로 값을 주면 해당 프롬프트는 스킵된다. TTY 없는 환경(에이전트/CI)에서는 누락된 필수 플래그가 있으면 prompt 대신 즉시 에러로 종료.</p>
       <PropsTable
         rows={[
           { prop: "--platform", type: `"next" | "flutter"` },
           { prop: "--structure", type: `"standalone" | "monorepo"`, description: "Next 전용." },
-          { prop: "--plugins", type: "string", description: "콤마 분리. 예: sentry,next-intl. Next 전용." },
+          { prop: "--plugins", type: "string", description: "콤마 분리. 예: sentry,next-intl. Next 전용. 미지정 시 빈 배열." },
           { prop: "--theme", type: "base64", description: "토큰 설정(base64). 플레이그라운드 UI 빌더가 생성." },
           { prop: "--yes", type: "boolean", description: "덮어쓰기 등 확인 프롬프트 스킵." },
         ]}
@@ -56,7 +59,7 @@ export default function CliPage() {
         language="bash"
         showLineNumbers={false}
         code={`# 완전 비대화형
-pnpm dlx sh-ui-create my-app --platform next --structure standalone --plugins sentry --yes`}
+pnpm dlx sh-ui-cli create my-app --platform next --structure standalone --plugins sentry --yes`}
       />
 
       <h3>프로젝트 구조 선택</h3>
@@ -123,7 +126,7 @@ pnpm dlx sh-ui-create my-app --platform next --structure standalone --plugins se
             label: "단독",
             language: "bash",
             code: `cd my-app
-npx sh-ui-create add-component button
+npx sh-ui-cli create add-component button
 # 또는 바로: npx sh-ui add button`,
           },
           {
@@ -132,7 +135,7 @@ npx sh-ui-create add-component button
             language: "bash",
             code: `cd my-project
 # 대화형으로 대상 패키지 선택
-npx sh-ui-create add-component button
+npx sh-ui-cli create add-component button
 # 선택지: "모든 ui 패키지" / 개별 패키지`,
           },
           {
@@ -141,7 +144,7 @@ npx sh-ui-create add-component button
             language: "bash",
             code: `cd my-project
 # web 앱의 ui 패키지에만 추가
-npx sh-ui-create add-component button --app web`,
+npx sh-ui-cli create add-component button --app web`,
           },
         ]}
       />

@@ -8,11 +8,13 @@
 
 ```bash
 # 새 프로젝트 스캐폴드 (Next.js / Flutter)
-npx sh-ui-create my-app
+npm create sh-ui my-app
+# 또는
+npx sh-ui-cli create my-app
 
 # 기존 프로젝트에 sh-ui 도입
-npx sh-ui init
-npx sh-ui add tokens button
+npx sh-ui-cli init
+npx sh-ui-cli add tokens button
 ```
 
 플레이그라운드에서 테마를 편집하고 그대로 반영된 명령어를 얻으려면 [sh-ui.dev/create](https://github.com/sanghyeonKim0201/sh-ui) 참고.
@@ -27,8 +29,7 @@ npx sh-ui add tokens button
 
 | 패키지 | 역할 |
 |---|---|
-| [`sh-ui-create`](https://www.npmjs.com/package/sh-ui-create) | 새 Next.js / Flutter 프로젝트 스캐폴드 (FSD 구조 + 토큰 + 플러그인) |
-| [`sh-ui-cli`](https://www.npmjs.com/package/sh-ui-cli) | 기존 프로젝트에 컴포넌트 복사 · 설정 관리 (`sh-ui init/add/list/remove`) |
+| [`sh-ui-cli`](https://www.npmjs.com/package/sh-ui-cli) | 통합 CLI — 프로젝트 스캐폴드(`create`) · 컴포넌트 복사·설정 관리(`init/add/list/remove`) · IDE-내 AI 용 MCP 서버(`mcp`) |
 
 ## 구조
 
@@ -37,8 +38,7 @@ sh-ui/
 ├── packages/
 │   ├── tokens/       # 디자인 토큰 (primitive / semantic)
 │   ├── registry/     # 플랫폼별 컴포넌트 소스 (복사 대상)
-│   ├── cli/          # sh-ui-cli — 컴포넌트 복사 CLI
-│   ├── create/       # sh-ui-create — 프로젝트 스캐폴드 CLI
+│   ├── cli/          # sh-ui-cli — 통합 CLI (create/init/add/list/remove/mcp)
 │   ├── changelog/    # versions.json (단일 소스)
 │   └── llms/         # llms.txt 생성 (AI 도구용 컴포넌트 인벤토리)
 └── apps/
