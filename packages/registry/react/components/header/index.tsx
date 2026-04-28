@@ -93,6 +93,30 @@ function useHeader(): HeaderCtx {
 type NavLocation = "inline" | "drawer";
 const NavLocationContext = React.createContext<NavLocation>("inline");
 
+/**
+ * HeaderNav 의 `value`(현재 경로 등) 와 매칭 함수를 자식 HeaderItem 에 전파하는 컨텍스트.
+ * HeaderItem 의 `active` 가 명시되지 않으면 이 컨텍스트를 통해 자동 계산된다.
+ */
+type NavMatch = {
+  value: string | undefined;
+  match: (itemHref: string, value: string) => boolean;
+};
+
+/**
+ * 기본 매칭 — exact equality 또는 prefix match (`/docs` 항목이 `/docs/intro` 에서도 활성).
+ * 단, root(`"/"`/`""`) 는 prefix 가 모든 경로에 매칭돼버리는 걸 막기 위해 exact 일 때만 활성.
+ */
+const defaultNavMatch = (itemHref: string, value: string): boolean => {
+  if (itemHref === value) return true;
+  if (itemHref === "" || itemHref === "/") return false;
+  return value.startsWith(itemHref + "/");
+};
+
+const NavMatchContext = React.createContext<NavMatch>({
+  value: undefined,
+  match: defaultNavMatch,
+});
+
 /* ───────── Root ───────── */
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
@@ -313,18 +337,39 @@ export const HeaderTrigger = React.forwardRef<
 /* ───────── Nav ─────────
  * 자식을 inline nav 와 drawer 두 곳에 렌더하며 CSS 가 뷰포트에 따라 한쪽만 노출.
  * 각 렌더 위치를 NavLocationContext 로 전파해 HeaderMenu 가 dropdown vs collapsible 모드를 자동 선택.
+ *
+ * `value` + `match` 로 자식 HeaderItem 의 active 를 일괄 관리할 수 있다 — 항목마다 active 비교를
+ * 반복하는 대신 부모가 진실원천 한 군데에서 결정한다 (Tabs/RadioGroup 와 같은 패턴).
  */
 
-export const HeaderNav = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  function HeaderNav({ className, children, ...props }, ref) {
+export interface HeaderNavProps extends React.HTMLAttributes<HTMLElement> {
+  /**
+   * 현재 활성 경로/키 (예: Next.js usePathname() 결과). 자식 HeaderItem 의 `href` 와 비교해
+   * `data-active` 가 자동 부여된다. 자식에 `active` prop 이 명시되면 그게 우선.
+   */
+  value?: string;
+  /**
+   * 매칭 함수 커스터마이즈. 기본은 exact 또는 prefix(`/docs` 가 `/docs/intro` 에서도 활성).
+   * root(`/`/`""`) 는 prefix 매칭에서 제외된다 — 모든 경로에 매칭되는 걸 막기 위해.
+   */
+  match?: (itemHref: string, value: string) => boolean;
+}
+
+export const HeaderNav = React.forwardRef<HTMLElement, HeaderNavProps>(
+  function HeaderNav({ value, match, className, children, ...props }, ref) {
     const { open, setOpen } = useHeader();
     const drawerRef = React.useRef<HTMLElement | null>(null);
 
     const close = React.useCallback(() => setOpen(false), [setOpen]);
     useFocusTrap(drawerRef, open, close);
 
+    const navMatch = React.useMemo<NavMatch>(
+      () => ({ value, match: match ?? defaultNavMatch }),
+      [value, match],
+    );
+
     return (
-      <>
+      <NavMatchContext.Provider value={navMatch}>
         <NavLocationContext.Provider value="inline">
           <nav ref={ref} className={cx("sh-ui-header__nav", className)} {...props}>
             {children}
@@ -353,7 +398,7 @@ export const HeaderNav = React.forwardRef<HTMLElement, React.HTMLAttributes<HTML
             <nav className="sh-ui-header__drawer-nav">{children}</nav>
           </NavLocationContext.Provider>
         </aside>
-      </>
+      </NavMatchContext.Provider>
     );
   },
 );
@@ -363,17 +408,30 @@ export const HeaderNav = React.forwardRef<HTMLElement, React.HTMLAttributes<HTML
 export const HeaderItem = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-    /** 현재 페이지 표시. */
+    /**
+     * 활성 상태. 명시하지 않으면 부모 `HeaderNav` 의 `value` 와 자기 `href` 를 비교해 자동 계산된다.
+     * 명시적으로 `active={true}` / `active={false}` 를 주면 자동 계산보다 우선.
+     */
     active?: boolean;
   }
 >(function HeaderItem({ className, active, onClick, href, ...props }, ref) {
   const { setOpen } = useHeader();
+  const navMatch = React.useContext(NavMatchContext);
+
+  const computedActive =
+    active !== undefined
+      ? active
+      : navMatch.value !== undefined && href !== undefined
+        ? navMatch.match(href, navMatch.value)
+        : false;
+
   return (
     <a
       ref={ref}
       href={href}
       className={cx("sh-ui-header__item", className)}
-      data-active={active ? "" : undefined}
+      data-active={computedActive ? "" : undefined}
+      aria-current={computedActive ? "page" : undefined}
       onClick={(e) => {
         setOpen(false);
         onClick?.(e);

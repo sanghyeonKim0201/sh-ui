@@ -21,7 +21,7 @@ const items = [
 ];
 
 export function BasicDemo() {
-  const [activeHref, setActiveHref] = useState("/");
+  const [path, setPath] = useState("/");
   return (
     <div
       style={{
@@ -41,15 +41,14 @@ export function BasicDemo() {
           </HeaderLogo>
           <HeaderTitle>sh-ui</HeaderTitle>
         </HeaderBrand>
-        <HeaderNav>
+        <HeaderNav value={path}>
           {items.map((it) => (
             <HeaderItem
               key={it.href}
               href={it.href}
-              active={activeHref === it.href}
               onClick={(e) => {
                 e.preventDefault();
-                setActiveHref(it.href);
+                setPath(it.href);
               }}
             >
               {it.label}

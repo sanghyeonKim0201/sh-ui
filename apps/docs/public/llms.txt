@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.29.0 (2026-04-28) — Header — 서브메뉴·그룹·a11y 보강 + variant/stickyHide 정식 도입
+**최신 버전**: v0.29.0 (2026-04-28) — Header — 서브메뉴·그룹·a11y·active 자동 매칭 보강 + variant/stickyHide 정식 도입
 
 ## React Components
 
@@ -38,7 +38,7 @@
 - **rich-text-editor** — Tiptap 3 기반 WYSIWYG 에디터 — controlled HTML, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder.
 - **select** — 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
 - **sidebar** — 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
-- **header** — 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 portal dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨) · HeaderDesktopOnly/HeaderMobileOnly(가시성 토글, drawer 이동 없음). variant(solid/transparent/blur) · stickyHide(prefers-reduced-motion 존중, 컨테이너 스크롤 자동 감지) 정식 지원. backdrop-filter @supports 폴백.
+- **header** — 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderNav value+match 로 자식 HeaderItem active 자동 매칭 (aria-current 자동). HeaderMenu(서브메뉴, 데스크탑 portal dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨) · HeaderDesktopOnly/HeaderMobileOnly(가시성 토글, drawer 이동 없음). variant(solid/transparent/blur) · stickyHide(prefers-reduced-motion 존중, 컨테이너 스크롤 자동 감지) 정식 지원. backdrop-filter @supports 폴백.
 - **label** — 폼 레이블 — htmlFor로 입력과 연결.
 - **color-picker** — 색상 선택 — hex/rgb, 프리셋 팔레트.
 - **slider** — 수평 슬라이더 — 단일/범위 값, step.

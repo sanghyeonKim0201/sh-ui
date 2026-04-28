@@ -42,16 +42,16 @@ export default function HeaderPage() {
               value: "react",
               label: "React",
               language: "tsx",
-              code: `// active 는 controlled prop — 부모가 어떤 항목이 활성인지 결정한다.
-// 실제 앱에선 보통 라우터 pathname 과 비교해 자동 표시 (아래 "Next.js usePathname" 섹션 참고)
+              code: `// HeaderNav 의 value 가 자식 HeaderItem 의 href 와 비교돼 active 가 자동 결정된다.
+// 항목마다 active={...} 를 반복할 필요 없음.
 <Header>
   <HeaderTrigger />
   <HeaderBrand>
     <HeaderLogo><LogoIcon /></HeaderLogo>
     <HeaderTitle>sh-ui</HeaderTitle>
   </HeaderBrand>
-  <HeaderNav>
-    <HeaderItem href="/" active>홈</HeaderItem>
+  <HeaderNav value={pathname}>
+    <HeaderItem href="/">홈</HeaderItem>
     <HeaderItem href="/docs">문서</HeaderItem>
     <HeaderItem href="/pricing">가격</HeaderItem>
   </HeaderNav>
@@ -438,49 +438,67 @@ export function AppHeader() {
 }`}
       />
 
-      <h2>실전: Next.js usePathname 으로 active 표시</h2>
+      <h2>active 자동 매칭 (HeaderNav value)</h2>
       <p>
-        <code>HeaderItem</code> 의 <code>active</code> prop 을 라우터의 현재 경로와 직접 연결한다.
+        <code>HeaderNav value=&#123;...&#125;</code> 를 주면 자식 <code>HeaderItem</code> 의 <code>href</code> 와 비교해
+        active 가 자동으로 결정된다 — Tabs/RadioGroup 패턴. 항목마다 active 를 반복 비교할 필요 없음.
       </p>
       <CodePanel
         language="tsx"
         code={`"use client";
 
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 export function AppHeader() {
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
-
   return (
     <Header>
       <HeaderTrigger />
       <HeaderBrand><HeaderTitle>Acme</HeaderTitle></HeaderBrand>
-      <HeaderNav>
-        {[
-          { href: "/", label: "홈" },
-          { href: "/products", label: "제품" },
-          { href: "/pricing", label: "가격" },
-        ].map((it) => (
-          <HeaderItem
-            key={it.href}
-            asChild
-            active={isActive(it.href)}
-          >
-            {/* Next.js Link 와 합치고 싶을 때 — Link 를 자식으로 넘기는 패턴 (또는 HeaderItem 의 href 를 그냥 사용) */}
-            <Link href={it.href}>{it.label}</Link>
-          </HeaderItem>
-        ))}
+      <HeaderNav value={pathname}>
+        <HeaderItem href="/">홈</HeaderItem>
+        <HeaderItem href="/products">제품</HeaderItem>
+        <HeaderItem href="/pricing">가격</HeaderItem>
       </HeaderNav>
     </Header>
   );
 }`}
       />
       <p className="muted">
-        현재 <code>HeaderItem</code> 은 <code>asChild</code> prop 을 따로 두지 않으므로, Next.js <code>&lt;Link&gt;</code> 를 직접 쓰려면 <code>HeaderItem</code> 카피본의 <code>&lt;a&gt;</code> 를 <code>&lt;Link&gt;</code> 로 바꾸거나 <code>HeaderItem href=&quot;...&quot;</code> 로 평범하게 사용한다.
+        기본 매칭은 exact 또는 prefix — <code>/docs</code> 항목은 <code>/docs</code>·<code>/docs/intro</code>·<code>/docs/api</code> 모두에서 활성. root(<code>/</code>) 는 prefix 매칭에서 제외돼 모든 경로에 매칭되지 않는다.
+        active 가 적용되면 자동으로 <code>data-active</code> 와 <code>aria-current=&quot;page&quot;</code> 가 부여된다.
       </p>
+
+      <h3>커스텀 매칭</h3>
+      <p>
+        매칭 규칙을 바꾸려면 <code>match</code> prop 에 비교 함수 전달. 예: query string 무시, hash 매칭 등.
+      </p>
+      <CodePanel
+        language="tsx"
+        code={`<HeaderNav
+  value={pathname}
+  match={(href, value) => {
+    // 정확히 일치할 때만 active (prefix 매칭 비활성)
+    return href === value;
+  }}
+>
+  ...
+</HeaderNav>`}
+      />
+
+      <h3>개별 override</h3>
+      <p>
+        특정 항목에서 자동 계산을 건너뛰려면 <code>active</code> prop 을 명시. prop 이 자동 계산보다 우선한다 (escape hatch).
+      </p>
+      <CodePanel
+        language="tsx"
+        code={`<HeaderNav value={pathname}>
+  <HeaderItem href="/">홈</HeaderItem>
+  <HeaderItem href="/docs">문서</HeaderItem>
+  {/* 라우트와 무관하게 강제 활성/비활성 */}
+  <HeaderItem href="/admin" active={isAdmin}>관리</HeaderItem>
+</HeaderNav>`}
+      />
 
       <h2>언제 쓰나</h2>
       <ul>
@@ -499,10 +517,15 @@ export function AppHeader() {
         <li><code>stickyHide?: boolean</code> — 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지</li>
         <li><code>stickyHideThreshold?: number</code> — 숨김 시작 픽셀, 기본 <code>80</code></li>
       </ul>
+      <h3>HeaderNav</h3>
+      <ul>
+        <li><code>value?: string</code> — 현재 활성 경로/키. 자식 HeaderItem 의 href 와 비교해 active 가 자동 결정</li>
+        <li><code>match?: (itemHref, value) =&gt; boolean</code> — 매칭 함수 커스터마이즈. 기본은 exact 또는 prefix(root 제외)</li>
+      </ul>
       <h3>HeaderItem</h3>
       <ul>
-        <li><code>href: string</code> — 링크 대상</li>
-        <li><code>active?: boolean</code> — 활성 상태 강조</li>
+        <li><code>href: string</code> — 링크 대상. NavMatch 의 value 와 비교에도 사용</li>
+        <li><code>active?: boolean</code> — 명시 시 자동 매칭보다 우선. 미지정이면 NavMatch 결과 사용</li>
       </ul>
       <h3>HeaderMenu</h3>
       <ul>
