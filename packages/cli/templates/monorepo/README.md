@@ -77,7 +77,7 @@ pnpm dev          # 모든 앱 동시 실행
 ## 앱 추가
 
 ```bash
-npx sh-ui-create add-app
+npx sh-ui-cli create add-app
 ```
 
 `apps/{name}/` 과 `packages/ui/ui-apps/ui-{name}/` 을 함께 생성합니다.
@@ -93,10 +93,10 @@ pnpm --filter admin build
 
 ```bash
 # 모든 ui 패키지에 추가 (대화형)
-npx sh-ui-create add-component button
+npx sh-ui-cli create add-component button
 
 # 특정 앱에만 추가
-npx sh-ui-create add-component button --app web
+npx sh-ui-cli create add-component button --app web
 ```
 
 내부적으로 `packages/ui/ui-apps/ui-{app}/` 디렉토리에서 `npx sh-ui add button` 이 실행되며,
