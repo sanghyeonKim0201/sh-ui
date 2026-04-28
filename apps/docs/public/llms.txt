@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.26.0 (2026-04-28) — CodeEditor 컴포넌트 — CodeMirror 6 + sh-ui 토큰 테마
+**최신 버전**: v0.27.0 (2026-04-28) — MarkdownEditor 컴포넌트 — CodeEditor + react-markdown 라이브 프리뷰
 
 ## React Components
 
@@ -34,6 +34,7 @@
 - **form-yup** — FormYup 컴포넌트.
 - **code-panel** — Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.
 - **code-editor** — CodeMirror 6 기반 controlled 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight.
+- **markdown-editor** — 마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어.
 - **select** — 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
 - **sidebar** — 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
 - **header** — 앱 헤더 — 로고/네비/액션 compound.

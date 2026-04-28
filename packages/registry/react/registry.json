@@ -182,6 +182,27 @@
       ],
       "registryDependencies": []
     },
+    "markdown-editor": {
+      "name": "markdown-editor",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/markdown-editor/index.tsx",
+          "dest": "{components}/markdown-editor/index.tsx"
+        },
+        {
+          "src": "components/markdown-editor/styles.css",
+          "dest": "{components}/markdown-editor/styles.css"
+        }
+      ],
+      "dependencies": [
+        "react-markdown",
+        "remark-gfm"
+      ],
+      "registryDependencies": [
+        "code-editor"
+      ]
+    },
     "select": {
       "name": "select",
       "type": "component",

@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.26.0 (2026-04-28) — CodeEditor 컴포넌트 — CodeMirror 6 + sh-ui 토큰 테마
+**최신 버전**: v0.27.0 (2026-04-28) — MarkdownEditor 컴포넌트 — CodeEditor + react-markdown 라이브 프리뷰
 
 ## React — Components
 
@@ -90,6 +90,16 @@
 - npm/pub deps: codemirror, @codemirror/state, @codemirror/view, @codemirror/lang-javascript, @codemirror/lang-json, @codemirror/lang-css, @codemirror/lang-html, @codemirror/lang-markdown
 - Import: `@/components/ui/code-editor`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/code-editor
+
+### markdown-editor
+
+- Type: component
+- Summary: 마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어.
+- Install: `npx sh-ui add markdown-editor`
+- npm/pub deps: react-markdown, remark-gfm
+- Registry deps: code-editor (자동 설치됨)
+- Import: `@/components/ui/markdown-editor`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/markdown-editor
 
 ### select
 
@@ -778,6 +788,13 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.27.0 — MarkdownEditor 컴포넌트 — CodeEditor + react-markdown 라이브 프리뷰 (2026-04-28)
+- MarkdownEditor 신규 — CodeEditor(소스) + react-markdown(미리보기) 합성, GFM(테이블·체크리스트·strikethrough) 지원
+- raw HTML 은 react-markdown 기본 동작으로 차단 — 사용자 입력 마크다운으로부터의 XSS 자동 방어
+- previewPosition: right(기본) / bottom — 좁은 화면(<768px)에서는 자동으로 위·아래로 쌓임. preview={false} 로 미리보기를 끄면 단순 마크다운 입력기로 사용
+- registry dependency = code-editor — `npx sh-ui add markdown-editor` 시 code-editor 도 함께 설치
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.27.0
+
 ### v0.26.0 — CodeEditor 컴포넌트 — CodeMirror 6 + sh-ui 토큰 테마 (2026-04-28)
 - CodeEditor 신규 — CodeMirror 6 basicSetup 기반 controlled 인라인 코드 에디터 (value/onChange · placeholder · readOnly · showLineNumbers · minHeight/maxHeight)
 - 지원 언어: text · javascript · typescript · jsx · tsx · json · css · html · markdown — 런타임 변경은 Compartment 로 hot-swap
@@ -803,14 +820,6 @@
 - publish workflow 매트릭스에서 create 제거 — 앞으로 sh-ui-cli 만 발행
 - 문서 일괄 갱신: README, getting-started, CLI 레퍼런스, 플레이그라운드 명령 컴포저 모두 `npx sh-ui-cli create` 로 통일
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.23.1
-
-### v0.23.0 — sh-ui-create 가 sh-ui-cli 로 통합 — 단일 CLI (2026-04-28)
-- 프로젝트 스캐폴드가 sh-ui-cli 의 새 서브커맨드로 흡수: `npx sh-ui-cli create my-app --platform next --structure standalone --yes`
-- MCP 에 `sh_ui_create_project` 툴 신규 — IDE-내 AI 가 Bash 우회 없이 MCP 만으로 새 프로젝트 스캐폴드 가능. force/cwd/plugins/theme 모두 인자로 노출
-- MCP instructions 가 외부 CLI 안내 대신 통합된 명령·새 툴을 가리키도록 정리 — 단일 진실원천, 드리프트 위험 제거
-- 기존 `sh-ui-create` 패키지는 v0.20.0 deprecated shim 으로 유지 — `npx sh-ui-create` 호출은 자동으로 `npx sh-ui-cli create` 로 위임되어 호환 유지
-- 내부: 템플릿/스캐폴드 로직/스캐폴드 테스트(52건) 가 packages/cli/{templates,src/create,test}/ 로 이동, paths.mjs 에 getTemplatesRoot() 추가
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.23.0
 
 ## Resources
 
