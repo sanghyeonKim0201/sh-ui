@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.26.0",
+      "date": "2026-04-28",
+      "title": "CodeEditor 컴포넌트 — CodeMirror 6 + sh-ui 토큰 테마",
+      "type": "minor",
+      "highlights": [
+        "CodeEditor 신규 — CodeMirror 6 basicSetup 기반 controlled 인라인 코드 에디터 (value/onChange · placeholder · readOnly · showLineNumbers · minHeight/maxHeight)",
+        "지원 언어: text · javascript · typescript · jsx · tsx · json · css · html · markdown — 런타임 변경은 Compartment 로 hot-swap",
+        "컬러·여백을 sh-ui 토큰(--background/--foreground/--border/--background-muted 등)으로 매핑 — `.dark` 스코프에서 다크 테마 자동 추종",
+        "CLI 레지스트리에 `npx sh-ui add code-editor` 등록, docs 사이드바 Components 섹션에 진입점 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.26.0"
+    },
+    {
       "version": "0.25.0",
       "date": "2026-04-28",
       "title": "Next.js 템플릿에 http 골격 + BFF proxy 추가 — IS_SERVER 분기 제거",

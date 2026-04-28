@@ -59,6 +59,7 @@ const components: { title: string; href: string }[] = [
   { title: "Card", href: "/components/card" },
   { title: "Carousel", href: "/components/carousel" },
   { title: "Checkbox", href: "/components/checkbox" },
+  { title: "CodeEditor", href: "/components/code-editor" },
   { title: "CodePanel", href: "/components/code-panel" },
   { title: "ColorPicker", href: "/components/color-picker" },
   { title: "Combobox", href: "/components/combobox" },

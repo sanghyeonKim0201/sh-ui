@@ -157,6 +157,31 @@
       ],
       "registryDependencies": []
     },
+    "code-editor": {
+      "name": "code-editor",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/code-editor/index.tsx",
+          "dest": "{components}/code-editor/index.tsx"
+        },
+        {
+          "src": "components/code-editor/styles.css",
+          "dest": "{components}/code-editor/styles.css"
+        }
+      ],
+      "dependencies": [
+        "codemirror",
+        "@codemirror/state",
+        "@codemirror/view",
+        "@codemirror/lang-javascript",
+        "@codemirror/lang-json",
+        "@codemirror/lang-css",
+        "@codemirror/lang-html",
+        "@codemirror/lang-markdown"
+      ],
+      "registryDependencies": []
+    },
     "select": {
       "name": "select",
       "type": "component",

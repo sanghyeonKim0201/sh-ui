@@ -1,0 +1,76 @@
+.sh-ui-code-editor {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  overflow: hidden;
+  transition: border-color var(--duration-fast);
+}
+.sh-ui-code-editor:focus-within {
+  border-color: var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+.sh-ui-code-editor[data-readonly] {
+  background: var(--background-subtle);
+}
+
+.sh-ui-code-editor .cm-editor {
+  background: transparent;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.sh-ui-code-editor .cm-editor.cm-focused {
+  outline: none;
+}
+.sh-ui-code-editor .cm-scroller {
+  font-family: inherit;
+  min-height: var(--sh-ui-code-editor-min-height, 7.5rem);
+  max-height: var(--sh-ui-code-editor-max-height, 25rem);
+}
+.sh-ui-code-editor .cm-content {
+  caret-color: var(--foreground);
+  color: var(--foreground);
+  padding: var(--space-3) 0;
+}
+.sh-ui-code-editor .cm-line {
+  padding: 0 var(--space-3);
+}
+.sh-ui-code-editor .cm-gutters {
+  background: var(--background-subtle);
+  color: var(--foreground-muted);
+  border-right: 1px solid var(--border);
+}
+.sh-ui-code-editor .cm-activeLineGutter,
+.sh-ui-code-editor .cm-activeLine {
+  background: var(--background-muted);
+}
+.sh-ui-code-editor .cm-cursor,
+.sh-ui-code-editor .cm-dropCursor {
+  border-left-color: var(--foreground);
+}
+.sh-ui-code-editor .cm-selectionBackground,
+.sh-ui-code-editor .cm-editor .cm-selectionBackground,
+.sh-ui-code-editor .cm-editor.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground,
+.sh-ui-code-editor ::selection {
+  background: var(--background-muted) !important;
+}
+.sh-ui-code-editor .cm-placeholder {
+  color: var(--foreground-muted);
+}
+.sh-ui-code-editor .cm-tooltip {
+  background: var(--background);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  border-radius: calc(var(--radius) - 2px);
+}
+.sh-ui-code-editor .cm-tooltip-autocomplete > ul > li[aria-selected] {
+  background: var(--background-muted);
+  color: var(--foreground);
+}
+.sh-ui-code-editor .cm-matchingBracket,
+.sh-ui-code-editor .cm-nonmatchingBracket {
+  background: var(--background-muted);
+  color: var(--foreground);
+}
