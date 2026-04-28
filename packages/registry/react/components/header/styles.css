@@ -131,6 +131,16 @@
   flex-shrink: 0;
 }
 
+/* ───── 반응형 가시성 유틸 (HeaderDesktopOnly / HeaderMobileOnly) ─────
+ * display: contents 로 wrapper 가 레이아웃에 잡히지 않게 함 — 부모(HeaderActions 등)의 flex 흐름 유지.
+ */
+.sh-ui-header__desktop-only {
+  display: contents;
+}
+.sh-ui-header__mobile-only {
+  display: none;
+}
+
 /* ───── NavGroup ─────
  * inline 모드에서는 자식만 펼친 것처럼 평면 렌더(라벨 숨김).
  * drawer 모드에서는 라벨 + 들여쓴 항목.
@@ -233,6 +243,13 @@
   }
   .sh-ui-header {
     gap: var(--space-2);
+  }
+  /* 가시성 유틸 토글 */
+  .sh-ui-header__desktop-only {
+    display: none;
+  }
+  .sh-ui-header__mobile-only {
+    display: contents;
   }
 
   /* backdrop */

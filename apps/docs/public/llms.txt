@@ -38,7 +38,7 @@
 - **rich-text-editor** — Tiptap 3 기반 WYSIWYG 에디터 — controlled HTML, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder.
 - **select** — 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
 - **sidebar** — 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
-- **header** — 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨). variant·stickyHide 베타.
+- **header** — 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 portal dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨) · HeaderDesktopOnly/HeaderMobileOnly(가시성 토글, drawer 이동 없음). variant·stickyHide 베타.
 - **label** — 폼 레이블 — htmlFor로 입력과 연결.
 - **color-picker** — 색상 선택 — hex/rgb, 프리셋 팔레트.
 - **slider** — 수평 슬라이더 — 단일/범위 값, step.

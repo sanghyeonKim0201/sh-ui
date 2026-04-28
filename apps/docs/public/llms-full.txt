@@ -132,7 +132,7 @@
 ### header
 
 - Type: component
-- Summary: 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨). variant·stickyHide 베타.
+- Summary: 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 portal dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨) · HeaderDesktopOnly/HeaderMobileOnly(가시성 토글, drawer 이동 없음). variant·stickyHide 베타.
 - Install: `npx sh-ui add header`
 - Import: `@/components/ui/header`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/header
@@ -799,9 +799,10 @@
 
 ### v0.29.0 — Header — 서브메뉴·그룹·a11y 보강 + variant/stickyHide(beta) (2026-04-28)
 - a11y — drawer 가 열릴 때 focus trap · ESC 닫기 · 닫힐 때 트리거로 포커스 복원 자동화. drawer 패널에 role=dialog + aria-modal=true 부여
-- HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 절대 위치 dropdown(클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리
+- HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 document.body 로 portal 된 dropdown(부모 overflow 클리핑 회피, 트리거 위치를 scroll/resize 마다 추종, 클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리
 - HeaderNavGroup(label) — drawer 안에서 nav 항목을 섹션으로 묶음(라벨 + 들여쓰기). inline 모드는 display:contents 로 자식만 평면 렌더, 데스크탑 레이아웃 무영향
-- 베타 — variant="solid"|"transparent"|"blur" 로 헤더 배경 표현 전환, stickyHide+stickyHideThreshold 로 스크롤 다운 시 자동 숨김. API 가 v1 전에 바뀔 수 있음을 docs·JSDoc 에 명시
+- HeaderDesktopOnly / HeaderMobileOnly — drawer 로 옮기지 않고 단순히 가시성만 토글하는 슬롯. display:contents 라 부모 flex 흐름 그대로 유지. 데스크탑 검색/로그인/마이페이지 같은 항목을 모바일에서 자체 drawer 트리거로 대체할 때 사용
+- 베타 — variant="solid"|"transparent"|"blur" 로 헤더 배경 표현 전환, stickyHide+stickyHideThreshold 로 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지해 페이지 스크롤뿐 아니라 컨테이너 내부 스크롤에도 반응. API 가 v1 전에 바뀔 수 있음을 docs·JSDoc 에 명시
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.29.0
 
 ### v0.28.1 — RichTextEditor — Link 버튼이 빈 선택에서 호출돼도 anchor 가 생기도록 수정 (2026-04-28)

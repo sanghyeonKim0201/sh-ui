@@ -391,6 +391,31 @@ export const HeaderActions = React.forwardRef<
   );
 });
 
+/* ───────── 반응형 가시성 유틸 ─────────
+ * HeaderNav 와 달리 자식을 drawer 로 옮기지 않고 단순히 가시성만 토글한다.
+ * display: contents 라 부모의 flex/grid 흐름을 그대로 유지 — wrapper 가 레이아웃에 잡히지 않음.
+ */
+
+/** 데스크탑(≥768px) 에서만 보이는 슬롯. 모바일에서는 자식이 통째로 사라진다 (drawer 로 이동하지 않음). */
+export const HeaderDesktopOnly = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(function HeaderDesktopOnly({ className, ...props }, ref) {
+  return (
+    <div ref={ref} className={cx("sh-ui-header__desktop-only", className)} {...props} />
+  );
+});
+
+/** 모바일(<768px) 에서만 보이는 슬롯. 데스크탑에서는 자식이 통째로 사라진다. 사용자 정의 drawer 트리거 등에 사용. */
+export const HeaderMobileOnly = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(function HeaderMobileOnly({ className, ...props }, ref) {
+  return (
+    <div ref={ref} className={cx("sh-ui-header__mobile-only", className)} {...props} />
+  );
+});
+
 /* ───────── NavGroup (drawer 안 섹션 라벨) ─────────
  * inline nav 에서는 자식만 펼쳐 평면으로 렌더(라벨 숨김), drawer 에서는 라벨 + 들여쓴 항목으로 렌더.
  */

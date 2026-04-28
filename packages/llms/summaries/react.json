@@ -27,7 +27,7 @@
     "accordion": "펼침/접힘 아코디언 — single/multiple (Base UI).",
     "carousel": "슬라이드 캐러셀 — Embla 기반, autoplay/autoscroll.",
     "sidebar": "앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.",
-    "header": "앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨). variant·stickyHide 베타.",
+    "header": "앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderMenu(서브메뉴, 데스크탑 portal dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨) · HeaderDesktopOnly/HeaderMobileOnly(가시성 토글, drawer 이동 없음). variant·stickyHide 베타.",
     "breadcrumb": "경로 내비게이션 — compound (Breadcrumb.List/Item/Link/Page/Separator/Ellipsis). aria-current 자동.",
     "pagination": "페이지 단위 내비게이션 — compound (PaginationContent/Item/Link/Previous/Next/Ellipsis). getPaginationRange 유틸 동봉. aria-current 자동.",
     "avatar": "프로필 아바타 — 이미지 fallback → initials (Base UI).",

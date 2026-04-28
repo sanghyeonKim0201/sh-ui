@@ -4,11 +4,13 @@ import {
   Header,
   HeaderActions,
   HeaderBrand,
+  HeaderDesktopOnly,
   HeaderItem,
   HeaderLogo,
   HeaderMenu,
   HeaderMenuContent,
   HeaderMenuTrigger,
+  HeaderMobileOnly,
   HeaderNav,
   HeaderNavGroup,
   HeaderTitle,
@@ -188,6 +190,39 @@ ShUiHeader(
       <p className="muted">
         클릭 외부 또는 ESC 로 dropdown 이 닫힌다. 모바일에선 collapsible 이므로 trigger 한 번 더 눌러 접는다.
       </p>
+
+      <h2>반응형 가시성 — HeaderDesktopOnly / HeaderMobileOnly</h2>
+      <p>
+        <code>HeaderNav</code> 는 모바일에서 자식을 drawer 로 옮긴다. 이게 싫고 <strong>그냥 안 보이게</strong>만
+        하고 싶을 때(예: 데스크탑 검색 input · 로그인 버튼 · 마이페이지 메뉴 등을 모바일에선 자체 drawer 트리거로 대체) 두 유틸을 사용한다.
+      </p>
+      <ul>
+        <li><code>HeaderDesktopOnly</code> — ≥768px 에서만 보임. 모바일에선 자식 통째로 사라짐 (drawer 로 이동하지 않음)</li>
+        <li><code>HeaderMobileOnly</code> — &lt;768px 에서만 보임. 데스크탑에선 사라짐. 사용자 정의 drawer 트리거 등에 사용</li>
+      </ul>
+      <p className="muted">
+        wrapper 는 <code>display: contents</code> 라 부모(HeaderActions 등)의 flex/grid 흐름에 영향을 주지 않는다 — 자식이 그대로 부모의 flex 아이템처럼 동작.
+      </p>
+      <CodePanel
+        language="tsx"
+        code={`<Header>
+  {/* 기본 햄버거를 안 쓰고 자기 drawer 를 쓰는 경우라면 HeaderTrigger 도 생략 */}
+  <HeaderBrand>...</HeaderBrand>
+  <HeaderActions>
+    <HeaderDesktopOnly>
+      <SearchInput />
+      <Button variant="secondary">로그인</Button>
+      <MyPageMenu />
+    </HeaderDesktopOnly>
+    <HeaderMobileOnly>
+      {/* 사용자 정의 drawer 트리거 */}
+      <button onClick={openCustomDrawer} aria-label="메뉴">
+        <MenuIcon />
+      </button>
+    </HeaderMobileOnly>
+  </HeaderActions>
+</Header>`}
+      />
 
       <h2>Drawer 그룹핑 (HeaderNavGroup)</h2>
       <p>
@@ -463,6 +498,10 @@ export function AppHeader() {
       <h3>HeaderNavGroup</h3>
       <ul>
         <li><code>label?: ReactNode</code> — drawer 모드에서만 보이는 섹션 라벨</li>
+      </ul>
+      <h3>HeaderDesktopOnly / HeaderMobileOnly</h3>
+      <ul>
+        <li>props: 표준 <code>div</code> 속성 그대로. 자식을 미디어 쿼리로 가시성만 토글 (drawer 이동 없음).</li>
       </ul>
     </main>
   );
