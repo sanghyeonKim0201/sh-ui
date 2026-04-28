@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { RadioBasicDemo, RadioHorizontalDemo, RadioDisabledDemo } from "./_demos/basic";
@@ -75,14 +75,14 @@ ShUiRadioGroup(
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add radio`,
+            code: `npx sh-ui-cli add radio`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add radio
+            code: `npx sh-ui-cli add radio
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_radio.dart → lib/widgets/`,

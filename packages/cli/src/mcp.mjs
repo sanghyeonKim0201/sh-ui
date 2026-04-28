@@ -113,7 +113,6 @@ const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter �
   - 인터랙티브 프롬프트 없이 한 번에 스캐폴드 + 토큰 + sh-ui.config.json 생성
 
 **2차 — Bash** (사용자가 직접 셸에서 돌리고 싶다고 명시할 때만):
-  npm create sh-ui my-app
   npx sh-ui-cli create my-app --platform next --structure standalone --yes
 
 \`create-next-app\` + \`sh_ui_init\` 조합은 **쓰지 말 것** — 위 두 경로가 더 짧고 sh-ui 관용에 맞다.

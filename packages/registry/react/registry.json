@@ -157,6 +157,106 @@
       ],
       "registryDependencies": []
     },
+    "code-tabs": {
+      "name": "code-tabs",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/code-tabs/index.tsx",
+          "dest": "{components}/code-tabs/index.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "tabs",
+        "code-panel"
+      ]
+    },
+    "page-toc": {
+      "name": "page-toc",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/page-toc/index.tsx",
+          "dest": "{components}/page-toc/index.tsx"
+        },
+        {
+          "src": "components/page-toc/styles.css",
+          "dest": "{components}/page-toc/styles.css"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
+    "code-editor": {
+      "name": "code-editor",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/code-editor/index.tsx",
+          "dest": "{components}/code-editor/index.tsx"
+        },
+        {
+          "src": "components/code-editor/styles.css",
+          "dest": "{components}/code-editor/styles.css"
+        }
+      ],
+      "dependencies": [
+        "codemirror",
+        "@codemirror/state",
+        "@codemirror/view",
+        "@codemirror/lang-javascript",
+        "@codemirror/lang-json",
+        "@codemirror/lang-css",
+        "@codemirror/lang-html",
+        "@codemirror/lang-markdown"
+      ],
+      "registryDependencies": []
+    },
+    "markdown-editor": {
+      "name": "markdown-editor",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/markdown-editor/index.tsx",
+          "dest": "{components}/markdown-editor/index.tsx"
+        },
+        {
+          "src": "components/markdown-editor/styles.css",
+          "dest": "{components}/markdown-editor/styles.css"
+        }
+      ],
+      "dependencies": [
+        "react-markdown",
+        "remark-gfm"
+      ],
+      "registryDependencies": [
+        "code-editor"
+      ]
+    },
+    "rich-text-editor": {
+      "name": "rich-text-editor",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/rich-text-editor/index.tsx",
+          "dest": "{components}/rich-text-editor/index.tsx"
+        },
+        {
+          "src": "components/rich-text-editor/styles.css",
+          "dest": "{components}/rich-text-editor/styles.css"
+        }
+      ],
+      "dependencies": [
+        "@tiptap/react",
+        "@tiptap/pm",
+        "@tiptap/starter-kit",
+        "@tiptap/extension-placeholder",
+        "@tiptap/extension-link",
+        "lucide-react"
+      ],
+      "registryDependencies": []
+    },
     "select": {
       "name": "select",
       "type": "component",

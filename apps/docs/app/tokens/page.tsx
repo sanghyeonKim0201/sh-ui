@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 import { CodePanel } from "@/components/ui/code-panel";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 
 export default function TokensPage() {
   const semanticColors = [

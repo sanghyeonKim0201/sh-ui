@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Badge } from "@/components/ui/badge";
@@ -62,7 +62,7 @@ ShUiBadge.text('Outline', variant: ShUiBadgeVariant.outline)`,
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add badge`,
+            code: `npx sh-ui-cli add badge`,
           },
         ]}
       />

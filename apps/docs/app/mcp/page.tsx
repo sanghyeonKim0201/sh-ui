@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 import { CodePanel } from "@/components/ui/code-panel";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { PropsTable } from "@/components/props-table";
 
 export default function McpPage() {

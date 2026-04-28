@@ -8,6 +8,49 @@
   padding: 0 var(--space-3);
   background: var(--background);
   border-bottom: 1px solid var(--border);
+  transition: transform var(--duration-base) var(--ease-standard),
+    background-color var(--duration-base) var(--ease-standard);
+  /* hover/active 배경 — transparent/blur variant 가 currentColor 기반으로 재정의 */
+  --sh-ui-header-hover-bg: var(--background-muted);
+  /* blur variant 튜닝용 — instance 별 style 로 override 가능 */
+  --sh-ui-header-blur-opacity: 85%;
+  --sh-ui-header-blur-radius: 16px;
+}
+
+/* prefers-reduced-motion — stickyHide 슬라이드 애니메이션을 즉시 toggle 로 대체.
+   variant 전환의 background 트랜지션도 비활성화. */
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-header {
+    transition: none;
+  }
+}
+
+/* variant */
+.sh-ui-header--solid {
+  background: var(--background);
+}
+.sh-ui-header--transparent {
+  background: transparent;
+  border-bottom-color: transparent;
+  /* 컬러풀 배경 위에서도 자연스러운 hover — 텍스트 색의 14% 오버레이 */
+  --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
+}
+.sh-ui-header--blur {
+  background: color-mix(in srgb, var(--background) var(--sh-ui-header-blur-opacity), transparent);
+  backdrop-filter: saturate(180%) blur(var(--sh-ui-header-blur-radius));
+  -webkit-backdrop-filter: saturate(180%) blur(var(--sh-ui-header-blur-radius));
+  --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
+}
+/* backdrop-filter 미지원 브라우저 폴백 — 더 불투명한 배경으로 가독성 확보 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sh-ui-header--blur {
+    background: var(--background);
+  }
+}
+
+/* sticky-hide — sticky 컨텍스트는 사용자가 직접 (예: position:sticky; top:0) 적용. */
+.sh-ui-header[data-sticky-hide][data-hidden] {
+  transform: translateY(-100%);
 }
 
 /* ───── Brand ───── */
@@ -17,13 +60,11 @@
   gap: var(--space-2);
   flex-shrink: 0;
 }
-
 .sh-ui-header__logo {
   display: inline-flex;
   align-items: center;
   color: var(--foreground);
 }
-
 .sh-ui-header__title {
   font-size: var(--text-base);
   font-weight: var(--weight-bold);
@@ -47,7 +88,7 @@
   transition: background-color var(--duration-fast);
 }
 .sh-ui-header__trigger:hover {
-  background: var(--background-muted);
+  background: var(--sh-ui-header-hover-bg);
 }
 .sh-ui-header__trigger:focus-visible {
   outline: var(--border-width-strong) solid var(--foreground);
@@ -87,7 +128,7 @@
 }
 .sh-ui-header__item:hover {
   color: var(--foreground);
-  background: var(--background-muted);
+  background: var(--sh-ui-header-hover-bg);
 }
 .sh-ui-header__item[data-active] {
   color: var(--foreground);
@@ -107,6 +148,102 @@
   flex-shrink: 0;
 }
 
+/* ───── 반응형 가시성 유틸 (HeaderDesktopOnly / HeaderMobileOnly) ─────
+ * display: contents 로 wrapper 가 레이아웃에 잡히지 않게 함 — 부모(HeaderActions 등)의 flex 흐름 유지.
+ */
+.sh-ui-header__desktop-only {
+  display: contents;
+}
+.sh-ui-header__mobile-only {
+  display: none;
+}
+
+/* ───── NavGroup ─────
+ * inline 모드에서는 자식만 펼친 것처럼 평면 렌더(라벨 숨김).
+ * drawer 모드에서는 라벨 + 들여쓴 항목.
+ */
+.sh-ui-header__group--inline {
+  display: contents;
+}
+.sh-ui-header__group--drawer {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-3);
+}
+.sh-ui-header__group--drawer:first-child {
+  margin-top: 0;
+}
+.sh-ui-header__group-label {
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--foreground-muted);
+}
+.sh-ui-header__group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* ───── Menu (서브메뉴) — inline 모드 = dropdown ───── */
+.sh-ui-header__menu {
+  position: relative;
+}
+.sh-ui-header__menu--inline {
+  display: inline-block;
+}
+.sh-ui-header__menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--foreground-muted);
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--duration-fast), background-color var(--duration-fast);
+}
+.sh-ui-header__menu-trigger:hover,
+.sh-ui-header__menu-trigger[data-open] {
+  color: var(--foreground);
+  background: var(--sh-ui-header-hover-bg);
+}
+.sh-ui-header__menu-trigger:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+.sh-ui-header__chevron {
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.sh-ui-header__menu-trigger[data-open] .sh-ui-header__chevron {
+  transform: rotate(180deg);
+}
+
+/* inline 모드 dropdown 은 portal 로 document.body 에 렌더된다 — 부모 overflow 영향 받지 않음. */
+.sh-ui-header__menu-content--portal {
+  z-index: var(--z-dropdown, 50);
+  padding: var(--space-1);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: var(--foreground);
+}
+.sh-ui-header__menu-content--portal .sh-ui-header__item {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+}
+
 /* ───── Drawer (backdrop + panel) — 기본 숨김 ───── */
 .sh-ui-header__backdrop,
 .sh-ui-header__drawer {
@@ -115,18 +252,22 @@
 
 /* ───── Mobile (< breakpoint.md) ───── */
 @media (max-width: 767px) {
-  /* 햄버거 노출 & 좌측 배치 */
   .sh-ui-header__trigger {
     display: inline-flex;
     order: -1;
   }
-  /* inline nav 숨김 */
   .sh-ui-header__nav {
     display: none;
   }
-  /* 모바일에서 gap 조정 */
   .sh-ui-header {
     gap: var(--space-2);
+  }
+  /* 가시성 유틸 토글 */
+  .sh-ui-header__desktop-only {
+    display: none;
+  }
+  .sh-ui-header__mobile-only {
+    display: contents;
   }
 
   /* backdrop */
@@ -148,7 +289,7 @@
 
   /* drawer panel */
   .sh-ui-header__drawer {
-    display: block;
+    display: flex;
     position: fixed;
     left: 0;
     top: 0;
@@ -159,7 +300,6 @@
     z-index: var(--z-modal);
     transform: translateX(-100%);
     transition: transform var(--duration-base) var(--ease-standard);
-    display: flex;
     flex-direction: column;
     overflow-y: auto;
   }
@@ -186,5 +326,25 @@
     padding: var(--space-3) var(--space-3);
     font-size: var(--text-sm);
     border-radius: calc(var(--radius) - 2px);
+  }
+
+  /* Menu in drawer = collapsible */
+  .sh-ui-header__menu--drawer {
+    display: flex;
+    flex-direction: column;
+  }
+  .sh-ui-header__menu--drawer > .sh-ui-header__menu-trigger {
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-3) var(--space-3);
+  }
+  .sh-ui-header__menu--drawer > .sh-ui-header__menu-content {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-1) 0 var(--space-1) var(--space-4);
+    gap: 1px;
+  }
+  .sh-ui-header__menu--drawer > .sh-ui-header__menu-content[hidden] {
+    display: none;
   }
 }

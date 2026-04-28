@@ -3,7 +3,7 @@ export const dynamic = "force-static";
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 
@@ -51,14 +51,14 @@ export default function ButtonPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add button`,
+            code: `npx sh-ui-cli add button`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add button
+            code: `npx sh-ui-cli add button
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_button.dart → lib/widgets/`,

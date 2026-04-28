@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import {
@@ -125,7 +125,7 @@ export default function PaginationDocsPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add pagination`,
+            code: `npx sh-ui-cli add pagination`,
           },
         ]}
       />
@@ -235,6 +235,16 @@ export default function PaginationDocsPage() {
           { name: "getPaginationRange", description: "유틸 — {page, totalPages, siblings}로 [번호 | \"dots\"] 토큰 배열 생성." },
         ]}
       />
+
+      <h2>API Reference</h2>
+      <p className="muted">
+        하위 컴포넌트 대부분은 표준 HTML 속성을 그대로 받는다. 추가 prop:
+      </p>
+      <ul>
+        <li><code>PaginationLink</code> — <code>isActive?: boolean</code> (true 면 <code>aria-current=&quot;page&quot;</code> 자동), <code>href?: string</code></li>
+        <li><code>PaginationPrevious</code>, <code>PaginationNext</code> — <code>href?: string</code>, 경계 도달 시 <code>aria-disabled</code> + <code>data-disabled</code> 자동</li>
+        <li><code>getPaginationRange({"{ page, totalPages, siblings }"})</code> — 유틸 함수, <code>(number | &quot;dots&quot;)[]</code> 반환</li>
+      </ul>
 
       <h2>접근성</h2>
       <ul>

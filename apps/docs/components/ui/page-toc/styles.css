@@ -1,0 +1,82 @@
+/* 페이지 내 목차 (On this page).
+   기본은 우측 고정 레일 — 좁은 뷰포트(<80rem)에서는 자동 숨김. 다른 배치(예: 본문 상단 inline)
+   가 필요하면 className override 또는 자체 wrapper 로 위치 재정의. */
+.sh-ui-page-toc {
+  position: fixed;
+  top: 5rem;
+  right: 1.5rem;
+  width: 14rem;
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+  padding: 0.75rem 0.5rem 0.75rem 1rem;
+  border-left: 1px solid var(--border);
+  font-size: 0.8125rem;
+  z-index: 5;
+}
+
+.sh-ui-page-toc__label {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.sh-ui-page-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.sh-ui-page-toc__list > li[data-level="3"] .sh-ui-page-toc__link,
+.sh-ui-page-toc__list > li[data-level="4"] .sh-ui-page-toc__link {
+  padding-left: 1.25rem;
+  font-size: 0.8125em;
+  color: var(--foreground-subtle, var(--foreground-muted));
+}
+.sh-ui-page-toc__list > li[data-level="5"] .sh-ui-page-toc__link,
+.sh-ui-page-toc__list > li[data-level="6"] .sh-ui-page-toc__link {
+  padding-left: 2rem;
+  font-size: 0.75em;
+  color: var(--foreground-subtle, var(--foreground-muted));
+}
+
+.sh-ui-page-toc__link {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  border-radius: calc(var(--radius) - 4px);
+  color: var(--foreground-muted);
+  text-decoration: none;
+  line-height: 1.4;
+  transition: color var(--duration-fast), background-color var(--duration-fast);
+}
+.sh-ui-page-toc__link:hover {
+  color: var(--foreground);
+  background: var(--background-subtle);
+}
+.sh-ui-page-toc__link:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+.sh-ui-page-toc__link[data-active="true"] {
+  color: var(--foreground);
+  font-weight: 600;
+  background: var(--background-subtle);
+}
+
+/* 좁은 뷰포트에선 우측 레일 숨김 — 본문 너비를 침범하지 않도록 */
+@media (max-width: 80rem) {
+  .sh-ui-page-toc {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-page-toc__link {
+    transition: none;
+  }
+}

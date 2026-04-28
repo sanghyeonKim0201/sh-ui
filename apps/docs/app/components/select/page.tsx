@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -93,14 +93,14 @@ ShUiSelect<String>(
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add select`,
+            code: `npx sh-ui-cli add select`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add select
+            code: `npx sh-ui-cli add select
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_select.dart → lib/widgets/`,

@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Separator } from "@/components/ui/separator";
@@ -42,14 +42,14 @@ export default function SeparatorPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add separator`,
+            code: `npx sh-ui-cli add separator`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add separator`,
+            code: `npx sh-ui-cli add separator`,
           },
         ]}
       />

@@ -3,6 +3,109 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.31.1",
+      "date": "2026-04-28",
+      "title": "Header drawer 그룹 라벨을 사이드바와 동일한 캡션 스타일로 정렬",
+      "type": "patch",
+      "highlights": [
+        "HeaderNavGroup 의 drawer 라벨이 uppercase + letter-spacing 으로 두드러져 같은 모바일 메뉴 안의 HeaderMenu 트리거(서브메뉴 헤더)와 시각적으로 헷갈리던 문제 해결",
+        "스타일을 Sidebar 의 group-label 과 동일하게 통일 — text-xs / weight-medium / foreground-muted, height 2rem, padding 0 var(--space-2) (uppercase·letter-spacing 제거)",
+        "그룹 라벨은 \"섹션 캡션\", 메뉴 트리거는 \"클릭 가능한 nav 항목\" 으로 역할이 명확히 갈라짐"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.31.1"
+    },
+    {
+      "version": "0.31.0",
+      "date": "2026-04-28",
+      "title": "Editor 3종(Code/Markdown/RichText) uncontrolled 모드 추가",
+      "type": "minor",
+      "highlights": [
+        "CodeEditor / MarkdownEditor / RichTextEditor 모두 value 를 옵셔널로 만들고 defaultValue 를 추가 — 라우터·외부 상태와 동기화할 게 없는 폼이면 useState 없이 한 줄로 끝 (Tabs/RadioGroup/Header NavMatch 와 동일 패턴)",
+        "controlled (value 명시) 모드는 종전과 동일하게 동작 — 외부 동기화 effect 가 isControlled 일 때만 작동하도록 가드. uncontrolled 모드에서는 에디터(CodeMirror/Tiptap)가 자체 source-of-truth",
+        "onChange 는 controlled / uncontrolled 양 모드 모두에서 변경마다 호출 — 외부 관찰만 필요할 땐 onChange 만 받아도 OK",
+        "MarkdownEditor 는 미리보기 패널이 현재 값을 필요로 하므로 uncontrolled 모드에서도 자체 React state 로 트래킹"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.31.0"
+    },
+    {
+      "version": "0.30.0",
+      "date": "2026-04-28",
+      "title": "PageTOC + CodeTabs registry 승격 — docs 인프라 컴포넌트 공개",
+      "type": "minor",
+      "highlights": [
+        "PageTOC 신규 — 페이지 안의 헤딩(기본 h2/h3)을 자동 스캔해 우측 레일에 목차(On this page)를 렌더. 자동 slugify·id 부여, IntersectionObserver 로 현재 보이는 섹션 active 표시(aria-current 자동), 클릭 시 smooth scroll. 라우터 비종속 — routeKey 로 라우트 변경 신호를 받아 재스캔하므로 Next.js / React Router / no-router 모두 지원. levels·containerSelector·excludeSelector·label·headerOffsetRem 으로 커스터마이즈",
+        "CodeTabs 신규 — 같은 예제의 여러 코드 뷰(예: React/Flutter, 또는 \"강조 / 전체 코드\")를 탭으로 전환. 각 탭은 그대로 CodePanel 로 렌더되어 shiki 하이라이팅·복사 버튼·파일명 헤더 등을 그대로 사용. registryDependencies = tabs · code-panel",
+        "두 컴포넌트 모두 그동안 docs 내부 전용으로 쓰이던 것을 일반화 — 이제 사용자 프로젝트에서 `npx sh-ui-cli add page-toc` / `npx sh-ui-cli add code-tabs` 로 설치 가능. /components 인덱스에도 등록"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.30.0"
+    },
+    {
+      "version": "0.29.0",
+      "date": "2026-04-28",
+      "title": "Header — 서브메뉴·그룹·a11y·active 자동 매칭 보강 + variant/stickyHide 정식 도입",
+      "type": "minor",
+      "highlights": [
+        "a11y — drawer 가 열릴 때 focus trap · ESC 닫기 · 닫힐 때 트리거로 포커스 복원 자동화. drawer 패널에 role=dialog + aria-modal=true 부여",
+        "HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 document.body 로 portal 된 dropdown(부모 overflow 클리핑 회피, 트리거 위치를 scroll/resize 마다 추종, 클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리",
+        "HeaderNavGroup(label) — drawer 안에서 nav 항목을 섹션으로 묶음(라벨 + 들여쓰기). inline 모드는 display:contents 로 자식만 평면 렌더, 데스크탑 레이아웃 무영향",
+        "HeaderDesktopOnly / HeaderMobileOnly — drawer 로 옮기지 않고 단순히 가시성만 토글하는 슬롯. display:contents 라 부모 flex 흐름 그대로 유지. 데스크탑 검색/로그인/마이페이지 같은 항목을 모바일에서 자체 drawer 트리거로 대체할 때 사용",
+        "active 자동 매칭 — HeaderNav 의 value(controlled) 또는 defaultValue+onValueChange(uncontrolled) 로 자식 HeaderItem 의 active 가 일괄 결정 (Tabs/RadioGroup 패턴). 라우터 앱은 value=pathname, 라우터 없는 위젯은 defaultValue 만으로 클릭 자동 추적. 기본 매칭은 exact 또는 prefix(root 제외), match 함수로 커스터마이즈, 개별 active prop 으로 override. 자동/수동 어느 쪽이든 data-active 와 aria-current=\"page\" 부여",
+        "variant=\"solid\"|\"transparent\"|\"blur\" 로 헤더 배경 표현 전환. blur 는 표준 글래스 헤더 수준의 85% opacity + saturate(180%) blur(16px), --sh-ui-header-blur-opacity / --sh-ui-header-blur-radius CSS 변수로 instance 별 조정. backdrop-filter 미지원 브라우저는 @supports 폴백으로 불투명 배경 자동 적용",
+        "stickyHide + stickyHideThreshold — 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지해 페이지 스크롤뿐 아니라 컨테이너 내부 스크롤에도 반응. prefers-reduced-motion: reduce 환경에서는 슬라이드 트랜지션 비활성화"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.29.0"
+    },
+    {
+      "version": "0.28.1",
+      "date": "2026-04-28",
+      "title": "RichTextEditor — Link 버튼이 빈 선택에서 호출돼도 anchor 가 생기도록 수정",
+      "type": "patch",
+      "highlights": [
+        "Link 버튼: 텍스트 선택이 없고 기존 링크 위도 아닐 때 URL 자체를 anchor 텍스트로 삽입 — 빈 link 마크만 걸려 사용자가 추가로 타이핑해야 했던 어색한 상태 제거",
+        "선택이 있거나 기존 링크 위에서 호출하면 종전과 동일하게 selection·기존 링크에 setLink"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.1"
+    },
+    {
+      "version": "0.28.0",
+      "date": "2026-04-28",
+      "title": "RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar",
+      "type": "minor",
+      "highlights": [
+        "RichTextEditor 신규 — Tiptap 3 (StarterKit + Placeholder + Link) 위에 sh-ui 토큰 테마와 기본 toolbar 를 얹은 controlled WYSIWYG. value 는 HTML 문자열로 입출력",
+        "툴바: 헤딩(H1~H3) · 리스트(불릿/숫자) · 인용 · 코드(인라인/블록) · 링크 · 강조(B/I/S) · 구분선 · undo/redo. 본문 포커스를 잃지 않도록 mousedown 가로채기",
+        "SSR 안전 — `immediatelyRender: false` 로 Next 15+ stricter SSR 환경에서 hydration mismatch 없음. readOnly·hideToolbar·minHeight/maxHeight prop 지원",
+        "추가 확장(이미지·테이블·멘션 등)은 registry 카피본을 직접 수정해 `extensions` 배열에 끼워 넣는 방식으로 확장"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.0"
+    },
+    {
+      "version": "0.27.0",
+      "date": "2026-04-28",
+      "title": "MarkdownEditor 컴포넌트 — CodeEditor + react-markdown 라이브 프리뷰",
+      "type": "minor",
+      "highlights": [
+        "MarkdownEditor 신규 — CodeEditor(소스) + react-markdown(미리보기) 합성, GFM(테이블·체크리스트·strikethrough) 지원",
+        "raw HTML 은 react-markdown 기본 동작으로 차단 — 사용자 입력 마크다운으로부터의 XSS 자동 방어",
+        "previewPosition: right(기본) / bottom — 좁은 화면(<768px)에서는 자동으로 위·아래로 쌓임. preview={false} 로 미리보기를 끄면 단순 마크다운 입력기로 사용",
+        "registry dependency = code-editor — `npx sh-ui-cli add markdown-editor` 시 code-editor 도 함께 설치"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.27.0"
+    },
+    {
+      "version": "0.26.0",
+      "date": "2026-04-28",
+      "title": "CodeEditor 컴포넌트 — CodeMirror 6 + sh-ui 토큰 테마",
+      "type": "minor",
+      "highlights": [
+        "CodeEditor 신규 — CodeMirror 6 basicSetup 기반 controlled 인라인 코드 에디터 (value/onChange · placeholder · readOnly · showLineNumbers · minHeight/maxHeight)",
+        "지원 언어: text · javascript · typescript · jsx · tsx · json · css · html · markdown — 런타임 변경은 Compartment 로 hot-swap",
+        "컬러·여백을 sh-ui 토큰(--background/--foreground/--border/--background-muted 등)으로 매핑 — `.dark` 스코프에서 다크 테마 자동 추종",
+        "CLI 레지스트리에 `npx sh-ui-cli add code-editor` 등록, docs 사이드바 Components 섹션에 진입점 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.26.0"
+    },
+    {
       "version": "0.25.0",
       "date": "2026-04-28",
       "title": "Next.js 템플릿에 http 골격 + BFF proxy 추가 — IS_SERVER 분기 제거",
@@ -87,7 +190,7 @@
         "sh-ui mcp init --client <claude-code|cursor|claude-desktop> 추가 — IDE 별 MCP 설정 파일을 자동으로 찾아 sh-ui 엔트리 머지",
         "스코프 분기 — 기본 project(.mcp.json / .cursor/mcp.json), --scope user 로 전역(~/.claude/mcp.json 등) 선택 가능. claude-desktop 은 user 전용(OS 별 경로 자동 분기)",
         "기존 JSON 보존 — 다른 MCP 서버 엔트리·기타 키를 건드리지 않고 sh-ui 만 머지·갱신",
-        "수동 JSON 편집 없이 npx sh-ui mcp init --client cursor 한 줄로 끝"
+        "수동 JSON 편집 없이 npx sh-ui-cli mcp init --client cursor 한 줄로 끝"
       ],
       "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.0"
     },

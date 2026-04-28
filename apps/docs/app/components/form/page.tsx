@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -80,7 +80,7 @@ import { Button } from "@/components/ui/button";
             label: "CLI",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add form`,
+            code: `npx sh-ui-cli add form`,
           },
           {
             value: "manual",
@@ -88,12 +88,12 @@ import { Button } from "@/components/ui/button";
             language: "bash",
             showLineNumbers: false,
             code: `# form 만 필요한 경우
-npx sh-ui add form
+npx sh-ui-cli add form
 
 # 어댑터가 필요하면 함께 설치
-npx sh-ui add form-rhf      # React Hook Form 어댑터
-npx sh-ui add form-tanstack  # TanStack Form 어댑터
-npx sh-ui add form-yup       # Yup 래퍼`,
+npx sh-ui-cli add form-rhf      # React Hook Form 어댑터
+npx sh-ui-cli add form-tanstack  # TanStack Form 어댑터
+npx sh-ui-cli add form-yup       # Yup 래퍼`,
           },
         ]}
       />
@@ -303,7 +303,7 @@ function MyForm() {
             language: "bash",
             showLineNumbers: false,
             code: `pnpm add yup
-npx sh-ui add form-yup`,
+npx sh-ui-cli add form-yup`,
           },
         ]}
       />
@@ -356,7 +356,7 @@ const schema = yupSchema(
             language: "bash",
             showLineNumbers: false,
             code: `pnpm add react-hook-form
-npx sh-ui add form-rhf`,
+npx sh-ui-cli add form-rhf`,
           },
         ]}
       />
@@ -423,7 +423,7 @@ function MyForm() {
             language: "bash",
             showLineNumbers: false,
             code: `pnpm add @tanstack/react-form
-npx sh-ui add form-tanstack`,
+npx sh-ui-cli add form-tanstack`,
           },
         ]}
       />

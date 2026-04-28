@@ -59,7 +59,9 @@ const components: { title: string; href: string }[] = [
   { title: "Card", href: "/components/card" },
   { title: "Carousel", href: "/components/carousel" },
   { title: "Checkbox", href: "/components/checkbox" },
+  { title: "CodeEditor", href: "/components/code-editor" },
   { title: "CodePanel", href: "/components/code-panel" },
+  { title: "CodeTabs", href: "/components/code-tabs" },
   { title: "ColorPicker", href: "/components/color-picker" },
   { title: "Combobox", href: "/components/combobox" },
   { title: "ContextMenu", href: "/components/context-menu" },
@@ -71,11 +73,14 @@ const components: { title: string; href: string }[] = [
   { title: "Header", href: "/components/header" },
   { title: "Input", href: "/components/input" },
   { title: "Label", href: "/components/label" },
+  { title: "MarkdownEditor", href: "/components/markdown-editor" },
   { title: "Menubar", href: "/components/menubar" },
+  { title: "PageTOC", href: "/components/page-toc" },
   { title: "Pagination", href: "/components/pagination" },
   { title: "Popover", href: "/components/popover" },
   { title: "Progress", href: "/components/progress" },
   { title: "Radio", href: "/components/radio" },
+  { title: "RichTextEditor", href: "/components/rich-text-editor" },
   { title: "Select", href: "/components/select" },
   { title: "Separator", href: "/components/separator" },
   { title: "Sidebar", href: "/components/sidebar" },
@@ -133,6 +138,13 @@ export function AppSidebar() {
                   </SidebarCollapsibleTrigger>
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/components"}>
+                          <Link href="/components">
+                            <span>전체 보기</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
                       {components.map((c) => (
                         <SidebarMenuSubItem key={c.href}>
                           <SidebarMenuSubButton asChild isActive={isActive(c.href)}>

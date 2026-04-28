@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -74,14 +74,14 @@ export default function PopoverPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add popover`,
+            code: `npx sh-ui-cli add popover`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add popover
+            code: `npx sh-ui-cli add popover
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_popover.dart → lib/widgets/`,

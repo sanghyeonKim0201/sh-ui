@@ -3,7 +3,7 @@ export const dynamic = "force-static";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CodePanel } from "@/components/ui/code-panel";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 
 export default function SkeletonPage() {
@@ -63,14 +63,14 @@ const ShUiSkeleton(height: 16, width: 270),`,
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add skeleton`,
+            code: `npx sh-ui-cli add skeleton`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add skeleton
+            code: `npx sh-ui-cli add skeleton
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_skeleton.dart → lib/widgets/`,

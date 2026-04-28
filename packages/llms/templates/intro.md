@@ -4,11 +4,11 @@
 
 ## 설치 흐름
 
-1. `npx sh-ui init` — 프로젝트에 `sh-ui.config.json` 생성
-2. `npx sh-ui add <name>` — 컴포넌트 소스를 프로젝트로 복사
-3. `npx sh-ui list` — 설치된 컴포넌트 목록
-4. `npx sh-ui remove <name>` — 설치 제거
-5. `npx sh-ui add <name> --diff` — 실제 파일 쓰지 않고 업데이트 미리보기
+1. `npx sh-ui-cli init` — 프로젝트에 `sh-ui.config.json` 생성
+2. `npx sh-ui-cli add <name>` — 컴포넌트 소스를 프로젝트로 복사
+3. `npx sh-ui-cli list` — 설치된 컴포넌트 목록
+4. `npx sh-ui-cli remove <name>` — 설치 제거
+5. `npx sh-ui-cli add <name> --diff` — 실제 파일 쓰지 않고 업데이트 미리보기
 
 ## Import 경로
 

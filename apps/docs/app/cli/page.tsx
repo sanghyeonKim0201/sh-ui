@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 import { CodePanel } from "@/components/ui/code-panel";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { PropsTable } from "@/components/props-table";
 
 export default function CliPage() {
@@ -26,9 +26,7 @@ export default function CliPage() {
       </p>
 
       <h3>빠른 시작</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npm create sh-ui my-app
-# 또는
-npx sh-ui-cli create`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli create`} />
       <p>대화형 프롬프트로 프로젝트 이름, 구조(단독/모노레포)를 선택하면 현재 디렉토리에 프로젝트가 생성된다.</p>
       <p className="muted">
         미리 디자인한 테마까지 한 번에 반영하고 싶다면 <a href="/create">프로젝트 생성</a> 페이지에서 색·radius 를 편집한 뒤 생성된 CLI 명령어를 복사하면 된다.
@@ -127,7 +125,7 @@ pnpm dlx sh-ui-cli create my-app --platform next --structure standalone --plugin
             language: "bash",
             code: `cd my-app
 npx sh-ui-cli create add-component button
-# 또는 바로: npx sh-ui add button`,
+# 또는 바로: npx sh-ui-cli add button`,
           },
           {
             value: "monorepo-all",
@@ -149,7 +147,7 @@ npx sh-ui-cli create add-component button --app web`,
         ]}
       />
       <p className="muted">
-        <code>add-component</code> 는 내부적으로 <code>npx sh-ui add {"<name>"}</code> 를 위임 호출한다.
+        <code>add-component</code> 는 내부적으로 <code>npx sh-ui-cli add {"<name>"}</code> 를 위임 호출한다.
         직접 <code>sh-ui add</code> 를 써도 결과는 같다. 모노레포에서 대상 패키지 자동 감지가 필요할 때만 <code>add-component</code> 를 쓴다.
       </p>
 
@@ -234,9 +232,9 @@ npx sh-ui-cli create add-component button --app web`,
       </p>
 
       <h3>설치 없이 바로 실행</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui <command> [args]`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli <command> [args]`} />
       <p className="muted">
-        설치형으로 쓰려면 <code>pnpm add -D sh-ui</code> / <code>npm i -D sh-ui</code>.
+        설치형으로 쓰려면 <code>pnpm add -D sh-ui-cli</code> / <code>npm i -D sh-ui-cli</code>.
       </p>
 
       <h3>명령 개요</h3>
@@ -252,7 +250,7 @@ npx sh-ui-cli create add-component button --app web`,
 
       <h3>sh-ui init</h3>
       <p>대화형 프롬프트로 4개 축을 선택하면 <code>sh-ui.config.json</code>이 만들어진다.</p>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui init`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli init`} />
 
       <h4>플래그</h4>
       <PropsTable
@@ -270,7 +268,7 @@ npx sh-ui-cli create add-component button --app web`,
       <CodePanel
         language="bash"
         showLineNumbers={false}
-        code={`npx sh-ui init --yes --platform react --base neutral --radius md --mode light-dark`}
+        code={`npx sh-ui-cli init --yes --platform react --base neutral --radius md --mode light-dark`}
       />
       <p className="muted">
         비-TTY 환경(CI 등)에서는 <code>--yes</code> 없이 실행하면 에러. 모든 축을 플래그로 넘기거나 <code>--yes</code>로 기본값을 수용해야 한다.
@@ -282,13 +280,13 @@ npx sh-ui-cli create add-component button --app web`,
         language="bash"
         showLineNumbers={false}
         code={`# 단일 컴포넌트
-npx sh-ui add button
+npx sh-ui-cli add button
 
 # 여러 개 동시에
-npx sh-ui add button card dialog
+npx sh-ui-cli add button card dialog
 
 # 토큰 파일만 재생성 (sh-ui.config.json 값 기반)
-npx sh-ui add tokens`}
+npx sh-ui-cli add tokens`}
       />
 
       <h4>플래그</h4>
@@ -308,10 +306,10 @@ npx sh-ui add tokens`}
         language="bash"
         showLineNumbers={false}
         code={`# 버튼 컴포넌트에 어떤 변경이 생기는지만 확인
-npx sh-ui add button --diff
+npx sh-ui-cli add button --diff
 
 # 적용하려면 --diff 없이 다시 실행
-npx sh-ui add button`}
+npx sh-ui-cli add button`}
       />
       <p className="muted">
         사용자가 직접 수정해둔 파일이 있으면 "변경"으로 분류되어 덮어쓰기 전 검토할 수 있다. CI에서도 회귀 감지용으로 활용 가능.
@@ -402,10 +400,10 @@ npx sh-ui add button`}
         language="bash"
         showLineNumbers={false}
         code={`# 설치된 것만
-npx sh-ui list
+npx sh-ui-cli list
 
 # 설치되지 않은 컴포넌트까지 함께 보기
-npx sh-ui list --all`}
+npx sh-ui-cli list --all`}
       />
       <PropsTable
         rows={[
@@ -422,16 +420,16 @@ npx sh-ui list --all`}
         language="bash"
         showLineNumbers={false}
         code={`# 여러 개 한 번에
-npx sh-ui remove button card
+npx sh-ui-cli remove button card
 
 # 삭제 대상만 확인
-npx sh-ui remove button --dry-run
+npx sh-ui-cli remove button --dry-run
 
 # 수정된 파일도 강제 삭제
-npx sh-ui remove button --force
+npx sh-ui-cli remove button --force
 
 # 별칭
-npx sh-ui rm button`}
+npx sh-ui-cli rm button`}
       />
       <PropsTable
         rows={[
@@ -448,16 +446,16 @@ npx sh-ui rm button`}
         language="bash"
         showLineNumbers={false}
         code={`# 1. 프로젝트 루트에서 초기화
-npx sh-ui init
+npx sh-ui-cli init
 
 # 2. 토큰 + base 스타일
-npx sh-ui add tokens base
+npx sh-ui-cli add tokens base
 
 # 3. 필요한 컴포넌트만
-npx sh-ui add button card dialog
+npx sh-ui-cli add button card dialog
 
 # 이후에도 언제든 추가
-npx sh-ui add dropdown-menu tooltip`}
+npx sh-ui-cli add dropdown-menu tooltip`}
       />
 
       <h3>동작 원리</h3>

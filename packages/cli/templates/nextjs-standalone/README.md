@@ -69,9 +69,9 @@ pnpm dev
 ## sh-ui 컴포넌트 추가
 
 ```bash
-npx sh-ui add button
-npx sh-ui add dialog
+npx sh-ui-cli add button
+npx sh-ui-cli add dialog
 ```
 
 `sh-ui.config.json` 의 `paths.components` 설정에 따라 `src/shared/ui/` 에 복사됩니다.
-토큰을 커스텀하려면 `sh-ui.config.json` 의 `theme` 값을 바꾸고 `npx sh-ui add tokens` 로 재생성.
+토큰을 커스텀하려면 `sh-ui.config.json` 의 `theme` 값을 바꾸고 `npx sh-ui-cli add tokens` 로 재생성.

@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -112,14 +112,14 @@ export default function SidebarPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add sidebar`,
+            code: `npx sh-ui-cli add sidebar`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add sidebar
+            code: `npx sh-ui-cli add sidebar
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_sidebar.dart → lib/widgets/`,

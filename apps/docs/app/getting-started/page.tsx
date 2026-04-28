@@ -1,7 +1,7 @@
 export const dynamic = "force-static";
 
 import { CodePanel } from "@/components/ui/code-panel";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 
 export default function GettingStarted() {
   return (
@@ -17,13 +17,13 @@ export default function GettingStarted() {
 
       <h2>1. 설정 파일 생성</h2>
       <p>프로젝트 루트에서:</p>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui init`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli init`} />
       <p>
         대화형 프롬프트로 <code>platform</code>(react/flutter), <code>base</code>(neutral/zinc/slate), <code>radius</code>, <code>mode</code>를 선택하면 <code>sh-ui.config.json</code>이 만들어진다.
       </p>
 
       <h2>2. 토큰 + 기본 리셋 설치</h2>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add tokens base`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add tokens base`} />
       <p>
         설정 값으로 치환된 토큰 파일이 생성된다. React는 CSS 변수(<code>tokens.css</code>)와 <code>base.css</code>, Flutter는 Dart 상수(<code>sh_ui_tokens.dart</code>).
       </p>
@@ -32,7 +32,7 @@ export default function GettingStarted() {
       </p>
 
       <h2>3. 컴포넌트 설치</h2>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add button`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add button`} />
       <p>
         컴포넌트 소스가 <code>paths.components</code>로 복사된다. 이 시점부터 <strong>그 코드는 당신의 것</strong>이다 — 자유롭게 수정 가능.
       </p>

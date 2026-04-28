@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Spinner } from "@/components/ui/spinner";
@@ -52,14 +52,14 @@ ShUiSpinner(size: ShUiSpinnerSize.lg)`,
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add spinner`,
+            code: `npx sh-ui-cli add spinner`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add spinner`,
+            code: `npx sh-ui-cli add spinner`,
           },
         ]}
       />
