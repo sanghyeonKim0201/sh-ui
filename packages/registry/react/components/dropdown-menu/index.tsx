@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Menu as BaseMenu } from "@base-ui-components/react/menu";
+import { Menu as BaseMenu } from "@base-ui/react/menu";
 import "./styles.css";
 
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };

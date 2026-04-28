@@ -1,0 +1,47 @@
+.sh-ui-ex-theme-dash {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.sh-ui-ex-theme-dash__toolbar {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+}
+.sh-ui-ex-theme-dash__toggle {
+  font: inherit;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground-muted);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.sh-ui-ex-theme-dash__toggle:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+.sh-ui-ex-theme-dash__toggle[data-active] {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.sh-ui-ex-theme-dash__canvas {
+  flex: 1;
+  overflow: auto;
+}
+
+/* 테마 변주 — scoped CSS var override (전역 토큰을 건드리지 않음) */
+.sh-ui-ex-theme-dash[data-example-theme="cobalt"] {
+  --primary: #4060ff;
+}
+.sh-ui-ex-theme-dash[data-example-theme="mint"] {
+  --primary: #10b981;
+  --radius: 14px;
+}
+.sh-ui-ex-theme-dash[data-example-theme="amber"] {
+  --primary: #f59e0b;
+  --radius: 6px;
+}

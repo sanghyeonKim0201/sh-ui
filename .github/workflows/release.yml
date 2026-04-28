@@ -18,6 +18,15 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0   # live 와 ancestor 비교에 full history 필요
+
+      - name: Verify tag is on live
+        run: |
+          git fetch origin live --no-tags
+          if ! git merge-base --is-ancestor HEAD origin/live; then
+            echo "::error::태그가 live 에 없는 커밋을 가리킵니다. live 머지 후 live 에서 태그를 찍어주세요."
+            exit 1
+          fi
 
       - name: Determine tag
         id: tag

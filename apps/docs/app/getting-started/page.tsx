@@ -11,7 +11,7 @@ export default function GettingStarted() {
 
       <p>
         <strong>새 Next.js 프로젝트부터 시작한다면</strong> <a href="/create">프로젝트 생성</a> 페이지에서
-        <code> npx sh-ui-create</code> 로 FSD 구조 + sh-ui 설정 + 플러그인(Sentry, next-intl)이
+        <code> npx sh-ui-cli create</code> 로 FSD 구조 + sh-ui 설정 + 플러그인(Sentry, next-intl)이
         미리 구성된 템플릿을 쓸 수 있다. 이 페이지는 기존 프로젝트에 수동으로 도입하는 흐름.
       </p>
 

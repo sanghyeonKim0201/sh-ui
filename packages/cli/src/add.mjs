@@ -1,13 +1,39 @@
-import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, resolve, relative } from "node:path";
-import { fileURLToPath } from "node:url";
+import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
-import { buildTokensCss, buildTokensDart } from "../../tokens/build.mjs";
 import { formatUnifiedDiff } from "./diff.mjs";
+import { getRegistryRoot, getTokensRoot, getPeerVersionsPath } from "./paths.mjs";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(__dirname, "../../..");
+/**
+ * `dependencies` 에 적힌 패키지명을 peer-versions.json 의 버전 범위와 결합.
+ * 패키지 자체에 이미 `@version` 이 붙어 있거나 맵에 없으면 그대로 둔다.
+ *
+ * 왜: registry.json 은 deps 를 패키지명만 적어 두고, 실제 호환 버전은
+ * peer-versions.json 가 단일 출처로 관리한다. 이게 없으면 npm install 이
+ * latest 태그를 찾는데, RC 만 있는 패키지(@base-ui-components/react 등)
+ * 에서 ETARGET 으로 실패한다.
+ */
+async function resolveDepVersions(deps, platform) {
+  let map = {};
+  try {
+    const data = JSON.parse(await readFile(getPeerVersionsPath(platform), "utf8"));
+    map = data.versions ?? {};
+  } catch {
+    // peer-versions.json 이 없는 platform 은 그대로 패스 (Flutter 등)
+  }
+  return deps.map((d) => {
+    if (d.includes("@", 1)) return d; // 이미 name@range 형식
+    return map[d] ? `${d}@${map[d]}` : d;
+  });
+}
+
+// tokens/build.mjs 는 모노레포·출고 모드에 따라 위치가 달라서 동적 import.
+async function loadTokensBuilder() {
+  const url = pathToFileURL(resolve(getTokensRoot(), "build.mjs")).href;
+  return import(url);
+}
 
 /** 컬러 출력 가능 여부: TTY + NO_COLOR 미설정. */
 function canUseColor() {
@@ -81,6 +107,7 @@ async function addTokens(config, cwd, diffMode, summary) {
   if (!destRel) throw new Error("paths.tokens 가 설정에 없습니다.");
   const dest = resolve(cwd, destRel);
 
+  const { buildTokensCss, buildTokensDart } = await loadTokensBuilder();
   const content =
     config.platform === "react"
       ? await buildTokensCss(config)
@@ -93,13 +120,10 @@ async function addTokens(config, cwd, diffMode, summary) {
 }
 
 async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary) {
-  const registryPath = resolve(
-    REPO_ROOT,
-    "packages/registry",
-    config.platform,
-    "registry.json",
+  const registryRoot = getRegistryRoot(config.platform);
+  const registry = JSON.parse(
+    await readFile(resolve(registryRoot, "registry.json"), "utf8"),
   );
-  const registry = JSON.parse(await readFile(registryPath, "utf8"));
   const entry = registry.components?.[name];
   if (!entry) {
     throw new Error(
@@ -112,7 +136,7 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   }
 
   for (const file of entry.files) {
-    const src = resolve(REPO_ROOT, "packages/registry", config.platform, file.src);
+    const src = resolve(registryRoot, file.src);
     const dest = resolve(cwd, resolveDest(file.dest, config));
     const content = await readFile(src, "utf8");
     const result = await writeOrDiff({ dest, content, cwd, diffMode, summary });
@@ -208,22 +232,24 @@ export async function add({ cwd, names, skipInstall = false, diffMode = false })
     return;
   }
 
+  const versioned = await resolveDepVersions(missing, config.platform);
+
   if (skipInstall) {
     const pm = detectPackageManager(cwd);
     const addCmd = pm === "npm" ? "install" : "add";
     console.log(
-      `\n  ⚠ 외부 패키지 필요. 다음을 실행하세요:\n    ${pm} ${addCmd} ${missing.join(" ")}`,
+      `\n  ⚠ 외부 패키지 필요. 다음을 실행하세요:\n    ${pm} ${addCmd} ${versioned.join(" ")}`,
     );
     return;
   }
 
   const pm = detectPackageManager(cwd);
   try {
-    await runInstall(pm, missing, cwd);
+    await runInstall(pm, versioned, cwd);
   } catch (err) {
     const addCmd = pm === "npm" ? "install" : "add";
     console.error(
-      `\n✗ 자동 설치 실패 (${err.message}). 수동으로 실행하세요:\n    ${pm} ${addCmd} ${missing.join(" ")}`,
+      `\n✗ 자동 설치 실패 (${err.message}). 수동으로 실행하세요:\n    ${pm} ${addCmd} ${versioned.join(" ")}`,
     );
     throw err;
   }

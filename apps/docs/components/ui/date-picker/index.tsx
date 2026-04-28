@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Popover as BasePopover } from "@base-ui-components/react/popover";
+import { Popover as BasePopover } from "@base-ui/react/popover";
 import "./styles.css";
 
 /* ───────── Helpers ───────── */
@@ -56,7 +56,9 @@ function getDaysGrid(year: number, month: number) {
 /* ───────── Types ───────── */
 
 export interface DateRange {
+  /** 시작일 (포함). */
   from: Date;
+  /** 종료일 (포함). */
   to: Date;
 }
 
@@ -291,30 +293,53 @@ function Calendar({
 /* ───────── DatePicker Root ───────── */
 
 export interface DatePickerProps {
+  /** 제어 모드 선택값. `undefined`는 미선택. */
   value?: Date;
+  /** 비제어 모드 초기값. */
   defaultValue?: Date;
+  /** 값 변경 콜백. 미선택 상태로 전환되면 `undefined`. */
   onValueChange?: (date: Date | undefined) => void;
+  /**
+   * 트리거에 표시할 문자열 포맷터.
+   * @default (d) => "YYYY-MM-DD"
+   */
   formatDate?: (date: Date) => string;
+  /** 선택 가능 최소 날짜 (포함). 이전 날짜는 비활성. */
   min?: Date;
+  /** 선택 가능 최대 날짜 (포함). 이후 날짜는 비활성. */
   max?: Date;
+  /**
+   * 미선택 상태의 트리거 텍스트.
+   * @default "날짜 선택"
+   */
   placeholder?: string;
+  /** 비활성. 트리거 클릭·키보드 모두 차단. */
   disabled?: boolean;
+  /** 읽기 전용. 트리거 표시는 유지하되 popover가 열리지 않는다. */
   readOnly?: boolean;
+  /** invalid 상태. 트리거 보더가 위험색으로 바뀌고 스크린리더에 오류로 노출. */
   "aria-invalid"?: boolean | "true";
   /**
-   * className은 children이 없을 때(기본 레이아웃 모드) Trigger로 전달된다.
-   * 사용자 조립 모드(children 제공)에서는 DatePickerTrigger에 직접 className을 전달한다.
+   * children 없을 때(기본 레이아웃) Trigger로 전달된다.
+   * children 조립 모드에서는 `DatePickerTrigger`에 직접 className을 넘긴다.
    */
   className?: string;
-  /** 날짜 선택 시 팝오버를 자동으로 닫을지 여부. 기본 true. */
+  /**
+   * 날짜 선택 시 popover 자동 닫힘.
+   * @default true
+   */
   closeOnSelect?: boolean;
   /**
-   * 조립 모드: children 제공 시 Trigger/Content/Calendar/Footer를 사용자가 조립.
-   * 생략 시 기본 레이아웃(Trigger + Content + Calendar)이 렌더된다.
+   * compound 모드. 미지정 시 기본 레이아웃(Trigger + Content + Calendar)이 자동 렌더된다.
+   * 직접 조립하려면 `DatePickerTrigger`/`DatePickerContent`/`DatePickerCalendar`/`DatePickerFooter`를 자식으로 넘긴다.
    */
   children?: React.ReactNode;
 }
 
+/**
+ * 단일 날짜 선택. 트리거 클릭 시 popover 캘린더가 열리고 키보드 화살표로 이동한다.
+ * children을 생략하면 기본 레이아웃이 자동 렌더되며, 직접 조립하려면 DatePickerTrigger/Content/Calendar/Footer를 사용한다.
+ */
 export function DatePicker({
   value,
   defaultValue,
@@ -406,16 +431,30 @@ export function DatePicker({
 
 export interface DatePickerTriggerProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  /** 커스텀 트리거 렌더. value/formatted/placeholder를 제공한다. */
+  /**
+   * 트리거 본문. 직접 노드를 넘기거나, 함수를 넘기면 현재 상태를 받아 직접 렌더할 수 있다.
+   *
+   * @example
+   * <DatePickerTrigger>
+   *   {({ formatted, placeholder }) => <span>{formatted ?? placeholder}</span>}
+   * </DatePickerTrigger>
+   */
   children?:
     | React.ReactNode
     | ((state: {
+        /** 현재 선택된 Date. 미선택 시 `undefined`. */
         value: Date | undefined;
+        /** `formatDate`로 포맷된 문자열. 미선택 시 `undefined`. */
         formatted: string | undefined;
+        /** DatePicker `placeholder` prop. */
         placeholder: string;
       }) => React.ReactNode);
 }
 
+/**
+ * 캘린더 popover를 여는 트리거 버튼. children에 함수를 넘기면 현재 값/포맷 문자열/placeholder를
+ * 받아 직접 렌더할 수 있다.
+ */
 export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerTriggerProps>(
   function DatePickerTrigger({ className, children, onClick, ...props }, ref) {
     const ctx = useDatePickerContext("DatePickerTrigger");
@@ -471,11 +510,24 @@ export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerT
 export interface DatePickerContentProps
   extends Omit<React.ComponentPropsWithoutRef<typeof BasePopover.Popup>, "className"> {
   className?: string;
+  /**
+   * Trigger와 popover 간격(px).
+   * @default 4
+   */
   sideOffset?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["sideOffset"];
+  /**
+   * Trigger 기준 popover 방향. 공간 부족 시 자동 반대편으로 뒤집힘.
+   * @default "bottom"
+   */
   side?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["side"];
+  /**
+   * Trigger 축에서의 정렬.
+   * @default "start"
+   */
   align?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["align"];
 }
 
+/** 캘린더 popover 본문. portal로 마운트되며 `disabled`/`readOnly`이면 렌더되지 않는다. */
 export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerContentProps>(
   function DatePickerContent(
     { className, children, sideOffset = 4, side = "bottom", align = "start", ...props },
@@ -507,6 +559,7 @@ export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerCont
 
 /* ───────── DatePickerCalendar ───────── */
 
+/** 월 단위 날짜 그리드. 화살표 키 이동, Home/End, Enter/Space 선택을 지원한다. */
 export function DatePickerCalendar() {
   const ctx = useDatePickerContext("DatePickerCalendar");
 
@@ -531,6 +584,7 @@ export function DatePickerCalendar() {
 
 export interface DatePickerFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+/** popover 하단 액션 영역. "오늘", "지우기" 같은 커스텀 버튼을 두는 슬롯. */
 export const DatePickerFooter = React.forwardRef<HTMLDivElement, DatePickerFooterProps>(
   function DatePickerFooter({ className, ...props }, ref) {
     return (
@@ -545,6 +599,7 @@ export const DatePickerFooter = React.forwardRef<HTMLDivElement, DatePickerFoote
 
 /* ───────── useDatePicker (for custom footer actions) ───────── */
 
+/** 커스텀 footer 액션에서 값/open 상태를 직접 다룰 때 사용. DatePicker 내부에서만 호출 가능. */
 export function useDatePicker() {
   const ctx = useDatePickerContext("useDatePicker");
   return {
@@ -572,13 +627,24 @@ export interface DateRangePickerProps {
   min?: Date;
   /** 선택 가능 최대 날짜. */
   max?: Date;
+  /**
+   * 미선택 상태의 트리거 텍스트.
+   * @default "시작일 ~ 종료일"
+   */
   placeholder?: string;
+  /** 비활성. */
   disabled?: boolean;
+  /** 읽기 전용. popover가 열리지 않는다. */
   readOnly?: boolean;
+  /** invalid 상태. */
   "aria-invalid"?: boolean | "true";
   className?: string;
 }
 
+/**
+ * 시작·종료일을 선택하는 범위 picker. 첫 클릭으로 시작일, 두 번째 클릭으로 종료일이 결정된다.
+ * 호버 시 미리보기 범위가 시각화되고 두 번째 선택과 동시에 popover가 닫힌다.
+ */
 export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePickerProps>(
   function DateRangePicker(
     {

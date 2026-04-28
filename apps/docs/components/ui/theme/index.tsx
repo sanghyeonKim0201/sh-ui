@@ -17,6 +17,7 @@ type ThemeContextValue = {
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
+/** 현재 테마와 setter를 반환한다. ThemeProvider 안에서만 호출 가능. */
 export function useTheme() {
   const ctx = React.useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme must be used within a ThemeProvider.");
@@ -26,17 +27,31 @@ export function useTheme() {
 /* ───────────── Provider ───────────── */
 
 export interface ThemeProviderProps {
-  /** SSR 시 쿠키에서 읽은 초기 테마.
-   *  예(Next.js):
-   *    const t = (await cookies()).get("sh-ui-theme")?.value;
-   *    <ThemeProvider defaultTheme={t === "dark" ? "dark" : "light"}>
+  /**
+   * SSR 시 쿠키에서 읽은 초기 테마. 클라이언트 첫 렌더와 SSR 마크업이 일치하도록
+   * 서버에서 쿠키를 읽어 주입해야 hydration mismatch가 없다.
+   *
+   * @default "light"
+   * @example
+   * // Next.js App Router
+   * const t = (await cookies()).get("sh-ui-theme")?.value;
+   * <ThemeProvider defaultTheme={t === "dark" ? "dark" : "light"}>
    */
   defaultTheme?: Theme;
+  /**
+   * 외부에서 테마를 제어할 때 사용. 지정하면 내부 state 대신 이 값이 우선한다.
+   * 보통 `defaultTheme` 비제어 모드로 충분.
+   */
   theme?: Theme;
+  /** 테마 변경 콜백. 제어 모드에서는 이 콜백 안에서 외부 상태를 업데이트해야 한다. */
   onThemeChange?: (theme: Theme) => void;
   children: React.ReactNode;
 }
 
+/**
+ * 다크/라이트 테마 컨텍스트와 `<html class="dark">` 토글, 쿠키 영속화를 담당하는 Provider.
+ * SSR 하이드레이션 시프트를 피하려면 서버에서 쿠키를 읽어 `defaultTheme`로 주입할 것.
+ */
 export function ThemeProvider({
   defaultTheme = "light",
   theme: themeProp,

@@ -15,7 +15,7 @@ export function CreateProjectFab({ onClick }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className="sh-ui-create-fab"
+      className="sh-ui-fab"
       style={{
         position: "fixed",
         bottom: "1.5rem",

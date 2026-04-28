@@ -3,6 +3,145 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.25.0",
+      "date": "2026-04-28",
+      "title": "Next.js 템플릿에 http 골격 + BFF proxy 추가 — IS_SERVER 분기 제거",
+      "type": "minor",
+      "highlights": [
+        "nextjs-app · nextjs-standalone 템플릿에 axios 단일 인스턴스(src/shared/api/http.ts)와 BFF 라우트 핸들러(app/api/proxy/[...path]/route.ts) 추가 — 클라/서버 모두 /api/proxy 경유, IS_SERVER 분기 없음",
+        "인증 · 토큰 refresh · Sentry · 로그인 쿠키 특례 처리는 의도적으로 제외해 인증 비종속 골격으로 유지 — 프로젝트별 추가는 apps/docs/recipes 가이드로 분리",
+        "레시피 9종 추가 (apps/docs/app/recipes/): api-layer, auth, file-upload, tanstack-query, async-boundary, i18n, sentry, testing, deployment",
+        "사이드바에 '레시피' 진입점 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.25.0"
+    },
+    {
+      "version": "0.24.0",
+      "date": "2026-04-28",
+      "title": "Next.js 템플릿 RootLayout 분리 — app/layout.tsx 는 thin wrapper",
+      "type": "minor",
+      "highlights": [
+        "nextjs-standalone / nextjs-app 모두 src/app/layouts/RootLayout.tsx 로 layout 본체 분리, app/layout.tsx 는 metadata + thin wrapper 만 유지",
+        "next-intl 플러그인 적용 시에도 동일 패턴 — RootLayout 이 locale 검증·hasLocale·notFound 까지 담당하고 app/[locale]/layout.tsx 는 params forward 만",
+        "사용자가 layout 로직을 확장할 때 entrypoint(layout.tsx) 와 컴포넌트(RootLayout) 책임이 분리돼 FSD 관습에 맞게 정렬"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.24.0"
+    },
+    {
+      "version": "0.23.1",
+      "date": "2026-04-28",
+      "title": "sh-ui-create 패키지 완전 삭제 — 단일 sh-ui-cli",
+      "type": "patch",
+      "highlights": [
+        "베타 단계라 sh-ui-create 사용자가 없으므로 deprecate shim 도 폐기 — packages/create 디렉토리 + npm 의 sh-ui-create 패키지 둘 다 정리",
+        "publish workflow 매트릭스에서 create 제거 — 앞으로 sh-ui-cli 만 발행",
+        "문서 일괄 갱신: README, getting-started, CLI 레퍼런스, 플레이그라운드 명령 컴포저 모두 `npx sh-ui-cli create` 로 통일"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.23.1"
+    },
+    {
+      "version": "0.23.0",
+      "date": "2026-04-28",
+      "title": "sh-ui-create 가 sh-ui-cli 로 통합 — 단일 CLI",
+      "type": "minor",
+      "highlights": [
+        "프로젝트 스캐폴드가 sh-ui-cli 의 새 서브커맨드로 흡수: `npx sh-ui-cli create my-app --platform next --structure standalone --yes`",
+        "MCP 에 `sh_ui_create_project` 툴 신규 — IDE-내 AI 가 Bash 우회 없이 MCP 만으로 새 프로젝트 스캐폴드 가능. force/cwd/plugins/theme 모두 인자로 노출",
+        "MCP instructions 가 외부 CLI 안내 대신 통합된 명령·새 툴을 가리키도록 정리 — 단일 진실원천, 드리프트 위험 제거",
+        "기존 `sh-ui-create` 패키지는 v0.20.0 deprecated shim 으로 유지 — `npx sh-ui-create` 호출은 자동으로 `npx sh-ui-cli create` 로 위임되어 호환 유지",
+        "내부: 템플릿/스캐폴드 로직/스캐폴드 테스트(52건) 가 packages/cli/{templates,src/create,test}/ 로 이동, paths.mjs 에 getTemplatesRoot() 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.23.0"
+    },
+    {
+      "version": "0.22.2",
+      "date": "2026-04-28",
+      "title": "에이전트 UX — MCP 라우팅 + sh-ui-create 비대화형 가드",
+      "type": "patch",
+      "highlights": [
+        "MCP 서버 initialize 응답에 instructions 추가 — IDE-내 AI 가 빈 폴더/새 프로젝트 요청 시 create-next-app + sh_ui_init 우회 대신 npx sh-ui-create 로 바로 가도록 안내",
+        "sh-ui-create --help / -h 추가 — 누락 플래그 안내 + 비대화형 사용 예시 출력",
+        "sh-ui-create 가 TTY 없는 환경에서 필수 플래그(--platform, --structure, name) 누락 시 prompt 대신 즉시 에러로 종료 — 에이전트/CI 가 stuck 에 빠지지 않음",
+        "sh-ui-create 의 --plugins 는 미지정 시 prompt 없이 빈 배열 기본값 — 플러그인은 --plugins sentry,next-intl 로 명시 활성화"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.2"
+    },
+    {
+      "version": "0.22.1",
+      "date": "2026-04-27",
+      "title": "mcp init claude-code user 스코프 경로 수정",
+      "type": "patch",
+      "highlights": [
+        "sh-ui mcp init --client claude-code --scope user 가 잘못된 경로(~/.claude/mcp.json)에 쓰던 문제 수정 — Claude Code 가 실제로 읽지 않는 파일이라 등록 후에도 /mcp 화면에 sh-ui 가 안 보였음",
+        "올바른 경로 ~/.claude.json (사용자 settings 전체 파일) 로 머지 — mcpServers 외 projects·history 등 다른 키는 그대로 보존",
+        "0.22.0 으로 user 스코프 등록한 사용자는 새 버전으로 다시 실행 후 ~/.claude/mcp.json 수동 삭제"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.1"
+    },
+    {
+      "version": "0.22.0",
+      "date": "2026-04-27",
+      "title": "sh-ui mcp init — IDE MCP 설정 자동 등록",
+      "type": "minor",
+      "highlights": [
+        "sh-ui mcp init --client <claude-code|cursor|claude-desktop> 추가 — IDE 별 MCP 설정 파일을 자동으로 찾아 sh-ui 엔트리 머지",
+        "스코프 분기 — 기본 project(.mcp.json / .cursor/mcp.json), --scope user 로 전역(~/.claude/mcp.json 등) 선택 가능. claude-desktop 은 user 전용(OS 별 경로 자동 분기)",
+        "기존 JSON 보존 — 다른 MCP 서버 엔트리·기타 키를 건드리지 않고 sh-ui 만 머지·갱신",
+        "수동 JSON 편집 없이 npx sh-ui mcp init --client cursor 한 줄로 끝"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.0"
+    },
+    {
+      "version": "0.21.2",
+      "date": "2026-04-27",
+      "title": "@base-ui-components/react → @base-ui/react 마이그레이션",
+      "type": "patch",
+      "highlights": [
+        "Base UI 패키지명 변경에 대응 — @base-ui-components/react (deprecated, RC만 존재) → @base-ui/react ^1.4.1 (stable). 17개 컴포넌트 + docs 듀얼 카피 + registry.json + peer-versions.json 일괄 갱신",
+        "deprecation 워닝 제거 — 신규 사용자가 sh-ui add 시 deprecated 패키지 경고 없이 stable 1.4.1 자동 설치",
+        "submodule 경로(@base-ui/react/dialog 등)는 동일하므로 사용자 코드 호환성 유지"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.21.2"
+    },
+    {
+      "version": "0.21.1",
+      "date": "2026-04-27",
+      "title": "외부 패키지 자동 설치 버전 해석",
+      "type": "patch",
+      "highlights": [
+        "registry/react/peer-versions.json — registry.json deps 의 패키지명을 실제 버전 범위로 매핑하는 단일 출처 추가",
+        "sh-ui add 가 npm install <name>@<range> 로 호출 — RC 만 있는 패키지(@base-ui-components/react 등) 자동 설치 시 latest 못 찾아 ETARGET 으로 실패하던 사전 이슈 수정",
+        "패키지명에 이미 @version 이 포함돼 있거나 peer-versions 맵에 없는 경우는 그대로 통과 (Flutter·기타 platform 호환)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.21.1"
+    },
+    {
+      "version": "0.21.0",
+      "date": "2026-04-27",
+      "title": "MCP 서버 + standalone CLI — AI 친화 세팅",
+      "type": "minor",
+      "highlights": [
+        "sh-ui mcp 서브커맨드 — IDE-내 AI(Claude Code, Cursor 등)가 stdio MCP 로 컴포넌트 검색·설치·삭제. 등록 한 줄(`npx -y sh-ui-cli mcp`)로 AI 가 sh-ui 를 자동 인지",
+        "MCP 툴 7개 — describe_init / init / list_components / get_component / add_component / remove_component / get_changelog. 자연어 의도(\"다크 모던\")를 enum 값으로 매핑하는 describe_init 포함",
+        "출고 모드 데이터 번들 — 그동안 `npx sh-ui-cli`가 모노레포 밖에서 동작하지 않던 문제 수정. prepublishOnly 가 registry/tokens/summaries/versions 를 패키지에 포함",
+        "paths.mjs 헬퍼 — 모노레포·출고 모드 자동 감지로 add/list/remove 가 양쪽에서 동일하게 동작"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.21.0"
+    },
+    {
+      "version": "0.20.1",
+      "date": "2026-04-27",
+      "title": "TSDoc·dartdoc 보강 — IDE 호버 안내 강화",
+      "type": "patch",
+      "highlights": [
+        "React 24개 컴포넌트의 prop·옵션별 한글 TSDoc 추가 — IDE 호버에서 variant/size/orientation 등 enum 옵션별 의미가 즉시 표시",
+        "Flutter 4개 위젯(button·header·sidebar·app_shell)의 클래스·필드 dartdoc 보강 — `[paramName]` 참조와 옵션 설명 정리",
+        "isValidBRN·getPaginationRange·yupSchema 등 유틸 함수에 @param·@returns·@example 추가 — 자동완성 시그니처 헬프에서 인자 의미 안내",
+        "런타임 동작 변경 없음 (docs only). registry와 docs/showcase 듀얼 카피 동기화"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.20.1"
+    },
+    {
       "version": "0.20.0",
       "date": "2026-04-23",
       "title": "Form 기본 레이아웃 + 루트 컴포넌트 style/className 개방",

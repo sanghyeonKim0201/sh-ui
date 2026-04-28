@@ -8,9 +8,12 @@ import {
   BrushIcon,
   FolderPlusIcon,
   HistoryIcon,
+  LayoutTemplateIcon,
   PaletteIcon,
+  PlugIcon,
   RocketIcon,
   TerminalIcon,
+  WrenchIcon,
   type LucideIcon,
 } from "lucide-react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
@@ -38,9 +41,12 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "시작하기", href: "/getting-started", icon: RocketIcon },
   { title: "프로젝트 생성", href: "/create", icon: FolderPlusIcon },
   { title: "CLI", href: "/cli", icon: TerminalIcon },
+  { title: "MCP (AI)", href: "/mcp", icon: PlugIcon },
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
   { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
+  { title: "레시피", href: "/recipes", icon: WrenchIcon },
+  { title: "실전 예제", href: "/examples", icon: LayoutTemplateIcon },
   { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
 ];
 

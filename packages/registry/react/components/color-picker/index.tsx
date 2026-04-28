@@ -20,15 +20,18 @@ export interface ColorPickerProps
     React.HTMLAttributes<HTMLDivElement>,
     "onChange" | "defaultValue" | "children"
   > {
-  /** 현재 색상 (hex, e.g. "#FF8800"). */
+  /** 제어 모드 색상값 (hex, 예: `"#FF8800"`). 6자리 / 3자리 / `#` 생략 모두 허용. */
   value?: string;
-  /** 변경 콜백. 항상 6자리 대문자 hex. */
+  /** 색상 변경 콜백. 항상 6자리 대문자 hex(`"#RRGGBB"`)로 통일되어 전달된다. */
   onChange?: (hex: string) => void;
-  /** 비제어 모드 초기값. */
+  /**
+   * 비제어 모드 초기값.
+   * @default "#000000"
+   */
   defaultValue?: string;
   /**
-   * children 없이 렌더하면 기본 compound 레이아웃
-   * (Saturation + Hue + Hex)이 자동 렌더된다. 백워드 호환용.
+   * compound 모드. 미지정 시 기본 레이아웃(Saturation + Hue + Hex)이 자동 렌더된다.
+   * 직접 조립하려면 `ColorPickerSaturation`/`Hue`/`Alpha`/`Hex`/`Swatches`를 자식으로 넘긴다.
    */
   children?: React.ReactNode;
 }
@@ -146,6 +149,11 @@ function useColorPicker() {
 
 /* ───────────── root ───────────── */
 
+/**
+ * HSV 모델 기반 색상 선택기. children을 생략하면 기본 레이아웃(SV + Hue + Hex)이 자동 렌더되고,
+ * 직접 조립하려면 ColorPickerSaturation/Hue/Alpha/Hex/Swatches를 자식으로 넘긴다.
+ * 외부 노출값은 항상 6자리 대문자 hex(`#RRGGBB`).
+ */
 export function ColorPicker({
   value: valueProp,
   onChange,
@@ -246,6 +254,7 @@ export function ColorPicker({
 export interface ColorPickerSaturationProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onPointerDown"> {}
 
+/** 채도(S)와 명도(V)를 동시에 조절하는 2D 박스. 포인터 드래그로 조작. */
 export function ColorPickerSaturation({
   className,
   style,
@@ -288,6 +297,7 @@ export function ColorPickerSaturation({
 export interface ColorPickerHueProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onPointerDown"> {}
 
+/** 색상(H, 0~360°) 슬라이더. 무지개 그라데이션 위에 thumb이 위치. */
 export function ColorPickerHue({ className, ...rest }: ColorPickerHueProps) {
   const { hsva, setHsv } = useColorPicker();
   const drag = useDrag((e, el) => {
@@ -318,6 +328,7 @@ export function ColorPickerHue({ className, ...rest }: ColorPickerHueProps) {
 export interface ColorPickerAlphaProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onPointerDown"> {}
 
+/** 투명도(A, 0~100%) 슬라이더. 외부에 알파를 노출하지 않는 hex 모드와는 시각 표시용. */
 export function ColorPickerAlpha({ className, style, ...rest }: ColorPickerAlphaProps) {
   const { hsva, hex, setAlpha } = useColorPicker();
   const drag = useDrag((e, el) => {
@@ -353,10 +364,14 @@ export function ColorPickerAlpha({ className, style, ...rest }: ColorPickerAlpha
 
 export interface ColorPickerHexProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
-  /** 왼쪽 swatch 표시 여부. 기본 true. */
+  /**
+   * input 좌측에 현재 색상 미리보기 swatch 표시 여부.
+   * @default true
+   */
   showSwatch?: boolean;
 }
 
+/** Hex 직접 입력 + 좌측 swatch. blur·Enter 시 검증·커밋되며 잘못된 값은 이전 값으로 되돌린다. */
 export function ColorPickerHex({
   className,
   showSwatch = true,
@@ -409,9 +424,14 @@ export function ColorPickerHex({
 
 export interface ColorPickerSwatchesProps
   extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * 표시할 hex 색상 목록. 항목 클릭 시 해당 색상으로 즉시 commit된다.
+   * 형식은 `"#RRGGBB"` 권장 (입력 시 대소문자는 자동 정규화).
+   */
   colors: string[];
 }
 
+/** 미리 정의된 색상 팔레트 그리드. 각 항목 클릭 시 그 색상으로 즉시 커밋한다. */
 export function ColorPickerSwatches({
   className,
   colors,

@@ -1,20 +1,39 @@
 # sh-ui 작업 규칙
 
-공통 규칙은 `.claude/rules/` 서브모듈(v1.3.0)을 따른다. 이 파일은
+공통 규칙은 `.ai/rules/` 서브모듈(v1.6.0+)을 따른다. 이 파일은
 **이 레포에만 적용되는 관용과 오버라이드**만 기록한다.
+
+## 적용 규칙
+
+서브모듈에 체크아웃된 규칙 파일 링크. 본문은 복사하지 않고, 변경은 원본 저장소(`.ai/rules`)에서 수정한다.
+
+- [공통 규칙](.ai/rules/common/common.md)
+- [gstack 사용 규칙](.ai/rules/gstack/gstack.md)
+- [Next.js 네이밍](.ai/rules/nextjs/naming.md)
+- [Next.js 설계 원칙](.ai/rules/nextjs/design-principles.md)
+- [Next.js 관심사 분리](.ai/rules/nextjs/separation-of-concerns.md)
+- [Next.js 데이터 페칭](.ai/rules/nextjs/data-fetching.md) — 템플릿 전용
+- [Next.js FSD 통합](.ai/rules/nextjs/fsd-integration.md) — 템플릿 전용
+- [FSD 아키텍처](.ai/rules/fsd/fsd-architecture.md) — 템플릿 전용
+- [FSD 관심사 분리](.ai/rules/fsd/separation-of-concerns.md) — 템플릿 전용
+- [UI 접근성](.ai/rules/ui/accessibility.md)
+- [UI 컴포넌트 API](.ai/rules/ui/component-api.md)
+- [UI 컴포지션](.ai/rules/ui/composition.md)
+- [UI 디자인 토큰](.ai/rules/ui/design-tokens.md)
+- [UI 상태](.ai/rules/ui/ui-states.md)
 
 ## 외부 규칙 적용 범위
 
-6개 폴더 각각이 이 레포에서 의미하는 범위:
+각 폴더가 이 레포에서 의미하는 범위:
 
 | 폴더 | 적용 범위 |
 |---|---|
 | `common/` | 전체 — Git·커밋·버전 컨벤션, 설계 원칙, 네이밍 |
-| `gstack/` | 전체 — 슬래시 커맨드 워크플로우(프로세스 규칙) |
-| `superpowers/` | 전체 — superpowers 플러그인 스킬 사용 시기와 gstack과의 역할 분담 |
+| `gstack/` | 전체 — 슬래시 커맨드 워크플로우(신호 기반 호출 트리거) |
 | `ui/` | 전체 — sh-ui 컴포넌트(React + Flutter) 설계 기준 |
 | `nextjs/design-principles.md`, `naming.md`, `separation-of-concerns.md` | 부분 — `apps/docs` 및 sh-ui 컴포넌트 TS 코드 |
-| `nextjs/data-fetching.md`, `nextjs/fsd-integration.md`, `fsd/*` | **템플릿 전용** — `packages/create/templates/` 가 생성하는 **사용자 프로젝트** 설계 기준. sh-ui 코어(apps/docs, packages/*)에는 직접 적용하지 않음 |
+| `nextjs/data-fetching.md`, `nextjs/fsd-integration.md`, `fsd/*` | **템플릿 전용** — `packages/cli/templates/` 가 생성하는 **사용자 프로젝트** 설계 기준. sh-ui 코어(apps/docs, packages/*)에는 직접 적용하지 않음 |
+| `templates/` | 미사용 — 신규 프로젝트 엔트리포인트(`AGENTS.md`/`CLAUDE.md` 등) 시작용 템플릿. 이 레포는 자체 `CLAUDE.md`를 유지하므로 직접 적용하지 않음 |
 
 ## sh-ui 특화 오버라이드
 
@@ -25,7 +44,7 @@
 `nextjs/design-principles.md` 의 "UI 설계" 섹션은 shadcn/ui 를 쓰라고 하지만,
 **sh-ui 자체가 shadcn 계열 대체재**이므로 이 레포에서는:
 
-- `apps/docs`, `apps/showcase` 및 `packages/create/templates/` 의 생성물은 **sh-ui 컴포넌트 우선** 사용
+- `apps/docs`, `apps/showcase` 및 `packages/cli/templates/` 의 생성물은 **sh-ui 컴포넌트 우선** 사용
 - 위 섹션의 "Base UI 기반 (`@base-ui-components/react`)" 원칙은 그대로 유효 — sh-ui 컴포넌트가 실제로 Base UI 위에 빌드됨
 - 네이티브 HTML 요소(select, input, dialog 등) 직접 구현 금지 원칙도 그대로
 
@@ -39,9 +58,13 @@
 
 ### 3. 브랜치 정책
 
-`common/common.md` 은 "`live` 직접 push 금지, PR 경유"를 정책으로 제시하지만,
-이 레포는 현재 **`dev` 브랜치를 작업 브랜치로 두고 직접 push**하며, `live` 머지
-시점에만 PR을 쓴다. `dev` 는 느슨하게, `live` 는 엄격히 — 이 차등을 유지.
+`dev` 는 작업 브랜치 — 직접 push OK. `live` 는 **릴리즈 게이트** — PR 경유로만
+머지하고, **태그(`vX.Y.Z`)는 항상 `live` 에서 찍는다**. publish.yml/release.yml
+이 태그 트리거이므로, 태그를 live 에서 찍는다는 건 곧 "live 에 들어간 코드만
+npm 으로 나간다"는 의미. dev 에 직접 푸시한 커밋이 live PR 을 거치지 않고 npm
+으로 직행하지 않도록 하는 게 이 정책의 핵심.
+
+`dev` 는 느슨하게, `live` 는 엄격히.
 
 ## 변경 내역(패치노트) 자동 반영
 
@@ -52,7 +75,7 @@ showcase(Flutter)가 그 파일을 읽어 "변경 내역" 페이지를 렌더한
 
 ### 트리거 — 언제 엔트리를 추가하는가
 
-공통 규칙(`.claude/rules/common/common.md`)의 버전 범프 기준과 동일:
+공통 규칙(`.ai/rules/common/common.md`)의 버전 범프 기준과 동일:
 
 | 변경 성격 | 버전 | versions.json |
 |---|---|---|
@@ -100,11 +123,19 @@ showcase(Flutter)가 그 파일을 읽어 "변경 내역" 페이지를 렌더한
 2. `packages/changelog/versions.json` — 새 엔트리 prepend
 3. (CLI 변경이면) `packages/cli/package.json` version 필드도 동기화
 
-이후 순서:
-1. `git commit` → dev 푸시
-2. `git tag vX.Y.Z` → 태그 푸시
-3. `gh release create vX.Y.Z ...` — 본문은 versions.json의 `highlights`보다
-   풍부하게. 제목은 `"vX.Y.Z — {title}"` 형식
+이후 순서 (**dev → PR → live → tag** 가 핵심):
+
+1. `git commit` → `git push origin dev`
+2. `gh pr create --base live --head dev --title "release: vX.Y.Z — {title}"` —
+   본문은 versions.json 의 `highlights` 그대로 옮겨도 OK
+3. PR CI 그린 확인 → `gh pr merge --squash` (또는 머지 커밋 — 레포 관행에 맞게)
+4. `git checkout live && git pull` → `git tag vX.Y.Z && git push origin vX.Y.Z`
+5. 태그 푸시가 publish.yml(npm publish) + release.yml(GH Release 자동 생성)을
+   동시에 발동시킨다. release.yml 이 versions.json 의 `highlights` 로 본문을
+   자동 생성하므로 별도 `gh release create` 는 불필요. 더 풍부한 본문이 필요하면
+   생성 후 `gh release edit` 로 추가.
+6. `git checkout dev && git merge live` (선택) — live 의 머지 커밋을 dev 에
+   되돌려 두 브랜치 동기화
 
 ### Claude가 이 규칙을 적용할 때
 
@@ -113,9 +144,11 @@ showcase(Flutter)가 그 파일을 읽어 "변경 내역" 페이지를 렌더한
 - 구현 → 테스트 → `pnpm tsc --noEmit` 통과 확인
 - `versions.json`에 엔트리를 **prepend**
 - 커밋을 **한 번에** 만들고 (소스 + versions.json + 필요 시 CLI package.json)
-- 태그 + 릴리즈 생성까지 한 세션 내에 마친다
+- dev 푸시 → live PR → 머지 → live 에서 태그까지 한 세션 내에 마친다
+- **dev 에서 직접 태그 찍는 것 금지** — 항상 live 머지 후 live 에서 태그
 
 사용자가 "그냥 저장만" / "커밋하지 마" 같이 명시적으로 멈추라고 하면 물론 중단.
+PR 머지 권한이나 셀프머지가 막혀 있으면 사용자에게 머지 시점을 물어보고 대기.
 
 ### 예외 — 엔트리를 추가하지 않는 경우
 
@@ -143,3 +176,23 @@ Flutter 탭을 모두 제공한다. Flutter 위젯이 없는 컴포넌트(CodePa
 
 `apps/showcase/assets/versions.json`은 `packages/changelog/versions.json`의
 심볼릭 링크(mode 120000)다. versions.json만 수정하면 양쪽 앱에 자동 반영.
+
+## Skill routing
+
+When the user's request matches an available skill, ALWAYS invoke it using the Skill
+tool as your FIRST action. Do NOT answer directly, do NOT use other tools first.
+The skill has specialized workflows that produce better results than ad-hoc answers.
+
+Key routing rules:
+- Product ideas, "is this worth building", brainstorming → invoke office-hours
+- Bugs, errors, "why is this broken", 500 errors → invoke investigate
+- Ship, deploy, push, create PR → invoke ship
+- QA, test the site, find bugs → invoke qa
+- Code review, check my diff → invoke review
+- Update docs after shipping → invoke document-release
+- Weekly retro → invoke retro
+- Design system, brand → invoke design-consultation
+- Visual audit, design polish → invoke design-review
+- Architecture review → invoke plan-eng-review
+- Save progress, checkpoint, resume → invoke checkpoint
+- Code quality, health check → invoke health

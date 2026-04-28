@@ -85,7 +85,7 @@ export default function TabsPage() {
       </p>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui-components/react` },
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui/react` },
           { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `# 별도 의존성 없음 (sh_ui_tokens.dart 필요)` },
         ]}
       />

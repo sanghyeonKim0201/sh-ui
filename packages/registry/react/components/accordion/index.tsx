@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Accordion as BaseAccordion } from "@base-ui-components/react/accordion";
+import { Accordion as BaseAccordion } from "@base-ui/react/accordion";
 import "./styles.css";
 
 function cx(...args: (string | undefined | false)[]) {

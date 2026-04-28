@@ -14,9 +14,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [create, cli]
+        package: [cli]
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0   # live 와 ancestor 비교에 full history 필요
+
+      - name: Verify tag is on live
+        run: |
+          git fetch origin live --no-tags
+          if ! git merge-base --is-ancestor HEAD origin/live; then
+            echo "::error::태그 ${GITHUB_REF#refs/tags/} 가 live 에 없는 커밋을 가리킵니다. live 머지 후 live 에서 태그를 찍어주세요."
+            exit 1
+          fi
 
       - uses: pnpm/action-setup@v5
         with:

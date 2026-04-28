@@ -10,6 +10,10 @@ function cx(...args: (string | undefined | false | null)[]) {
  * 현재 페이지 링크에 aria-current="page"를 부여해 스크린리더가 위치를 읽게 한다.
  */
 
+/**
+ * 페이지 분할 내비게이션의 시맨틱 컨테이너(`<nav aria-label="Pagination">`).
+ * 자식 구조: PaginationContent > PaginationItem × n > PaginationLink/Previous/Next/Ellipsis.
+ */
 export const Pagination = React.forwardRef<
   HTMLElement,
   React.HTMLAttributes<HTMLElement>
@@ -26,6 +30,7 @@ export const Pagination = React.forwardRef<
 
 /* ───────── Content (ul) ───────── */
 
+/** 페이지 항목들을 담는 정렬되지 않은 리스트(`<ul>`). */
 export const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.HTMLAttributes<HTMLUListElement>
@@ -41,6 +46,7 @@ export const PaginationContent = React.forwardRef<
 
 /* ───────── Item (li) ───────── */
 
+/** 한 페이지 슬롯(`<li>`). PaginationLink/Previous/Next/Ellipsis를 자식으로 둔다. */
 export const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.LiHTMLAttributes<HTMLLIElement>
@@ -60,10 +66,25 @@ export const PaginationItem = React.forwardRef<
 
 export interface PaginationLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /**
+   * 현재 페이지 표시. `true`면 `aria-current="page"`가 자동 부여되고 시각적으로 강조된다.
+   * @default false
+   */
   isActive?: boolean;
+  /**
+   * 크기.
+   * - `sm` — 컴팩트
+   * - `md` — 일반 (기본)
+   *
+   * @default "md"
+   */
   size?: "sm" | "md";
 }
 
+/**
+ * 숫자 페이지 링크. `isActive`이면 `aria-current="page"`가 자동 부여되어
+ * 스크린리더가 현재 위치를 읽는다.
+ */
 export const PaginationLink = React.forwardRef<
   HTMLAnchorElement,
   PaginationLinkProps
@@ -87,6 +108,7 @@ export const PaginationLink = React.forwardRef<
  * 아이콘 + 레이블. 레이블이 없는 아이콘 버튼에는 aria-label로 의미 전달.
  */
 
+/** "이전 페이지" 링크. 화살표 아이콘과 라벨이 함께 렌더되며 `aria-label`이 자동 부여된다. */
 export const PaginationPrevious = React.forwardRef<
   HTMLAnchorElement,
   PaginationLinkProps
@@ -104,6 +126,7 @@ export const PaginationPrevious = React.forwardRef<
   );
 });
 
+/** "다음 페이지" 링크. */
 export const PaginationNext = React.forwardRef<
   HTMLAnchorElement,
   PaginationLinkProps
@@ -123,6 +146,7 @@ export const PaginationNext = React.forwardRef<
 
 /* ───────── Ellipsis — 생략 표시 ───────── */
 
+/** 페이지 사이 생략을 표현하는 점 3개. 시각만 표현하고 스크린리더에는 무시된다. */
 export const PaginationEllipsis = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
@@ -156,13 +180,30 @@ export const PaginationEllipsis = React.forwardRef<
 
 export type PaginationToken = number | "dots";
 
+/**
+ * 1-based `page`/`totalPages`로부터 렌더할 토큰 배열을 만든다.
+ * 양 끝과 현재 주변 `siblings`개를 보여주고, 끊긴 구간엔 `"dots"`를 넣어준다.
+ *
+ * @param args.page - 1-based 현재 페이지.
+ * @param args.siblings - 현재 페이지 양옆에 보일 페이지 개수.
+ * @returns 렌더 토큰 배열. 숫자 또는 문자열 `"dots"`로 구성.
+ * @example
+ * getPaginationRange({ page: 5, totalPages: 10, siblings: 1 })
+ * // [1, "dots", 4, 5, 6, "dots", 10]
+ */
 export function getPaginationRange({
   page,
   totalPages,
   siblings = 1,
 }: {
+  /** 1-based 현재 페이지. */
   page: number;
+  /** 전체 페이지 수. */
   totalPages: number;
+  /**
+   * 현재 페이지 양옆에 보일 페이지 개수.
+   * @default 1
+   */
   siblings?: number;
 }): PaginationToken[] {
   if (totalPages <= 0) return [];

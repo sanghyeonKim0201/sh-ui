@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Combobox as BaseCombobox } from "@base-ui-components/react/combobox";
+import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import "./styles.css";
 
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };

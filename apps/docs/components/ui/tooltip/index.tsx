@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
+import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import "./styles.css";
 
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
@@ -21,20 +21,39 @@ export interface TooltipContentProps
   extends WithStringClassName<
     React.ComponentPropsWithoutRef<typeof BaseTooltip.Popup>
   > {
-  /** 트리거에 대한 배치 방향. */
+  /**
+   * Trigger 기준 배치 방향. 공간 부족 시 자동으로 반대편으로 뒤집힌다.
+   * @default "top"
+   */
   side?: "top" | "right" | "bottom" | "left";
-  /** 정렬. */
+  /**
+   * 트리거 축에서의 정렬.
+   * @default "center"
+   */
   align?: "start" | "center" | "end";
-  /** Trigger-Popup 간격(px). 기본 6. */
+  /**
+   * Trigger와 Popup 사이 간격(px).
+   * @default 6
+   */
   sideOffset?: number;
-  /** 화살표 표시 여부. 기본 false. */
+  /**
+   * Trigger를 가리키는 화살표 표시 여부.
+   * @default false
+   */
   showArrow?: boolean;
-  /** portal 마운트 노드. */
+  /**
+   * Portal이 마운트될 DOM 노드.
+   * @default document.body
+   */
   container?: React.ComponentPropsWithoutRef<
     typeof BaseTooltip.Portal
   >["container"];
 }
 
+/**
+ * Tooltip의 본문. portal로 마운트되어 트리거 옆에 자동 위치 조정된다.
+ * 내용은 짧게 — 긴 설명이 필요하면 Popover를 사용할 것.
+ */
 export const TooltipContent = React.forwardRef<
   HTMLDivElement,
   TooltipContentProps

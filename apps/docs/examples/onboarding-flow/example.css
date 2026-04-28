@@ -1,0 +1,97 @@
+.sh-ui-ex-onboard {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--space-8);
+  color: #fff;
+  transition: background var(--duration-base) var(--ease-standard);
+}
+.sh-ui-ex-onboard--sunset {
+  background: radial-gradient(circle at 30% 30%, #ff7e5f, #feb47b 60%, #2c1a2e);
+}
+.sh-ui-ex-onboard--meadow {
+  background: radial-gradient(circle at 70% 40%, #43cea2, #185a9d 60%, #0a2740);
+}
+.sh-ui-ex-onboard--galaxy {
+  background: radial-gradient(circle at 50% 50%, #6a11cb, #2575fc 60%, #0c0a30);
+}
+.sh-ui-ex-onboard--confetti {
+  background: radial-gradient(circle at 50% 30%, #ff9a9e, #fad0c4 50%, #7b1e3d);
+}
+
+.sh-ui-ex-onboard__wrap {
+  width: min(520px, 100%);
+  text-align: center;
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+}
+.sh-ui-ex-onboard__emoji {
+  font-size: 5rem;
+  line-height: 1;
+}
+.sh-ui-ex-onboard__wrap h1 {
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+}
+.sh-ui-ex-onboard__wrap p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+.sh-ui-ex-onboard__form {
+  display: grid;
+  gap: var(--space-3);
+  text-align: left;
+}
+.sh-ui-ex-onboard__field {
+  display: grid;
+  gap: var(--space-1);
+}
+.sh-ui-ex-onboard__interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+}
+.sh-ui-ex-onboard__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.sh-ui-ex-onboard__nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.sh-ui-ex-onboard__dots {
+  display: flex;
+  gap: var(--space-1);
+  justify-content: center;
+}
+.sh-ui-ex-onboard__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+}
+.sh-ui-ex-onboard__dot[data-active] {
+  background: white;
+  width: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-ex-onboard {
+    transition: none;
+  }
+}
