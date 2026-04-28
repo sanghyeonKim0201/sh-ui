@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.24.0",
+      "date": "2026-04-28",
+      "title": "Next.js 템플릿 RootLayout 분리 — app/layout.tsx 는 thin wrapper",
+      "type": "minor",
+      "highlights": [
+        "nextjs-standalone / nextjs-app 모두 src/app/layouts/RootLayout.tsx 로 layout 본체 분리, app/layout.tsx 는 metadata + thin wrapper 만 유지",
+        "next-intl 플러그인 적용 시에도 동일 패턴 — RootLayout 이 locale 검증·hasLocale·notFound 까지 담당하고 app/[locale]/layout.tsx 는 params forward 만",
+        "사용자가 layout 로직을 확장할 때 entrypoint(layout.tsx) 와 컴포넌트(RootLayout) 책임이 분리돼 FSD 관습에 맞게 정렬"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.24.0"
+    },
+    {
       "version": "0.23.1",
       "date": "2026-04-28",
       "title": "sh-ui-create 패키지 완전 삭제 — 단일 sh-ui-cli",

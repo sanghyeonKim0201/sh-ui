@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { GlobalProvider } from '@/src/app/providers';
+import { RootLayout } from '@/src/app/layouts/RootLayout';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -7,16 +7,10 @@ export const metadata: Metadata = {
   description: 'My App Description',
 };
 
-export default function RootLayout({
+export default function Layout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  return (
-    <html lang='ko' suppressHydrationWarning>
-      <body>
-        <GlobalProvider>{children}</GlobalProvider>
-      </body>
-    </html>
-  );
+}>) {
+  return <RootLayout>{children}</RootLayout>;
 }

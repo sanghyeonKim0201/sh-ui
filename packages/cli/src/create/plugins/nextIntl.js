@@ -49,6 +49,37 @@ export const nextIntlPlugin = {
 }
 `,
     },
+    {
+      type: 'replace',
+      path: 'src/app/layouts/RootLayout.tsx',
+      content: `import { hasLocale } from 'next-intl';
+import { notFound } from 'next/navigation';
+import { GlobalProvider } from '@/src/app/providers';
+import { routing } from '@/src/shared/config/i18n/routing';
+
+export async function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
+  return (
+    <html lang={locale} suppressHydrationWarning>
+      <body>
+        <GlobalProvider>{children}</GlobalProvider>
+      </body>
+    </html>
+  );
+}
+`,
+    },
   ],
 
   // ─── 독립 파일 ───
@@ -149,36 +180,21 @@ export const { Link, redirect, usePathname, useRouter, getPathname } =
 `,
 
     'app/[locale]/layout.tsx': `import type { Metadata } from 'next';
-import { hasLocale } from 'next-intl';
-import { notFound } from 'next/navigation';
-import { GlobalProvider } from '@/src/app/providers';
-import { routing } from '@/src/shared/config/i18n/routing';
+import { RootLayout } from '@/src/app/layouts/RootLayout';
 
 export const metadata: Metadata = {
   title: 'My App',
   description: 'My App Description',
 };
 
-export default async function LocaleLayout({
+export default function Layout({
   children,
   params,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
-
-  return (
-    <html lang={locale} suppressHydrationWarning>
-      <body>
-        <GlobalProvider>{children}</GlobalProvider>
-      </body>
-    </html>
-  );
+}>) {
+  return <RootLayout params={params}>{children}</RootLayout>;
 }
 `,
 
