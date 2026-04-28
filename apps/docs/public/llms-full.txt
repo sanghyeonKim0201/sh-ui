@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.29.0 (2026-04-28) — Header — 서브메뉴·그룹·a11y·active 자동 매칭 보강 + variant/stickyHide 정식 도입
+**최신 버전**: v0.30.0 (2026-04-28) — PageTOC + CodeTabs registry 승격 — docs 인프라 컴포넌트 공개
 
 ## React — Components
 
@@ -81,6 +81,23 @@
 - npm/pub deps: shiki
 - Import: `@/components/ui/code-panel`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/code-panel
+
+### code-tabs
+
+- Type: component
+- Summary: 여러 코드 뷰(예: React/Flutter, 강조/전체)를 탭으로 전환 — Tabs + CodePanel 합성, 각 탭 내용은 CodePanelProps 그대로.
+- Install: `npx sh-ui-cli add code-tabs`
+- Registry deps: tabs, code-panel (자동 설치됨)
+- Import: `@/components/ui/code-tabs`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/code-tabs
+
+### page-toc
+
+- Type: component
+- Summary: 페이지 자동 목차 — 헤딩 스캔 · slugify · IntersectionObserver active 추적 · smooth scroll. routeKey 로 라우트 변경 자동 재스캔, levels/excludeSelector 커스터마이즈.
+- Install: `npx sh-ui-cli add page-toc`
+- Import: `@/components/ui/page-toc`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/page-toc
 
 ### code-editor
 
@@ -797,6 +814,12 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.30.0 — PageTOC + CodeTabs registry 승격 — docs 인프라 컴포넌트 공개 (2026-04-28)
+- PageTOC 신규 — 페이지 안의 헤딩(기본 h2/h3)을 자동 스캔해 우측 레일에 목차(On this page)를 렌더. 자동 slugify·id 부여, IntersectionObserver 로 현재 보이는 섹션 active 표시(aria-current 자동), 클릭 시 smooth scroll. 라우터 비종속 — routeKey 로 라우트 변경 신호를 받아 재스캔하므로 Next.js / React Router / no-router 모두 지원. levels·containerSelector·excludeSelector·label·headerOffsetRem 으로 커스터마이즈
+- CodeTabs 신규 — 같은 예제의 여러 코드 뷰(예: React/Flutter, 또는 "강조 / 전체 코드")를 탭으로 전환. 각 탭은 그대로 CodePanel 로 렌더되어 shiki 하이라이팅·복사 버튼·파일명 헤더 등을 그대로 사용. registryDependencies = tabs · code-panel
+- 두 컴포넌트 모두 그동안 docs 내부 전용으로 쓰이던 것을 일반화 — 이제 사용자 프로젝트에서 `npx sh-ui-cli add page-toc` / `npx sh-ui-cli add code-tabs` 로 설치 가능. /components 인덱스에도 등록
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.30.0
+
 ### v0.29.0 — Header — 서브메뉴·그룹·a11y·active 자동 매칭 보강 + variant/stickyHide 정식 도입 (2026-04-28)
 - a11y — drawer 가 열릴 때 focus trap · ESC 닫기 · 닫힐 때 트리거로 포커스 복원 자동화. drawer 패널에 role=dialog + aria-modal=true 부여
 - HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 document.body 로 portal 된 dropdown(부모 overflow 클리핑 회피, 트리거 위치를 scroll/resize 마다 추종, 클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리
@@ -825,13 +848,6 @@
 - previewPosition: right(기본) / bottom — 좁은 화면(<768px)에서는 자동으로 위·아래로 쌓임. preview={false} 로 미리보기를 끄면 단순 마크다운 입력기로 사용
 - registry dependency = code-editor — `npx sh-ui-cli add markdown-editor` 시 code-editor 도 함께 설치
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.27.0
-
-### v0.26.0 — CodeEditor 컴포넌트 — CodeMirror 6 + sh-ui 토큰 테마 (2026-04-28)
-- CodeEditor 신규 — CodeMirror 6 basicSetup 기반 controlled 인라인 코드 에디터 (value/onChange · placeholder · readOnly · showLineNumbers · minHeight/maxHeight)
-- 지원 언어: text · javascript · typescript · jsx · tsx · json · css · html · markdown — 런타임 변경은 Compartment 로 hot-swap
-- 컬러·여백을 sh-ui 토큰(--background/--foreground/--border/--background-muted 등)으로 매핑 — `.dark` 스코프에서 다크 테마 자동 추종
-- CLI 레지스트리에 `npx sh-ui-cli add code-editor` 등록, docs 사이드바 Components 섹션에 진입점 추가
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.26.0
 
 ## Resources
 

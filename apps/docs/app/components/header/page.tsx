@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/header";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { BasicDemo } from "./_demos/basic";
 import { StickyHideDemo } from "./_demos/sticky-hide";

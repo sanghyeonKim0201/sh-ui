@@ -69,6 +69,13 @@ const groups: Group[] = [
       { name: "Avatar", slug: "avatar", description: "프로필 이미지 — 폴백 이니셜." },
       { name: "Carousel", slug: "carousel", description: "슬라이드 캐러셀 — Embla 기반." },
       { name: "CodePanel", slug: "code-panel", description: "Shiki 기반 코드 하이라이트 패널." },
+      { name: "CodeTabs", slug: "code-tabs", description: "여러 코드 뷰를 탭으로 전환 — Tabs + CodePanel 합성." },
+    ],
+  },
+  {
+    title: "Docs",
+    items: [
+      { name: "PageTOC", slug: "page-toc", description: "페이지 자동 목차 — 헤딩 스캔 · 스크롤 추적 · smooth scroll." },
     ],
   },
   {

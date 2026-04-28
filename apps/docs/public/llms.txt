@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.29.0 (2026-04-28) — Header — 서브메뉴·그룹·a11y·active 자동 매칭 보강 + variant/stickyHide 정식 도입
+**최신 버전**: v0.30.0 (2026-04-28) — PageTOC + CodeTabs registry 승격 — docs 인프라 컴포넌트 공개
 
 ## React Components
 
@@ -33,6 +33,8 @@
 - **form** — Form 컴포넌트.
 - **form-yup** — FormYup 컴포넌트.
 - **code-panel** — Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.
+- **code-tabs** — 여러 코드 뷰(예: React/Flutter, 강조/전체)를 탭으로 전환 — Tabs + CodePanel 합성, 각 탭 내용은 CodePanelProps 그대로.
+- **page-toc** — 페이지 자동 목차 — 헤딩 스캔 · slugify · IntersectionObserver active 추적 · smooth scroll. routeKey 로 라우트 변경 자동 재스캔, levels/excludeSelector 커스터마이즈.
 - **code-editor** — CodeMirror 6 기반 controlled 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight.
 - **markdown-editor** — 마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어.
 - **rich-text-editor** — Tiptap 3 기반 WYSIWYG 에디터 — controlled HTML, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder.

@@ -8,7 +8,7 @@ import {
   ColorPickerHex,
   ColorPickerSwatches,
 } from "@/components/ui/color-picker";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { ControlledColorPickerDemo } from "./_demos/controlled";

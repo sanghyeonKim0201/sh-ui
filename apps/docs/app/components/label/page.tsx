@@ -2,7 +2,7 @@ export const dynamic = "force-static";
 
 import { Input } from "@/components/ui/input";
 import { Label, LabelTitle, LabelSubtitle, LabelDescription, LabelCaption } from "@/components/ui/label";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";

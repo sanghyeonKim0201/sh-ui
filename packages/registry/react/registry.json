@@ -157,6 +157,37 @@
       ],
       "registryDependencies": []
     },
+    "code-tabs": {
+      "name": "code-tabs",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/code-tabs/index.tsx",
+          "dest": "{components}/code-tabs/index.tsx"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "tabs",
+        "code-panel"
+      ]
+    },
+    "page-toc": {
+      "name": "page-toc",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/page-toc/index.tsx",
+          "dest": "{components}/page-toc/index.tsx"
+        },
+        {
+          "src": "components/page-toc/styles.css",
+          "dest": "{components}/page-toc/styles.css"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "code-editor": {
       "name": "code-editor",
       "type": "component",

@@ -9,7 +9,7 @@ import {
   CarouselIndicators,
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import { CodeTabs } from "@/components/code-tabs";
+import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { PropsTable } from "@/components/props-table";
