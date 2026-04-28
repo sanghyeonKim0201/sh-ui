@@ -34,7 +34,9 @@ export default function HeaderPage() {
 
       <Preview>
         <Preview.Demo>
-          <BasicDemo />
+          <NoNav>
+            <BasicDemo />
+          </NoNav>
         </Preview.Demo>
         <CodeTabs
           items={[
@@ -42,15 +44,15 @@ export default function HeaderPage() {
               value: "react",
               label: "React",
               language: "tsx",
-              code: `// HeaderNav 의 value 가 자식 HeaderItem 의 href 와 비교돼 active 가 자동 결정된다.
-// 항목마다 active={...} 를 반복할 필요 없음.
+              code: `// 라우터를 안 쓰는 경우 — defaultValue 만 주면 클릭이 자동으로 active 를 옮긴다 (uncontrolled).
+// Next.js 등 라우터 앱이라면 value={pathname} 으로 (controlled, 아래 섹션 참고).
 <Header>
   <HeaderTrigger />
   <HeaderBrand>
     <HeaderLogo><LogoIcon /></HeaderLogo>
     <HeaderTitle>sh-ui</HeaderTitle>
   </HeaderBrand>
-  <HeaderNav value={pathname}>
+  <HeaderNav defaultValue="/">
     <HeaderItem href="/">홈</HeaderItem>
     <HeaderItem href="/docs">문서</HeaderItem>
     <HeaderItem href="/pricing">가격</HeaderItem>
@@ -438,32 +440,98 @@ export function AppHeader() {
 }`}
       />
 
-      <h2>active 자동 매칭 (HeaderNav value)</h2>
+      <h2>active 자동 매칭 — Controlled vs Uncontrolled</h2>
       <p>
-        <code>HeaderNav value=&#123;...&#125;</code> 를 주면 자식 <code>HeaderItem</code> 의 <code>href</code> 와 비교해
-        active 가 자동으로 결정된다 — Tabs/RadioGroup 패턴. 항목마다 active 를 반복 비교할 필요 없음.
+        <code>HeaderNav</code> 가 자식 <code>HeaderItem</code> 의 <code>href</code> 와 비교해 active 를 자동 결정한다 —
+        항목마다 <code>active</code> 비교를 반복할 필요 없음. 두 가지 모드:
+      </p>
+      <ul>
+        <li><strong>Controlled</strong> (<code>value</code>) — 라우터 등 외부 상태가 진실원천. 라우팅이 있는 실제 앱에서 사용</li>
+        <li><strong>Uncontrolled</strong> (<code>defaultValue</code>) — HeaderNav 가 내부에서 추적. 클릭이 active 를 자동으로 옮김. tabs-like nav · 위젯 내부 nav · 라우터 없는 경우</li>
+      </ul>
+
+      <h3>Controlled — Next.js usePathname (실전)</h3>
+      <p>
+        라우터 pathname 을 그대로 <code>value</code> 로 전달. 페이지 이동 시 pathname 이 바뀌면 active 도 자동으로 따라간다. 사용자 코드에 별도 state 불필요.
       </p>
       <CodePanel
         language="tsx"
+        filename="components/app-header.tsx"
         code={`"use client";
 
+import {
+  Header,
+  HeaderActions,
+  HeaderBrand,
+  HeaderItem,
+  HeaderNav,
+  HeaderTitle,
+  HeaderTrigger,
+} from "@/components/ui/header";
+import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 
 export function AppHeader() {
   const pathname = usePathname();
+
   return (
     <Header>
       <HeaderTrigger />
-      <HeaderBrand><HeaderTitle>Acme</HeaderTitle></HeaderBrand>
+      <HeaderBrand>
+        <HeaderTitle>Acme</HeaderTitle>
+      </HeaderBrand>
       <HeaderNav value={pathname}>
         <HeaderItem href="/">홈</HeaderItem>
         <HeaderItem href="/products">제품</HeaderItem>
+        <HeaderItem href="/docs">문서</HeaderItem>
         <HeaderItem href="/pricing">가격</HeaderItem>
+      </HeaderNav>
+      <HeaderActions>
+        <Button variant="secondary" size="sm">로그인</Button>
+      </HeaderActions>
+    </Header>
+  );
+}`}
+      />
+
+      <h3>Uncontrolled — defaultValue (라우터 없을 때)</h3>
+      <p>
+        <code>defaultValue</code> 만 주면 HeaderNav 가 내부 상태로 추적. 클릭하면 알아서 active 가 옮겨간다 — Tabs/RadioGroup 와 동일. <code>onValueChange</code> 로 변경을 외부에서 관찰할 수 있다.
+      </p>
+      <CodePanel
+        language="tsx"
+        filename="components/widget-header.tsx"
+        code={`"use client";
+
+import {
+  Header,
+  HeaderBrand,
+  HeaderItem,
+  HeaderNav,
+  HeaderTitle,
+  HeaderTrigger,
+} from "@/components/ui/header";
+
+export function WidgetHeader() {
+  return (
+    <Header>
+      <HeaderTrigger />
+      <HeaderBrand>
+        <HeaderTitle>Dashboard</HeaderTitle>
+      </HeaderBrand>
+      <HeaderNav
+        defaultValue="/overview"
+        onValueChange={(v) => console.log("active changed →", v)}
+      >
+        <HeaderItem href="/overview">개요</HeaderItem>
+        <HeaderItem href="/analytics">분석</HeaderItem>
+        <HeaderItem href="/settings">설정</HeaderItem>
       </HeaderNav>
     </Header>
   );
 }`}
       />
+
       <p className="muted">
         기본 매칭은 exact 또는 prefix — <code>/docs</code> 항목은 <code>/docs</code>·<code>/docs/intro</code>·<code>/docs/api</code> 모두에서 활성. root(<code>/</code>) 는 prefix 매칭에서 제외돼 모든 경로에 매칭되지 않는다.
         active 가 적용되면 자동으로 <code>data-active</code> 와 <code>aria-current=&quot;page&quot;</code> 가 부여된다.
@@ -471,24 +539,21 @@ export function AppHeader() {
 
       <h3>커스텀 매칭</h3>
       <p>
-        매칭 규칙을 바꾸려면 <code>match</code> prop 에 비교 함수 전달. 예: query string 무시, hash 매칭 등.
+        매칭 규칙을 바꾸려면 <code>match</code> prop 에 비교 함수 전달.
       </p>
       <CodePanel
         language="tsx"
         code={`<HeaderNav
   value={pathname}
-  match={(href, value) => {
-    // 정확히 일치할 때만 active (prefix 매칭 비활성)
-    return href === value;
-  }}
+  match={(href, value) => href === value}  // 정확히 일치할 때만 active (prefix 매칭 비활성)
 >
   ...
 </HeaderNav>`}
       />
 
-      <h3>개별 override</h3>
+      <h3>개별 override (escape hatch)</h3>
       <p>
-        특정 항목에서 자동 계산을 건너뛰려면 <code>active</code> prop 을 명시. prop 이 자동 계산보다 우선한다 (escape hatch).
+        특정 항목에서 자동 계산을 건너뛰려면 <code>active</code> prop 을 명시. prop 이 자동 계산보다 우선한다.
       </p>
       <CodePanel
         language="tsx"
@@ -499,6 +564,99 @@ export function AppHeader() {
   <HeaderItem href="/admin" active={isAdmin}>관리</HeaderItem>
 </HeaderNav>`}
       />
+
+      <h2>전체 예시 — 실전 AppHeader</h2>
+      <p>
+        지금까지 보여준 기능들을 한 번에 조합한 완전한 컴포넌트. Next.js + sh-ui 기준으로 그대로 복사하면 동작한다.
+        포함된 것 — usePathname active 매칭 · HeaderMenu 서브메뉴 · variant=&quot;blur&quot; sticky · stickyHide ·
+        라우트 변경 시 drawer 자동 닫기 · HeaderDesktopOnly/MobileOnly 로 검색·로그인 데스크탑 한정 노출.
+      </p>
+      <CodePanel
+        language="tsx"
+        filename="components/app-header.tsx"
+        code={`"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import {
+  Header,
+  HeaderActions,
+  HeaderBrand,
+  HeaderDesktopOnly,
+  HeaderItem,
+  HeaderLogo,
+  HeaderMenu,
+  HeaderMenuContent,
+  HeaderMenuTrigger,
+  HeaderNav,
+  HeaderTitle,
+  HeaderTrigger,
+} from "@/components/ui/header";
+import { Button } from "@/components/ui/button";
+import { SearchIcon } from "lucide-react";
+
+export function AppHeader() {
+  const pathname = usePathname();
+
+  // drawer 열림 상태를 직접 소유 — 라우트 변경 시 자동 닫기 위해
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [pathname]);
+
+  return (
+    <Header
+      variant="blur"
+      stickyHide
+      open={drawerOpen}
+      onOpenChange={setDrawerOpen}
+      style={{ position: "sticky", top: 0, zIndex: 50 }}
+    >
+      <HeaderTrigger />
+
+      <HeaderBrand>
+        <HeaderLogo>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
+          </svg>
+        </HeaderLogo>
+        <HeaderTitle>Acme</HeaderTitle>
+      </HeaderBrand>
+
+      {/* HeaderNav value={pathname} 한 줄로 모든 자식 active 자동 매칭 */}
+      <HeaderNav value={pathname}>
+        <HeaderItem href="/">홈</HeaderItem>
+
+        <HeaderMenu>
+          <HeaderMenuTrigger>제품</HeaderMenuTrigger>
+          <HeaderMenuContent>
+            <HeaderItem href="/products/studio">Studio</HeaderItem>
+            <HeaderItem href="/products/cloud">Cloud</HeaderItem>
+            <HeaderItem href="/products/cli">CLI</HeaderItem>
+          </HeaderMenuContent>
+        </HeaderMenu>
+
+        <HeaderItem href="/docs">문서</HeaderItem>
+        <HeaderItem href="/pricing">가격</HeaderItem>
+      </HeaderNav>
+
+      <HeaderActions>
+        {/* 데스크탑에서만 검색 + 로그인. 모바일에선 drawer 트리거(햄버거)로 대체됨 */}
+        <HeaderDesktopOnly>
+          <button aria-label="검색" style={{ background: "transparent", border: 0, padding: 4, cursor: "pointer", color: "var(--foreground-muted)" }}>
+            <SearchIcon size={18} />
+          </button>
+          <Button variant="secondary" size="sm">로그인</Button>
+        </HeaderDesktopOnly>
+      </HeaderActions>
+    </Header>
+  );
+}`}
+      />
+      <p className="muted">
+        <strong>app/layout.tsx</strong> 에서 <code>&lt;AppHeader /&gt;</code> 를 그대로 사용하면 끝. drawer 열림 ·
+        focus trap · ESC · 스크롤 다운 시 헤더 자동 숨김 · 라우트 변경 시 drawer 자동 close 까지 모두 동작.
+      </p>
 
       <h2>언제 쓰나</h2>
       <ul>
@@ -519,7 +677,9 @@ export function AppHeader() {
       </ul>
       <h3>HeaderNav</h3>
       <ul>
-        <li><code>value?: string</code> — 현재 활성 경로/키. 자식 HeaderItem 의 href 와 비교해 active 가 자동 결정</li>
+        <li><code>value?: string</code> — Controlled. 현재 활성 경로/키. 자식 HeaderItem 의 href 와 비교해 active 자동 결정</li>
+        <li><code>defaultValue?: string</code> — Uncontrolled 초기값. value 미지정 시에만 사용. 클릭마다 내부 상태 자동 갱신</li>
+        <li><code>onValueChange?: (value: string) =&gt; void</code> — 클릭으로 활성 값이 바뀔 때 호출. controlled/uncontrolled 모두에서 동작</li>
         <li><code>match?: (itemHref, value) =&gt; boolean</code> — 매칭 함수 커스터마이즈. 기본은 exact 또는 prefix(root 제외)</li>
       </ul>
       <h3>HeaderItem</h3>

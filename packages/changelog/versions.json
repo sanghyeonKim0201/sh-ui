@@ -12,7 +12,7 @@
         "HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 document.body 로 portal 된 dropdown(부모 overflow 클리핑 회피, 트리거 위치를 scroll/resize 마다 추종, 클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리",
         "HeaderNavGroup(label) — drawer 안에서 nav 항목을 섹션으로 묶음(라벨 + 들여쓰기). inline 모드는 display:contents 로 자식만 평면 렌더, 데스크탑 레이아웃 무영향",
         "HeaderDesktopOnly / HeaderMobileOnly — drawer 로 옮기지 않고 단순히 가시성만 토글하는 슬롯. display:contents 라 부모 flex 흐름 그대로 유지. 데스크탑 검색/로그인/마이페이지 같은 항목을 모바일에서 자체 drawer 트리거로 대체할 때 사용",
-        "active 자동 매칭 — HeaderNav value(현재 경로) + match 함수로 자식 HeaderItem 의 active 가 일괄 결정 (Tabs/RadioGroup 패턴). 기본 매칭은 exact 또는 prefix(root 제외), 개별 active prop 으로 override 가능. 자동/수동 어느 쪽이든 data-active 와 aria-current=\"page\" 부여",
+        "active 자동 매칭 — HeaderNav 의 value(controlled) 또는 defaultValue+onValueChange(uncontrolled) 로 자식 HeaderItem 의 active 가 일괄 결정 (Tabs/RadioGroup 패턴). 라우터 앱은 value=pathname, 라우터 없는 위젯은 defaultValue 만으로 클릭 자동 추적. 기본 매칭은 exact 또는 prefix(root 제외), match 함수로 커스터마이즈, 개별 active prop 으로 override. 자동/수동 어느 쪽이든 data-active 와 aria-current=\"page\" 부여",
         "variant=\"solid\"|\"transparent\"|\"blur\" 로 헤더 배경 표현 전환. blur 는 표준 글래스 헤더 수준의 85% opacity + saturate(180%) blur(16px), --sh-ui-header-blur-opacity / --sh-ui-header-blur-radius CSS 변수로 instance 별 조정. backdrop-filter 미지원 브라우저는 @supports 폴백으로 불투명 배경 자동 적용",
         "stickyHide + stickyHideThreshold — 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지해 페이지 스크롤뿐 아니라 컨테이너 내부 스크롤에도 반응. prefers-reduced-motion: reduce 환경에서는 슬라이드 트랜지션 비활성화"
       ],

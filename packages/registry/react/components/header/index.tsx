@@ -100,6 +100,8 @@ const NavLocationContext = React.createContext<NavLocation>("inline");
 type NavMatch = {
   value: string | undefined;
   match: (itemHref: string, value: string) => boolean;
+  /** uncontrolled 모드에서 HeaderItem 클릭 시 자동 active 갱신용. controlled 모드에선 onValueChange 만 호출. */
+  setValue: (value: string) => void;
 };
 
 /**
@@ -115,6 +117,7 @@ const defaultNavMatch = (itemHref: string, value: string): boolean => {
 const NavMatchContext = React.createContext<NavMatch>({
   value: undefined,
   match: defaultNavMatch,
+  setValue: () => {},
 });
 
 /* ───────── Root ───────── */
@@ -344,10 +347,20 @@ export const HeaderTrigger = React.forwardRef<
 
 export interface HeaderNavProps extends React.HTMLAttributes<HTMLElement> {
   /**
-   * 현재 활성 경로/키 (예: Next.js usePathname() 결과). 자식 HeaderItem 의 `href` 와 비교해
-   * `data-active` 가 자동 부여된다. 자식에 `active` prop 이 명시되면 그게 우선.
+   * Controlled 모드 — 현재 활성 경로/키 (예: Next.js usePathname() 결과). 자식 HeaderItem 의
+   * `href` 와 비교해 `data-active` 가 자동 부여된다. 자식에 `active` prop 이 명시되면 그게 우선.
    */
   value?: string;
+  /**
+   * Uncontrolled 모드 초기 값. `value` 미지정 시에만 사용된다. 자식 HeaderItem 클릭마다
+   * 내부 상태가 자동 갱신돼 active 가 따라 이동 — Tabs/RadioGroup 와 동일한 패턴.
+   */
+  defaultValue?: string;
+  /**
+   * 활성 값 변경 콜백. controlled / uncontrolled 모두에서 클릭 시 호출된다.
+   * controlled 면 외부 상태 갱신용, uncontrolled 면 단순 알림용.
+   */
+  onValueChange?: (value: string) => void;
   /**
    * 매칭 함수 커스터마이즈. 기본은 exact 또는 prefix(`/docs` 가 `/docs/intro` 에서도 활성).
    * root(`/`/`""`) 는 prefix 매칭에서 제외된다 — 모든 경로에 매칭되는 걸 막기 위해.
@@ -356,16 +369,31 @@ export interface HeaderNavProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export const HeaderNav = React.forwardRef<HTMLElement, HeaderNavProps>(
-  function HeaderNav({ value, match, className, children, ...props }, ref) {
+  function HeaderNav(
+    { value, defaultValue, onValueChange, match, className, children, ...props },
+    ref,
+  ) {
     const { open, setOpen } = useHeader();
     const drawerRef = React.useRef<HTMLElement | null>(null);
 
     const close = React.useCallback(() => setOpen(false), [setOpen]);
     useFocusTrap(drawerRef, open, close);
 
+    const isControlled = value !== undefined;
+    const [internalValue, setInternalValue] = React.useState(defaultValue);
+    const currentValue = isControlled ? value : internalValue;
+
+    const setValue = React.useCallback(
+      (next: string) => {
+        if (!isControlled) setInternalValue(next);
+        onValueChange?.(next);
+      },
+      [isControlled, onValueChange],
+    );
+
     const navMatch = React.useMemo<NavMatch>(
-      () => ({ value, match: match ?? defaultNavMatch }),
-      [value, match],
+      () => ({ value: currentValue, match: match ?? defaultNavMatch, setValue }),
+      [currentValue, match, setValue],
     );
 
     return (
@@ -434,6 +462,8 @@ export const HeaderItem = React.forwardRef<
       aria-current={computedActive ? "page" : undefined}
       onClick={(e) => {
         setOpen(false);
+        // HeaderNav 의 NavMatch 에 활성 값 전달 — uncontrolled 면 내부 상태 갱신, controlled 면 onValueChange 호출
+        if (href !== undefined) navMatch.setValue(href);
         onClick?.(e);
       }}
       {...props}

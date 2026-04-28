@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Header,
   HeaderActions,
@@ -21,7 +20,6 @@ const items = [
 ];
 
 export function BasicDemo() {
-  const [path, setPath] = useState("/");
   return (
     <div
       style={{
@@ -41,16 +39,9 @@ export function BasicDemo() {
           </HeaderLogo>
           <HeaderTitle>sh-ui</HeaderTitle>
         </HeaderBrand>
-        <HeaderNav value={path}>
+        <HeaderNav defaultValue="/">
           {items.map((it) => (
-            <HeaderItem
-              key={it.href}
-              href={it.href}
-              onClick={(e) => {
-                e.preventDefault();
-                setPath(it.href);
-              }}
-            >
+            <HeaderItem key={it.href} href={it.href}>
               {it.label}
             </HeaderItem>
           ))}
