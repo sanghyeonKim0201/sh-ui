@@ -58,9 +58,13 @@
 
 ### 3. 브랜치 정책
 
-`common/common.md` 은 "`live` 직접 push 금지, PR 경유"를 정책으로 제시하지만,
-이 레포는 현재 **`dev` 브랜치를 작업 브랜치로 두고 직접 push**하며, `live` 머지
-시점에만 PR을 쓴다. `dev` 는 느슨하게, `live` 는 엄격히 — 이 차등을 유지.
+`dev` 는 작업 브랜치 — 직접 push OK. `live` 는 **릴리즈 게이트** — PR 경유로만
+머지하고, **태그(`vX.Y.Z`)는 항상 `live` 에서 찍는다**. publish.yml/release.yml
+이 태그 트리거이므로, 태그를 live 에서 찍는다는 건 곧 "live 에 들어간 코드만
+npm 으로 나간다"는 의미. dev 에 직접 푸시한 커밋이 live PR 을 거치지 않고 npm
+으로 직행하지 않도록 하는 게 이 정책의 핵심.
+
+`dev` 는 느슨하게, `live` 는 엄격히.
 
 ## 변경 내역(패치노트) 자동 반영
 
@@ -119,11 +123,19 @@ showcase(Flutter)가 그 파일을 읽어 "변경 내역" 페이지를 렌더한
 2. `packages/changelog/versions.json` — 새 엔트리 prepend
 3. (CLI 변경이면) `packages/cli/package.json` version 필드도 동기화
 
-이후 순서:
-1. `git commit` → dev 푸시
-2. `git tag vX.Y.Z` → 태그 푸시
-3. `gh release create vX.Y.Z ...` — 본문은 versions.json의 `highlights`보다
-   풍부하게. 제목은 `"vX.Y.Z — {title}"` 형식
+이후 순서 (**dev → PR → live → tag** 가 핵심):
+
+1. `git commit` → `git push origin dev`
+2. `gh pr create --base live --head dev --title "release: vX.Y.Z — {title}"` —
+   본문은 versions.json 의 `highlights` 그대로 옮겨도 OK
+3. PR CI 그린 확인 → `gh pr merge --squash` (또는 머지 커밋 — 레포 관행에 맞게)
+4. `git checkout live && git pull` → `git tag vX.Y.Z && git push origin vX.Y.Z`
+5. 태그 푸시가 publish.yml(npm publish) + release.yml(GH Release 자동 생성)을
+   동시에 발동시킨다. release.yml 이 versions.json 의 `highlights` 로 본문을
+   자동 생성하므로 별도 `gh release create` 는 불필요. 더 풍부한 본문이 필요하면
+   생성 후 `gh release edit` 로 추가.
+6. `git checkout dev && git merge live` (선택) — live 의 머지 커밋을 dev 에
+   되돌려 두 브랜치 동기화
 
 ### Claude가 이 규칙을 적용할 때
 
@@ -132,9 +144,11 @@ showcase(Flutter)가 그 파일을 읽어 "변경 내역" 페이지를 렌더한
 - 구현 → 테스트 → `pnpm tsc --noEmit` 통과 확인
 - `versions.json`에 엔트리를 **prepend**
 - 커밋을 **한 번에** 만들고 (소스 + versions.json + 필요 시 CLI package.json)
-- 태그 + 릴리즈 생성까지 한 세션 내에 마친다
+- dev 푸시 → live PR → 머지 → live 에서 태그까지 한 세션 내에 마친다
+- **dev 에서 직접 태그 찍는 것 금지** — 항상 live 머지 후 live 에서 태그
 
 사용자가 "그냥 저장만" / "커밋하지 마" 같이 명시적으로 멈추라고 하면 물론 중단.
+PR 머지 권한이나 셀프머지가 막혀 있으면 사용자에게 머지 시점을 물어보고 대기.
 
 ### 예외 — 엔트리를 추가하지 않는 경우
 
