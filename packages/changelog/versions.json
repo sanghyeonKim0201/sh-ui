@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.28.1",
+      "date": "2026-04-28",
+      "title": "RichTextEditor — Link 버튼이 빈 선택에서 호출돼도 anchor 가 생기도록 수정",
+      "type": "patch",
+      "highlights": [
+        "Link 버튼: 텍스트 선택이 없고 기존 링크 위도 아닐 때 URL 자체를 anchor 텍스트로 삽입 — 빈 link 마크만 걸려 사용자가 추가로 타이핑해야 했던 어색한 상태 제거",
+        "선택이 있거나 기존 링크 위에서 호출하면 종전과 동일하게 selection·기존 링크에 setLink"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.1"
+    },
+    {
       "version": "0.28.0",
       "date": "2026-04-28",
       "title": "RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar",

@@ -133,6 +133,21 @@ function Toolbar({ editor, disabled }: ToolbarProps) {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
       return;
     }
+    const { empty } = editor.state.selection;
+    const inLink = editor.isActive("link");
+    if (empty && !inLink) {
+      // 선택 없이 호출되면 URL 자체를 anchor 텍스트로 삽입 — 빈 링크 마크가 남는 걸 방지
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "text",
+          text: url,
+          marks: [{ type: "link", attrs: { href: url } }],
+        })
+        .run();
+      return;
+    }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   }, [editor]);
 
