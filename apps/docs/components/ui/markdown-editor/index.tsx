@@ -1,14 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeEditor } from "../code-editor";
 import "./styles.css";
 
 export interface MarkdownEditorProps {
-  /** 현재 마크다운 (controlled). */
-  value: string;
-  /** 마크다운이 바뀔 때 호출. */
+  /**
+   * Controlled — 현재 마크다운. 명시 시 외부 상태가 진실원천.
+   * 미지정이면 uncontrolled — 컴포넌트가 자체 내부 상태로 동작.
+   */
+  value?: string;
+  /**
+   * Uncontrolled 초기값. value 미지정 시에만 사용된다.
+   * @default ""
+   */
+  defaultValue?: string;
+  /** 마크다운이 바뀔 때마다 호출 (controlled · uncontrolled 모두). */
   onChange?: (value: string) => void;
   /** 비어 있을 때 표시할 placeholder. */
   placeholder?: string;
@@ -40,11 +49,15 @@ function cx(...args: (string | undefined | false | null)[]) {
 /**
  * 마크다운 에디터 — CodeEditor(소스) + react-markdown(라이브 프리뷰)의 합성.
  *
+ * Controlled (value/onChange) · Uncontrolled (defaultValue) 모두 지원. 미리보기 패널이
+ * 현재 마크다운을 필요로 하므로 uncontrolled 모드에서도 내부 상태로 트래킹.
+ *
  * 미리보기는 GFM(테이블·체크박스·strikethrough)을 지원하고, raw HTML은 기본적으로
  * 차단(react-markdown 기본 동작)되어 사용자 입력으로부터의 XSS가 자동 방어된다.
  */
 export function MarkdownEditor({
-  value,
+  value: valueProp,
+  defaultValue,
   onChange,
   placeholder,
   readOnly,
@@ -55,6 +68,15 @@ export function MarkdownEditor({
   className,
   "aria-label": ariaLabel = "Markdown editor",
 }: MarkdownEditorProps) {
+  const isControlled = valueProp !== undefined;
+  const [internalValue, setInternalValue] = useState(valueProp ?? defaultValue ?? "");
+  const value = isControlled ? valueProp : internalValue;
+
+  const handleChange = (next: string) => {
+    if (!isControlled) setInternalValue(next);
+    onChange?.(next);
+  };
+
   return (
     <div
       className={cx(
@@ -68,7 +90,7 @@ export function MarkdownEditor({
       <div className="sh-ui-md-editor__source">
         <CodeEditor
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           language="markdown"
           placeholder={placeholder}
           readOnly={readOnly}

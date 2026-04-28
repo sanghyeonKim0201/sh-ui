@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.31.0",
+      "date": "2026-04-28",
+      "title": "Editor 3종(Code/Markdown/RichText) uncontrolled 모드 추가",
+      "type": "minor",
+      "highlights": [
+        "CodeEditor / MarkdownEditor / RichTextEditor 모두 value 를 옵셔널로 만들고 defaultValue 를 추가 — 라우터·외부 상태와 동기화할 게 없는 폼이면 useState 없이 한 줄로 끝 (Tabs/RadioGroup/Header NavMatch 와 동일 패턴)",
+        "controlled (value 명시) 모드는 종전과 동일하게 동작 — 외부 동기화 effect 가 isControlled 일 때만 작동하도록 가드. uncontrolled 모드에서는 에디터(CodeMirror/Tiptap)가 자체 source-of-truth",
+        "onChange 는 controlled / uncontrolled 양 모드 모두에서 변경마다 호출 — 외부 관찰만 필요할 땐 onChange 만 받아도 OK",
+        "MarkdownEditor 는 미리보기 패널이 현재 값을 필요로 하므로 uncontrolled 모드에서도 자체 React state 로 트래킹"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.31.0"
+    },
+    {
       "version": "0.30.0",
       "date": "2026-04-28",
       "title": "PageTOC + CodeTabs registry 승격 — docs 인프라 컴포넌트 공개",

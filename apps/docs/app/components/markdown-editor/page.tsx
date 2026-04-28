@@ -112,8 +112,9 @@ export function Demo() {
       <h3>MarkdownEditor</h3>
       <PropsTable
         rows={[
-          { prop: "value", type: "string", description: "현재 마크다운 (controlled)." },
-          { prop: "onChange", type: "(value: string) => void", description: "마크다운이 바뀔 때 호출." },
+          { prop: "value", type: "string", description: "Controlled — 현재 마크다운. 미지정이면 uncontrolled." },
+          { prop: "defaultValue", type: "string", default: `""`, description: "Uncontrolled 초기값. value 미지정 시에만 사용." },
+          { prop: "onChange", type: "(value: string) => void", description: "마크다운이 바뀔 때마다 호출 (controlled · uncontrolled 모두)." },
           { prop: "placeholder", type: "string", description: "비어 있을 때 표시할 placeholder." },
           {
             prop: "readOnly",

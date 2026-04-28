@@ -23,9 +23,17 @@ export type CodeEditorLanguage =
   | "markdown";
 
 export interface CodeEditorProps {
-  /** 현재 코드 (controlled). */
-  value: string;
-  /** 코드가 바뀔 때 호출. 미지정 시 read-only로 동작하지 않음 — 편집은 가능하지만 부모로 전달되지 않는다. */
+  /**
+   * Controlled — 현재 코드. 명시 시 value 가 진실원천이 되고 onChange 로 외부에서 갱신해야 한다.
+   * 미지정이면 uncontrolled — 에디터가 자체 내부 문서로 동작.
+   */
+  value?: string;
+  /**
+   * Uncontrolled 초기값. value 미지정 시에만 사용된다.
+   * @default ""
+   */
+  defaultValue?: string;
+  /** 코드가 바뀔 때마다 호출 (controlled · uncontrolled 모두). */
   onChange?: (value: string) => void;
   /**
    * 신택스 하이라이팅 언어.
@@ -82,12 +90,15 @@ function languageExtension(language: CodeEditorLanguage): Extension {
 /**
  * CodeMirror 6 기반 인라인 코드 에디터.
  *
- * 기본은 controlled — `value`/`onChange` 로 부모가 상태를 소유한다.
+ * Controlled (value/onChange) · Uncontrolled (defaultValue + 선택 onChange) 모두 지원.
+ * 라우터·외부 상태와 동기화할 게 없는 경우 defaultValue 한 줄로 끝 — useState 불필요.
+ *
  * 신택스 하이라이팅·자동 들여쓰기·괄호 매칭 등은 CodeMirror `basicSetup` 을 그대로 사용,
  * 컬러·여백은 sh-ui 토큰(`--background`, `--foreground`, `--border` 등)으로 매핑돼 테마에 자동 추종.
  */
 export function CodeEditor({
-  value,
+  value: valueProp,
+  defaultValue,
   onChange,
   language = "text",
   placeholder,
@@ -100,10 +111,12 @@ export function CodeEditor({
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
 }: CodeEditorProps) {
+  const isControlled = valueProp !== undefined;
   const hostRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const initialDocRef = useRef(valueProp ?? defaultValue ?? "");
 
   const compartments = useMemo(
     () => ({
@@ -137,7 +150,7 @@ export function CodeEditor({
     ];
 
     const view = new EditorView({
-      state: EditorState.create({ doc: value, extensions }),
+      state: EditorState.create({ doc: initialDocRef.current, extensions }),
       parent: hostRef.current,
     });
     viewRef.current = view;
@@ -150,15 +163,17 @@ export function CodeEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // controlled 모드에서만 외부 value 를 에디터 doc 에 동기화. uncontrolled 면 에디터가 자체 source-of-truth.
   useEffect(() => {
+    if (!isControlled) return;
     const view = viewRef.current;
     if (!view) return;
     const current = view.state.doc.toString();
-    if (current === value) return;
+    if (current === valueProp) return;
     view.dispatch({
-      changes: { from: 0, to: current.length, insert: value },
+      changes: { from: 0, to: current.length, insert: valueProp ?? "" },
     });
-  }, [value]);
+  }, [isControlled, valueProp]);
 
   useEffect(() => {
     viewRef.current?.dispatch({

@@ -122,11 +122,12 @@ export function Demo() {
       <h3>RichTextEditor</h3>
       <PropsTable
         rows={[
-          { prop: "value", type: "string", description: "현재 HTML (controlled)." },
+          { prop: "value", type: "string", description: "Controlled — 현재 HTML. 미지정이면 uncontrolled." },
+          { prop: "defaultValue", type: "string", default: `""`, description: "Uncontrolled 초기 HTML. value 미지정 시에만 사용." },
           {
             prop: "onChange",
             type: "(html: string) => void",
-            description: "본문이 바뀔 때마다 최신 HTML 을 넘긴다.",
+            description: "본문이 바뀔 때마다 최신 HTML 을 넘긴다 (controlled · uncontrolled 모두).",
           },
           { prop: "placeholder", type: "string", description: "비어 있을 때 표시할 placeholder." },
           {

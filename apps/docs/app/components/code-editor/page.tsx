@@ -138,11 +138,12 @@ export function Demo() {
       <h3>CodeEditor</h3>
       <PropsTable
         rows={[
-          { prop: "value", type: "string", description: "현재 코드 (controlled)." },
+          { prop: "value", type: "string", description: "Controlled — 현재 코드. 명시 시 외부 상태가 진실원천. 미지정이면 uncontrolled." },
+          { prop: "defaultValue", type: "string", default: `""`, description: "Uncontrolled 초기값. value 미지정 시에만 사용." },
           {
             prop: "onChange",
             type: "(value: string) => void",
-            description: "코드가 바뀔 때 호출. 미지정 시 부모로 전달되지 않지만 편집은 가능.",
+            description: "코드가 바뀔 때마다 호출 (controlled · uncontrolled 모두).",
           },
           {
             prop: "language",

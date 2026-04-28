@@ -25,9 +25,17 @@ import {
 import "./styles.css";
 
 export interface RichTextEditorProps {
-  /** 현재 HTML (controlled). */
-  value: string;
-  /** 본문이 바뀔 때 호출. HTML 문자열을 그대로 넘긴다. */
+  /**
+   * Controlled — 현재 HTML. 명시 시 외부 상태가 진실원천이 되고 onChange 로 갱신한다.
+   * 미지정이면 uncontrolled — Tiptap editor 가 자체 doc 으로 동작.
+   */
+  value?: string;
+  /**
+   * Uncontrolled 초기 HTML. value 미지정 시에만 사용.
+   * @default ""
+   */
+  defaultValue?: string;
+  /** 본문이 바뀔 때마다 호출 (controlled · uncontrolled 모두). HTML 문자열을 그대로 넘긴다. */
   onChange?: (html: string) => void;
   /** 비어 있을 때 표시할 placeholder. */
   placeholder?: string;
@@ -50,11 +58,14 @@ function cx(...args: (string | undefined | false | null)[]) {
 /**
  * Tiptap 기반 리치 텍스트 에디터.
  *
- * controlled — `value` 는 HTML 문자열, `onChange` 로 부모가 상태를 소유한다.
+ * Controlled (value/onChange) · Uncontrolled (defaultValue) 모두 지원. 라우터·외부 상태와
+ * 동기화할 게 없는 단일 입력 폼이라면 defaultValue 한 줄로 끝 — useState 불필요.
+ *
  * 기본 toolbar 는 StarterKit 의 표준 마크업(헤딩·리스트·인용·코드·링크 등) 을 다룬다.
  */
 export function RichTextEditor({
-  value,
+  value: valueProp,
+  defaultValue,
   onChange,
   placeholder,
   readOnly = false,
@@ -64,6 +75,7 @@ export function RichTextEditor({
   className,
   "aria-label": ariaLabel = "Rich text editor",
 }: RichTextEditorProps) {
+  const isControlled = valueProp !== undefined;
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -77,7 +89,7 @@ export function RichTextEditor({
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
     ],
-    content: value,
+    content: valueProp ?? defaultValue ?? "",
     editable: !readOnly,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
@@ -91,11 +103,13 @@ export function RichTextEditor({
     },
   });
 
+  // controlled 모드에서만 외부 value 를 에디터 doc 에 동기화
   useEffect(() => {
+    if (!isControlled) return;
     if (!editor) return;
-    if (editor.getHTML() === value) return;
-    editor.commands.setContent(value, { emitUpdate: false });
-  }, [value, editor]);
+    if (editor.getHTML() === valueProp) return;
+    editor.commands.setContent(valueProp ?? "", { emitUpdate: false });
+  }, [isControlled, valueProp, editor]);
 
   useEffect(() => {
     editor?.setEditable(!readOnly);
