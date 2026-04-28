@@ -74,6 +74,12 @@ export function PageTOC({
   const [items, setItems] = React.useState<TocItem[]>([]);
   const [activeId, setActiveId] = React.useState<string | null>(null);
 
+  // levels 가 inline 배열(["h2", "h3"]) 로 전달되면 매 렌더마다 새 참조라 useEffect 가
+  // 무한 루프에 빠짐. 내용 기반 안정 키로 비교하고, 효과 안에서는 ref 로 최신 값 사용.
+  const levelsKey = levels.join(",");
+  const levelsRef = React.useRef(levels);
+  levelsRef.current = levels;
+
   React.useEffect(() => {
     const container = document.querySelector(containerSelector);
     if (!container) {
@@ -81,7 +87,7 @@ export function PageTOC({
       return;
     }
 
-    const headingSelector = levels.join(", ");
+    const headingSelector = levelsRef.current.join(", ");
     let headings = Array.from(
       container.querySelectorAll<HTMLHeadingElement>(headingSelector),
     );
@@ -130,7 +136,7 @@ export function PageTOC({
 
     headings.forEach((h) => observer.observe(h));
     return () => observer.disconnect();
-  }, [containerSelector, headerOffsetRem, levels, excludeSelector, routeKey]);
+  }, [containerSelector, headerOffsetRem, levelsKey, excludeSelector, routeKey]);
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     event.preventDefault();
