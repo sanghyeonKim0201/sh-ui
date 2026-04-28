@@ -97,7 +97,19 @@ export default function ContextMenuPage() {
         ]}
       />
 
-      <h2>키보드</h2>
+      <h2>API Reference</h2>
+      <p className="muted">
+        모든 하위 컴포넌트는 Base UI <code>Menu.*</code> 의 props 를 그대로 받는다 (DropdownMenu 와 동일).
+        주요 prop 만 정리:
+      </p>
+      <ul>
+        <li><code>ContextMenuItem</code> — <code>disabled?: boolean</code>, <code>onSelect?: (event) =&gt; void</code></li>
+        <li><code>ContextMenuCheckboxItem</code> — <code>checked: boolean</code>, <code>onCheckedChange: (v) =&gt; void</code>, <code>disabled?: boolean</code></li>
+        <li><code>ContextMenuRadioGroup</code> — <code>value: string</code>, <code>onValueChange: (v) =&gt; void</code></li>
+        <li><code>ContextMenuRadioItem</code> — <code>value: string</code>, <code>disabled?: boolean</code></li>
+      </ul>
+
+      <h2>접근성 — 키보드</h2>
       <ul>
         <li><code>↑</code> / <code>↓</code> — 이전/다음 항목</li>
         <li><code>Enter</code> / <code>Space</code> — 선택</li>

@@ -236,6 +236,16 @@ export default function PaginationDocsPage() {
         ]}
       />
 
+      <h2>API Reference</h2>
+      <p className="muted">
+        하위 컴포넌트 대부분은 표준 HTML 속성을 그대로 받는다. 추가 prop:
+      </p>
+      <ul>
+        <li><code>PaginationLink</code> — <code>isActive?: boolean</code> (true 면 <code>aria-current=&quot;page&quot;</code> 자동), <code>href?: string</code></li>
+        <li><code>PaginationPrevious</code>, <code>PaginationNext</code> — <code>href?: string</code>, 경계 도달 시 <code>aria-disabled</code> + <code>data-disabled</code> 자동</li>
+        <li><code>getPaginationRange({"{ page, totalPages, siblings }"})</code> — 유틸 함수, <code>(number | &quot;dots&quot;)[]</code> 반환</li>
+      </ul>
+
       <h2>접근성</h2>
       <ul>
         <li>

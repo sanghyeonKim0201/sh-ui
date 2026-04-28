@@ -150,6 +150,13 @@ export default function BreadcrumbDocsPage() {
           { name: "BreadcrumbEllipsis", description: "중간 항목 생략 표시." },
         ]}
       />
+
+      <h2>API Reference</h2>
+      <p className="muted">
+        모든 하위 컴포넌트는 표준 HTML 속성을 그대로 받는다 (Breadcrumb=nav · List=ol ·
+        Item=li · Link=a · Page=span · Separator=li · Ellipsis=span). 별도의 커스텀 prop 은
+        없으며 className/style 로 직접 스타일링.
+      </p>
     </main>
   );
 }

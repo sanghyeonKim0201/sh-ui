@@ -88,7 +88,13 @@ export default function MenubarPage() {
         DropdownMenu가 함께 설치된다(<code>registryDependencies</code>).
       </p>
 
-      <h2>키보드</h2>
+      <h2>API Reference</h2>
+      <p className="muted">
+        <code>Menubar</code> 자체는 <a href="https://base-ui.com/react/components/menubar" target="_blank" rel="noreferrer">Base UI Menubar</a> 를 그대로 래핑한 컨테이너로 표준 div 속성을 받는다 (className/style).
+        하위 메뉴 항목 props 는 <a href="/components/dropdown-menu">DropdownMenu</a> 와 동일.
+      </p>
+
+      <h2>접근성 — 키보드</h2>
       <ul>
         <li><code>←</code> / <code>→</code> — 메뉴 간 이동</li>
         <li><code>↓</code> / <code>Enter</code> — 메뉴 열기</li>

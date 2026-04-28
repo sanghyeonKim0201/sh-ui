@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
+import { PropsTable } from "@/components/props-table";
+import { SubComponents } from "@/components/sub-components";
 import { BasicDemo } from "./_demos/basic";
 import { StickyHideDemo } from "./_demos/sticky-hide";
 import { NoNav } from "@/components/no-nav";
@@ -92,19 +94,28 @@ ShUiHeader(
         ]}
       />
 
-      <h2>Compound 구조</h2>
+      <h2>구성 요소</h2>
       <p>
-        React 쪽 Header는 compound components로 조립한다. 각 파트가 독립 요소라 자유롭게 배치·스타일링할 수 있다.
+        React 쪽 Header 는 compound components 로 조립한다. 각 파트가 독립 요소라 자유롭게 배치·스타일링할 수 있다.
       </p>
-      <ul>
-        <li><code>Header</code> — 루트. drawer 열림 state 제공 (Context)</li>
-        <li><code>HeaderTrigger</code> — 햄버거 버튼. 모바일에서만 표시</li>
-        <li><code>HeaderBrand</code> — 로고 + 타이틀 그룹</li>
-        <li><code>HeaderLogo</code>, <code>HeaderTitle</code> — 브랜드 슬롯</li>
-        <li><code>HeaderNav</code> — 네비 컨테이너 (모바일에선 drawer로 이동)</li>
-        <li><code>HeaderItem</code> — 네비 링크 (<code>active</code> prop)</li>
-        <li><code>HeaderActions</code> — 우측 트레일링 (항상 헤더에 유지)</li>
-      </ul>
+      <SubComponents
+        rows={[
+          { name: "Header", description: "루트. drawer 열림 상태와 sticky/variant 동작 제공." },
+          { name: "HeaderTrigger", description: "햄버거 버튼. 모바일에서만 자동 노출." },
+          { name: "HeaderBrand", description: "로고 + 타이틀 묶음." },
+          { name: "HeaderLogo", description: "브랜드 로고 슬롯." },
+          { name: "HeaderTitle", description: "브랜드 타이틀 텍스트 슬롯." },
+          { name: "HeaderNav", description: "네비 컨테이너 — 데스크탑 inline / 모바일 drawer 자동 전환. value/defaultValue 로 active 자동 매칭." },
+          { name: "HeaderItem", description: "네비 링크 — active 자동/수동 토글, 클릭 시 drawer 자동 close." },
+          { name: "HeaderActions", description: "우측 트레일링 슬롯 — 검색·로그인 등 항상 헤더에 유지." },
+          { name: "HeaderMenu", description: "서브메뉴 wrapper — 데스크탑 portal dropdown / drawer 안 collapsible 자동 전환." },
+          { name: "HeaderMenuTrigger", description: "서브메뉴 토글 버튼 (chevron)." },
+          { name: "HeaderMenuContent", description: "서브메뉴 본문 — 안에 HeaderItem 등을 둠." },
+          { name: "HeaderNavGroup", description: "drawer 안 nav 항목을 섹션으로 묶음 (라벨 + 들여쓰기). inline 모드는 평면 렌더." },
+          { name: "HeaderDesktopOnly", description: "≥768px 에서만 보이는 슬롯 (drawer 로 이동 없음)." },
+          { name: "HeaderMobileOnly", description: "<768px 에서만 보이는 슬롯 — 사용자 정의 drawer 트리거 등에." },
+        ]}
+      />
 
       <h2>반응형 동작</h2>
       <p>
@@ -665,40 +676,68 @@ export function AppHeader() {
         <li>AppShell이 과한 단순 화면</li>
       </ul>
 
-      <h2>Props</h2>
+      <h2>API Reference</h2>
+
       <h3>Header</h3>
-      <ul>
-        <li><code>open?: boolean</code> — 제어 모드 drawer 열림 상태</li>
-        <li><code>defaultOpen?: boolean</code> — 비제어 모드 초기 열림</li>
-        <li><code>onOpenChange?: (open: boolean) =&gt; void</code> — 열림 변경 콜백</li>
-        <li><code>variant?: &quot;solid&quot; | &quot;transparent&quot; | &quot;blur&quot;</code> — 배경 표현, 기본 <code>&quot;solid&quot;</code></li>
-        <li><code>stickyHide?: boolean</code> — 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지</li>
-        <li><code>stickyHideThreshold?: number</code> — 숨김 시작 픽셀, 기본 <code>80</code></li>
-      </ul>
+      <PropsTable
+        rows={[
+          { prop: "open", type: "boolean", description: "제어 모드 drawer 열림 상태." },
+          { prop: "defaultOpen", type: "boolean", default: "false", description: "비제어 모드 초기 열림." },
+          { prop: "onOpenChange", type: "(open: boolean) => void", description: "열림 변경 콜백." },
+          { prop: "variant", type: `"solid" | "transparent" | "blur"`, default: `"solid"`, description: "배경 표현. blur 는 backdrop-filter 글래스 효과." },
+          { prop: "stickyHide", type: "boolean", default: "false", description: "스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지." },
+          { prop: "stickyHideThreshold", type: "number", default: "80", description: "숨김 시작 픽셀." },
+          { prop: "className", type: "string" },
+        ]}
+      />
+
       <h3>HeaderNav</h3>
-      <ul>
-        <li><code>value?: string</code> — Controlled. 현재 활성 경로/키. 자식 HeaderItem 의 href 와 비교해 active 자동 결정</li>
-        <li><code>defaultValue?: string</code> — Uncontrolled 초기값. value 미지정 시에만 사용. 클릭마다 내부 상태 자동 갱신</li>
-        <li><code>onValueChange?: (value: string) =&gt; void</code> — 클릭으로 활성 값이 바뀔 때 호출. controlled/uncontrolled 모두에서 동작</li>
-        <li><code>match?: (itemHref, value) =&gt; boolean</code> — 매칭 함수 커스터마이즈. 기본은 exact 또는 prefix(root 제외)</li>
-      </ul>
+      <PropsTable
+        rows={[
+          { prop: "value", type: "string", description: "Controlled — 현재 활성 경로/키. 자식 HeaderItem 의 href 와 비교해 active 자동 결정." },
+          { prop: "defaultValue", type: "string", description: "Uncontrolled 초기값. value 미지정 시에만 사용. 클릭마다 내부 상태 자동 갱신." },
+          { prop: "onValueChange", type: "(value: string) => void", description: "클릭으로 활성 값이 바뀔 때 호출. controlled/uncontrolled 모두에서 동작." },
+          { prop: "match", type: "(itemHref, value) => boolean", description: "매칭 함수 커스터마이즈. 기본은 exact 또는 prefix(root 제외)." },
+          { prop: "className", type: "string" },
+        ]}
+      />
+
       <h3>HeaderItem</h3>
-      <ul>
-        <li><code>href: string</code> — 링크 대상. NavMatch 의 value 와 비교에도 사용</li>
-        <li><code>active?: boolean</code> — 명시 시 자동 매칭보다 우선. 미지정이면 NavMatch 결과 사용</li>
-      </ul>
+      <PropsTable
+        rows={[
+          { prop: "href", type: "string", description: "링크 대상. NavMatch 의 value 와 비교에도 사용." },
+          { prop: "active", type: "boolean", description: "명시 시 자동 매칭보다 우선 (escape hatch). 미지정이면 NavMatch 결과 사용." },
+          { prop: "...rest", type: "AnchorHTMLAttributes<HTMLAnchorElement>", description: "표준 <a> 속성 그대로." },
+        ]}
+      />
+
       <h3>HeaderMenu</h3>
-      <ul>
-        <li><code>defaultOpen?: boolean</code> — drawer 모드 (collapsible) 초기 펼침. 데스크탑 dropdown 은 항상 닫힌 상태로 시작</li>
-      </ul>
+      <PropsTable
+        rows={[
+          { prop: "defaultOpen", type: "boolean", default: "false", description: "drawer 모드(collapsible) 초기 펼침. 데스크탑 dropdown 은 항상 닫힌 상태로 시작." },
+          { prop: "className", type: "string" },
+        ]}
+      />
+
       <h3>HeaderNavGroup</h3>
-      <ul>
-        <li><code>label?: ReactNode</code> — drawer 모드에서만 보이는 섹션 라벨</li>
-      </ul>
+      <PropsTable
+        rows={[
+          { prop: "label", type: "ReactNode", description: "drawer 모드에서만 보이는 섹션 라벨." },
+          { prop: "...rest", type: "HTMLAttributes<HTMLDivElement>" },
+        ]}
+      />
+
       <h3>HeaderDesktopOnly / HeaderMobileOnly</h3>
-      <ul>
-        <li>props: 표준 <code>div</code> 속성 그대로. 자식을 미디어 쿼리로 가시성만 토글 (drawer 이동 없음).</li>
-      </ul>
+      <PropsTable
+        rows={[
+          { prop: "...rest", type: "HTMLAttributes<HTMLDivElement>", description: "표준 div 속성 그대로. 자식을 미디어 쿼리로 가시성만 토글 (drawer 이동 없음)." },
+        ]}
+      />
+
+      <h3>HeaderBrand / HeaderLogo / HeaderTitle / HeaderTrigger / HeaderActions / HeaderMenuTrigger / HeaderMenuContent</h3>
+      <p className="muted">
+        모두 표준 HTML 속성을 그대로 받는다 (각각 <code>div</code> · <code>span</code> · <code>span</code> · <code>button</code> · <code>div</code> · <code>button</code> · <code>div</code>). 별도의 커스텀 prop 은 없으며 className/style 로 직접 스타일링.
+      </p>
     </main>
   );
 }
