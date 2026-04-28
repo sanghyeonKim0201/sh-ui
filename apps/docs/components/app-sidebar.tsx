@@ -13,6 +13,7 @@ import {
   PlugIcon,
   RocketIcon,
   TerminalIcon,
+  WrenchIcon,
   type LucideIcon,
 } from "lucide-react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
@@ -44,6 +45,7 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "토큰", href: "/tokens", icon: PaletteIcon },
   { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
   { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
+  { title: "레시피", href: "/recipes", icon: WrenchIcon },
   { title: "실전 예제", href: "/examples", icon: LayoutTemplateIcon },
   { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
 ];
