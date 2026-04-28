@@ -103,14 +103,14 @@ export default function CardPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add card`,
+            code: `npx sh-ui-cli add card`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add card
+            code: `npx sh-ui-cli add card
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_card.dart → lib/widgets/`,

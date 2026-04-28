@@ -71,14 +71,14 @@ const ShUiInput(placeholder: 'you@example.com'),`,
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add label`,
+            code: `npx sh-ui-cli add label`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add label`,
+            code: `npx sh-ui-cli add label`,
           },
         ]}
       />

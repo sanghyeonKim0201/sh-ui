@@ -60,8 +60,8 @@ ShUiToggle(
       <h3>CLI</h3>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add toggle` },
-          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add toggle` },
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add toggle` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add toggle` },
         ]}
       />
 

@@ -58,14 +58,14 @@ ShUiSlider(
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add slider`,
+            code: `npx sh-ui-cli add slider`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add slider
+            code: `npx sh-ui-cli add slider
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_slider.dart → lib/widgets/`,

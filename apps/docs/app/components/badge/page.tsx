@@ -62,7 +62,7 @@ ShUiBadge.text('Outline', variant: ShUiBadgeVariant.outline)`,
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add badge`,
+            code: `npx sh-ui-cli add badge`,
           },
         ]}
       />

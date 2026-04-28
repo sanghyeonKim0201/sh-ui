@@ -47,14 +47,14 @@ export default function ProgressPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add progress`,
+            code: `npx sh-ui-cli add progress`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add progress`,
+            code: `npx sh-ui-cli add progress`,
           },
         ]}
       />

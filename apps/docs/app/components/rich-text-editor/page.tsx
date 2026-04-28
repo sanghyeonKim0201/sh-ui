@@ -33,7 +33,7 @@ export default function RichTextEditorPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add rich-text-editor`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add rich-text-editor`} />
 
       <h3>Manual</h3>
       <p className="muted">

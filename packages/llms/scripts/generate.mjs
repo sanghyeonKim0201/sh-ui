@@ -109,7 +109,7 @@ const renderBlock = (item, platform) => {
   lines.push("");
   lines.push(`- Type: ${item.type}`);
   if (item.summary) lines.push(`- Summary: ${item.summary}`);
-  lines.push(`- Install: \`npx sh-ui add ${item.name}\``);
+  lines.push(`- Install: \`npx sh-ui-cli add ${item.name}\``);
   if (item.dependencies.length > 0) {
     lines.push(`- npm/pub deps: ${item.dependencies.join(", ")}`);
   }

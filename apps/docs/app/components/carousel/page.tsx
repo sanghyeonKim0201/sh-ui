@@ -123,14 +123,14 @@ export default function CarouselPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add carousel`,
+            code: `npx sh-ui-cli add carousel`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add carousel
+            code: `npx sh-ui-cli add carousel
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_carousel.dart → lib/widgets/`,

@@ -78,7 +78,7 @@ export default function ContextMenuPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add context-menu`,
+            code: `npx sh-ui-cli add context-menu`,
           },
         ]}
       />

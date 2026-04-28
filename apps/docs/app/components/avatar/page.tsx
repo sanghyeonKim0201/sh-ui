@@ -69,7 +69,7 @@ export default function AvatarPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add avatar`,
+            code: `npx sh-ui-cli add avatar`,
           },
         ]}
       />

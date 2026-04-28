@@ -80,7 +80,7 @@ export default function MenubarPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add menubar`,
+            code: `npx sh-ui-cli add menubar`,
           },
         ]}
       />

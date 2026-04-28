@@ -12,8 +12,8 @@ flutter run
 ## sh-ui 위젯 추가
 
 ```bash
-npx sh-ui add button
-npx sh-ui add card input
+npx sh-ui-cli add button
+npx sh-ui-cli add card input
 ```
 
 위젯은 `lib/sh_ui/widgets/` 아래로 복사됩니다. 설정은 `sh-ui.config.json` 을 참조하세요.

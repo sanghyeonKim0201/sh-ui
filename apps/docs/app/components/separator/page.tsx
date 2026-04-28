@@ -42,14 +42,14 @@ export default function SeparatorPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add separator`,
+            code: `npx sh-ui-cli add separator`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add separator`,
+            code: `npx sh-ui-cli add separator`,
           },
         ]}
       />

@@ -83,7 +83,7 @@ export default function DropdownMenuPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add dropdown-menu`,
+            code: `npx sh-ui-cli add dropdown-menu`,
           },
         ]}
       />

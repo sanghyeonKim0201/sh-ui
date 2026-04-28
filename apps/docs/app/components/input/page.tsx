@@ -56,8 +56,8 @@ export default function InputPage() {
       <h3>CLI</h3>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add input` },
-          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add input` },
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add input` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add input` },
         ]}
       />
 

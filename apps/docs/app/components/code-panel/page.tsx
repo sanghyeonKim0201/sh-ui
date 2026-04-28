@@ -21,8 +21,8 @@ export function Demo() {
   );
 }`;
 
-const bashExample = `npx sh-ui init
-npx sh-ui add tokens button`;
+const bashExample = `npx sh-ui-cli init
+npx sh-ui-cli add tokens button`;
 
 const jsonExample = `{
   "platform": "react",
@@ -62,7 +62,7 @@ export default function CodePanelPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add code-panel`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add code-panel`} />
 
       <h3>Manual</h3>
       <p className="muted">

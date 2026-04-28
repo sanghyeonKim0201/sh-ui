@@ -125,7 +125,7 @@ export default function PaginationDocsPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add pagination`,
+            code: `npx sh-ui-cli add pagination`,
           },
         ]}
       />

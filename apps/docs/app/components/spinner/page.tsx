@@ -52,14 +52,14 @@ ShUiSpinner(size: ShUiSpinnerSize.lg)`,
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add spinner`,
+            code: `npx sh-ui-cli add spinner`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add spinner`,
+            code: `npx sh-ui-cli add spinner`,
           },
         ]}
       />

@@ -88,7 +88,7 @@ export default function BreadcrumbDocsPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add breadcrumb`,
+            code: `npx sh-ui-cli add breadcrumb`,
           },
         ]}
       />

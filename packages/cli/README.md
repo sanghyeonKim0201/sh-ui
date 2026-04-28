@@ -32,7 +32,7 @@ npx sh-ui-cli create my-app --platform flutter --yes
 ### init — 설정 파일 생성
 
 ```bash
-npx sh-ui init
+npx sh-ui-cli init
 # 대화형 프롬프트:
 #   platform: react | flutter
 #   base:     neutral | zinc | slate
@@ -43,27 +43,27 @@ npx sh-ui init
 비대화형 예:
 
 ```bash
-npx sh-ui init --platform react --base neutral --radius md --mode light-dark --yes
+npx sh-ui-cli init --platform react --base neutral --radius md --mode light-dark --yes
 ```
 
 ### add — 컴포넌트 추가
 
 ```bash
-npx sh-ui add button
-npx sh-ui add card input
-npx sh-ui add button --diff   # 파일 변경 미리보기(실제 쓰지 않음)
+npx sh-ui-cli add button
+npx sh-ui-cli add card input
+npx sh-ui-cli add button --diff   # 파일 변경 미리보기(실제 쓰지 않음)
 ```
 
 ### list — 설치된 컴포넌트 목록
 
 ```bash
-npx sh-ui list
+npx sh-ui-cli list
 ```
 
 ### remove — 컴포넌트 제거
 
 ```bash
-npx sh-ui remove button
+npx sh-ui-cli remove button
 ```
 
 ### mcp — AI 에게 sh-ui 를 알려주기 (v0.21.0+)
@@ -85,7 +85,7 @@ npx -y sh-ui-cli mcp init --client claude-desktop   # → 사용자 전역 (재�
 npx -y sh-ui-cli mcp init --client claude-code --scope user
 ```
 
-> 참고: 위 다른 명령들의 `npx sh-ui ...` 표기는 `sh-ui-cli` 가 dev 의존성으로 설치된 상태를 가정한다. 빈 폴더에서 한 번에 쓰려면 동일하게 `npx -y sh-ui-cli ...` 로 호출.
+> 참고: 위 다른 명령들의 `npx sh-ui-cli ...` 표기는 `sh-ui-cli` 가 dev 의존성으로 설치된 상태를 가정한다. 빈 폴더에서 한 번에 쓰려면 동일하게 `npx -y sh-ui-cli ...` 로 호출.
 
 기존 설정 파일이 있으면 다른 MCP 서버 엔트리를 보존하며 `sh-ui` 만 머지·갱신.
 

@@ -65,8 +65,8 @@ ShUiCombobox<String>(
       <h3>CLI</h3>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add combobox` },
-          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add combobox` },
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add combobox` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add combobox` },
         ]}
       />
 

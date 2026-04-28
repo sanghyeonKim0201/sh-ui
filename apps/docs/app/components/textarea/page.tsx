@@ -32,8 +32,8 @@ export default function TextareaPage() {
       <h3>CLI</h3>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add textarea` },
-          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add textarea` },
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add textarea` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add textarea` },
         ]}
       />
 

@@ -51,7 +51,7 @@
         "MarkdownEditor 신규 — CodeEditor(소스) + react-markdown(미리보기) 합성, GFM(테이블·체크리스트·strikethrough) 지원",
         "raw HTML 은 react-markdown 기본 동작으로 차단 — 사용자 입력 마크다운으로부터의 XSS 자동 방어",
         "previewPosition: right(기본) / bottom — 좁은 화면(<768px)에서는 자동으로 위·아래로 쌓임. preview={false} 로 미리보기를 끄면 단순 마크다운 입력기로 사용",
-        "registry dependency = code-editor — `npx sh-ui add markdown-editor` 시 code-editor 도 함께 설치"
+        "registry dependency = code-editor — `npx sh-ui-cli add markdown-editor` 시 code-editor 도 함께 설치"
       ],
       "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.27.0"
     },
@@ -64,7 +64,7 @@
         "CodeEditor 신규 — CodeMirror 6 basicSetup 기반 controlled 인라인 코드 에디터 (value/onChange · placeholder · readOnly · showLineNumbers · minHeight/maxHeight)",
         "지원 언어: text · javascript · typescript · jsx · tsx · json · css · html · markdown — 런타임 변경은 Compartment 로 hot-swap",
         "컬러·여백을 sh-ui 토큰(--background/--foreground/--border/--background-muted 등)으로 매핑 — `.dark` 스코프에서 다크 테마 자동 추종",
-        "CLI 레지스트리에 `npx sh-ui add code-editor` 등록, docs 사이드바 Components 섹션에 진입점 추가"
+        "CLI 레지스트리에 `npx sh-ui-cli add code-editor` 등록, docs 사이드바 Components 섹션에 진입점 추가"
       ],
       "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.26.0"
     },
@@ -153,7 +153,7 @@
         "sh-ui mcp init --client <claude-code|cursor|claude-desktop> 추가 — IDE 별 MCP 설정 파일을 자동으로 찾아 sh-ui 엔트리 머지",
         "스코프 분기 — 기본 project(.mcp.json / .cursor/mcp.json), --scope user 로 전역(~/.claude/mcp.json 등) 선택 가능. claude-desktop 은 user 전용(OS 별 경로 자동 분기)",
         "기존 JSON 보존 — 다른 MCP 서버 엔트리·기타 키를 건드리지 않고 sh-ui 만 머지·갱신",
-        "수동 JSON 편집 없이 npx sh-ui mcp init --client cursor 한 줄로 끝"
+        "수동 JSON 편집 없이 npx sh-ui-cli mcp init --client cursor 한 줄로 끝"
       ],
       "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.22.0"
     },

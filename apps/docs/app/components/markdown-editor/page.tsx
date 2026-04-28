@@ -34,7 +34,7 @@ export default function MarkdownEditorPage() {
       <h2>Installation</h2>
 
       <h3>CLI</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui add markdown-editor`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add markdown-editor`} />
       <p className="muted">
         <code>code-editor</code> 가 자동으로 함께 설치된다 (registry dependency).
       </p>

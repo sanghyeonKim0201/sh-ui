@@ -30,7 +30,7 @@ export default function AccordionPage() {
               <AccordionItem value="item-1">
                 <AccordionTrigger>설치 방법이 궁금합니다</AccordionTrigger>
                 <AccordionContent>
-                  CLI를 사용하면 <code>npx sh-ui add accordion</code>으로
+                  CLI를 사용하면 <code>npx sh-ui-cli add accordion</code>으로
                   컴포넌트 파일이 <code>components/ui/accordion/</code>에
                   복사됩니다.
                 </AccordionContent>
@@ -103,14 +103,14 @@ export default function AccordionPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add accordion`,
+            code: `npx sh-ui-cli add accordion`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add accordion
+            code: `npx sh-ui-cli add accordion
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_accordion.dart → lib/widgets/`,

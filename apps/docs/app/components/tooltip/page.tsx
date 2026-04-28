@@ -62,7 +62,7 @@ export default function TooltipPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add tooltip`,
+            code: `npx sh-ui-cli add tooltip`,
           },
         ]}
       />

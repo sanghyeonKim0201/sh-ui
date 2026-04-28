@@ -87,8 +87,8 @@ ShUiHeader(
       <h2>Installation</h2>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", code: "npx sh-ui add header" },
-          { value: "flutter", label: "Flutter", language: "bash", code: "npx sh-ui add header" },
+          { value: "react", label: "React", language: "bash", code: "npx sh-ui-cli add header" },
+          { value: "flutter", label: "Flutter", language: "bash", code: "npx sh-ui-cli add header" },
         ]}
       />
 

@@ -99,5 +99,5 @@ npx sh-ui-cli create add-component button
 npx sh-ui-cli create add-component button --app web
 ```
 
-내부적으로 `packages/ui/ui-apps/ui-{app}/` 디렉토리에서 `npx sh-ui add button` 이 실행되며,
+내부적으로 `packages/ui/ui-apps/ui-{app}/` 디렉토리에서 `npx sh-ui-cli add button` 이 실행되며,
 각 패키지의 `sh-ui.config.json` 에 선언된 경로로 컴포넌트가 복사됩니다.

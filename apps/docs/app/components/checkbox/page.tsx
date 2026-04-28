@@ -85,14 +85,14 @@ class _TermsCheckboxState extends State<TermsCheckbox> {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add checkbox`,
+            code: `npx sh-ui-cli add checkbox`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add checkbox
+            code: `npx sh-ui-cli add checkbox
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_checkbox.dart → lib/widgets/`,

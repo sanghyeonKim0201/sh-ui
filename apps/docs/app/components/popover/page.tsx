@@ -74,14 +74,14 @@ export default function PopoverPage() {
             label: "React",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add popover`,
+            code: `npx sh-ui-cli add popover`,
           },
           {
             value: "flutter",
             label: "Flutter",
             language: "bash",
             showLineNumbers: false,
-            code: `npx sh-ui add popover
+            code: `npx sh-ui-cli add popover
 
 # 또는 수동 복사:
 # packages/registry/flutter/widgets/sh_ui_popover.dart → lib/widgets/`,

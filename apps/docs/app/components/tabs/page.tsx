@@ -73,8 +73,8 @@ export default function TabsPage() {
       <h3>CLI</h3>
       <CodeTabs
         items={[
-          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui add tabs` },
-          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui add tabs` },
+          { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add tabs` },
+          { value: "flutter", label: "Flutter", language: "bash", showLineNumbers: false, code: `npx sh-ui-cli add tabs` },
         ]}
       />
 
