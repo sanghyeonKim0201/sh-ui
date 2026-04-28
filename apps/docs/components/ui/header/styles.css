@@ -12,9 +12,20 @@
     background-color var(--duration-base) var(--ease-standard);
   /* hover/active 배경 — transparent/blur variant 가 currentColor 기반으로 재정의 */
   --sh-ui-header-hover-bg: var(--background-muted);
+  /* blur variant 튜닝용 — instance 별 style 로 override 가능 */
+  --sh-ui-header-blur-opacity: 85%;
+  --sh-ui-header-blur-radius: 16px;
 }
 
-/* variant (beta) */
+/* prefers-reduced-motion — stickyHide 슬라이드 애니메이션을 즉시 toggle 로 대체.
+   variant 전환의 background 트랜지션도 비활성화. */
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-header {
+    transition: none;
+  }
+}
+
+/* variant */
 .sh-ui-header--solid {
   background: var(--background);
 }
@@ -25,13 +36,19 @@
   --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
 }
 .sh-ui-header--blur {
-  background: color-mix(in srgb, var(--background) 85%, transparent);
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  background: color-mix(in srgb, var(--background) var(--sh-ui-header-blur-opacity), transparent);
+  backdrop-filter: saturate(180%) blur(var(--sh-ui-header-blur-radius));
+  -webkit-backdrop-filter: saturate(180%) blur(var(--sh-ui-header-blur-radius));
   --sh-ui-header-hover-bg: color-mix(in srgb, currentColor 14%, transparent);
 }
+/* backdrop-filter 미지원 브라우저 폴백 — 더 불투명한 배경으로 가독성 확보 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sh-ui-header--blur {
+    background: var(--background);
+  }
+}
 
-/* sticky-hide (beta) — sticky 컨텍스트는 사용자가 직접 (예: position:sticky; top:0) 적용. */
+/* sticky-hide — sticky 컨텍스트는 사용자가 직접 (예: position:sticky; top:0) 적용. */
 .sh-ui-header[data-sticky-hide][data-hidden] {
   transform: translateY(-100%);
 }

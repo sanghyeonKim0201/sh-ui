@@ -108,16 +108,19 @@ export interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * 배경 표현 — 기본은 단색. transparent 는 hero 위 등 투명 배경, blur 는 반투명 + backdrop-filter.
    *
+   * blur 의 불투명도/반경은 CSS 변수로 instance 별 조정 가능 — 컴포넌트 카피본 수정 없이
+   * `style={{ "--sh-ui-header-blur-opacity": "92%", "--sh-ui-header-blur-radius": "20px" }}` 처럼.
+   *
    * @default "solid"
-   * @beta variant 와 stickyHide 는 베타 — API 가 v1 전에 바뀔 수 있다.
    */
   variant?: "solid" | "transparent" | "blur";
   /**
    * 스크롤 다운 시 헤더를 자동으로 숨기고, 위로 스크롤하면 다시 노출.
-   * `position: sticky` 와 함께 쓰는 걸 전제로 한다.
+   * `position: sticky` 와 함께 쓰는 걸 전제로 한다. 가장 가까운 스크롤 가능 조상을
+   * 자동 감지해 그 컨테이너의 scroll 이벤트에 반응하며, `prefers-reduced-motion: reduce`
+   * 환경에서는 슬라이드 애니메이션이 즉시 toggle 로 대체된다.
    *
    * @default false
-   * @beta variant 와 stickyHide 는 베타 — API 가 v1 전에 바뀔 수 있다.
    */
   stickyHide?: boolean;
   /**

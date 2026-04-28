@@ -269,9 +269,7 @@ ShUiHeader(
         ↑ 데스크탑에서는 그룹 라벨이 숨고 모든 항목이 한 줄로 나열된다. 화면을 768px 이하로 줄이고 햄버거를 열면 같은 항목이 라벨과 함께 섹션으로 묶여 보인다.
       </p>
 
-      <h2>
-        Variants <span style={{ marginLeft: "0.5rem", padding: "0.125rem 0.5rem", fontSize: "0.6875rem", fontWeight: 600, background: "var(--background-muted)", border: "1px solid var(--border)", borderRadius: "9999px", color: "var(--foreground-muted)", verticalAlign: "middle" }}>BETA</span>
-      </h2>
+      <h2>Variants</h2>
       <p>
         <code>variant</code> 로 헤더 배경 표현을 바꾼다. <code>transparent</code> 는 hero 위에서, <code>blur</code> 는 sticky 헤더에서 뒤 콘텐츠를 흐리게 보여줄 때 유용.
       </p>
@@ -372,9 +370,7 @@ ShUiHeader(
         <CodePanel language="tsx" code={`<Header variant="blur">...</Header>`} />
       </Preview>
 
-      <h2>
-        Sticky hide on scroll <span style={{ marginLeft: "0.5rem", padding: "0.125rem 0.5rem", fontSize: "0.6875rem", fontWeight: 600, background: "var(--background-muted)", border: "1px solid var(--border)", borderRadius: "9999px", color: "var(--foreground-muted)", verticalAlign: "middle" }}>BETA</span>
-      </h2>
+      <h2>Sticky hide on scroll</h2>
       <p>
         <code>stickyHide</code> 가 활성이면 스크롤 다운 시 헤더가 위로 사라지고, 위로 스크롤하면 다시 노출된다.
         구현은 가장 가까운 스크롤 가능 조상을 자동 감지해 그쪽 scroll 이벤트를 듣는다 — 일반적인 페이지 스크롤은 물론, 아래 데모처럼 컨테이너 안 스크롤에서도 동작.
@@ -396,7 +392,31 @@ ShUiHeader(
         />
       </Preview>
       <p className="muted">
-        ⚠️ <code>variant</code> · <code>stickyHide</code> · <code>stickyHideThreshold</code> 는 베타 — API 가 v1 전에 바뀔 수 있다.
+        <code>prefers-reduced-motion: reduce</code> 환경에서는 슬라이드 트랜지션이 자동으로 비활성화돼 즉시 토글된다.
+      </p>
+
+      <h3>blur 튜닝</h3>
+      <p>
+        blur 변형은 두 CSS 변수로 instance 별 조정이 가능하다 — 컴포넌트 카피본을 수정하지 않아도 사이트마다 다른 글래스 표현을 만들 수 있다.
+      </p>
+      <ul>
+        <li><code>--sh-ui-header-blur-opacity</code> — 배경 불투명도 (기본 <code>85%</code>)</li>
+        <li><code>--sh-ui-header-blur-radius</code> — backdrop-filter blur 반경 (기본 <code>16px</code>)</li>
+      </ul>
+      <CodePanel
+        language="tsx"
+        code={`<Header
+  variant="blur"
+  style={{
+    "--sh-ui-header-blur-opacity": "92%",
+    "--sh-ui-header-blur-radius": "20px",
+  } as React.CSSProperties}
+>
+  ...
+</Header>`}
+      />
+      <p className="muted">
+        브라우저 지원: <code>backdrop-filter</code> 는 Chrome 76+ · Safari 9+ · Firefox 103+ · Edge 17+. 미지원 브라우저에서는 <code>@supports</code> 폴백으로 불투명 배경이 자동 적용돼 가독성 보장. <code>color-mix(in srgb, ...)</code> 는 Chrome 111+ · Safari 16.4+ · Firefox 113+ — 미지원 환경에서는 hover 오버레이가 적용되지 않을 수 있으나 컴포넌트 동작 자체에는 지장 없음.
       </p>
 
       <h2>제어 모드</h2>
@@ -482,9 +502,9 @@ export function AppHeader() {
         <li><code>open?: boolean</code> — 제어 모드 drawer 열림 상태</li>
         <li><code>defaultOpen?: boolean</code> — 비제어 모드 초기 열림</li>
         <li><code>onOpenChange?: (open: boolean) =&gt; void</code> — 열림 변경 콜백</li>
-        <li><code>variant?: &quot;solid&quot; | &quot;transparent&quot; | &quot;blur&quot;</code> <em>(beta)</em> — 배경 표현, 기본 <code>&quot;solid&quot;</code></li>
-        <li><code>stickyHide?: boolean</code> <em>(beta)</em> — 스크롤 다운 시 자동 숨김</li>
-        <li><code>stickyHideThreshold?: number</code> <em>(beta)</em> — 숨김 시작 픽셀, 기본 <code>80</code></li>
+        <li><code>variant?: &quot;solid&quot; | &quot;transparent&quot; | &quot;blur&quot;</code> — 배경 표현, 기본 <code>&quot;solid&quot;</code></li>
+        <li><code>stickyHide?: boolean</code> — 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지</li>
+        <li><code>stickyHideThreshold?: number</code> — 숨김 시작 픽셀, 기본 <code>80</code></li>
       </ul>
       <h3>HeaderItem</h3>
       <ul>
