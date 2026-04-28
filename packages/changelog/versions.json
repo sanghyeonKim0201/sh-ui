@@ -9,7 +9,7 @@
       "type": "minor",
       "highlights": [
         "a11y — drawer 가 열릴 때 focus trap · ESC 닫기 · 닫힐 때 트리거로 포커스 복원 자동화. drawer 패널에 role=dialog + aria-modal=true 부여",
-        "HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 절대 위치 dropdown(클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리",
+        "HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 document.body 로 portal 된 dropdown(부모 overflow 클리핑 회피, 트리거 위치를 scroll/resize 마다 추종, 클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리",
         "HeaderNavGroup(label) — drawer 안에서 nav 항목을 섹션으로 묶음(라벨 + 들여쓰기). inline 모드는 display:contents 로 자식만 평면 렌더, 데스크탑 레이아웃 무영향",
         "베타 — variant=\"solid\"|\"transparent\"|\"blur\" 로 헤더 배경 표현 전환, stickyHide+stickyHideThreshold 로 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지해 페이지 스크롤뿐 아니라 컨테이너 내부 스크롤에도 반응. API 가 v1 전에 바뀔 수 있음을 docs·JSDoc 에 명시"
       ],

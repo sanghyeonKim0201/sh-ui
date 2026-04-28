@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import "./styles.css";
 
 function cx(...args: (string | undefined | false | null)[]) {
@@ -442,6 +443,8 @@ type MenuCtx = {
   triggerId: string;
   contentId: string;
   location: NavLocation;
+  triggerRef: React.RefObject<HTMLButtonElement | null>;
+  contentRef: React.RefObject<HTMLDivElement | null>;
 };
 const MenuContext = React.createContext<MenuCtx | null>(null);
 
@@ -465,17 +468,22 @@ export function HeaderMenu({
   const location = React.useContext(NavLocationContext);
   const [open, setOpen] = React.useState(location === "drawer" ? defaultOpen : false);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
   const triggerId = React.useId();
   const contentId = React.useId();
 
-  // dropdown 모드에서만 외부 클릭 닫기 + ESC 닫기
+  // dropdown 모드에서만 외부 클릭 닫기 + ESC 닫기.
+  // portal 로 띄운 content 는 containerRef 의 자식이 아니므로 contentRef 도 별도 검사.
   React.useEffect(() => {
     if (location !== "inline") return;
     if (!open) return;
 
     const onPointerDown = (e: PointerEvent) => {
-      const c = containerRef.current;
-      if (c && !c.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (containerRef.current?.contains(target)) return;
+      if (contentRef.current?.contains(target)) return;
+      setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
@@ -494,7 +502,7 @@ export function HeaderMenu({
   }, [location]);
 
   const ctx = React.useMemo<MenuCtx>(
-    () => ({ open, setOpen, triggerId, contentId, location }),
+    () => ({ open, setOpen, triggerId, contentId, location, triggerRef, contentRef }),
     [open, triggerId, contentId, location],
   );
 
@@ -521,10 +529,20 @@ export const HeaderMenuTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
 >(function HeaderMenuTrigger({ className, children, onClick, ...props }, ref) {
-  const { open, setOpen, triggerId, contentId } = useMenu();
+  const { open, setOpen, triggerId, contentId, triggerRef } = useMenu();
+
+  const setRefs = React.useCallback(
+    (node: HTMLButtonElement | null) => {
+      triggerRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) (ref as React.MutableRefObject<HTMLButtonElement | null>).current = node;
+    },
+    [ref, triggerRef],
+  );
+
   return (
     <button
-      ref={ref}
+      ref={setRefs}
       type="button"
       id={triggerId}
       aria-haspopup="menu"
@@ -544,25 +562,95 @@ export const HeaderMenuTrigger = React.forwardRef<
   );
 });
 
-/** HeaderMenu 의 펼쳐지는 본문. 안에 <HeaderItem> 등을 둔다. */
+/** HeaderMenu 의 펼쳐지는 본문. inline 모드에서는 document.body 로 portal — 부모 overflow 클리핑을 회피한다. */
 export const HeaderMenuContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(function HeaderMenuContent({ className, children, ...props }, ref) {
-  const { open, contentId, triggerId } = useMenu();
-  return (
+>(function HeaderMenuContent({ className, children, style, ...props }, ref) {
+  const { open, contentId, triggerId, location, triggerRef, contentRef } = useMenu();
+
+  const setRefs = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      contentRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    },
+    [ref, contentRef],
+  );
+
+  // drawer 모드 — 트리거 바로 아래 inline 으로 펼쳐지는 collapsible.
+  if (location === "drawer") {
+    return (
+      <div
+        ref={setRefs}
+        id={contentId}
+        role="menu"
+        aria-labelledby={triggerId}
+        data-open={open ? "" : undefined}
+        hidden={!open}
+        className={cx("sh-ui-header__menu-content", className)}
+        style={style}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  // inline 모드 — document.body 로 portal + 트리거 위치 추종
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+
+  const [pos, setPos] = React.useState<{ top: number; left: number; minWidth: number }>({
+    top: 0,
+    left: 0,
+    minWidth: 0,
+  });
+
+  React.useLayoutEffect(() => {
+    if (!open) return;
+    const update = () => {
+      const trigger = triggerRef.current;
+      if (!trigger) return;
+      const rect = trigger.getBoundingClientRect();
+      setPos({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+        minWidth: rect.width,
+      });
+    };
+    update();
+    // capture: true 로 모든 스크롤 컨테이너 변화를 잡아 재배치
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+    };
+  }, [open, triggerRef]);
+
+  if (!mounted || !open) return null;
+
+  return createPortal(
     <div
-      ref={ref}
+      ref={setRefs}
       id={contentId}
       role="menu"
       aria-labelledby={triggerId}
-      data-open={open ? "" : undefined}
-      hidden={!open}
-      className={cx("sh-ui-header__menu-content", className)}
+      data-open=""
+      className={cx("sh-ui-header__menu-content sh-ui-header__menu-content--portal", className)}
+      style={{
+        position: "absolute",
+        top: pos.top,
+        left: pos.left,
+        minWidth: Math.max(pos.minWidth, 192),
+        ...style,
+      }}
       {...props}
     >
       {children}
-    </div>
+    </div>,
+    document.body,
   );
 });
 

@@ -193,25 +193,20 @@
   transform: rotate(180deg);
 }
 
-.sh-ui-header__menu--inline > .sh-ui-header__menu-content {
-  position: absolute;
-  top: calc(100% + var(--space-1));
-  left: 0;
-  min-width: 12rem;
+/* inline 모드 dropdown 은 portal 로 document.body 에 렌더된다 — 부모 overflow 영향 받지 않음. */
+.sh-ui-header__menu-content--portal {
+  z-index: var(--z-dropdown, 50);
   padding: var(--space-1);
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.18);
-  z-index: var(--z-dropdown, 50);
   display: flex;
   flex-direction: column;
   gap: 1px;
+  color: var(--foreground);
 }
-.sh-ui-header__menu--inline > .sh-ui-header__menu-content[hidden] {
-  display: none;
-}
-.sh-ui-header__menu--inline .sh-ui-header__menu-content .sh-ui-header__item {
+.sh-ui-header__menu-content--portal .sh-ui-header__item {
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
 }
