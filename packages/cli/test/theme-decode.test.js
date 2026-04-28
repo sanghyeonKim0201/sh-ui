@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { decodeTheme } from '../src/theme/decode.js';
+import { decodeTheme } from '../src/create/theme/decode.js';
 
 const validTheme = {
   light: {

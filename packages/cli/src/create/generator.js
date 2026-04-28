@@ -2,7 +2,6 @@ import { input, select, checkbox, confirm } from '@inquirer/prompts';
 import { execSync } from 'node:child_process';
 import fs from 'fs-extra';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { getPluginChoices, getPluginsByNames } from './plugins/index.js';
 import { decodeTheme } from './theme/decode.js';
 import {
@@ -12,9 +11,9 @@ import {
   buildDartColorsBlock,
   buildDartRadiusBlock,
 } from './theme/inject.js';
+import { getTemplatesRoot } from '../paths.mjs';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const TEMPLATES_DIR = path.join(__dirname, '..', 'templates');
+const TEMPLATES_DIR = getTemplatesRoot();
 
 // ─── Create new project ───
 
@@ -25,7 +24,7 @@ function assertNoTtyFlag(value, flagLabel) {
   if (value === undefined || value === null) {
     throw new Error(
       `비대화형 환경(TTY 없음)에서는 ${flagLabel} 가 필요합니다. ` +
-      `sh-ui-create --help 참고.`,
+      `sh-ui create --help 참고.`,
     );
   }
 }

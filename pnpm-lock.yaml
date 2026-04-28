@@ -78,25 +78,24 @@ importers:
 
   packages/cli:
     dependencies:
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.0.0
-        version: 1.29.0(zod@3.25.76)
-      zod:
-        specifier: ^3.25.0
-        version: 3.25.76
-
-  packages/create:
-    dependencies:
       '@inquirer/prompts':
         specifier: ^7.0.0
         version: 7.10.1(@types/node@22.19.17)
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.0.0
+        version: 1.29.0(zod@3.25.76)
       fs-extra:
         specifier: ^11.2.0
         version: 11.3.4
+      zod:
+        specifier: ^3.25.0
+        version: 3.25.76
     devDependencies:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.19.17)(jsdom@25.0.1)
+
+  packages/create: {}
 
   packages/llms: {}
 

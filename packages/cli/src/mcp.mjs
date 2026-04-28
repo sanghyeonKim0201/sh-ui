@@ -13,6 +13,7 @@
 //   sh_ui_remove_component - 컴포넌트 삭제
 
 import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -22,6 +23,7 @@ import { init } from "./init.mjs";
 import { add } from "./add.mjs";
 import { list } from "./list.mjs";
 import { remove } from "./remove.mjs";
+import { createProject } from "./create/generator.js";
 import {
   getRegistryRoot,
   getSummariesPath,
@@ -102,35 +104,19 @@ function resolveCwd(input) {
 
 const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter 디자인 시스템.
 
-## 새 프로젝트를 만드는 경우 (이 MCP 툴 호출 금지)
+## 새 프로젝트를 만드는 경우
 
-빈 폴더에서 시작하거나 사용자가 "Next.js 앱 만들어줘", "Flutter 프로젝트 새로", "sh-ui 로 시작" 처럼 **스캐폴드부터** 요청하면 \`sh-ui-create\` 사용:
+빈 폴더에서 시작하거나 사용자가 "Next.js 앱 만들어줘", "Flutter 프로젝트 새로", "sh-ui 로 시작" 처럼 **스캐폴드부터** 요청하면:
 
-  npm create sh-ui my-app          # 권장 (대화형)
-  npx sh-ui-create my-app          # 동일
+**1차 — \`sh_ui_create_project\` MCP 툴** (선호):
+  - 인자: name, platform (next|flutter), structure (next 일 때 standalone|monorepo), plugins (선택), force (덮어쓰기)
+  - 인터랙티브 프롬프트 없이 한 번에 스캐폴드 + 토큰 + sh-ui.config.json 생성
 
-비대화형(에이전트/CI)은 **모든 필수 플래그를 명시**해야 한다 — \`sh-ui-create\` 는 \`--help\` 가 없고, 누락 시 prompt 에서 멈춘다:
+**2차 — Bash** (사용자가 직접 셸에서 돌리고 싶다고 명시할 때만):
+  npm create sh-ui my-app
+  npx sh-ui-cli create my-app --platform next --structure standalone --yes
 
-  # Next.js 단독:
-  npx sh-ui-create my-app --platform next --structure standalone --plugins "" --yes
-  # Next.js 모노레포 (Turborepo):
-  npx sh-ui-create my-app --platform next --structure monorepo --plugins "" --yes
-  # Flutter:
-  npx sh-ui-create my-app --platform flutter --yes
-
-플래그:
-- \`--platform\` next | flutter (필수)
-- \`--structure\` standalone | monorepo (next 일 때 필수)
-- \`--plugins\` 콤마 구분 (sentry,next-intl) — 없으면 \`""\` 명시 (필수)
-- \`--theme\` base64 인코딩된 테마 JSON (선택)
-- \`--yes\` 디렉토리 덮어쓰기/모노레포 기본값 자동 채택
-
-이게 한 번에 해주는 일:
-- Next.js (standalone / Turborepo 모노레포) 또는 Flutter 프로젝트 스캐폴드
-- FSD 폴더 구조, 토큰, \`sh-ui.config.json\` 일괄 생성
-- 옵션 플러그인 (Sentry, next-intl)
-
-\`create-next-app\` + \`sh_ui_init\` 조합은 **쓰지 말 것** — 위 명령이 더 짧고 sh-ui 관용에 맞다.
+\`create-next-app\` + \`sh_ui_init\` 조합은 **쓰지 말 것** — 위 두 경로가 더 짧고 sh-ui 관용에 맞다.
 
 ## 이미 있는 프로젝트에 sh-ui 를 얹는 경우 (MCP 툴 사용)
 
@@ -149,7 +135,7 @@ const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter �
 
 export async function startMcpServer() {
   const server = new McpServer(
-    { name: "sh-ui", version: "0.22.2" }, // sh-ui-cli 와 동기화
+    { name: "sh-ui", version: "0.23.0" }, // sh-ui-cli 와 동기화
     {
       capabilities: { tools: {} },
       instructions: SERVER_INSTRUCTIONS,
@@ -168,10 +154,78 @@ export async function startMcpServer() {
   );
 
   server.registerTool(
+    "sh_ui_create_project",
+    {
+      description:
+        "빈 폴더에 sh-ui 프로젝트 스캐폴드 — Next.js (standalone/monorepo) 또는 Flutter. " +
+        "FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx sh-ui-cli create 직접 호출보다 우선).",
+      inputSchema: {
+        name: z.string().min(1)
+          .describe("프로젝트 디렉토리 이름. 예: my-app"),
+        platform: z.enum(["next", "flutter"])
+          .describe("타겟 플랫폼"),
+        structure: z.enum(["standalone", "monorepo"]).optional()
+          .describe("Next.js 구조 — platform=next 일 때 필수. standalone(단독) | monorepo(Turborepo)"),
+        plugins: z.array(z.enum(["sentry", "next-intl"])).optional()
+          .describe("Next.js 플러그인. 미지정시 빈 배열"),
+        theme: z.string().optional()
+          .describe("base64 인코딩된 테마 JSON (선택)"),
+        cwd: z.string().optional()
+          .describe("부모 디렉토리. 기본 process.cwd()"),
+        force: z.boolean().optional()
+          .describe("기존 디렉토리 덮어쓰기. 기본 false (안전)"),
+      },
+    },
+    async (input) => {
+      if (input.platform === "next" && !input.structure) {
+        return {
+          isError: true,
+          content: [
+            {
+              type: "text",
+              text: "platform=next 일 때 structure ('standalone' | 'monorepo') 가 필요합니다.",
+            },
+          ],
+        };
+      }
+      const targetParent = resolveCwd(input);
+      const targetDir = resolve(targetParent, input.name);
+      if (existsSync(targetDir) && !input.force) {
+        return {
+          isError: true,
+          content: [
+            {
+              type: "text",
+              text: `'${targetDir}' 가 이미 존재합니다. 덮어쓰려면 force: true.`,
+            },
+          ],
+        };
+      }
+      const origCwd = process.cwd();
+      try {
+        process.chdir(targetParent);
+        const text = await captureConsole(() =>
+          createProject({
+            name: input.name,
+            platform: input.platform,
+            structure: input.structure,
+            plugins: input.plugins,
+            theme: input.theme,
+            yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
+          }),
+        );
+        return textResult(text || "✓ 프로젝트 생성 완료");
+      } finally {
+        process.chdir(origCwd);
+      }
+    },
+  );
+
+  server.registerTool(
     "sh_ui_init",
     {
       description:
-        "⚠️ 빈 폴더/새 프로젝트면 이 툴 대신 `npx sh-ui-create` 사용 — 스캐폴드 + 토큰 + config 일괄 처리. " +
+        "⚠️ 빈 폴더/새 프로젝트면 이 툴 대신 sh_ui_create_project 사용 — 스캐폴드 + 토큰 + config 일괄 처리. " +
         "이 툴은 **이미 있는** Next.js/Vite/Flutter 프로젝트에 sh-ui 만 얹을 때. " +
         "현재 디렉토리(또는 cwd)에 sh-ui.config.json 을 생성. 비대화형 — 누락된 값은 기본값 사용. " +
         "선택지 의미가 헷갈리면 먼저 sh_ui_describe_init 호출 권장.",

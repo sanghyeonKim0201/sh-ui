@@ -47,6 +47,11 @@ export function getSummariesPath(platform) {
     : resolve(MONOREPO_PACKAGES, "llms", "summaries", `${platform}.json`);
 }
 
+/** sh-ui create 용 프로젝트 템플릿 루트 — 이 패키지 안에 직접 들어있다 */
+export function getTemplatesRoot() {
+  return resolve(CLI_ROOT, "templates");
+}
+
 /** 변경 내역 JSON */
 export function getVersionsPath() {
   return isBundled

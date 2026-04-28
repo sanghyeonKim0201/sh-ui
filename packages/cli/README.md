@@ -1,6 +1,8 @@
 # sh-ui-cli
 
-sh-ui 디자인 시스템의 컴포넌트를 프로젝트로 복사하는 CLI. shadcn 방식 — 프로젝트가 소스를 소유한다.
+sh-ui 디자인 시스템의 통합 CLI. **프로젝트 스캐폴드**(create) + **컴포넌트 추가**(add/list/remove) + **IDE-내 AI용 MCP 서버**.
+
+> v0.23.0 부터 `sh-ui-create` 가 이 패키지로 통합됐습니다. 기존 `sh-ui-create` 사용자는 자동으로 `sh-ui create` 로 위임됩니다.
 
 ## 설치
 
@@ -13,6 +15,21 @@ npx sh-ui-cli <command>
 ```
 
 ## 사용법
+
+### create — 프로젝트 스캐폴드
+
+```bash
+# 대화형
+npm create sh-ui my-app
+npx sh-ui-cli create
+
+# 비대화형 (에이전트 / CI)
+npx sh-ui-cli create my-app --platform next --structure standalone --yes
+npx sh-ui-cli create my-app --platform next --structure monorepo --plugins sentry,next-intl --yes
+npx sh-ui-cli create my-app --platform flutter --yes
+```
+
+전체 옵션은 `npx sh-ui-cli create --help`. TTY 없는 환경에서는 누락된 필수 플래그가 있으면 prompt 대신 즉시 에러로 종료한다.
 
 ### init — 설정 파일 생성
 
@@ -150,7 +167,7 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user
 ## 더 알아보기
 
 - sh-ui 디자인 시스템: https://github.com/sanghyeonKim0201/sh-ui
-- `sh-ui-create` (프로젝트 스캐폴드): https://www.npmjs.com/package/sh-ui-create
+- 변경 내역: `npx sh-ui-cli` 의 `sh_ui_get_changelog` MCP 툴 또는 GitHub Releases
 
 ## 라이선스
 

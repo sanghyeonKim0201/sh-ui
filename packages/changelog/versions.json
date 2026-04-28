@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.23.0",
+      "date": "2026-04-28",
+      "title": "sh-ui-create 가 sh-ui-cli 로 통합 — 단일 CLI",
+      "type": "minor",
+      "highlights": [
+        "프로젝트 스캐폴드가 sh-ui-cli 의 새 서브커맨드로 흡수: `npx sh-ui-cli create my-app --platform next --structure standalone --yes`",
+        "MCP 에 `sh_ui_create_project` 툴 신규 — IDE-내 AI 가 Bash 우회 없이 MCP 만으로 새 프로젝트 스캐폴드 가능. force/cwd/plugins/theme 모두 인자로 노출",
+        "MCP instructions 가 외부 CLI 안내 대신 통합된 명령·새 툴을 가리키도록 정리 — 단일 진실원천, 드리프트 위험 제거",
+        "기존 `sh-ui-create` 패키지는 v0.20.0 deprecated shim 으로 유지 — `npx sh-ui-create` 호출은 자동으로 `npx sh-ui-cli create` 로 위임되어 호환 유지",
+        "내부: 템플릿/스캐폴드 로직/스캐폴드 테스트(52건) 가 packages/cli/{templates,src/create,test}/ 로 이동, paths.mjs 에 getTemplatesRoot() 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.23.0"
+    },
+    {
       "version": "0.22.2",
       "date": "2026-04-28",
       "title": "에이전트 UX — MCP 라우팅 + sh-ui-create 비대화형 가드",

@@ -14,8 +14,8 @@ vi.mock('@inquirer/prompts', () => ({
 
 // 모킹된 함수를 가져와 각 테스트에서 답변 큐를 세팅
 const prompts = await import('@inquirer/prompts');
-const { createProject, addApp } = await import('../src/generator.js');
-const { TOKEN_KEYS } = await import('../src/theme/decode.js');
+const { createProject, addApp } = await import('../src/create/generator.js');
+const { TOKEN_KEYS } = await import('../src/create/theme/decode.js');
 
 let tmpDir;
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseArgs } from '../src/cli-args.js';
+import { parseArgs } from '../src/create/cli-args.js';
 
 describe('parseArgs', () => {
   it('플래그 없음 → 빈 flags', () => {

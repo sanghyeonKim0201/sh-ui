@@ -1,7 +1,7 @@
 {
   "name": "sh-ui-create",
-  "version": "0.19.0",
-  "description": "sh-ui create — 프로젝트 스캐폴드 CLI (Next.js / Turborepo 모노레포 / Flutter)",
+  "version": "0.20.0",
+  "description": "[DEPRECATED] sh-ui-create 는 sh-ui-cli 에 통합됐습니다. 이 패키지는 npx sh-ui create 로 위임하는 호환 shim 입니다.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -15,10 +15,7 @@
   "keywords": [
     "sh-ui",
     "scaffold",
-    "cli",
-    "nextjs",
-    "flutter",
-    "create"
+    "deprecated"
   ],
   "publishConfig": {
     "access": "public"
@@ -28,23 +25,11 @@
     "sh-ui-create": "./bin/create.js"
   },
   "scripts": {
-    "create": "node bin/create.js",
-    "add-app": "node bin/create.js add-app",
-    "test": "vitest run",
-    "prepublishOnly": "pnpm test"
+    "prepublishOnly": "node --check bin/create.js"
   },
   "files": [
     "bin",
-    "src",
-    "templates",
     "LICENSE",
     "README.md"
-  ],
-  "dependencies": {
-    "@inquirer/prompts": "^7.0.0",
-    "fs-extra": "^11.2.0"
-  },
-  "devDependencies": {
-    "vitest": "^3.2.4"
-  }
+  ]
 }

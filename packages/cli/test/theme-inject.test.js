@@ -5,7 +5,7 @@ import {
   buildCssRadiusBlock,
   buildDartColorsBlock,
   buildDartRadiusBlock,
-} from '../src/theme/inject.js';
+} from '../src/create/theme/inject.js';
 
 const theme = {
   light: { background: '#111111', 'background-subtle': '#FAFAFA', 'background-muted': '#F5F5F5',

@@ -7,6 +7,8 @@ import { remove } from "../src/remove.mjs";
 const [, , cmd, ...rest] = process.argv;
 
 const usage = `사용법:
+  sh-ui create [name] [options]    Next.js / Flutter 프로젝트 스캐폴드
+                                   sh-ui create --help 로 옵션 전체 확인
   sh-ui init                       설정 파일(sh-ui.config.json) 생성
   sh-ui add <component...>         컴포넌트 소스를 프로젝트로 복사하고
                                    필요한 외부 패키지를 자동 설치
@@ -26,6 +28,11 @@ const usage = `사용법:
 
 try {
   switch (cmd) {
+    case "create": {
+      const { runCreate } = await import("../src/create/index.mjs");
+      await runCreate(rest);
+      break;
+    }
     case "init":
       await init({ cwd: process.cwd(), args: rest });
       break;
