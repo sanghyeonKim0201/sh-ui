@@ -1,5 +1,4 @@
-// sh-ui create — 프로젝트 스캐폴드 진입점.
-// bin/sh-ui.mjs 의 `create` 서브커맨드와 sh-ui-create 호환 shim 양쪽에서 호출된다.
+// sh-ui create — 프로젝트 스캐폴드 진입점. bin/sh-ui.mjs 의 `create` 서브커맨드에서 호출.
 
 import { parseArgs } from './cli-args.js';
 import { createProject, addApp, addComponent } from './generator.js';
@@ -37,7 +36,7 @@ export async function runCreate(rest) {
   // parseArgs 가 process.argv 형태(앞 두 개는 스킵)를 기대하므로 더미 두 개를 prepend.
   let parsed;
   try {
-    parsed = parseArgs(['node', 'sh-ui-create', ...rest]);
+    parsed = parseArgs(['node', 'sh-ui', ...rest]);
   } catch (e) {
     console.error(`❌ ${e.message}`);
     console.error(`\n도움말: sh-ui create --help`);

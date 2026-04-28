@@ -2,8 +2,6 @@
 
 sh-ui 디자인 시스템의 통합 CLI. **프로젝트 스캐폴드**(create) + **컴포넌트 추가**(add/list/remove) + **IDE-내 AI용 MCP 서버**.
 
-> v0.23.0 부터 `sh-ui-create` 가 이 패키지로 통합됐습니다. 기존 `sh-ui-create` 사용자는 자동으로 `sh-ui create` 로 위임됩니다.
-
 ## 설치
 
 ```bash

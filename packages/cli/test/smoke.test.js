@@ -20,7 +20,7 @@ const { TOKEN_KEYS } = await import('../src/create/theme/decode.js');
 let tmpDir;
 
 beforeEach(async () => {
-  tmpDir = path.join(os.tmpdir(), `sh-ui-create-${crypto.randomUUID()}`);
+  tmpDir = path.join(os.tmpdir(), `sh-ui-cli-create-${crypto.randomUUID()}`);
   await fs.ensureDir(tmpDir);
   vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
   vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -41,7 +41,7 @@ afterEach(async () => {
   await fs.remove(tmpDir);
 });
 
-describe('sh-ui-create smoke tests', () => {
+describe('sh-ui create smoke tests', () => {
   // 테스트 케이스는 이후 태스크에서 추가
   it('scenario 1 — standalone, no plugins', async () => {
     prompts.input.mockResolvedValueOnce('my-app');

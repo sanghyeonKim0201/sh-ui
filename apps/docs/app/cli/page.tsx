@@ -13,13 +13,13 @@ export default function CliPage() {
         컴포넌트 추가(<code>init/add/list/remove</code>) + IDE-내 AI 용 MCP 서버(<code>mcp</code>) 가 한 패키지.
       </p>
       <ul>
-        <li><strong><a href="#sh-ui-create"><code>sh-ui-cli create</code></a></strong> — 새 프로젝트 스캐폴드. 인터랙티브로 테마까지 디자인하려면 <a href="/create">프로젝트 생성</a> 페이지의 UI 빌더 사용.</li>
+        <li><strong><a href="#create"><code>sh-ui-cli create</code></a></strong> — 새 프로젝트 스캐폴드. 인터랙티브로 테마까지 디자인하려면 <a href="/create">프로젝트 생성</a> 페이지의 UI 빌더 사용.</li>
         <li><strong><a href="#sh-ui"><code>sh-ui-cli init/add/list/remove</code></a></strong> — 기존 프로젝트에 토큰·컴포넌트를 복사·관리.</li>
       </ul>
 
       {/* ───────── sh-ui create ───────── */}
 
-      <h2 id="sh-ui-create">sh-ui-cli create — 프로젝트 스캐폴드</h2>
+      <h2 id="create">sh-ui-cli create — 프로젝트 스캐폴드</h2>
       <p className="muted">
         sh-ui 가 미리 설정된 Next.js 또는 Flutter 프로젝트를 생성한다. FSD 폴더 구조, <code>sh-ui.config.json</code>,
         기본 토큰 파일, 자주 쓰는 플러그인(Sentry, next-intl)까지 한 번에.

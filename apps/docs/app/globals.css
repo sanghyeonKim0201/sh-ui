@@ -225,13 +225,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 
 /* /create 페이지 FAB 포커스·호버 */
-.sh-ui-create-fab:focus-visible {
+.sh-ui-fab:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 3px;
 }
-.sh-ui-create-fab:hover {
+.sh-ui-fab:hover {
   background: var(--primary-hover);
 }
 @media (prefers-reduced-motion: reduce) {
-  .sh-ui-create-fab { transition: none; }
+  .sh-ui-fab { transition: none; }
 }
