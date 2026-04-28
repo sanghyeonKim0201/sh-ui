@@ -18,7 +18,6 @@ npx sh-ui-cli <command>
 
 ```bash
 # 대화형
-npm create sh-ui my-app
 npx sh-ui-cli create
 
 # 비대화형 (에이전트 / CI)

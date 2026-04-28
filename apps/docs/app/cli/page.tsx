@@ -26,9 +26,7 @@ export default function CliPage() {
       </p>
 
       <h3>빠른 시작</h3>
-      <CodePanel language="bash" showLineNumbers={false} code={`npm create sh-ui my-app
-# 또는
-npx sh-ui-cli create`} />
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli create`} />
       <p>대화형 프롬프트로 프로젝트 이름, 구조(단독/모노레포)를 선택하면 현재 디렉토리에 프로젝트가 생성된다.</p>
       <p className="muted">
         미리 디자인한 테마까지 한 번에 반영하고 싶다면 <a href="/create">프로젝트 생성</a> 페이지에서 색·radius 를 편집한 뒤 생성된 CLI 명령어를 복사하면 된다.
@@ -236,7 +234,7 @@ npx sh-ui-cli create add-component button --app web`,
       <h3>설치 없이 바로 실행</h3>
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli <command> [args]`} />
       <p className="muted">
-        설치형으로 쓰려면 <code>pnpm add -D sh-ui</code> / <code>npm i -D sh-ui</code>.
+        설치형으로 쓰려면 <code>pnpm add -D sh-ui-cli</code> / <code>npm i -D sh-ui-cli</code>.
       </p>
 
       <h3>명령 개요</h3>

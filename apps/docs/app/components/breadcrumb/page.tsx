@@ -24,14 +24,15 @@ export default function BreadcrumbDocsPage() {
 
       <Preview>
         <Preview.Demo>
+          {/* 데모 안의 href 는 클릭해도 navigate 되지 않도록 # 로 둠. 실제 사용 시 진짜 경로로 교체 */}
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">홈</BreadcrumbLink>
+                <BreadcrumbLink href="#">홈</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/components">컴포넌트</BreadcrumbLink>
+                <BreadcrumbLink href="#">컴포넌트</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -102,7 +103,7 @@ export default function BreadcrumbDocsPage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">홈</BreadcrumbLink>
+                <BreadcrumbLink href="#">홈</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -110,7 +111,7 @@ export default function BreadcrumbDocsPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/components">컴포넌트</BreadcrumbLink>
+                <BreadcrumbLink href="#">컴포넌트</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
