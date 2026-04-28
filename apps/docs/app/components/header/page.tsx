@@ -22,7 +22,7 @@ import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
 import { BasicDemo } from "./_demos/basic";
 import { StickyHideDemo } from "./_demos/sticky-hide";
-import { NoNav } from "./_demos/no-nav";
+import { NoNav } from "@/components/no-nav";
 
 export default function HeaderPage() {
   return (

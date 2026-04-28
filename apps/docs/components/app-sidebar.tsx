@@ -136,6 +136,13 @@ export function AppSidebar() {
                   </SidebarCollapsibleTrigger>
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/components"}>
+                          <Link href="/components">
+                            <span>전체 보기</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
                       {components.map((c) => (
                         <SidebarMenuSubItem key={c.href}>
                           <SidebarMenuSubButton asChild isActive={isActive(c.href)}>

@@ -235,3 +235,18 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 @media (prefers-reduced-motion: reduce) {
   .sh-ui-fab { transition: none; }
 }
+
+/* Components index page cards */
+.sh-ui-component-card:hover {
+  border-color: var(--border-strong);
+  background: var(--background-subtle);
+  transform: translateY(-1px);
+}
+.sh-ui-component-card:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-component-card { transition: none; }
+  .sh-ui-component-card:hover { transform: none; }
+}
