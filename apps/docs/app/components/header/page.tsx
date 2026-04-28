@@ -31,7 +31,7 @@ export default function HeaderPage() {
     <main className="container">
       <h1>Header</h1>
       <p className="muted">
-        상단 네비게이션 바. 데스크탑에선 가로 네비, 모바일(<code>{"<"} 768px</code>)에선 햄버거 + drawer로 자동 전환. Compound 패턴으로 구성.
+        상단 네비게이션 바. 데스크탑에선 가로 네비, 모바일(<code>{"<"} 768px</code>)에선 햄버거 + drawer로 자동 전환. Compound 패턴으로 구성. 마케팅/랜딩 페이지, 좌측 사이드바 없는 블로그·문서 사이트, AppShell 이 과한 단순 화면 등에 적합.
       </p>
 
       <Preview>
@@ -94,30 +94,7 @@ ShUiHeader(
         ]}
       />
 
-      <h2>구성 요소</h2>
-      <p>
-        React 쪽 Header 는 compound components 로 조립한다. 각 파트가 독립 요소라 자유롭게 배치·스타일링할 수 있다.
-      </p>
-      <SubComponents
-        rows={[
-          { name: "Header", description: "루트. drawer 열림 상태와 sticky/variant 동작 제공." },
-          { name: "HeaderTrigger", description: "햄버거 버튼. 모바일에서만 자동 노출." },
-          { name: "HeaderBrand", description: "로고 + 타이틀 묶음." },
-          { name: "HeaderLogo", description: "브랜드 로고 슬롯." },
-          { name: "HeaderTitle", description: "브랜드 타이틀 텍스트 슬롯." },
-          { name: "HeaderNav", description: "네비 컨테이너 — 데스크탑 inline / 모바일 drawer 자동 전환. value/defaultValue 로 active 자동 매칭." },
-          { name: "HeaderItem", description: "네비 링크 — active 자동/수동 토글, 클릭 시 drawer 자동 close." },
-          { name: "HeaderActions", description: "우측 트레일링 슬롯 — 검색·로그인 등 항상 헤더에 유지." },
-          { name: "HeaderMenu", description: "서브메뉴 wrapper — 데스크탑 portal dropdown / drawer 안 collapsible 자동 전환." },
-          { name: "HeaderMenuTrigger", description: "서브메뉴 토글 버튼 (chevron)." },
-          { name: "HeaderMenuContent", description: "서브메뉴 본문 — 안에 HeaderItem 등을 둠." },
-          { name: "HeaderNavGroup", description: "drawer 안 nav 항목을 섹션으로 묶음 (라벨 + 들여쓰기). inline 모드는 평면 렌더." },
-          { name: "HeaderDesktopOnly", description: "≥768px 에서만 보이는 슬롯 (drawer 로 이동 없음)." },
-          { name: "HeaderMobileOnly", description: "<768px 에서만 보이는 슬롯 — 사용자 정의 drawer 트리거 등에." },
-        ]}
-      />
-
-      <h2>반응형 동작</h2>
+      <h2>Usage</h2>
       <p>
         <code>@media (max-width: 767px)</code> 기준으로 CSS가 자동 전환.
       </p>
@@ -127,16 +104,9 @@ ShUiHeader(
         <li>아이템 클릭 / backdrop 클릭 시 drawer 자동 닫힘</li>
       </ul>
 
-      <h2>접근성</h2>
-      <p>drawer 가 열릴 때 다음이 자동으로 적용된다.</p>
-      <ul>
-        <li><strong>포커스 트랩</strong> — Tab/Shift+Tab 이 drawer 안에서만 순환</li>
-        <li><strong>ESC</strong> 로 닫기</li>
-        <li>닫힐 때 <strong>트리거 버튼으로 포커스 복원</strong></li>
-        <li><code>role=&quot;dialog&quot;</code> + <code>aria-modal=&quot;true&quot;</code> 가 drawer 패널에 자동 부여</li>
-      </ul>
+      <h2>Examples</h2>
 
-      <h2>서브메뉴 (HeaderMenu)</h2>
+      <h3>서브메뉴 (HeaderMenu)</h3>
       <p>
         <code>HeaderMenu</code> / <code>HeaderMenuTrigger</code> / <code>HeaderMenuContent</code> 로
         2-레벨 nav 를 만든다. 데스크탑에서는 절대 위치 dropdown, 모바일 drawer 안에서는 collapsible 로 자동 전환.
@@ -189,7 +159,7 @@ ShUiHeader(
         클릭 외부 또는 ESC 로 dropdown 이 닫힌다. 모바일에선 collapsible 이므로 trigger 한 번 더 눌러 접는다.
       </p>
 
-      <h2>반응형 가시성 — HeaderDesktopOnly / HeaderMobileOnly</h2>
+      <h3>반응형 가시성 — HeaderDesktopOnly / HeaderMobileOnly</h3>
       <p>
         <code>HeaderNav</code> 는 모바일에서 자식을 drawer 로 옮긴다. 이게 싫고 <strong>그냥 안 보이게</strong>만
         하고 싶을 때(예: 데스크탑 검색 input · 로그인 버튼 · 마이페이지 메뉴 등을 모바일에선 자체 drawer 트리거로 대체) 두 유틸을 사용한다.
@@ -222,7 +192,7 @@ ShUiHeader(
 </Header>`}
       />
 
-      <h2>Drawer 그룹핑 (HeaderNavGroup)</h2>
+      <h3>Drawer 그룹핑 (HeaderNavGroup)</h3>
       <p>
         많은 nav 항목을 모바일 drawer 안에서 섹션으로 묶고 싶을 때 사용. inline 모드(데스크탑)에서는
         <code>display: contents</code> 로 자식만 평면 렌더되어 영향 없음 — 같은 자식 트리가 두 모드 모두에서 자연스럽게 보인다.
@@ -269,12 +239,12 @@ ShUiHeader(
         ↑ 데스크탑에서는 그룹 라벨이 숨고 모든 항목이 한 줄로 나열된다. 화면을 768px 이하로 줄이고 햄버거를 열면 같은 항목이 라벨과 함께 섹션으로 묶여 보인다.
       </p>
 
-      <h2>Variants</h2>
+      <h3>Variants</h3>
       <p>
         <code>variant</code> 로 헤더 배경 표현을 바꾼다. <code>transparent</code> 는 hero 위에서, <code>blur</code> 는 sticky 헤더에서 뒤 콘텐츠를 흐리게 보여줄 때 유용.
       </p>
 
-      <h3>solid (기본)</h3>
+      <h4>solid (기본)</h4>
       <Preview>
         <Preview.Demo>
           <NoNav>
@@ -296,7 +266,7 @@ ShUiHeader(
         <CodePanel language="tsx" code={`<Header variant="solid">...</Header>`} />
       </Preview>
 
-      <h3>transparent — hero 위에 얹기</h3>
+      <h4>transparent — hero 위에 얹기</h4>
       <Preview>
         <Preview.Demo>
           <NoNav>
@@ -339,7 +309,7 @@ ShUiHeader(
         <CodePanel language="tsx" code={`<Header variant="transparent">...</Header>`} />
       </Preview>
 
-      <h3>blur — sticky 헤더 위로 콘텐츠가 흐려져 보임</h3>
+      <h4>blur — sticky 헤더 위로 콘텐츠가 흐려져 보임</h4>
       <Preview>
         <Preview.Demo>
           <NoNav>
@@ -376,7 +346,7 @@ ShUiHeader(
         <CodePanel language="tsx" code={`<Header variant="blur">...</Header>`} />
       </Preview>
 
-      <h2>Sticky hide on scroll</h2>
+      <h3>Sticky hide on scroll</h3>
       <p>
         <code>stickyHide</code> 가 활성이면 스크롤 다운 시 헤더가 위로 사라지고, 위로 스크롤하면 다시 노출된다.
         구현은 가장 가까운 스크롤 가능 조상을 자동 감지해 그쪽 scroll 이벤트를 듣는다 — 일반적인 페이지 스크롤은 물론, 아래 데모처럼 컨테이너 안 스크롤에서도 동작.
@@ -401,7 +371,7 @@ ShUiHeader(
         <code>prefers-reduced-motion: reduce</code> 환경에서는 슬라이드 트랜지션이 자동으로 비활성화돼 즉시 토글된다.
       </p>
 
-      <h3>blur 튜닝</h3>
+      <h4>blur 튜닝</h4>
       <p>
         blur 변형은 두 CSS 변수로 instance 별 조정이 가능하다 — 컴포넌트 카피본을 수정하지 않아도 사이트마다 다른 글래스 표현을 만들 수 있다.
       </p>
@@ -425,7 +395,7 @@ ShUiHeader(
         브라우저 지원: <code>backdrop-filter</code> 는 Chrome 76+ · Safari 9+ · Firefox 103+ · Edge 17+. 미지원 브라우저에서는 <code>@supports</code> 폴백으로 불투명 배경이 자동 적용돼 가독성 보장. <code>color-mix(in srgb, ...)</code> 는 Chrome 111+ · Safari 16.4+ · Firefox 113+ — 미지원 환경에서는 hover 오버레이가 적용되지 않을 수 있으나 컴포넌트 동작 자체에는 지장 없음.
       </p>
 
-      <h2>제어 모드</h2>
+      <h3>제어 모드</h3>
       <p>drawer 열림 상태를 바깥에서 관리하고 싶으면 <code>open</code> + <code>onOpenChange</code>. 외부 버튼/단축키로 drawer 열기, 라우터 변경 시 자동 닫기 등에 사용.</p>
       <CodePanel
         language="tsx"
@@ -451,7 +421,7 @@ export function AppHeader() {
 }`}
       />
 
-      <h2>active 자동 매칭 — Controlled vs Uncontrolled</h2>
+      <h3>active 자동 매칭 — Controlled vs Uncontrolled</h3>
       <p>
         <code>HeaderNav</code> 가 자식 <code>HeaderItem</code> 의 <code>href</code> 와 비교해 active 를 자동 결정한다 —
         항목마다 <code>active</code> 비교를 반복할 필요 없음. 두 가지 모드:
@@ -461,7 +431,7 @@ export function AppHeader() {
         <li><strong>Uncontrolled</strong> (<code>defaultValue</code>) — HeaderNav 가 내부에서 추적. 클릭이 active 를 자동으로 옮김. tabs-like nav · 위젯 내부 nav · 라우터 없는 경우</li>
       </ul>
 
-      <h3>Controlled — Next.js usePathname (실전)</h3>
+      <h4>Controlled — Next.js usePathname (실전)</h4>
       <p>
         라우터 pathname 을 그대로 <code>value</code> 로 전달. 페이지 이동 시 pathname 이 바뀌면 active 도 자동으로 따라간다. 사용자 코드에 별도 state 불필요.
       </p>
@@ -505,7 +475,7 @@ export function AppHeader() {
 }`}
       />
 
-      <h3>Uncontrolled — defaultValue (라우터 없을 때)</h3>
+      <h4>Uncontrolled — defaultValue (라우터 없을 때)</h4>
       <p>
         <code>defaultValue</code> 만 주면 HeaderNav 가 내부 상태로 추적. 클릭하면 알아서 active 가 옮겨간다 — Tabs/RadioGroup 와 동일. <code>onValueChange</code> 로 변경을 외부에서 관찰할 수 있다.
       </p>
@@ -548,7 +518,7 @@ export function WidgetHeader() {
         active 가 적용되면 자동으로 <code>data-active</code> 와 <code>aria-current=&quot;page&quot;</code> 가 부여된다.
       </p>
 
-      <h3>커스텀 매칭</h3>
+      <h4>커스텀 매칭</h4>
       <p>
         매칭 규칙을 바꾸려면 <code>match</code> prop 에 비교 함수 전달.
       </p>
@@ -562,7 +532,7 @@ export function WidgetHeader() {
 </HeaderNav>`}
       />
 
-      <h3>개별 override (escape hatch)</h3>
+      <h4>개별 override (escape hatch)</h4>
       <p>
         특정 항목에서 자동 계산을 건너뛰려면 <code>active</code> prop 을 명시. prop 이 자동 계산보다 우선한다.
       </p>
@@ -576,7 +546,7 @@ export function WidgetHeader() {
 </HeaderNav>`}
       />
 
-      <h2>전체 예시 — 실전 AppHeader</h2>
+      <h3>전체 예시 — 실전 AppHeader</h3>
       <p>
         지금까지 보여준 기능들을 한 번에 조합한 완전한 컴포넌트. Next.js + sh-ui 기준으로 그대로 복사하면 동작한다.
         포함된 것 — usePathname active 매칭 · HeaderMenu 서브메뉴 · variant=&quot;blur&quot; sticky · stickyHide ·
@@ -669,12 +639,28 @@ export function AppHeader() {
         focus trap · ESC · 스크롤 다운 시 헤더 자동 숨김 · 라우트 변경 시 drawer 자동 close 까지 모두 동작.
       </p>
 
-      <h2>언제 쓰나</h2>
-      <ul>
-        <li>마케팅 사이트 / 랜딩 페이지</li>
-        <li>블로그 / 문서 사이트 — 좌측 사이드바 없이 상단 네비만</li>
-        <li>AppShell이 과한 단순 화면</li>
-      </ul>
+      <h2>구성 요소</h2>
+      <p>
+        React 쪽 Header 는 compound components 로 조립한다. 각 파트가 독립 요소라 자유롭게 배치·스타일링할 수 있다.
+      </p>
+      <SubComponents
+        rows={[
+          { name: "Header", description: "루트. drawer 열림 상태와 sticky/variant 동작 제공." },
+          { name: "HeaderTrigger", description: "햄버거 버튼. 모바일에서만 자동 노출." },
+          { name: "HeaderBrand", description: "로고 + 타이틀 묶음." },
+          { name: "HeaderLogo", description: "브랜드 로고 슬롯." },
+          { name: "HeaderTitle", description: "브랜드 타이틀 텍스트 슬롯." },
+          { name: "HeaderNav", description: "네비 컨테이너 — 데스크탑 inline / 모바일 drawer 자동 전환. value/defaultValue 로 active 자동 매칭." },
+          { name: "HeaderItem", description: "네비 링크 — active 자동/수동 토글, 클릭 시 drawer 자동 close." },
+          { name: "HeaderActions", description: "우측 트레일링 슬롯 — 검색·로그인 등 항상 헤더에 유지." },
+          { name: "HeaderMenu", description: "서브메뉴 wrapper — 데스크탑 portal dropdown / drawer 안 collapsible 자동 전환." },
+          { name: "HeaderMenuTrigger", description: "서브메뉴 토글 버튼 (chevron)." },
+          { name: "HeaderMenuContent", description: "서브메뉴 본문 — 안에 HeaderItem 등을 둠." },
+          { name: "HeaderNavGroup", description: "drawer 안 nav 항목을 섹션으로 묶음 (라벨 + 들여쓰기). inline 모드는 평면 렌더." },
+          { name: "HeaderDesktopOnly", description: "≥768px 에서만 보이는 슬롯 (drawer 로 이동 없음)." },
+          { name: "HeaderMobileOnly", description: "<768px 에서만 보이는 슬롯 — 사용자 정의 drawer 트리거 등에." },
+        ]}
+      />
 
       <h2>API Reference</h2>
 
@@ -738,6 +724,15 @@ export function AppHeader() {
       <p className="muted">
         모두 표준 HTML 속성을 그대로 받는다 (각각 <code>div</code> · <code>span</code> · <code>span</code> · <code>button</code> · <code>div</code> · <code>button</code> · <code>div</code>). 별도의 커스텀 prop 은 없으며 className/style 로 직접 스타일링.
       </p>
+
+      <h2>접근성</h2>
+      <p>drawer 가 열릴 때 다음이 자동으로 적용된다.</p>
+      <ul>
+        <li><strong>포커스 트랩</strong> — Tab/Shift+Tab 이 drawer 안에서만 순환</li>
+        <li><strong>ESC</strong> 로 닫기</li>
+        <li>닫힐 때 <strong>트리거 버튼으로 포커스 복원</strong></li>
+        <li><code>role=&quot;dialog&quot;</code> + <code>aria-modal=&quot;true&quot;</code> 가 drawer 패널에 자동 부여</li>
+      </ul>
     </main>
   );
 }
