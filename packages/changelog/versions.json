@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.25.0",
+      "date": "2026-04-28",
+      "title": "Next.js 템플릿에 http 골격 + BFF proxy 추가 — IS_SERVER 분기 제거",
+      "type": "minor",
+      "highlights": [
+        "nextjs-app · nextjs-standalone 템플릿에 axios 단일 인스턴스(src/shared/api/http.ts)와 BFF 라우트 핸들러(app/api/proxy/[...path]/route.ts) 추가 — 클라/서버 모두 /api/proxy 경유, IS_SERVER 분기 없음",
+        "인증 · 토큰 refresh · Sentry · 로그인 쿠키 특례 처리는 의도적으로 제외해 인증 비종속 골격으로 유지 — 프로젝트별 추가는 apps/docs/recipes 가이드로 분리",
+        "레시피 9종 추가 (apps/docs/app/recipes/): api-layer, auth, file-upload, tanstack-query, async-boundary, i18n, sentry, testing, deployment",
+        "사이드바에 '레시피' 진입점 추가"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.25.0"
+    },
+    {
       "version": "0.24.0",
       "date": "2026-04-28",
       "title": "Next.js 템플릿 RootLayout 분리 — app/layout.tsx 는 thin wrapper",
