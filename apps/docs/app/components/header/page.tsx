@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/code-tabs";
 import { Preview } from "@/components/preview";
+import { BasicDemo } from "./_demos/basic";
 import { StickyHideDemo } from "./_demos/sticky-hide";
 import { NoNav } from "./_demos/no-nav";
 
@@ -33,30 +34,7 @@ export default function HeaderPage() {
 
       <Preview>
         <Preview.Demo>
-          <NoNav>
-            <div style={{ width: "100%", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" }}>
-              <Header>
-                <HeaderTrigger />
-                <HeaderBrand>
-                  <HeaderLogo>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                      <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-                    </svg>
-                  </HeaderLogo>
-                  <HeaderTitle>sh-ui</HeaderTitle>
-                </HeaderBrand>
-                <HeaderNav>
-                  <HeaderItem href="#" active>홈</HeaderItem>
-                  <HeaderItem href="#">문서</HeaderItem>
-                  <HeaderItem href="#">컴포넌트</HeaderItem>
-                  <HeaderItem href="#">가격</HeaderItem>
-                </HeaderNav>
-                <HeaderActions>
-                  <Button variant="secondary" size="sm">로그인</Button>
-                </HeaderActions>
-              </Header>
-            </div>
-          </NoNav>
+          <BasicDemo />
         </Preview.Demo>
         <CodeTabs
           items={[
@@ -64,7 +42,9 @@ export default function HeaderPage() {
               value: "react",
               label: "React",
               language: "tsx",
-              code: `<Header>
+              code: `// active 는 controlled prop — 부모가 어떤 항목이 활성인지 결정한다.
+// 실제 앱에선 보통 라우터 pathname 과 비교해 자동 표시 (아래 "Next.js usePathname" 섹션 참고)
+<Header>
   <HeaderTrigger />
   <HeaderBrand>
     <HeaderLogo><LogoIcon /></HeaderLogo>
