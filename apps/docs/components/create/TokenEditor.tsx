@@ -76,7 +76,9 @@ type Props = {
   onApplyPreset: (preset: ThemePresetPayload) => void;
   onApplyBaseTone: (tone: BaseTone) => void;
   onApplyPrimaryFromColor: (hex: string) => void;
-  onReset: () => void;
+  onResetAll: () => void;
+  onResetLight: () => void;
+  onResetDark: () => void;
   drawerOpen?: boolean;
   onClose?: () => void;
 };
@@ -108,7 +110,9 @@ export function TokenEditor({
   onApplyPreset,
   onApplyBaseTone,
   onApplyPrimaryFromColor,
-  onReset,
+  onResetAll,
+  onResetLight,
+  onResetDark,
   drawerOpen,
   onClose,
 }: Props) {
@@ -161,21 +165,6 @@ export function TokenEditor({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
         <strong style={{ fontSize: "0.875rem" }}>토큰 편집</strong>
         <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
-          <button
-            type="button"
-            onClick={onReset}
-            style={{
-              fontSize: "0.75rem",
-              padding: "0.25rem 0.5rem",
-              background: "transparent",
-              border: "1px solid var(--border)",
-              borderRadius: "calc(var(--radius) - 2px)",
-              cursor: "pointer",
-              color: "var(--foreground-muted)",
-            }}
-          >
-            전체 초기화
-          </button>
           {onClose && (
             <button
               type="button"
@@ -201,6 +190,20 @@ export function TokenEditor({
             </button>
           )}
         </div>
+      </div>
+
+      <div
+        role="group"
+        aria-label="초기화"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: "0.25rem",
+        }}
+      >
+        <ResetButton onClick={onResetAll}>전체 초기화</ResetButton>
+        <ResetButton onClick={onResetLight}>Light 초기화</ResetButton>
+        <ResetButton onClick={onResetDark}>Dark 초기화</ResetButton>
       </div>
 
       <SegmentedTabs
@@ -588,6 +591,33 @@ export function TokenEditor({
 }
 
 /* ────── Sub-components ────── */
+
+function ResetButton({
+  onClick,
+  children,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        fontSize: "0.6875rem",
+        padding: "0.25rem 0.375rem",
+        background: "transparent",
+        border: "1px solid var(--border)",
+        borderRadius: "calc(var(--radius) - 2px)",
+        cursor: "pointer",
+        color: "var(--foreground-muted)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
 function SegmentedTabs<T extends string>({
   ariaLabel,
