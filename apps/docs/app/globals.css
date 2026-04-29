@@ -63,7 +63,67 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   max-width: 100%;
 }
 
-/* Playground 2-col 레이아웃 */
+/* Playground 3-pane 레이아웃 — 토큰 에디터 | 컴포넌트 피커 | 캔버스
+   wide (≥1280): 3-col (sticky editor + sticky picker + flex canvas)
+   narrow (<1280): 1-col stack (editor 위, canvas 아래) + 피커는 drawer
+*/
+.sh-create-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 300px) minmax(220px, 260px) 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+.sh-create-pane--editor,
+.sh-create-pane--picker {
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+.sh-create-drawer-toggle {
+  display: none;
+}
+.sh-create-drawer-backdrop {
+  display: none;
+}
+@media (max-width: 1280px) {
+  .sh-create-layout {
+    grid-template-columns: 1fr;
+  }
+  .sh-create-pane--editor {
+    position: static;
+    max-height: none;
+  }
+  .sh-create-pane--picker {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(20rem, 90vw);
+    max-height: 100vh;
+    z-index: 50;
+    transform: translateX(100%);
+    transition: transform var(--duration-slow) ease;
+    box-shadow: var(--shadow-lg);
+    border-radius: 0;
+  }
+  .sh-create-pane--picker[data-open="true"] {
+    transform: translateX(0);
+  }
+  .sh-create-drawer-toggle {
+    display: inline-flex;
+  }
+  .sh-create-drawer-backdrop[data-open="true"] {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+  }
+}
+
+/* 레거시 클래스 — 다른 페이지가 쓸 수 있어 유지 */
 .playground-layout {
   display: grid;
   grid-template-columns: minmax(280px, 320px) 1fr;
