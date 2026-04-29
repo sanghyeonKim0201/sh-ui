@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
-import { AppShell } from "@/components/app-shell";
+import { ThemeProvider } from "@/components/ui/theme";
 import { Toaster } from "@/components/ui/toast";
 
 export const metadata = {
@@ -21,9 +21,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="ko" className={isDark ? "dark" : ""}>
       <body>
-        <AppShell defaultTheme={isDark ? "dark" : "light"}>
-          {children}
-        </AppShell>
+        <ThemeProvider defaultTheme={isDark ? "dark" : "light"}>{children}</ThemeProvider>
         <Toaster />
       </body>
     </html>

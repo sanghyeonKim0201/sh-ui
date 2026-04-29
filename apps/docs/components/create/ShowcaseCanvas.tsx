@@ -23,13 +23,12 @@ export function ShowcaseCanvas({ selectedIds, onRemove, previewVars, containerRe
         ...previewVars,
         background: "var(--background)",
         color: "var(--foreground)",
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius)",
+        height: "100%",
         padding: "1.5rem",
         display: "flex",
         flexDirection: "column",
         gap: "1.5rem",
-        minHeight: "20rem",
+        overflowY: "auto",
       }}
     >
       {items.length === 0 ? (

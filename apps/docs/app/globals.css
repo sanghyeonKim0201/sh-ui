@@ -63,23 +63,63 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   max-width: 100%;
 }
 
-/* Playground 3-pane 레이아웃 — 토큰 에디터 | 컴포넌트 피커 | 캔버스
-   wide (≥1280): 3-col (sticky editor + sticky picker + flex canvas)
-   narrow (<1280): 1-col stack (editor 위, canvas 아래) + 피커는 drawer
+/* /create 독립 풀스크린 shell — docs 사이드바 없이 자체 헤더 + 3-col 그리드.
+   좌: 컴포넌트 피커 (full-height 사이드바, narrow 에서도 유지)
+   중: 캔버스 (flex)
+   우: 토큰 에디터 (280px, narrow 에서 drawer 로 전환)
 */
-.sh-create-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 300px) minmax(220px, 260px) 1fr;
-  gap: 1.5rem;
-  align-items: start;
-  margin-top: 1.5rem;
+.sh-create-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--background);
 }
-.sh-create-pane--editor,
-.sh-create-pane--picker {
-  position: sticky;
-  top: 5rem;
-  max-height: calc(100vh - 6rem);
-  overflow-y: auto;
+.sh-create-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+  flex: none;
+}
+.sh-create-header__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8125rem;
+  color: var(--foreground-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--background);
+  transition: color var(--duration-fast), background var(--duration-fast);
+}
+.sh-create-header__back:hover {
+  color: var(--foreground);
+  background: var(--background-subtle);
+}
+.sh-create-header__title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0;
+}
+.sh-create-header__spacer {
+  flex: 1;
+}
+.sh-create-grid {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 280px;
+  flex: 1;
+  min-height: 0;
+}
+.sh-create-grid > .sh-create-pane--picker {
+  border-right: 1px solid var(--border);
+}
+.sh-create-grid > .sh-create-pane--editor {
+  border-left: 1px solid var(--border);
 }
 .sh-create-drawer-toggle {
   display: none;
@@ -87,28 +127,23 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .sh-create-drawer-backdrop {
   display: none;
 }
-@media (max-width: 1280px) {
-  .sh-create-layout {
-    grid-template-columns: 1fr;
+@media (max-width: 1024px) {
+  .sh-create-grid {
+    grid-template-columns: 240px minmax(0, 1fr);
   }
   .sh-create-pane--editor {
-    position: static;
-    max-height: none;
-  }
-  .sh-create-pane--picker {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     width: min(20rem, 90vw);
-    max-height: 100vh;
     z-index: 50;
     transform: translateX(100%);
     transition: transform var(--duration-slow) ease;
     box-shadow: var(--shadow-lg);
-    border-radius: 0;
+    border-left: 1px solid var(--border);
   }
-  .sh-create-pane--picker[data-open="true"] {
+  .sh-create-pane--editor[data-open="true"] {
     transform: translateX(0);
   }
   .sh-create-drawer-toggle {
@@ -120,6 +155,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
     z-index: 40;
+  }
+}
+@media (max-width: 640px) {
+  .sh-create-grid {
+    grid-template-columns: 200px minmax(0, 1fr);
   }
 }
 

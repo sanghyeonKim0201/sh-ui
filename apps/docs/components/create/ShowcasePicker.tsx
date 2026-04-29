@@ -42,13 +42,13 @@ export function ShowcasePicker({ selectedIds, onToggle, drawerOpen, onClose }: P
       className="sh-create-pane sh-create-pane--picker"
       data-open={drawerOpen ? "true" : "false"}
       style={{
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius)",
+        height: "100%",
         background: "var(--background-subtle)",
-        padding: "0.75rem",
+        padding: "0.875rem",
         display: "flex",
         flexDirection: "column",
         gap: "0.75rem",
+        overflowY: "auto",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
