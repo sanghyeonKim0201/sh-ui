@@ -1,7 +1,8 @@
 import { sentryPlugin } from './sentry.js';
 import { nextIntlPlugin } from './nextIntl.js';
+import { authJwtPlugin } from './authJwt.js';
 
-export const allPlugins = [sentryPlugin, nextIntlPlugin];
+export const allPlugins = [sentryPlugin, nextIntlPlugin, authJwtPlugin];
 
 export function getPluginChoices() {
   return allPlugins.map((p) => ({

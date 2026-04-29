@@ -1,6 +1,11 @@
 import { cookies } from 'next/headers';
 import { NextResponse, type NextRequest } from 'next/server';
 
+import {
+  captureApiError,
+  logApiError,
+} from '@/src/shared/api/observability';
+
 const API_URL = process.env.API_URL ?? 'http://localhost:8080/api';
 const ACCESS_TOKEN_COOKIE = 'accessToken';
 const LOCALE_COOKIE = 'NEXT_LOCALE';
@@ -11,7 +16,8 @@ const proxyRequest = async (
   method: string,
 ) => {
   const { path } = await ctx.params;
-  const url = new URL(`${API_URL}/${path.join('/')}`);
+  const apiPath = path.join('/');
+  const url = new URL(`${API_URL}/${apiPath}`);
 
   request.nextUrl.searchParams.forEach((value, key) => {
     url.searchParams.set(key, value);
@@ -39,10 +45,9 @@ const proxyRequest = async (
     }
   }
 
+  let response: Response;
   try {
-    const response = await fetch(url.toString(), { method, headers, body });
-    const data = await response.json();
-    return NextResponse.json(data, { status: response.status });
+    response = await fetch(url.toString(), { method, headers, body });
   } catch (error) {
     console.error(`[PROXY] ${method} ${url.toString()} —`, error);
     return NextResponse.json(
@@ -57,6 +62,28 @@ const proxyRequest = async (
       { status: 502 },
     );
   }
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    logApiError('PROXY', {
+      url: url.toString(),
+      method,
+      status: response.status,
+      requestBody: typeof body === 'string' ? body : undefined,
+      responseBody: data,
+    });
+
+    captureApiError({
+      url: url.toString(),
+      apiPath,
+      method,
+      status: response.status,
+      responseBody: data,
+    });
+  }
+
+  return NextResponse.json(data, { status: response.status });
 };
 
 export const GET = (
