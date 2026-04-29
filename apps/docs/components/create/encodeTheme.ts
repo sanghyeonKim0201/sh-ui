@@ -35,8 +35,13 @@ export type ThemeConfig = {
 
 export const encodeTheme = (cfg: ThemeConfig): string => {
   const json = JSON.stringify(cfg);
-  // btoa 는 ASCII-only. hex + 숫자만 있으니 안전.
-  return btoa(json);
+  // btoa 는 Latin1-only — shadow/ease/gradient 사용자 입력에 한글·유니코드가
+  // 섞이면 InvalidCharacterError. UTF-8 바이트로 먼저 인코딩한 뒤 base64.
+  // 디코드(CLI) 는 Buffer.from(b64, 'base64').toString('utf-8') 라 그대로 호환.
+  const bytes = new TextEncoder().encode(json);
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
 };
 
 export type { TokenKey, Mode };
