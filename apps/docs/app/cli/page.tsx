@@ -152,41 +152,69 @@ npx sh-ui-cli create add-component button --app web`,
       </p>
 
       <h3>플러그인</h3>
-      <p>프로젝트 생성 시 체크박스로 선택. 필요한 파일·의존성·<code>next.config.ts</code> 래핑이 자동 구성된다.</p>
+      <p>
+        프로젝트 생성 시 체크박스로 선택. 필요한 파일·의존성·
+        <code>next.config.ts</code> 래핑이 자동 구성된다. 자세한 사용법과
+        커스터마이징은 각 플러그인 페이지 (<a href="/plugins">/plugins</a>) 참고.
+      </p>
 
-      <h4>Sentry — 에러 모니터링</h4>
+      <h4><a href="/plugins/sentry">Sentry</a> — 에러 모니터링</h4>
       <PropsTable
         rows={[
           { prop: "sentry.server.config.ts / edge.config.ts", type: "file", description: "서버/Edge 런타임 초기화 + beforeSend 필터링." },
           { prop: "instrumentation.ts / -client.ts", type: "file", description: "런타임별 로드 + 요청/브라우저 에러 캡처." },
           { prop: "app/error.tsx / global-error.tsx", type: "file", description: "라우트/글로벌 에러 바운더리." },
           { prop: "src/shared/ui/FallbackBoundary/", type: "file", description: "컴포넌트 레벨 에러 바운더리 (React Query 통합)." },
-          { prop: "src/shared/api/", type: "file", description: "ApiError, Axios 인터셉터, captureApiError()." },
-          { prop: "app/api/proxy/[...path]/route.ts", type: "file", description: "API 프록시 (5xx만 Sentry 보고)." },
+          { prop: "src/shared/api/observability.ts", type: "overwrite", description: "베이스의 no-op 캡처/로그 훅을 Sentry-aware 버전으로 교체 — BFF/serverFetch 의 5xx 자동 캡처." },
         ]}
       />
       <p className="muted">
-        에러 수집 흐름: 클라 API → proxy route에서 <code>captureApiError()</code> (5xx) / 서버 API → http.ts 인터셉터에서 캡처 /
-        UI 에러 → error.tsx, FallbackBoundary에서 <code>Sentry.captureException()</code>. 중복 방지는 <code>beforeSend</code> 필터 + instrumentation 에서 차단.
+        에러 수집 흐름: 베이스 BFF / <code>serverFetch</code> 가{" "}
+        <code>captureApiError()</code> 호출 → Sentry 가 켜졌을 때만 5xx 보고
+        (4xx 는 UI 에서 처리). UI 에러 → <code>error.tsx</code> /{" "}
+        <code>FallbackBoundary</code> 에서 <code>Sentry.captureException()</code>.
+        ApiError(401) 은 <code>beforeSend</code> 가 자동 제외.
       </p>
 
-      <h4>next-intl — 다국어</h4>
+      <h4><a href="/plugins/auth-jwt">auth-jwt</a> — 쿠키 기반 JWT 인증</h4>
+      <PropsTable
+        rows={[
+          { prop: "proxy.ts", type: "file", description: "Next 16 미들웨어 — 토큰 존재 체크 후 비로그인 사용자 /sign-in 리다이렉트." },
+          { prop: "src/shared/api/refreshSession.ts", type: "file", description: "★ placeholder — 백엔드 명세 확정 후 본문만 채우면 BFF/withAuthRetry 자동 활성화." },
+          { prop: "src/shared/api/withAuthRetry.ts", type: "file", description: "Server Action 안에서 401 시 자동 갱신 + 재시도 헬퍼." },
+          { prop: "app/api/proxy/[...path]/route.ts", type: "overwrite", description: "베이스 BFF 를 refresh-aware 버전으로 — 401 → refreshSession() 호출 후 재시도." },
+        ]}
+      />
+
+      <h4><a href="/plugins/next-intl">next-intl</a> — 다국어</h4>
       <PropsTable
         rows={[
           { prop: "app/[locale]/layout.tsx", type: "file", description: "로케일별 레이아웃." },
           { prop: "app/[locale]/page.tsx", type: "file", description: "기존 page.tsx 가 이 경로로 자동 이동." },
-          { prop: "proxy.ts", type: "file", description: "로케일 라우팅 미들웨어." },
+          { prop: "proxy.ts", type: "file", description: "로케일 라우팅 미들웨어 (auth-jwt 같이 켜면 인증 가드와 합성)." },
           { prop: "src/shared/config/i18n/routing.ts", type: "file", description: "로케일 정의 (ko, en)." },
           { prop: "src/shared/config/i18n/navigation.ts", type: "file", description: "로케일 인식 Link, useRouter 등." },
           { prop: "src/shared/config/i18n/messages/", type: "dir", description: "ko.json, en.json 기본 메시지." },
           { prop: "GlobalProvider", type: "patch", description: "NextIntlClientProvider 자동 래핑." },
         ]}
       />
-      <p>Sentry + next-intl 을 모두 선택하면 <code>next.config.ts</code> 래핑이 자동으로 합쳐진다:</p>
-      <CodePanel
-        language="ts"
-        code={`export default withSentryConfig(withNextIntl(nextConfig), { ... });`}
-      />
+      <p>플러그인 조합 시 자동 합성:</p>
+      <ul>
+        <li>
+          <strong>Sentry + next-intl</strong> — <code>next.config.ts</code>{" "}
+          래핑 합쳐짐: <code>withSentryConfig(withNextIntl(nextConfig), ...)</code>
+        </li>
+        <li>
+          <strong>auth-jwt + next-intl</strong> — <code>proxy.ts</code> 가
+          intl 미들웨어 + 인증 가드를 합친 버전으로 생성됨 (locale prefix 를
+          벗긴 pathname 기준 인증 라우트 매칭)
+        </li>
+        <li>
+          <strong>Sentry + auth-jwt</strong> — Sentry 가{" "}
+          <code>observability.ts</code> 를 덮어써 BFF refresh 재시도 + 5xx
+          자동 캡처
+        </li>
+      </ul>
 
       <h3>FSD (Feature-Sliced Design) 레이어</h3>
       <p>모든 템플릿은 FSD 구조를 따른다. ESLint <code>boundaries</code> 플러그인으로 레이어 규칙이 강제된다.</p>
@@ -214,7 +242,7 @@ npx sh-ui-cli create add-component button --app web`,
           { prop: "TypeScript 5.9", type: "core", description: "strict, ES2022." },
           { prop: "Tailwind CSS 4", type: "style", description: "@theme inline 으로 sh-ui 토큰 매핑 — bg-background 등 사용 가능." },
           { prop: "@base-ui/react", type: "peer", description: "sh-ui 가 의존하는 언스타일드 primitive." },
-          { prop: "TanStack React Query + Axios", type: "data", description: "데이터 페칭." },
+          { prop: "TanStack React Query", type: "data", description: "데이터 페칭. fetch 기반 isomorphic http() (RSC 직통 / 브라우저 /api/proxy 경유)." },
           { prop: "Zustand", type: "state", description: "상태 관리." },
           { prop: "next-themes + Sonner", type: "ui", description: "다크 모드 토글 + 토스트." },
           { prop: "Zod", type: "validation", description: "유효성 검증." },

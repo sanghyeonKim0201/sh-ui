@@ -90,7 +90,7 @@ export async function createProject(options = {}) {
   });
 
   // plugins 는 미지정시 기본 빈 배열 — prompt 띄우지 않는다.
-  // (플러그인을 쓰려면 명시적으로 --plugins sentry,next-intl 사용)
+  // (플러그인을 쓰려면 명시적으로 --plugins sentry,next-intl,auth-jwt 등 사용)
   const selectedPluginNames = options.plugins ?? [];
 
   const plugins = getPluginsByNames(selectedPluginNames);
@@ -427,6 +427,60 @@ async function writePluginFiles(targetDir, plugins) {
         await fs.writeFile(fullPath, content);
       }
     }
+  }
+
+  // auth-jwt + next-intl 동시 활성화 시 proxy.ts 병합
+  // (각 플러그인이 단독으로 깐 proxy.ts 를 합친 버전으로 덮어쓴다)
+  const names = new Set(plugins.map((p) => p.name));
+  if (names.has('auth-jwt') && names.has('next-intl')) {
+    const mergedProxy = `import createIntlMiddleware from 'next-intl/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+
+import { routing } from '@/src/shared/config/i18n/routing';
+
+const AUTH_ROUTES = ['/sign-in', '/sign-up'];
+
+const intl = createIntlMiddleware(routing);
+
+/**
+ * 로케일 prefix (/ko, /en) 를 벗겨 인증 라우트 매칭에 사용한다.
+ * 예: /ko/sign-in → /sign-in
+ */
+const stripLocalePrefix = (pathname: string): string => {
+  const locales = routing.locales as readonly string[];
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments[0] && locales.includes(segments[0])) {
+    const rest = segments.slice(1).join('/');
+    return \`/\${rest}\`.replace(/\\/$/, '') || '/';
+  }
+  return pathname;
+};
+
+/**
+ * Next 16+ proxy.ts (구 middleware.ts).
+ * next-intl 라우팅 + auth-jwt 토큰 존재 체크 합성 버전.
+ *
+ * - intl 이 먼저 로케일 prefix 처리 + NEXT_LOCALE 쿠키 set
+ * - 그 위에 인증 가드 — 토큰 없고 인증 라우트도 아니면 /sign-in 으로 redirect
+ * - AT 만료 검사나 refresh 는 하지 않는다 (BFF 가 처리)
+ */
+export default function proxy(req: NextRequest) {
+  const intlRes = intl(req);
+  const pathname = stripLocalePrefix(req.nextUrl.pathname);
+  const hasToken = !!req.cookies.get('accessToken')?.value;
+  const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
+
+  if (isAuthRoute) return intlRes;
+  if (!hasToken) return NextResponse.redirect(new URL('/sign-in', req.url));
+
+  return intlRes;
+}
+
+export const config = {
+  matcher: '/((?!api|_next|_vercel|monitoring|.*\\\\..*).*)',
+};
+`;
+    await fs.writeFile(path.join(targetDir, 'proxy.ts'), mergedProxy);
   }
 }
 

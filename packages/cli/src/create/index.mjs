@@ -23,7 +23,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 
 예 (비대화형 / 에이전트 / CI):
   sh-ui create my-app --platform next --structure standalone --yes
-  sh-ui create my-app --platform next --structure monorepo --plugins sentry,next-intl --yes
+  sh-ui create my-app --platform next --structure monorepo --plugins sentry,next-intl,auth-jwt --yes
   sh-ui create my-app --platform flutter --yes
 
 비대화형 환경(TTY 없음)에서는 누락된 필수 인자가 있으면 prompt 대신 에러로 종료한다.
