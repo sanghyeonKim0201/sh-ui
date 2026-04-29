@@ -37,6 +37,7 @@ import {
 } from "./tokens";
 import { BASE_TONES, detectActiveBaseTone, type BaseTone, type BaseToneName } from "./baseTones";
 import { GradientBuilder } from "./GradientBuilder";
+import { NumericInput } from "./NumericInput";
 import type { GradientTokens } from "./gradients";
 
 export type ThemePresetPayload = {
@@ -743,20 +744,19 @@ function ScalarRow({
           aria-label={label}
         />
       </div>
-      <code
-        style={{
-          fontSize: "0.6875rem",
-          minWidth: "3rem",
-          textAlign: "right",
-          color: "var(--foreground)",
-        }}
-      >
-        {value}
-        {unit}
-      </code>
+      <NumericInput
+        value={value}
+        onChange={onChange}
+        min={min}
+        max={max}
+        step={step}
+        unit={unit}
+        ariaLabel={label}
+      />
     </div>
   );
 }
+
 
 function StringRow({
   label,

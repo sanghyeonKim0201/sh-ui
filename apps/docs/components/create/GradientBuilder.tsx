@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Slider } from "@/components/ui/slider";
+import { NumericInput } from "./NumericInput";
 import {
   GRADIENT_SLOT_LABELS,
   GRADIENT_SLOT_NAMES,
@@ -94,9 +95,15 @@ export function GradientBuilder({ value, onChange }: Props) {
                     step={1}
                     aria-label="각도"
                   />
-                  <code style={{ fontSize: "0.6875rem", minWidth: "3rem", textAlign: "right" }}>
-                    {slot.angle}°
-                  </code>
+                  <NumericInput
+                    value={slot.angle}
+                    onChange={(v) => update(name, { ...slot, angle: v })}
+                    min={0}
+                    max={360}
+                    step={1}
+                    unit="°"
+                    ariaLabel="각도"
+                  />
                 </div>
                 {/* stops */}
                 {[0, 1].map((idx) => {
@@ -133,12 +140,26 @@ export function GradientBuilder({ value, onChange }: Props) {
                           }}
                         />
                         <code style={{ fontSize: "0.6875rem", color: "var(--foreground-muted)" }}>
-                          {stop.color} · {stop.position}%
+                          {stop.color}
                         </code>
-                        <div style={{ width: "6rem" }}>
-                          <Slider
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                          <div style={{ width: "5rem" }}>
+                            <Slider
+                              value={stop.position}
+                              onValueChange={(v) => {
+                                const stops = [...slot.stops] as [typeof slot.stops[0], typeof slot.stops[1]];
+                                stops[idx as 0 | 1] = { ...stop, position: v };
+                                update(name, { ...slot, stops });
+                              }}
+                              min={0}
+                              max={100}
+                              step={1}
+                              aria-label={`Stop ${idx + 1} 위치`}
+                            />
+                          </div>
+                          <NumericInput
                             value={stop.position}
-                            onValueChange={(v) => {
+                            onChange={(v) => {
                               const stops = [...slot.stops] as [typeof slot.stops[0], typeof slot.stops[1]];
                               stops[idx as 0 | 1] = { ...stop, position: v };
                               update(name, { ...slot, stops });
@@ -146,7 +167,8 @@ export function GradientBuilder({ value, onChange }: Props) {
                             min={0}
                             max={100}
                             step={1}
-                            aria-label={`Stop ${idx + 1} 위치`}
+                            unit="%"
+                            ariaLabel={`Stop ${idx + 1} 위치`}
                           />
                         </div>
                       </div>
