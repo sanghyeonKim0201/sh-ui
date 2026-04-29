@@ -126,7 +126,9 @@ ShUiSlider(
               language: "tsx",
               code: `const [v, setV] = useState(40);
 
-<Slider value={v} onValueChange={setV} aria-label="볼륨" />`,
+// 슬라이더 + NumericInput 양방향 동기화 — 드래그도 되고 키보드 입력도 됨.
+<Slider value={v} onValueChange={setV} aria-label="볼륨" />
+<NumericInput value={v} onValueChange={setV} min={0} max={100} aria-label="볼륨" />`,
             },
             {
               value: "flutter",

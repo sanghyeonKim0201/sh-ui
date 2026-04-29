@@ -49,6 +49,22 @@
       "dependencies": [],
       "registryDependencies": []
     },
+    "numeric-input": {
+      "name": "numeric-input",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/numeric-input/index.tsx",
+          "dest": "{components}/numeric-input/index.tsx"
+        },
+        {
+          "src": "components/numeric-input/styles.css",
+          "dest": "{components}/numeric-input/styles.css"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": []
+    },
     "file-upload": {
       "name": "file-upload",
       "type": "component",

@@ -37,7 +37,7 @@ import {
 } from "./tokens";
 import { BASE_TONES, detectActiveBaseTone, type BaseTone, type BaseToneName } from "./baseTones";
 import { GradientBuilder } from "./GradientBuilder";
-import { NumericInput } from "./NumericInput";
+import { NumericInput } from "@/components/ui/numeric-input";
 import type { GradientTokens } from "./gradients";
 
 export type ThemePresetPayload = {
@@ -746,12 +746,12 @@ function ScalarRow({
       </div>
       <NumericInput
         value={value}
-        onChange={onChange}
+        onValueChange={onChange}
         min={min}
         max={max}
         step={step}
         unit={unit}
-        ariaLabel={label}
+        aria-label={label}
       />
     </div>
   );

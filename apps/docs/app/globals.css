@@ -121,35 +121,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .sh-create-grid > .sh-create-pane--editor {
   border-left: 1px solid var(--border);
 }
-
-/* 토큰 편집기의 숫자 입력 — code 처럼 보이지만 클릭 시 인라인 편집 가능. */
-.sh-create-numeric {
-  width: 2.5rem;
-  padding: 0.125rem 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.6875rem;
-  text-align: right;
-  border: 1px solid transparent;
-  border-radius: calc(var(--radius) - 4px);
-  background: transparent;
-  color: var(--foreground);
-  appearance: textfield;
-  -moz-appearance: textfield;
-}
-.sh-create-numeric::-webkit-inner-spin-button,
-.sh-create-numeric::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.sh-create-numeric:hover {
-  border-color: var(--border);
-}
-.sh-create-numeric:focus-visible,
-.sh-create-numeric:focus {
-  outline: none;
-  border-color: var(--foreground);
-  background: var(--background);
-}
 .sh-create-drawer-toggle {
   display: none;
 }

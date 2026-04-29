@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Slider } from "@/components/ui/slider";
-import { NumericInput } from "./NumericInput";
+import { NumericInput } from "@/components/ui/numeric-input";
 import {
   GRADIENT_SLOT_LABELS,
   GRADIENT_SLOT_NAMES,
@@ -97,12 +97,12 @@ export function GradientBuilder({ value, onChange }: Props) {
                   />
                   <NumericInput
                     value={slot.angle}
-                    onChange={(v) => update(name, { ...slot, angle: v })}
+                    onValueChange={(v) => update(name, { ...slot, angle: v })}
                     min={0}
                     max={360}
                     step={1}
                     unit="°"
-                    ariaLabel="각도"
+                    aria-label="각도"
                   />
                 </div>
                 {/* stops */}
@@ -159,7 +159,7 @@ export function GradientBuilder({ value, onChange }: Props) {
                           </div>
                           <NumericInput
                             value={stop.position}
-                            onChange={(v) => {
+                            onValueChange={(v) => {
                               const stops = [...slot.stops] as [typeof slot.stops[0], typeof slot.stops[1]];
                               stops[idx as 0 | 1] = { ...stop, position: v };
                               update(name, { ...slot, stops });
@@ -168,7 +168,7 @@ export function GradientBuilder({ value, onChange }: Props) {
                             max={100}
                             step={1}
                             unit="%"
-                            ariaLabel={`Stop ${idx + 1} 위치`}
+                            aria-label={`Stop ${idx + 1} 위치`}
                           />
                         </div>
                       </div>
