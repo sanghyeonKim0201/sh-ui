@@ -560,33 +560,25 @@ export function TokenEditor({
         </div>
       </div>
 
-      <details style={{ borderTop: "1px solid var(--border)", paddingTop: "0.875rem" }}>
-        <summary
-          style={{
-            cursor: "pointer",
-            fontSize: "0.8125rem",
-            fontWeight: 500,
-            color: "var(--foreground-muted)",
-            listStyle: "none",
-          }}
-        >
-          내보내기
-        </summary>
-        <div style={{ marginTop: "0.5rem" }}>
-          <Tabs defaultValue="css">
-            <TabsList>
-              <TabsTrigger value="css">CSS</TabsTrigger>
-              <TabsTrigger value="dart">Dart</TabsTrigger>
-            </TabsList>
-            <TabsContent value="css">
-              <ExportBlock code={cssText} filename="tokens.css" />
-            </TabsContent>
-            <TabsContent value="dart">
-              <ExportBlock code={dartText} filename="sh_ui_tokens.dart" />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </details>
+      <Accordion size="sm">
+        <AccordionItem value="export">
+          <AccordionTrigger>내보내기</AccordionTrigger>
+          <AccordionContent>
+            <Tabs defaultValue="css">
+              <TabsList>
+                <TabsTrigger value="css">CSS</TabsTrigger>
+                <TabsTrigger value="dart">Dart</TabsTrigger>
+              </TabsList>
+              <TabsContent value="css">
+                <ExportBlock code={cssText} filename="tokens.css" />
+              </TabsContent>
+              <TabsContent value="dart">
+                <ExportBlock code={dartText} filename="sh_ui_tokens.dart" />
+              </TabsContent>
+            </Tabs>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
