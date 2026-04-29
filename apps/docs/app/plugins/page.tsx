@@ -19,13 +19,13 @@ export default function PluginsHub() {
         language="bash"
         filename="terminal"
         code={`# 플러그인 없이
-npm create sh-ui my-app -- --platform next --structure standalone --yes
+npx sh-ui-cli create my-app --platform next --structure standalone --yes
 
 # 한 개
-npm create sh-ui my-app -- --platform next --structure standalone --plugins auth-jwt --yes
+npx sh-ui-cli create my-app --platform next --structure standalone --plugins auth-jwt --yes
 
 # 조합 (콤마 구분, 공백 X)
-npm create sh-ui my-app -- --platform next --structure standalone --plugins sentry,auth-jwt,next-intl --yes`}
+npx sh-ui-cli create my-app --platform next --structure standalone --plugins sentry,auth-jwt,next-intl --yes`}
       />
 
       <h2>현재 플러그인</h2>

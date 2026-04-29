@@ -25,7 +25,7 @@ export const authJwtPlugin = {
   // BFF 와 withAuthRetry 가 자동 활용한다.
 
   files: {
-    'src/proxy.ts': `import { NextRequest, NextResponse } from 'next/server';
+    'proxy.ts': `import { NextRequest, NextResponse } from 'next/server';
 
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];
 

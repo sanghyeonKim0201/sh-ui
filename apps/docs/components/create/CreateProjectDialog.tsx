@@ -212,6 +212,15 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
                   >
                     {plugins.has("next-intl") ? "✓ " : ""}next-intl
                   </Button>
+                  <Button
+                    type="button"
+                    variant={plugins.has("auth-jwt") ? "primary" : "secondary"}
+                    size="sm"
+                    aria-pressed={plugins.has("auth-jwt")}
+                    onClick={() => togglePlugin("auth-jwt")}
+                  >
+                    {plugins.has("auth-jwt") ? "✓ " : ""}auth-jwt
+                  </Button>
                 </div>
               </div>
             </>

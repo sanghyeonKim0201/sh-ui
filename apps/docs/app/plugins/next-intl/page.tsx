@@ -38,7 +38,7 @@ export default function NextIntlPlugin() {
       <CodePanel
         language="bash"
         filename="terminal"
-        code={`npm create sh-ui my-app -- --platform next --structure standalone --plugins next-intl --yes`}
+        code={`npx sh-ui-cli create my-app --platform next --structure standalone --plugins next-intl --yes`}
       />
 
       <h2>3. 폴더 구조</h2>
@@ -47,13 +47,14 @@ export default function NextIntlPlugin() {
         showLineNumbers={false}
         code={`my-app/
 ├── next.config.ts                                  ← MODIFY  withNextIntl 로 감싸짐
+├── proxy.ts                                        ← NEW    intl 미들웨어 (auth-jwt 같이 켜면 인증 가드와 합성)
 ├── src/
-│   ├── proxy.ts                                    ← OVERWRITE  intl 미들웨어 합성
 │   └── shared/
 │       └── config/
 │           └── i18n/
 │               ├── routing.ts                      ← NEW   defineRouting (locales, defaultLocale, cookie)
 │               ├── request.ts                      ← NEW   getRequestConfig (메시지 로드)
+│               ├── navigation.ts                   ← NEW   로케일 인식 Link, useRouter
 │               └── messages/
 │                   ├── ko.json                     ← NEW
 │                   └── en.json                     ← NEW
@@ -77,8 +78,9 @@ export default function NextIntlPlugin() {
           구조화 (예: <code>common.submit</code>).
         </li>
         <li>
-          <code>src/proxy.ts</code> — next-intl 미들웨어가 라우팅을 처리한 결과
-          위에 인증 가드(있으면)를 합성. AUTH_ROUTES 매칭은 locale prefix 를
+          <code>proxy.ts</code> — Next 16 미들웨어. <code>createIntlMiddleware</code>{" "}
+          가 로케일 라우팅을 처리. auth-jwt 같이 켜면 generator 가 자동으로
+          인증 가드와 합성된 버전을 출력 — AUTH_ROUTES 매칭은 locale prefix 를
           벗긴 pathname 기준.
         </li>
         <li>

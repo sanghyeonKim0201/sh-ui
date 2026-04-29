@@ -40,7 +40,7 @@ export default function AuthJwtPlugin() {
       <CodePanel
         language="bash"
         filename="terminal"
-        code={`npm create sh-ui my-app -- --platform next --structure standalone --plugins auth-jwt --yes`}
+        code={`npx sh-ui-cli create my-app --platform next --structure standalone --plugins auth-jwt --yes`}
       />
       <p>
         Sentry / next-intl 와 함께:{" "}
@@ -54,8 +54,8 @@ export default function AuthJwtPlugin() {
         language="text"
         showLineNumbers={false}
         code={`my-app/
+├── proxy.ts                                ← NEW   Next 16 미들웨어 (토큰 존재 체크)
 ├── src/
-│   ├── proxy.ts                            ← NEW   Next 16 미들웨어 (토큰 존재 체크)
 │   └── shared/
 │       └── api/
 │           ├── refreshSession.ts           ← NEW   ★ placeholder — 본문만 채우면 활성화
@@ -79,7 +79,7 @@ export default function AuthJwtPlugin() {
       <h3>각 신규 파일이 하는 일</h3>
       <ul>
         <li>
-          <code>src/proxy.ts</code> — 페이지 네비게이션 시 AT 쿠키 존재만
+          <code>proxy.ts</code> — 페이지 네비게이션 시 AT 쿠키 존재만
           확인하고 없으면 <code>/sign-in</code> 으로 리다이렉트. fetch /
           만료검사 / refresh 안 함.
         </li>
@@ -339,7 +339,7 @@ COOKIE_SECURE=false   # HTTPS 환경에서는 true`}
       </p>
       <CodePanel
         language="ts"
-        filename="src/proxy.ts (만료 임박 분기 추가)"
+        filename="proxy.ts (만료 임박 분기 추가)"
         code={`import { NextRequest, NextResponse } from 'next/server';
 
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];

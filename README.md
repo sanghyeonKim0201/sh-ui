@@ -8,8 +8,6 @@
 
 ```bash
 # 새 프로젝트 스캐폴드 (Next.js / Flutter)
-npm create sh-ui my-app
-# 또는
 npx sh-ui-cli create my-app
 
 # 기존 프로젝트에 sh-ui 도입

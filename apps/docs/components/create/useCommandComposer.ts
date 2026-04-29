@@ -3,7 +3,7 @@ import { useMemo } from "react";
 export type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
 export type Platform = "next" | "flutter";
 export type Structure = "standalone" | "monorepo";
-export type Plugin = "sentry" | "next-intl";
+export type Plugin = "sentry" | "next-intl" | "auth-jwt";
 
 export type ComposerOptions = {
   projectName: string;

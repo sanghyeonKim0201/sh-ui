@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.32.1",
+      "date": "2026-04-29",
+      "title": "auth-jwt 의 proxy.ts 경로 버그 수정 + next-intl 와 자동 합성",
+      "type": "patch",
+      "highlights": [
+        "auth-jwt 플러그인이 proxy.ts 를 src/proxy.ts 로 잘못 깔아 Next 16 이 인식 못 하던 문제 — 베이스 템플릿이 app/ 을 root 에 두므로 proxy.ts 도 root 로 가야 함. 결과적으로 v0.32.0 의 인증 라우트 가드가 동작하지 않았음, 이번 패치에서 해결",
+        "auth-jwt + next-intl 동시 활성화 시 generator 가 proxy.ts 를 자동 합성 — intl 미들웨어 + locale prefix 를 벗긴 경로 기반 인증 가드. 단독 사용 시에는 각 플러그인의 단일 proxy.ts 그대로 적용",
+        "/cli 페이지 플러그인 섹션 갱신 — Sentry 의 옛 axios 인터셉터/apiCore 설명 제거, observability 브릿지 정확화, auth-jwt 항목 신설. 기본 스택의 'Axios' 표기를 fetch 기반 isomorphic http() 로 정정",
+        "auth-jwt / next-intl 플러그인 페이지의 폴더 트리 + 파일 설명을 실제 manifest 와 동기화"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.32.1"
+    },
+    {
       "version": "0.32.0",
       "date": "2026-04-29",
       "title": "auth-jwt 플러그인 신설 + isomorphic HTTP transport 재설계",
