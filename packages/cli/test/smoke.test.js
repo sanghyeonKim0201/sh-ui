@@ -366,4 +366,136 @@ describe('sh-ui create smoke tests', () => {
       expect(await fs.pathExists(projectDir)).toBe(true);
     });
   });
+
+  // ─── 플러그인 구조 검증 (v0.32.0 의 src/proxy.ts 같은 회귀 차단) ───
+
+  describe('plugin structure assertions', () => {
+    it('auth-jwt: proxy.ts 는 root 에 있어야 한다 (src/proxy.ts 금지)', async () => {
+      await createProject({
+        name: 'auth-app',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['auth-jwt'],
+        yes: true,
+      });
+
+      const projectDir = path.join(tmpDir, 'auth-app');
+
+      // root proxy.ts 존재
+      expect(await fs.pathExists(path.join(projectDir, 'proxy.ts'))).toBe(true);
+      // src/proxy.ts 는 절대 안 됨 — Next 16 이 인식 못 함
+      expect(await fs.pathExists(path.join(projectDir, 'src', 'proxy.ts'))).toBe(false);
+
+      // 핵심 파일들 동반
+      expect(await fs.pathExists(path.join(projectDir, 'src', 'shared', 'api', 'refreshSession.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(projectDir, 'src', 'shared', 'api', 'withAuthRetry.ts'))).toBe(true);
+    });
+
+    it('auth-jwt + next-intl: proxy.ts 가 합성 (intl + 인증 가드)', async () => {
+      await createProject({
+        name: 'combo-app',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['auth-jwt', 'next-intl'],
+        yes: true,
+      });
+
+      const proxyPath = path.join(tmpDir, 'combo-app', 'proxy.ts');
+      expect(await fs.pathExists(proxyPath)).toBe(true);
+
+      const content = await fs.readFile(proxyPath, 'utf-8');
+      // intl 미들웨어
+      expect(content).toContain('createIntlMiddleware');
+      // 인증 가드 (토큰 존재 체크)
+      expect(content).toContain('accessToken');
+      // locale prefix 처리
+      expect(content).toContain('stripLocalePrefix');
+    });
+
+    it('sentry: observability.ts 가 베이스를 덮어쓴다 (Sentry import 포함)', async () => {
+      await createProject({
+        name: 'sentry-app',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['sentry'],
+        yes: true,
+      });
+
+      const obsPath = path.join(
+        tmpDir, 'sentry-app', 'src', 'shared', 'api', 'observability.ts',
+      );
+      const content = await fs.readFile(obsPath, 'utf-8');
+      expect(content).toContain("@sentry/nextjs");
+      expect(content).toContain('captureApiError');
+    });
+
+    it('베이스 (플러그인 없음): observability.ts 는 no-op', async () => {
+      await createProject({
+        name: 'bare-app',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+      });
+
+      const obsPath = path.join(
+        tmpDir, 'bare-app', 'src', 'shared', 'api', 'observability.ts',
+      );
+      const content = await fs.readFile(obsPath, 'utf-8');
+      // 베이스는 Sentry import 없음
+      expect(content).not.toContain('@sentry/nextjs');
+      // axios 도 없어야 함 (v0.32.0 이후)
+      expect(content).not.toContain('axios');
+    });
+
+    it('베이스: http.ts 는 isomorphic fetch (axios 아님)', async () => {
+      await createProject({
+        name: 'http-check',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+      });
+
+      const httpPath = path.join(tmpDir, 'http-check', 'src', 'shared', 'api', 'http.ts');
+      const content = await fs.readFile(httpPath, 'utf-8');
+      expect(content).not.toContain('axios');
+      expect(content).toContain('serverFetch');
+      expect(content).toContain('clientFetch');
+    });
+
+    it('package.json 에 axios 가 들어있지 않다', async () => {
+      await createProject({
+        name: 'no-axios',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['sentry', 'auth-jwt', 'next-intl'],
+        yes: true,
+      });
+
+      const pkg = await fs.readJson(
+        path.join(tmpDir, 'no-axios', 'package.json'),
+      );
+      expect(pkg.dependencies?.axios).toBeUndefined();
+      expect(pkg.devDependencies?.axios).toBeUndefined();
+    });
+  });
+
+  // ─── --dry-run 검증 ───
+
+  describe('dry-run 모드', () => {
+    it('파일을 cwd 에 쓰지 않는다', async () => {
+      await createProject({
+        name: 'never-written',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['auth-jwt'],
+        yes: true,
+        dryRun: true,
+      });
+
+      const projectDir = path.join(tmpDir, 'never-written');
+      expect(await fs.pathExists(projectDir)).toBe(false);
+    });
+  });
 });

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { allPlugins } from "sh-ui-cli/api";
 import {
   BookOpenIcon,
   BoxesIcon,
@@ -51,11 +52,11 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
 ];
 
-const plugins: { title: string; href: string }[] = [
-  { title: "auth-jwt", href: "/plugins/auth-jwt" },
-  { title: "sentry", href: "/plugins/sentry" },
-  { title: "next-intl", href: "/plugins/next-intl" },
-];
+// 플러그인 목록은 sh-ui-cli/api 의 allPlugins 에서 derive — 단일 진실.
+const plugins: { title: string; href: string }[] = allPlugins.map((p) => ({
+  title: p.name,
+  href: `/plugins/${p.name}`,
+}));
 
 const components: { title: string; href: string }[] = [
   { title: "Accordion", href: "/components/accordion" },

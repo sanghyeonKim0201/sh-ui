@@ -1,6 +1,8 @@
 export const nextIntlPlugin = {
   name: 'next-intl',
   label: 'next-intl (다국어 지원)',
+  description:
+    '다국어. 라우트 기반 로케일, NEXT_LOCALE 쿠키, BFF 가 백엔드로 Accept-Language 자동 전달.',
   priority: 2,
 
   dependencies: {

@@ -1,6 +1,7 @@
 import { input, select, checkbox, confirm } from '@inquirer/prompts';
 import { execSync } from 'node:child_process';
 import fs from 'fs-extra';
+import os from 'node:os';
 import path from 'node:path';
 import { getPluginChoices, getPluginsByNames } from './plugins/index.js';
 import { decodeTheme } from './theme/decode.js';
@@ -53,9 +54,13 @@ export async function createProject(options = {}) {
 
   const theme = options.theme ? decodeTheme(options.theme) : null;
 
-  const targetDir = path.resolve(process.cwd(), projectName);
+  // dry-run 은 tmpdir 에 그대로 생성한 뒤 파일 목록 출력 + 정리.
+  // 사용자 cwd 를 건드리지 않으면서 실제 generation 흐름을 그대로 검증한다.
+  const targetDir = options.dryRun
+    ? await fs.mkdtemp(path.join(os.tmpdir(), 'sh-ui-dry-'))
+    : path.resolve(process.cwd(), projectName);
 
-  if (await fs.pathExists(targetDir)) {
+  if (!options.dryRun && await fs.pathExists(targetDir)) {
     if (options.yes) {
       await fs.remove(targetDir);
     } else {
@@ -102,10 +107,42 @@ export async function createProject(options = {}) {
     await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme });
   }
 
+  if (options.dryRun) {
+    const files = await listAllFiles(targetDir);
+    console.log(`\n[DRY RUN] ${projectName} 스캐폴드 시 작성될 파일 (${files.length}개):\n`);
+    for (const f of files.sort()) {
+      console.log(`  ${f}`);
+    }
+    await fs.remove(targetDir);
+    console.log(`\n실제 스캐폴드: --dry-run 제거 후 같은 명령 실행.`);
+    return;
+  }
+
   console.log(`\n✅ ${projectName} 프로젝트가 생성되었습니다!`);
   console.log(`\n  cd ${projectName}`);
   console.log('  pnpm install');
   console.log('  pnpm dev\n');
+}
+
+/**
+ * targetDir 아래 모든 파일을 상대 경로로 나열. node_modules 등은 자동 스킵
+ * (스캐폴드 직후라 install 안 한 상태기 때문).
+ */
+async function listAllFiles(targetDir) {
+  const collected = [];
+  async function walk(dir) {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(full);
+      } else if (entry.isFile()) {
+        collected.push(path.relative(targetDir, full));
+      }
+    }
+  }
+  await walk(targetDir);
+  return collected;
 }
 
 // ─── Add app to existing monorepo ───

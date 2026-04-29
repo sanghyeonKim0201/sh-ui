@@ -1,6 +1,8 @@
 export const authJwtPlugin = {
   name: 'auth-jwt',
   label: '쿠키 기반 JWT 인증 (refresh 자리표시자 포함)',
+  description:
+    '쿠키 기반 JWT 인증. Next 16 proxy.ts 미들웨어, refresh-aware BFF, withAuthRetry 헬퍼. refresh 본문은 placeholder — 백엔드 명세 확정 후 한 파일 채우면 자동 활성화.',
   priority: 2,
 
   // 의존성 추가 없음 — 베이스의 fetch + cookies + react-query 만 사용

@@ -3,6 +3,21 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.33.0",
+      "date": "2026-04-29",
+      "title": "중앙관리형 SSOT — sh-ui-cli/api 노출 + 플러그인 스키마 + --dry-run + CI 스캐폴드 게이트",
+      "type": "minor",
+      "highlights": [
+        "신규 public API — `import { allPlugins, CREATE_PLATFORMS, ... } from 'sh-ui-cli/api'`. 다른 워크스페이스 (apps/docs 등) 가 플러그인 메타와 enum 을 동기화 없이 사용. CreateProjectDialog / 사이드바 / 플러그인 허브 가 모두 derive 하도록 변경 — 새 플러그인 추가 시 plugins/ 폴더 한 군데만 건드리면 됨",
+        "신규 --dry-run 플래그 — 실제 파일 쓰지 않고 스캐폴드 결과 파일 목록만 출력. 디버깅 + CI 검증 보조. tmpdir 에 생성 후 즉시 정리해 사용자 cwd 무영향",
+        "플러그인 manifest zod 스키마 검증 — 모듈 로드 시점에 모든 플러그인 형태 체크. 'src/proxy.ts' 같은 잘못된 경로는 빌드 타임 거부 (v0.32.0 에서 발생한 회귀 차단)",
+        "CI 스캐폴드 게이트 — publish 전에 5가지 플러그인 조합으로 실제 스캐폴드 → fresh install → tsc --noEmit 까지 돌리는 스모크 단계 추가. 사용자가 받게 될 결과물을 publish 직전에 검증",
+        "통합 테스트 7개 추가 — 각 플러그인 + 조합의 핵심 파일 위치 / 내용 / 합성 검증 (proxy.ts root 위치, 합성된 proxy.ts 의 intl + 인증 가드, observability 의 Sentry vs no-op, axios 부재 등)",
+        "내부 정리 — packages/cli/src/constants.js 신설로 PLATFORMS/STRUCTURES/THEME_* 단일화. cli-args / mcp / init / generator 도움말 모두 derive"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.33.0"
+    },
+    {
       "version": "0.32.1",
       "date": "2026-04-29",
       "title": "auth-jwt 의 proxy.ts 경로 버그 수정 + next-intl 와 자동 합성",

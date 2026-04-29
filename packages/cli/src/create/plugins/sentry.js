@@ -1,6 +1,8 @@
 export const sentryPlugin = {
   name: 'sentry',
   label: 'Sentry (에러 모니터링)',
+  description:
+    '에러 모니터링. 클라/서버/엣지 init, 라우트 에러 페이지, observability 브릿지로 다른 플러그인의 5xx 자동 캡처.',
   priority: 1,
 
   dependencies: {

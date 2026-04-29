@@ -54,6 +54,31 @@ jobs:
             echo "No test script in packages/${{ matrix.package }} — skipping"
           fi
 
+      # 실제 스캐폴드 + 타입체크 게이트.
+      # smoke.test.js (단위) 는 파일 구조만 검증 — 여기서는 fresh install + tsc 까지
+      # 돌려서 템플릿 자체가 사용자 환경에서도 빌드 가능한지 확인한다.
+      - name: Smoke - scaffold matrix + typecheck
+        if: matrix.package == 'cli'
+        run: |
+          set -e
+          MATRIX=(
+            "bare:--platform next --structure standalone"
+            "sentry:--platform next --structure standalone --plugins sentry"
+            "auth-jwt:--platform next --structure standalone --plugins auth-jwt"
+            "next-intl:--platform next --structure standalone --plugins next-intl"
+            "all:--platform next --structure standalone --plugins sentry,auth-jwt,next-intl"
+          )
+          for entry in "${MATRIX[@]}"; do
+            label="${entry%%:*}"
+            args="${entry#*:}"
+            echo "::group::Smoke [$label] $args"
+            target="/tmp/smoke-$label"
+            rm -rf "$target"
+            (cd /tmp && node "$GITHUB_WORKSPACE/packages/cli/bin/sh-ui.mjs" create "smoke-$label" $args --yes)
+            (cd "$target" && pnpm install --ignore-workspace --no-frozen-lockfile && pnpm tsc --noEmit)
+            echo "::endgroup::"
+          done
+
       - name: Check if already published
         id: check
         working-directory: packages/${{ matrix.package }}

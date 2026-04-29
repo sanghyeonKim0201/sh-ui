@@ -98,6 +98,9 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
+      sh-ui-cli:
+        specifier: workspace:*
+        version: link:../../packages/cli
       shiki:
         specifier: latest
         version: 4.0.2
