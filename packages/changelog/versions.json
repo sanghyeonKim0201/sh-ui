@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.34.0",
+      "date": "2026-04-29",
+      "title": "Next 템플릿 — RSC prefetch / 에러 바운더리 / 테스트 헬퍼 + KRW·날짜 포맷 유틸 기본 탑재",
+      "type": "minor",
+      "highlights": [
+        "shared/ui/PrefetchBoundary + shared/lib/getQueryClient — RSC 에서 prefetch 후 dehydrate → 클라이언트 hydrate. 단일/배열 fetchOptions 모두 지원, 이미 깔린 TanStack Query 인프라와 즉시 호환",
+        "shared/ui/FallbackBoundary — Suspense + ErrorBoundary 합성, QueryErrorResetBoundary 와 연동돼 errorFallback 의 resetErrorBoundary 가 쿼리까지 함께 리셋. onError 콜백으로 외부 옵저버빌리티 (Sentry 등) 훅인 자유",
+        "shared/test/renderWithProviders + createTestQueryClient — RTL render + QueryClientProvider + userEvent 한 번에. 기존 vitest 인프라에 컴포넌트 테스트 진입장벽 제거",
+        "shared/lib/formatDate / formatPrice — 로케일 기반 Intl 포맷 유틸. formatPrice 는 한국 원화(KRW, 소수점 없음) 기본",
+        "@testing-library/react + user-event devDeps 추가 (양쪽 nextjs 템플릿)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.34.0"
+    },
+    {
       "version": "0.33.0",
       "date": "2026-04-29",
       "title": "중앙관리형 SSOT — sh-ui-cli/api 노출 + 플러그인 스키마 + --dry-run + CI 스캐폴드 게이트",
