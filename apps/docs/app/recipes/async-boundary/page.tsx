@@ -8,7 +8,8 @@ export default function AsyncBoundaryRecipe() {
       <h1>AsyncBoundary 패턴</h1>
       <p className="muted">
         Suspense + ErrorBoundary 를 한 번에 묶고, Skeleton · Error fallback 을
-        해당 UI 폴더 안에 동거시키는 컨벤션.
+        해당 UI 폴더 안에 동거시키는 컨벤션. 베이스에 직접 만들거나, Sentry
+        플러그인의 <code>FallbackBoundary</code> 를 그대로 쓰면 된다.
       </p>
 
       <h2>왜 묶나</h2>
@@ -27,7 +28,16 @@ export default function AsyncBoundaryRecipe() {
         </li>
       </ul>
 
-      <h2>설치</h2>
+      <h2>Sentry 플러그인을 쓴다면 — FallbackBoundary 가 이미 있음</h2>
+      <p>
+        <code>--plugins sentry</code> 로 스캐폴드한 프로젝트는{" "}
+        <code>src/shared/ui/FallbackBoundary/index.tsx</code> 가 이미 깔려 있다.
+        같은 패턴 + Sentry 캡처 + ApiError 자동 제외가 포함된 버전이다. 직접
+        만들 필요 없이 그대로 쓰면 됨. 자세한 건{" "}
+        <a href="/plugins/sentry">sentry 플러그인 페이지</a>.
+      </p>
+
+      <h2>설치 — 직접 만드는 경우</h2>
       <CodePanel
         language="bash"
         showLineNumbers={false}
@@ -39,6 +49,7 @@ export default function AsyncBoundaryRecipe() {
         language="tsx"
         filename="src/shared/ui/AsyncBoundary/index.tsx"
         code={`'use client';
+
 import { Suspense, type ComponentType, type ReactNode } from 'react';
 import {
   ErrorBoundary,
@@ -68,7 +79,7 @@ export function AsyncBoundary({
       <CodePanel
         language="text"
         showLineNumbers={false}
-        code={`views/orders/OrderList/
+        code={`src/widgets/order/OrderList/
 ├── index.tsx                    # AsyncBoundary 래핑 + Content 정의
 ├── Skeleton/
 │   └── OrderListSkeleton.tsx
@@ -83,16 +94,19 @@ export function AsyncBoundary({
       <h2>사용 패턴 — Content/Wrapper 분리</h2>
       <CodePanel
         language="tsx"
-        filename="views/orders/OrderList/index.tsx"
+        filename="src/widgets/order/OrderList/index.tsx"
         code={`'use client';
+
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { AsyncBoundary } from '@/shared/ui/AsyncBoundary';
-import { ordersQueryOptions } from '@/entities/order/model/queryOptions';
+
+import { AsyncBoundary } from '@/src/shared/ui/AsyncBoundary';
+import { orderQueries } from '@/src/entities/order/api/orderQueries';
+
 import { OrderListSkeleton } from './Skeleton/OrderListSkeleton';
 import { OrderListError } from './Error/OrderListError';
 
 function OrderListContent() {
-  const { data: orders } = useSuspenseQuery(ordersQueryOptions());
+  const { data: orders } = useSuspenseQuery(orderQueries.list());
   return <OrderListView orders={orders} />;
 }
 
@@ -121,8 +135,8 @@ export function OrderList() {
       </p>
       <CodePanel
         language="tsx"
-        filename="views/orders/OrderList/Skeleton/OrderListSkeleton.tsx"
-        code={`import { Skeleton } from '@workspace/ui/components/skeleton';
+        filename="src/widgets/order/OrderList/Skeleton/OrderListSkeleton.tsx"
+        code={`import { Skeleton } from '@/components/ui/skeleton';
 
 export function OrderListSkeleton() {
   return (
@@ -134,6 +148,10 @@ export function OrderListSkeleton() {
   );
 }`}
       />
+      <p className="muted">
+        모노레포 템플릿에서는{" "}
+        <code>@workspace/ui/components/skeleton</code> 으로 import.
+      </p>
 
       <h2>Error fallback + 재시도</h2>
       <p>
@@ -143,10 +161,11 @@ export function OrderListSkeleton() {
       </p>
       <CodePanel
         language="tsx"
-        filename="views/orders/OrderList/Error/OrderListError.tsx"
+        filename="src/widgets/order/OrderList/Error/OrderListError.tsx"
         code={`import type { FallbackProps } from 'react-error-boundary';
-import { Button } from '@workspace/ui/components/button';
-import { ApiError } from '@/shared/api/error';
+
+import { Button } from '@/components/ui/button';
+import { ApiError } from '@/src/shared/api/error';
 
 export function OrderListError({
   error,
@@ -180,7 +199,7 @@ export function OrderListError({
         <li>
           <strong>retry 옵션 활용</strong> —{" "}
           <code>QueryClient defaultOptions</code>에 <code>retry: 1</code> 같은
-          기본값을 둬서 일시적 실패를 자동 회복.
+          기본값을 둬서 일시적 실패를 자동 회복 (베이스 기본값).
         </li>
       </ul>
       <CodePanel
@@ -208,9 +227,8 @@ export function ResettableAsyncBoundary({
 }`}
       />
       <p className="muted">
-        대부분의 케이스는 단순 <code>AsyncBoundary</code>로 충분. Query 가 실제로
-        실패하고 사용자가 명시적 재시도를 자주 하는 화면에서만{" "}
-        <code>ResettableAsyncBoundary</code>를 쓴다.
+        대부분의 케이스는 단순 <code>AsyncBoundary</code>로 충분. Sentry
+        플러그인의 <code>FallbackBoundary</code> 는 이 통합이 이미 포함돼 있음.
       </p>
 
       <h2>중첩 AsyncBoundary</h2>

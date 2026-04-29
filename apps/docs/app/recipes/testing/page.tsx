@@ -110,7 +110,7 @@ import { render, type RenderOptions } from '@testing-library/react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { ReactElement, ReactNode } from 'react';
 
-import koMessages from '@/shared/config/i18n/messages/ko.json';
+import koMessages from '@/src/shared/config/i18n/messages/ko.json';
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -165,8 +165,8 @@ describe('getOrdersApi', () => {
         filename="error case 테스트"
         code={`import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
-import { server } from '@/shared/test/msw/server';
-import { ApiError } from '@/shared/api/error';
+import { server } from '@/src/shared/test/msw/server';
+import { ApiError } from '@/src/shared/api/error';
 import { getOrdersApi } from './getOrdersApi';
 
 describe('getOrdersApi error', () => {
@@ -200,7 +200,7 @@ describe('getOrdersApi error', () => {
         filename="views/orders/OrderList/index.test.tsx"
         code={`import { screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { renderWithProviders } from '@/shared/test/renderWithProviders';
+import { renderWithProviders } from '@/src/shared/test/renderWithProviders';
 import { OrderList } from './index';
 
 describe('OrderList', () => {
@@ -224,7 +224,7 @@ describe('OrderList', () => {
         code={`import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
-import { renderWithProviders } from '@/shared/test/renderWithProviders';
+import { renderWithProviders } from '@/src/shared/test/renderWithProviders';
 import { CreateOrderForm } from './CreateOrderForm';
 
 describe('CreateOrderForm', () => {

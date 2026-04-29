@@ -7,8 +7,9 @@ export default function TanstackQueryRecipe() {
     <main className="container">
       <h1>TanStack Query 셋업</h1>
       <p className="muted">
-        Provider 위치, Devtools, Suspense 모드, hydration, mutation 패턴.
-        템플릿에는 이미 박혀 있는 내용을 정리.
+        Provider 위치, Devtools, queryOptions 컨벤션, mutation 패턴.
+        prefetch + hydration 풀 패턴은{" "}
+        <a href="/recipes/data-fetching">데이터 페칭 레시피</a> 참고.
       </p>
 
       <h2>Provider 위치</h2>
@@ -31,41 +32,72 @@ export default function TanstackQueryRecipe() {
 </ThemeProviders>`}
       />
 
-      <h2>QueryClient 기본 옵션</h2>
+      <h2>QueryClient — cache() 패턴</h2>
+      <p>
+        베이스의 <code>queryClient.ts</code> 가 RSC 와 클라이언트의 QueryClient
+        생성을 책임진다. 서버는 React <code>cache()</code> 로 요청 스코프, 클라는
+        싱글톤.
+      </p>
+      <CodePanel
+        language="ts"
+        filename="src/shared/api/queryClient.ts"
+        code={`import {
+  QueryClient,
+  defaultShouldDehydrateQuery,
+  isServer,
+} from '@tanstack/react-query';
+import { cache } from 'react';
+
+function makeQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000,
+        retry: 1,
+      },
+      dehydrate: {
+        // pending 상태도 dehydrate — RSC prefetch 가 끝나지 않았어도
+        // 클라이언트가 이어 받을 수 있다
+        shouldDehydrateQuery: (q) =>
+          defaultShouldDehydrateQuery(q) || q.state.status === 'pending',
+      },
+    },
+  });
+}
+
+// RSC: 같은 요청 안에서 같은 QC, 요청 종료 시 폐기 — 요청 간 누수 방지
+export const getServerQueryClient = cache(makeQueryClient);
+
+// Client: 한 브라우저 세션에 한 QC (싱글톤)
+let browserQueryClient: QueryClient | undefined;
+
+export function getBrowserQueryClient(): QueryClient {
+  if (isServer) return makeQueryClient();
+  return (browserQueryClient ??= makeQueryClient());
+}`}
+      />
       <CodePanel
         language="tsx"
         filename="src/app/providers/tanstack/QueryClientProvider.tsx"
         code={`'use client';
-import {
-  QueryClient,
-  QueryClientProvider as TanstackQueryClientProvider,
-} from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
+
+import { QueryClientProvider as TanstackQueryClientProvider } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
+
+import { getBrowserQueryClient } from '@/src/shared/api/queryClient';
 
 export function QueryClientProvider({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 60 * 1000,
-            retry: 1,
-          },
-        },
-      }),
-  );
-
   return (
-    <TanstackQueryClientProvider client={queryClient}>
+    <TanstackQueryClientProvider client={getBrowserQueryClient()}>
       {children}
     </TanstackQueryClientProvider>
   );
 }`}
       />
-      <p>
-        <strong><code>useState</code>로 한 번만 생성</strong>하는 게 핵심 —{" "}
-        모듈 스코프에 두면 다중 사용자 환경(서버 컴포넌트 SSR)에서 캐시가
-        공유되어 보안 사고가 난다.
+      <p className="muted">
+        모듈 스코프의 싱글톤 변수는 SSR 에서 위험하지만,{" "}
+        <code>isServer</code> 가드가 있어 서버에서는 매번 새 인스턴스를 만든다 —
+        다중 사용자 캐시 공유 문제 없음.
       </p>
 
       <h2>Devtools</h2>
@@ -73,6 +105,7 @@ export function QueryClientProvider({ children }: { children: ReactNode }) {
         language="tsx"
         filename="src/app/providers/tanstack/TanstackDevtoolsProvider.tsx"
         code={`'use client';
+
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import type { ReactNode } from 'react';
 
@@ -92,68 +125,53 @@ export function TanstackDevtoolsProvider({ children }: { children: ReactNode }) 
 
       <h2>queryOptions 패턴</h2>
       <p>
-        조회 함수 단위가 아니라 <strong>queryOptions 단위</strong>로 export 한다.
-        같은 데이터를 여러 컴포넌트가 쓸 때 캐시 공유를 위해.
+        조회 함수 단위가 아니라 <strong><code>queryOptions</code> 단위</strong>{" "}
+        로 export 한다. 키와 fn 이 한 객체에 묶이므로 키 어긋남 사고가 봉쇄되고,
+        RSC prefetch 와 클라이언트 useQuery 가 같은 객체를 공유한다.
       </p>
       <CodePanel
         language="ts"
-        filename="entities/order/model/queryOptions.ts"
-        code={`import { getOrdersApi } from '../api/getOrdersApi';
+        filename="src/entities/order/api/orderQueries.ts"
+        code={`import { queryOptions } from '@tanstack/react-query';
+import { http } from '@/src/shared/api/http';
+import type { Order } from '../model/types';
 
-export const ORDERS_QUERY_KEY = () => ['ORDERS'] as const;
-
-export const ordersQueryOptions = () => ({
-  queryKey: ORDERS_QUERY_KEY(),
-  queryFn: getOrdersApi,
-});
-
-// 파라미터가 있는 경우
-export const ORDER_BY_ID_QUERY_KEY = (id: number) =>
-  ['ORDER_BY_ID', id] as const;
-
-export const orderByIdQueryOptions = (id: number) => ({
-  queryKey: ORDER_BY_ID_QUERY_KEY(id),
-  queryFn: () => getOrderByIdApi(id),
-});`}
+export const orderQueries = {
+  list: () =>
+    queryOptions({
+      queryKey: ['orders'],
+      queryFn: () => http<Order[]>('/v1/orders'),
+    }),
+  detail: (id: number) =>
+    queryOptions({
+      queryKey: ['order', id],
+      queryFn: () => http<Order>(\`/v1/orders/\${id}\`),
+    }),
+};`}
       />
       <p>
-        <code>queryKey</code>를 별도 함수로 분리하는 이유:{" "}
-        <code>invalidateQueries</code>나 <code>removeQueries</code>에서
-        독립적으로 쓸 수 있어야 하기 때문.
+        <code>queryKey</code>를 별도로 분리해 export 할 필요 없음 —{" "}
+        <code>orderQueries.list().queryKey</code> 로 접근 가능. invalidate /
+        remove 시에도 같은 객체 사용.
       </p>
 
-      <h2>Suspense 모드 + AsyncBoundary</h2>
+      <h2>Suspense 모드</h2>
       <p>
-        로딩/에러는 수동 분기 대신 <code>useSuspenseQuery</code> +{" "}
-        <a href="/recipes/async-boundary">
-          <code>AsyncBoundary</code>
-        </a>{" "}
-        로 처리한다.
+        로딩/에러는 수동 분기 대신 <code>useSuspenseQuery</code> + 부모의{" "}
+        <a href="/recipes/async-boundary">AsyncBoundary</a> (Suspense +
+        ErrorBoundary 묶음) 으로 처리한다.
       </p>
       <CodePanel
         language="tsx"
-        filename="views/orders/OrderList/index.tsx"
+        filename="src/widgets/order/OrderList.tsx"
         code={`'use client';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { AsyncBoundary } from '@/shared/ui/AsyncBoundary';
-import { ordersQueryOptions } from '@/entities/order/model/queryOptions';
-import { OrderListSkeleton } from './Skeleton/OrderListSkeleton';
-import { OrderListError } from './Error/OrderListError';
 
-function OrderListContent() {
-  const { data: orders } = useSuspenseQuery(ordersQueryOptions());
-  return <OrderListView orders={orders} />;
-}
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { orderQueries } from '@/src/entities/order/api/orderQueries';
 
 export function OrderList() {
-  return (
-    <AsyncBoundary
-      suspenseFallback={<OrderListSkeleton />}
-      errorFallback={OrderListError}
-    >
-      <OrderListContent />
-    </AsyncBoundary>
-  );
+  const { data: orders } = useSuspenseQuery(orderQueries.list());
+  return <OrderListView orders={orders} />;
 }`}
       />
 
@@ -166,94 +184,68 @@ export function OrderList() {
         language="tsx"
         code={`// ❌ props 로 데이터를 내려주는 패턴
 function Parent() {
-  const { data } = useSuspenseQuery(ordersQueryOptions());
+  const { data } = useSuspenseQuery(orderQueries.list());
   return <Child orders={data} />;
 }
 
 // ✅ 자식이 캐시에서 직접 가져오는 패턴
 function Parent() {
-  useSuspenseQuery(ordersQueryOptions()); // prefetch 역할
+  useSuspenseQuery(orderQueries.list()); // prefetch 역할
   return <Child />;
 }
 
 function Child() {
-  const { data } = useSuspenseQuery(ordersQueryOptions()); // 캐시 히트
+  const { data } = useSuspenseQuery(orderQueries.list()); // 캐시 히트
   return <div>{/* ... */}</div>;
 }`}
       />
 
-      <h2>서버 prefetch + 클라 hydration</h2>
+      <h2>RSC Prefetch + Hydration</h2>
       <p>
-        서버 컴포넌트에서 prefetch 해두면 클라이언트 초기 렌더에서{" "}
-        loading state 없이 즉시 데이터가 보인다.
+        풀 패턴은 <a href="/recipes/data-fetching">데이터 페칭 레시피</a> 참고.
+        한 줄 요약:
       </p>
       <CodePanel
         language="tsx"
-        filename="src/shared/ui/ServerFetchBoundary/index.tsx"
-        code={`import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from '@tanstack/react-query';
-import type { ReactNode } from 'react';
+        filename="app/orders/page.tsx (RSC)"
+        code={`import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { getServerQueryClient } from '@/src/shared/api/queryClient';
+import { orderQueries } from '@/src/entities/order/api/orderQueries';
 
-type FetchOptions = {
-  queryKey: readonly unknown[];
-  queryFn: () => Promise<unknown>;
-};
-
-export async function ServerFetchBoundary({
-  fetchOptions,
-  children,
-}: {
-  fetchOptions: FetchOptions | FetchOptions[];
-  children: ReactNode;
-}) {
-  const queryClient = new QueryClient();
-  const options = Array.isArray(fetchOptions) ? fetchOptions : [fetchOptions];
-
-  await Promise.all(
-    options.map((opts) => queryClient.prefetchQuery(opts)),
-  );
+export default async function Page() {
+  const qc = getServerQueryClient();
+  await qc.prefetchQuery(orderQueries.list());
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {children}
+    <HydrationBoundary state={dehydrate(qc)}>
+      <OrderList />
     </HydrationBoundary>
   );
 }`}
       />
-      <CodePanel
-        language="tsx"
-        filename="app/[locale]/orders/page.tsx"
-        code={`import { ServerFetchBoundary } from '@/shared/ui/ServerFetchBoundary';
-import { ordersQueryOptions } from '@/entities/order/model/queryOptions';
-import { OrderList } from '@/views/orders/OrderList';
-
-export default function OrdersPage() {
-  return (
-    <ServerFetchBoundary fetchOptions={ordersQueryOptions()}>
-      <OrderList />
-    </ServerFetchBoundary>
-  );
-}`}
-      />
+      <p className="muted">
+        <code>getServerQueryClient()</code> 는 <code>cache()</code> 로 감싸져
+        있어 같은 요청 안에서 같은 QC, 요청 종료 시 폐기. 요청 간 누수 없음.
+      </p>
 
       <h2>Mutation</h2>
       <CodePanel
         language="ts"
-        filename="features/order/model/useCreateOrder.ts"
+        filename="src/features/order/model/useCreateOrder.ts"
         code={`import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postOrderApi } from '@/entities/order/api/postOrderApi';
-import { ORDERS_QUERY_KEY } from '@/entities/order/model/queryOptions';
+import { http } from '@/src/shared/api/http';
+
+type NewOrder = { /* ... */ };
+type Order = { /* ... */ };
 
 export const useCreateOrder = () => {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: postOrderApi,
+    mutationFn: (payload: NewOrder) =>
+      http<Order>('/v1/orders', { method: 'POST', body: JSON.stringify(payload) }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEY() });
+      qc.invalidateQueries({ queryKey: ['orders'] });
     },
   });
 };`}
@@ -261,6 +253,10 @@ export const useCreateOrder = () => {
       <p>
         검증·변환은 <code>mutationFn</code>에 넣지 말고 순수 함수로 분리한다 —
         훅은 제출만 담당.
+      </p>
+      <p className="muted">
+        Server Action 이 더 적합한 케이스 (쿠키 set, revalidateTag 등) 는{" "}
+        <a href="/plugins/auth-jwt">auth-jwt 플러그인</a> 참고.
       </p>
 
       <h2>queryOptions 전략 분기</h2>
@@ -271,20 +267,24 @@ export const useCreateOrder = () => {
       </p>
       <CodePanel
         language="ts"
-        code={`export const CART_QUERY_KEY = () => ['CART'] as const;
+        code={`import { queryOptions } from '@tanstack/react-query';
+import { http } from '@/src/shared/api/http';
 
 const getGuestCart = async (): Promise<Cart> => {
   const raw = localStorage.getItem('cart');
   return raw ? JSON.parse(raw) : { items: [] };
 };
 
-export const cartQueryOptions = (isAuthenticated: boolean) => ({
-  queryKey: CART_QUERY_KEY(),
-  queryFn: isAuthenticated ? getCartApi : getGuestCart,
-});
+export const cartQueries = {
+  current: (isAuthenticated: boolean) =>
+    queryOptions({
+      queryKey: ['cart'],
+      queryFn: isAuthenticated ? () => http<Cart>('/v1/cart') : getGuestCart,
+    }),
+};
 
 // 컨텍스트 전환(로그인/로그아웃)시 캐시 무효화
-queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY() });`}
+queryClient.invalidateQueries({ queryKey: ['cart'] });`}
       />
     </main>
   );
