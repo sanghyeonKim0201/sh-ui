@@ -115,6 +115,7 @@ export async function createProject(options = {}) {
 
   if (platform === 'flutter') {
     await generateFlutter(targetDir, projectName, theme);
+    await finalizeProject(targetDir, { dryRun: options.dryRun });
     console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
     console.log(`\n  cd ${projectName}`);
     console.log('  flutter pub get');
@@ -143,6 +144,8 @@ export async function createProject(options = {}) {
   } else {
     await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme });
   }
+
+  await finalizeProject(targetDir, { dryRun: options.dryRun });
 
   if (options.dryRun) {
     const files = await listAllFiles(targetDir);
@@ -415,6 +418,31 @@ async function generateApp(targetDir, appName, port, plugins) {
 }
 
 // ─── Helpers ───
+
+/**
+ * 스캐폴드 마무리 — `gitignore` 파일을 `.gitignore` 로 되돌리고 `git init` 실행.
+ *
+ * 왜 이름을 우회하는가: npm publish 는 패키지 안의 `.gitignore` 를 자동으로
+ * strip 한다(없으면 `.npmignore` fallback 으로 사용). 사용자에게 도착하지 않으니
+ * 템플릿엔 `gitignore` 로 두고 복사 직후 dot-prefix 를 붙인다.
+ *
+ * git init 은 dry-run 에서는 스킵하고, 실패해도(git 미설치 등) 조용히 넘어간다.
+ */
+async function finalizeProject(targetDir, { dryRun = false } = {}) {
+  const noDot = path.join(targetDir, 'gitignore');
+  const withDot = path.join(targetDir, '.gitignore');
+  if (await fs.pathExists(noDot)) {
+    await fs.move(noDot, withDot, { overwrite: true });
+  }
+
+  if (dryRun) return;
+
+  try {
+    execSync('git init -q', { cwd: targetDir, stdio: 'ignore' });
+  } catch {
+    // git 미설치 / 권한 문제 — 스캐폴드 자체는 성공이므로 조용히 넘어간다.
+  }
+}
 
 async function replaceInAllFiles(dir, search, replace) {
   const entries = await fs.readdir(dir, { withFileTypes: true });

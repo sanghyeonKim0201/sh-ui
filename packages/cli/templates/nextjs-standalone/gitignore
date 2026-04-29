@@ -1,3 +1,5 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # Dependencies
 node_modules
 .pnp
@@ -13,6 +15,9 @@ node_modules
 # Testing
 coverage
 
+# Vercel
+.vercel
+
 # Build Outputs
 .next/
 out/
@@ -22,6 +27,9 @@ dist
 # Debug
 npm-debug.log*
 
+# Sentry
+.env.sentry-build-plugin
+
 # Misc
 .DS_Store
 *.pem
@@ -29,3 +37,6 @@ npm-debug.log*
 # IDE
 .idea/
 .vscode/
+
+# Claude Code (개인 설정 제외, rules/는 공유)
+.claude/settings.local.json

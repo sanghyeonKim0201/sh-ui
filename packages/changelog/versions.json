@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.41.0",
+      "date": "2026-04-30",
+      "title": "sh-ui create — git 자동 초기화 + .gitignore 자동 생성",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui create` 직후 `git init` 자동 실행** — 별도 명령 없이 바로 첫 커밋 가능한 상태. git 미설치 등 실패 시는 조용히 스킵 (스캐폴드 자체는 성공)",
+        "**`.gitignore` 자동 생성** — Next.js standalone / monorepo / Flutter 각 템플릿에 맞는 ignore 패턴 동봉. 모노레포는 `.turbo` `.vercel`, Flutter 는 `.dart_tool/` `**/ios/Flutter/.last_build_id` 등 플랫폼 표준 패턴 + `.claude/settings.local.json` 공통",
+        "**npm strip 우회** — npm publish 가 패키지 내 `.gitignore` 를 자동 strip 하던 이슈를 템플릿 파일명 `gitignore` (no-dot) → 스캐폴드 시 `.gitignore` 로 리네이밍하는 방식으로 해결",
+        "dry-run 모드는 git init / 파일 쓰기 모두 우회 (기존 동작 유지)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.41.0"
+    },
+    {
       "version": "0.40.0",
       "date": "2026-04-29",
       "title": "NumericInput 컴포넌트 + 토큰 편집기 UX 대폭 개선 (Accordion size, ShadowBuilder, XY 패드)",

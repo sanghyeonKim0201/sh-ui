@@ -774,4 +774,77 @@ describe('sh-ui create smoke tests', () => {
       expect(await fs.pathExists(projectDir)).toBe(false);
     });
   });
+
+  // ─── git 초기화 + .gitignore 자동 생성 ───
+  //
+  // npm publish 는 패키지 안의 `.gitignore` 를 strip 하므로 템플릿엔 `gitignore`
+  // 로 두고 스캐폴드 시 dot-prefix 를 붙인다 — 사용자에게 도착해야 한다.
+
+  describe('git 초기화', () => {
+    it('standalone — .gitignore 와 .git/ 둘 다 생성', async () => {
+      await createProject({
+        name: 'with-git',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+      });
+
+      const projectDir = path.join(tmpDir, 'with-git');
+      expect(await fs.pathExists(path.join(projectDir, '.gitignore'))).toBe(true);
+      // 우회용 원본은 남아있으면 안 됨
+      expect(await fs.pathExists(path.join(projectDir, 'gitignore'))).toBe(false);
+      expect(await fs.pathExists(path.join(projectDir, '.git'))).toBe(true);
+
+      const gi = await fs.readFile(path.join(projectDir, '.gitignore'), 'utf-8');
+      expect(gi).toContain('node_modules');
+      expect(gi).toContain('.next/');
+      expect(gi).toContain('.claude/settings.local.json');
+    });
+
+    it('monorepo — 루트에 .gitignore 와 .git/ 생성 (Turbo 항목 포함)', async () => {
+      await createProject({
+        name: 'mono-git',
+        platform: 'next',
+        structure: 'monorepo',
+        plugins: [],
+        yes: true,
+      });
+
+      const monoDir = path.join(tmpDir, 'mono-git');
+      expect(await fs.pathExists(path.join(monoDir, '.gitignore'))).toBe(true);
+      expect(await fs.pathExists(path.join(monoDir, '.git'))).toBe(true);
+
+      const gi = await fs.readFile(path.join(monoDir, '.gitignore'), 'utf-8');
+      expect(gi).toContain('.turbo');
+    });
+
+    it('flutter — .gitignore 와 .git/ 생성 (Flutter 패턴 포함)', async () => {
+      await createProject({
+        name: 'flutter-git',
+        platform: 'flutter',
+        yes: true,
+      });
+
+      const projectDir = path.join(tmpDir, 'flutter-git');
+      expect(await fs.pathExists(path.join(projectDir, '.gitignore'))).toBe(true);
+      expect(await fs.pathExists(path.join(projectDir, '.git'))).toBe(true);
+
+      const gi = await fs.readFile(path.join(projectDir, '.gitignore'), 'utf-8');
+      expect(gi).toContain('.dart_tool/');
+    });
+
+    it('dry-run — git init 도 .gitignore 도 cwd 에 남지 않는다', async () => {
+      await createProject({
+        name: 'dry-git',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+        dryRun: true,
+      });
+
+      expect(await fs.pathExists(path.join(tmpDir, 'dry-git'))).toBe(false);
+    });
+  });
 });

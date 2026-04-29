@@ -42,3 +42,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Claude Code (개인 설정 제외, rules/는 공유)
+.claude/settings.local.json
