@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.32.0",
+      "date": "2026-04-29",
+      "title": "auth-jwt 플러그인 신설 + isomorphic HTTP transport 재설계",
+      "type": "minor",
+      "highlights": [
+        "신규 --plugins auth-jwt — Next 16 proxy.ts 미들웨어, refresh placeholder, withAuthRetry 헬퍼, refresh-aware BFF 를 한 번에 추가. 백엔드 refresh API 명세 확정 후 refreshSession.ts 본문만 채우면 자동 활성화",
+        "베이스 HTTP 레이어 재설계 — axios 단일 인스턴스를 isomorphic http() + serverFetch / clientFetch 두 갈래 transport 로 교체. RSC 는 백엔드 직통, 브라우저는 /api/proxy 경유 → API 함수는 한 번만 작성하고 RSC prefetch + hydration 패턴과 자연스럽게 어울림",
+        "Sentry 플러그인 슬림화 — HTTP/proxy 인프라 파일을 베이스로 이관하고, Sentry 는 observability.ts 를 Sentry-aware 버전으로 덮어써 5xx 캡처/로깅을 활성화. 두 플러그인이 독립적으로 조합됨",
+        "queryClient.ts 추가 — React cache() 기반 RSC 스코프 + 브라우저 싱글톤. 요청 간 캐시 누수 방지. apps/docs 의 auth / api-layer / testing 레시피도 새 설계에 맞춰 갱신"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.32.0"
+    },
+    {
       "version": "0.31.1",
       "date": "2026-04-28",
       "title": "Header drawer 그룹 라벨을 사이드바와 동일한 캡션 스타일로 정렬",

@@ -1,6 +1,6 @@
 const VALID_PLATFORMS = ['next', 'flutter'];
 const VALID_STRUCTURES = ['standalone', 'monorepo'];
-const VALID_PLUGINS = ['sentry', 'next-intl'];
+const VALID_PLUGINS = ['sentry', 'next-intl', 'auth-jwt'];
 
 const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app'];
 const BOOL_FLAGS = ['yes', 'help'];

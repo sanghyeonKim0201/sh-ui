@@ -5,266 +5,393 @@ import { CodePanel } from "@/components/ui/code-panel";
 export default function AuthRecipe() {
   return (
     <main className="container">
-      <h1>인증 추가</h1>
+      <h1>인증 (auth-jwt)</h1>
       <p className="muted">
-        템플릿의 <code>/api/proxy</code>에 로그인/로그아웃 쿠키 set,
-        401 시 refresh-and-retry, 미들웨어 라우트 가드를 추가한다.
+        쿠키 기반 JWT 인증 — RSC prefetch + hydration 흐름과 호환되도록 설계.
+        <code>--plugins auth-jwt</code> 로 추가하면 미들웨어, refresh 자리표시자,
+        Server Action 헬퍼가 같이 깔린다.
       </p>
 
-      <h2>구조 — 왜 BFF에서 처리하나</h2>
-      <ul>
-        <li>
-          <strong>쿠키는 httpOnly</strong> — 브라우저 JS 가 토큰을 읽지 못한다.
-          XSS 가 발생해도 토큰을 빼앗기지 않음.
-        </li>
-        <li>
-          <strong>인증은 라우트 핸들러 한 곳에서</strong> — 미들웨어와 axios
-          인터셉터에 분산된 인증 로직을 만들지 않는다. 미들웨어는 라우트 가드만,
-          인터셉터는 응답 형태 변환만 담당.
-        </li>
-        <li>
-          <strong>토큰 refresh 도 BFF</strong> — 동시 요청 다수가 만료를 만나는
-          경우는 in-flight refresh promise 캐시로 처리한다. 미들웨어는 refresh
-          하지 않음.
-        </li>
-      </ul>
-
-      <h2>전제 — 백엔드 동작</h2>
-      <ul>
-        <li>
-          <code>POST /v1/auth/login</code> — 응답 body 에{" "}
-          <code>{"{ accessToken, refreshToken }"}</code>
-        </li>
-        <li>
-          <code>POST /v1/auth/logout</code> — 성공 시{" "}
-          <code>result: SUCCESS</code>
-        </li>
-        <li>
-          <code>GET /v1/auth/token/refresh?refreshToken=...</code> — 응답
-          body 에 새 토큰 쌍
-        </li>
-      </ul>
-
-      <h2>1. 라우트 핸들러 확장 — 로그인/로그아웃 쿠키</h2>
+      <h2>설치</h2>
+      <CodePanel
+        language="bash"
+        filename="terminal"
+        code={`npm create sh-ui my-app -- --platform next --structure standalone --plugins auth-jwt --yes`}
+      />
       <p>
-        백엔드 응답을 그대로 흘려보내되, 인증 경로일 때만 쿠키를
-        set / delete 한다.
+        Sentry 와 같이 쓰려면 <code>--plugins sentry,auth-jwt</code>. 두 플러그인은
+        독립적으로 동작하며, Sentry 가 같이 켜지면{" "}
+        <code>src/shared/api/observability.ts</code> 가 Sentry-aware 버전으로
+        덮여 BFF 와 serverFetch 의 5xx 가 자동 보고된다.
+      </p>
+
+      <h2>아키텍처 한눈에</h2>
+      <CodePanel
+        language="text"
+        filename="요청 경로"
+        code={`browser
+  └─ proxy.ts (Next 16 미들웨어) — 토큰 존재 체크 → /sign-in 가드
+  └─ RSC
+      └─ http()  ── (서버) ──→ serverFetch ──→ 백엔드 직통
+                                                 (cookies()로 AT 주입)
+  └─ Client
+      └─ http()  ── (브라우저) ──→ clientFetch ──→ /api/proxy/[...path]
+                                                       │
+                                                       ▼
+                                                 BFF 라우트 핸들러
+                                                   - AT 주입
+                                                   - 401 → refreshSession()
+                                                       (성공: 새 쿠키 + 재시도)
+                                                       (실패: 쿠키 삭제 + 401)
+                                                   - 백엔드 직통`}
+      />
+      <p className="muted">
+        refresh 책임자는 <strong>BFF 한 곳</strong>. 미들웨어는 fetch 안 함,
+        RSC 도 refresh 안 함 (RSC 는 cookies().set() 금지). RSC 의 401 은
+        prefetchQuery 가 swallow 하고 클라이언트 refetch 가 BFF 경유로
+        자연 복구된다.
+      </p>
+
+      <h2>1. API 함수는 한 벌만 작성</h2>
+      <p>
+        <code>http()</code> 가 환경을 보고 자동 분기하므로 RSC와 클라이언트가
+        같은 함수를 공유한다.
       </p>
       <CodePanel
         language="ts"
-        filename="app/api/proxy/[...path]/route.ts (추가 부분)"
-        code={`const COOKIE_OPTIONS = {
+        filename="src/entities/order/api/orderQueries.ts"
+        code={`import { queryOptions } from '@tanstack/react-query';
+import { http } from '@/src/shared/api/http';
+
+type Order = { id: number; title: string };
+
+export const orderQueries = {
+  detail: (id: number) =>
+    queryOptions({
+      queryKey: ['order', id],
+      queryFn: () => http<Order>(\`/v1/orders/\${id}\`),
+    }),
+};`}
+      />
+
+      <h2>2. RSC Prefetch + Hydration</h2>
+      <p>
+        서버에서 미리 데이터를 채우고, 클라이언트는 즉시 hydrate 된 캐시를
+        사용한다. <code>queryClient.ts</code> 의{" "}
+        <code>getServerQueryClient()</code> 는 React <code>cache()</code> 로
+        요청 스코프가 보장된다 — 요청 간 캐시가 새는 일은 없다.
+      </p>
+      <CodePanel
+        language="tsx"
+        filename="src/app/orders/[id]/page.tsx (RSC)"
+        code={`import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { getServerQueryClient } from '@/src/shared/api/queryClient';
+import { orderQueries } from '@/src/entities/order/api/orderQueries';
+import { OrderDetail } from '@/src/widgets/order/OrderDetail';
+
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const qc = getServerQueryClient();
+
+  await qc.prefetchQuery(orderQueries.detail(Number(id)));
+
+  return (
+    <HydrationBoundary state={dehydrate(qc)}>
+      <OrderDetail id={Number(id)} />
+    </HydrationBoundary>
+  );
+}`}
+      />
+      <CodePanel
+        language="tsx"
+        filename="src/widgets/order/OrderDetail.tsx (Client)"
+        code={`'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import { orderQueries } from '@/src/entities/order/api/orderQueries';
+
+export function OrderDetail({ id }: { id: number }) {
+  const { data, isPending } = useQuery(orderQueries.detail(id));
+  if (isPending) return <Skeleton />;
+  return <div>{data?.title}</div>;
+}`}
+      />
+
+      <h2>3. 로그인 / 로그아웃 — Server Action</h2>
+      <p>
+        쿠키 set/clear 는 Route Handler 또는 Server Action 에서만 가능하므로
+        Server Action 으로 작성한다. 클라이언트에서는 <code>useMutation</code>{" "}
+        으로 호출하면 된다.
+      </p>
+      <CodePanel
+        language="ts"
+        filename="src/features/auth/signIn/api/signInAction.ts"
+        code={`'use server';
+
+import { cookies } from 'next/headers';
+import { serverFetch } from '@/src/shared/api/serverFetch';
+
+const COOKIE = {
   httpOnly: true,
   secure: process.env.COOKIE_SECURE === 'true',
   sameSite: 'lax' as const,
   path: '/',
 };
 
-const AUTH_PATHS = {
-  LOGIN: 'v1/auth/login',
-  LOGOUT: 'v1/auth/logout',
-} as const;
+type SignInInput = { email: string; password: string };
+type SignInResult = { accessToken: string; refreshToken: string };
 
-// proxyRequest 함수 끝부분 — 응답을 만들고 반환하기 직전에:
-const res = NextResponse.json(data, { status: response.status });
+export async function signInAction(input: SignInInput): Promise<void> {
+  const data = await serverFetch<SignInResult>('/v1/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
 
-if (apiPath === AUTH_PATHS.LOGIN && data.result === 'SUCCESS') {
-  res.cookies.set('accessToken', data.data.accessToken, COOKIE_OPTIONS);
-  res.cookies.set('refreshToken', data.data.refreshToken, COOKIE_OPTIONS);
-}
-
-if (apiPath === AUTH_PATHS.LOGOUT && data.result === 'SUCCESS') {
-  res.cookies.set('accessToken', '', { ...COOKIE_OPTIONS, maxAge: -1 });
-  res.cookies.set('refreshToken', '', { ...COOKIE_OPTIONS, maxAge: -1 });
-}
-
-return res;`}
-      />
-      <p>
-        이렇게 하면 클라이언트는 평범하게{" "}
-        <code>http.post(&apos;/v1/auth/login&apos;, ...)</code> 만 호출하면 되고,
-        쿠키는 BFF 가 자동으로 박아준다.
-      </p>
-
-      <h2>2. 401 시 refresh-and-retry</h2>
-      <p>
-        백엔드가 401 을 반환하면 라우트 핸들러가 refreshToken 으로 재발급을
-        시도하고 새 토큰으로 같은 요청을 한 번 더 보낸다. 실패하면 쿠키를
-        지우고 <code>AUTH_EXPIRED</code>로 응답한다.
-      </p>
-      <CodePanel
-        language="ts"
-        filename="app/api/proxy/[...path]/route.ts (확장)"
-        code={`const refreshTokens = async (refreshToken: string) => {
-  const url = \`\${API_URL}/v1/auth/token/refresh?refreshToken=\${encodeURIComponent(
-    refreshToken,
-  )}\`;
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    const body = await response.json();
-    if (body.result === 'SUCCESS') {
-      return {
-        success: true as const,
-        accessToken: body.data.accessToken as string,
-        refreshToken: body.data.refreshToken as string,
-      };
-    }
-    return { success: false as const };
-  } catch {
-    return { success: false as const };
-  }
-};
-
-const buildAuthExpiredResponse = () => {
-  const res = NextResponse.json(
-    {
-      result: 'ERROR',
-      data: null,
-      error: {
-        code: 'AUTH_EXPIRED',
-        message: '인증이 만료되었습니다. 다시 로그인해주세요.',
-      },
-    },
-    { status: 401 },
-  );
-  res.cookies.set('accessToken', '', { ...COOKIE_OPTIONS, maxAge: -1 });
-  res.cookies.set('refreshToken', '', { ...COOKIE_OPTIONS, maxAge: -1 });
-  return res;
-};
-
-// proxyRequest 안 — 백엔드 응답이 401 일 때
-if (response.status === 401) {
-  const refreshToken = (await cookies()).get('refreshToken')?.value;
-  if (!refreshToken) return buildAuthExpiredResponse();
-
-  const result = await refreshTokens(refreshToken);
-  if (!result.success) return buildAuthExpiredResponse();
-
-  // 새 토큰으로 재요청
-  headers.Authorization = \`Bearer \${result.accessToken}\`;
-  const retry = await fetch(url.toString(), { method, headers, body });
-  const retryData = await retry.json();
-
-  const res = NextResponse.json(retryData, { status: retry.status });
-  res.cookies.set('accessToken', result.accessToken, COOKIE_OPTIONS);
-  res.cookies.set('refreshToken', result.refreshToken, COOKIE_OPTIONS);
-  return res;
+  const jar = await cookies();
+  jar.set('accessToken', data.accessToken, COOKIE);
+  jar.set('refreshToken', data.refreshToken, COOKIE);
 }`}
-      />
-
-      <h2>3. 미들웨어 라우트 가드</h2>
-      <p>
-        쿠키 존재 여부만 보고 보호 라우트와 인증 라우트를 분기한다. 토큰
-        재발급은 <strong>여기서 하지 않는다</strong> — BFF 가 처리.
-      </p>
-      <CodePanel
-        language="ts"
-        filename="middleware.ts"
-        code={`import { NextResponse, type NextRequest } from 'next/server';
-
-const PROTECTED_PREFIXES = ['/dashboard'];
-const AUTH_ROUTES = ['/sign-in', '/sign-up'];
-
-export const middleware = (req: NextRequest) => {
-  const { pathname } = req.nextUrl;
-  const accessToken = req.cookies.get('accessToken')?.value;
-
-  const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
-  const isAuthRoute = AUTH_ROUTES.includes(pathname);
-
-  if (isProtected && !accessToken) {
-    return NextResponse.redirect(new URL('/sign-in', req.url));
-  }
-  if (isAuthRoute && accessToken) {
-    return NextResponse.redirect(new URL('/', req.url));
-  }
-  return NextResponse.next();
-};
-
-export const config = {
-  matcher: '/((?!api|_next|_vercel|.*\\\\..*).*)',
-};`}
-      />
-      <p className="muted">
-        accessToken 만료 여부는 미들웨어에서 검증하지 않는다. 만료된 채로
-        통과시키고, 첫 인증 호출에서 BFF 가 refresh 한다 — 만료 검증을
-        미들웨어와 BFF 양쪽에서 하면 동시 요청 시 race condition 이 생긴다.
-      </p>
-
-      <h2>4. 클라이언트에서 AUTH_EXPIRED 처리</h2>
-      <p>
-        BFF 가 <code>AUTH_EXPIRED</code> 응답을 만들면, 클라이언트는 SPA
-        내부에서도 즉시 로그인 페이지로 이동시킨다 (다음 네비게이션을
-        기다리지 않고).
-      </p>
-      <CodePanel
-        language="ts"
-        filename="src/shared/api/http.ts (응답 인터셉터에 추가)"
-        code={`http.interceptors.response.use(
-  (response) => { /* ... 기존 ... */ },
-  (error) => {
-    if (axios.isAxiosError(error)) {
-      const { response } = error;
-      const errorBody = (response?.data as ApiResponse | undefined)?.error;
-
-      const isClient = typeof window !== 'undefined';
-      if (
-        isClient &&
-        response?.status === 401 &&
-        errorBody?.code === 'AUTH_EXPIRED' &&
-        !window.location.pathname.startsWith('/sign-in') &&
-        !window.location.pathname.startsWith('/sign-up')
-      ) {
-        window.location.href = '/sign-in';
-      }
-
-      return Promise.reject(
-        new ApiError(response?.status ?? 0, errorBody?.code ?? '', errorBody ?? null),
-      );
-    }
-    return Promise.reject(error);
-  },
-);`}
-      />
-
-      <h2>로그인 호출 (entities/feature 측)</h2>
-      <p>
-        쿠키는 BFF 가 박아주므로 클라이언트는 평범하게 mutation 만 보내면 된다.
-      </p>
-      <CodePanel
-        language="ts"
-        filename="features/auth/api/postSignInApi.ts"
-        code={`import { http } from '@/shared/api/http';
-
-type SignInPayload = { email: string; password: string };
-type SignInResponse = { accessToken: string; refreshToken: string };
-
-export const postSignInApi = async (payload: SignInPayload) => {
-  const { data } = await http.post<SignInResponse>('/v1/auth/login', payload);
-  return data;
-};`}
       />
       <CodePanel
         language="tsx"
-        filename="features/auth/ui/SignInForm.tsx"
+        filename="src/features/auth/signIn/ui/SignInForm.tsx"
         code={`'use client';
+
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { postSignInApi } from '../api/postSignInApi';
+import { signInAction } from '../api/signInAction';
 
 export function SignInForm() {
   const router = useRouter();
   const { mutate, isPending } = useMutation({
-    mutationFn: postSignInApi,
-    onSuccess: () => router.push('/'),
+    mutationFn: signInAction,
+    onSuccess: () => router.replace('/'),
   });
 
-  // ... handleSubmit 에서 mutate(payload) 호출
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const fd = new FormData(e.currentTarget);
+      mutate({
+        email: fd.get('email') as string,
+        password: fd.get('password') as string,
+      });
+    }}>
+      {/* input 들 ... */}
+    </form>
+  );
 }`}
       />
+      <CodePanel
+        language="ts"
+        filename="src/features/auth/signOut/api/signOutAction.ts"
+        code={`'use server';
+
+import { cookies } from 'next/headers';
+import { serverFetch } from '@/src/shared/api/serverFetch';
+
+const CLEAR = {
+  httpOnly: true,
+  secure: process.env.COOKIE_SECURE === 'true',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 0,
+};
+
+export async function signOutAction(): Promise<void> {
+  // best-effort — 백엔드 호출 실패해도 쿠키는 삭제
+  try {
+    await serverFetch('/v1/auth/logout', { method: 'POST' });
+  } catch {
+    // noop
+  }
+
+  const jar = await cookies();
+  jar.set('accessToken', '', CLEAR);
+  jar.set('refreshToken', '', CLEAR);
+}`}
+      />
+
+      <h2>4. 인증된 Mutation — withAuthRetry</h2>
+      <p>
+        Server Action 안에서 보호된 백엔드를 호출할 때 사용한다. 401 을 만나면{" "}
+        <code>refreshSession()</code> 으로 갱신 후 한 번 재시도한다 (RSC 에서는
+        쓰지 말 것 — RSC 는 쿠키 set 이 막혀 있음).
+      </p>
+      <CodePanel
+        language="ts"
+        filename="src/features/toggleFavorite/api/toggleFavoriteAction.ts"
+        code={`'use server';
+
+import { revalidateTag } from 'next/cache';
+import { serverFetch } from '@/src/shared/api/serverFetch';
+import { withAuthRetry } from '@/src/shared/api/withAuthRetry';
+
+export async function toggleFavoriteAction(productId: number): Promise<void> {
+  await withAuthRetry(() =>
+    serverFetch(\`/v1/products/\${productId}/favorite\`, { method: 'POST' }),
+  );
+  revalidateTag('favorites');
+}`}
+      />
+
+      <h2>5. queryFn 에 무엇을 넣어야 하나</h2>
+      <CodePanel
+        language="text"
+        filename="결정 트리"
+        code={`TQ queryFn 에 무엇을 넣을까?
+
+├─ http() 호출            → ✅ 기본. RSC/Client 자동 분기
+├─ Server Action 호출
+│   ├─ revalidateTag 등 필요 → OK. 단 Action 안에서
+│   │                          serverFetch + withAuthRetry 사용
+│   └─ 그냥 멋있어 보여서 → ❌ 직렬화·POST 비용·refresh 분산
+└─ 일반 서버 전용 함수    → ❌ 클라 refetch 시 폭발`}
+      />
+
+      <h2>6. Refresh 활성화 가이드</h2>
+      <p>
+        v1 의 <code>refreshSession.ts</code> 는 placeholder 라{" "}
+        <code>{`{ ok: false }`}</code> 만 반환한다. 백엔드 refresh API 명세가
+        확정되면 본문만 채우면 BFF 와 withAuthRetry 가 자동 활성화된다.
+      </p>
+      <CodePanel
+        language="ts"
+        filename="src/shared/api/refreshSession.ts (본문 채운 예)"
+        code={`export async function refreshSession(
+  refreshToken: string,
+): Promise<RefreshResult> {
+  if (inflight) return inflight;
+
+  inflight = (async (): Promise<RefreshResult> => {
+    try {
+      const res = await fetch(\`\${process.env.API_URL}/v1/auth/token/refresh\`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      const body = await res.json();
+      if (body.result === 'SUCCESS') {
+        return {
+          ok: true,
+          accessToken: body.data.accessToken,
+          refreshToken: body.data.refreshToken,
+        };
+      }
+      return { ok: false };
+    } finally {
+      inflight = null;
+    }
+  })();
+
+  return inflight;
+}`}
+      />
+      <p className="muted">
+        모듈 레벨 <code>inflight</code> 변수가 코얼레싱 — 동시에 여러 요청이
+        401 을 만나도 refresh 는 한 번만 발사된다.
+      </p>
+
+      <h3>(선택) 사전 갱신으로 RSC 깜빡임까지 제거</h3>
+      <p>
+        prefetch 에 의존도가 높다면, 미들웨어에서 JWT 만료 임박을 로컬로
+        디코드해 미리 갱신 라우트로 우회시킬 수 있다. fetch 는 안 한다.
+      </p>
+      <CodePanel
+        language="ts"
+        filename="src/proxy.ts (만료 임박 분기 추가)"
+        code={`import { NextRequest, NextResponse } from 'next/server';
+
+const AUTH_ROUTES = ['/sign-in', '/sign-up'];
+const REFRESH_BUFFER_SEC = 60;
+
+function isExpiringSoon(token: string): boolean {
+  try {
+    const payload = JSON.parse(
+      atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')),
+    ) as { exp?: number };
+    if (!payload.exp) return true;
+    return payload.exp - Math.floor(Date.now() / 1000) < REFRESH_BUFFER_SEC;
+  } catch {
+    return true;
+  }
+}
+
+export default function proxy(req: NextRequest) {
+  const { pathname, search } = req.nextUrl;
+  const at = req.cookies.get('accessToken')?.value;
+  const rt = req.cookies.get('refreshToken')?.value;
+  const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
+
+  if (isAuthRoute) return NextResponse.next();
+
+  if (!at) {
+    if (rt) return goRefresh(req, pathname + search);
+    return NextResponse.redirect(new URL('/sign-in', req.url));
+  }
+
+  if (isExpiringSoon(at)) {
+    if (rt) return goRefresh(req, pathname + search);
+    return NextResponse.redirect(new URL('/sign-in', req.url));
+  }
+
+  return NextResponse.next();
+}
+
+function goRefresh(req: NextRequest, next: string) {
+  const url = new URL('/api/auth/refresh', req.url);
+  url.searchParams.set('next', next);
+  return NextResponse.redirect(url);
+}
+
+export const config = {
+  matcher: '/((?!api|_next|.*\\\\..*).*)',
+};`}
+      />
+      <CodePanel
+        language="ts"
+        filename="src/app/api/auth/refresh/route.ts (신규)"
+        code={`import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { refreshSession } from '@/src/shared/api/refreshSession';
+
+const COOKIE = {
+  httpOnly: true,
+  secure: process.env.COOKIE_SECURE === 'true',
+  sameSite: 'lax' as const,
+  path: '/',
+};
+
+export async function GET(req: NextRequest) {
+  const next = req.nextUrl.searchParams.get('next') || '/';
+  const refreshToken = (await cookies()).get('refreshToken')?.value;
+
+  if (!refreshToken) return goSignIn(req);
+
+  const r = await refreshSession(refreshToken);
+  if (!r.ok) return goSignIn(req);
+
+  const res = NextResponse.redirect(new URL(next, req.url));
+  res.cookies.set('accessToken', r.accessToken, COOKIE);
+  res.cookies.set('refreshToken', r.refreshToken, COOKIE);
+  return res;
+}
+
+function goSignIn(req: NextRequest) {
+  const res = NextResponse.redirect(new URL('/sign-in', req.url));
+  res.cookies.set('accessToken', '', { ...COOKIE, maxAge: 0 });
+  res.cookies.set('refreshToken', '', { ...COOKIE, maxAge: 0 });
+  return res;
+}`}
+      />
+
+      <h2>7. 백엔드 응답 envelope 가정</h2>
+      <p>
+        템플릿은 <code>{`{ result: 'SUCCESS' | 'ERROR', data, error }`}</code>{" "}
+        envelope 을 가정한다 (<code>src/shared/api/apiTypes.ts</code>). 백엔드
+        포맷이 다르면 <code>serverFetch.ts</code> / <code>clientFetch.ts</code>{" "}
+        의 응답 처리 부분만 갈아끼우면 된다.
+      </p>
 
       <h2>환경 변수</h2>
       <CodePanel

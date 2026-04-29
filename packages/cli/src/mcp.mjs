@@ -165,7 +165,7 @@ export async function startMcpServer() {
           .describe("타겟 플랫폼"),
         structure: z.enum(["standalone", "monorepo"]).optional()
           .describe("Next.js 구조 — platform=next 일 때 필수. standalone(단독) | monorepo(Turborepo)"),
-        plugins: z.array(z.enum(["sentry", "next-intl"])).optional()
+        plugins: z.array(z.enum(["sentry", "next-intl", "auth-jwt"])).optional()
           .describe("Next.js 플러그인. 미지정시 빈 배열"),
         theme: z.string().optional()
           .describe("base64 인코딩된 테마 JSON (선택)"),

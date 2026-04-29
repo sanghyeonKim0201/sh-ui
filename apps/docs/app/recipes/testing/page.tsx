@@ -54,9 +54,9 @@ afterAll(() => server.close());`}
 
       <h2>MSW — http 인터셉트</h2>
       <p>
-        템플릿의 axios 는 클라이언트에서 <code>/api/proxy</code>로 호출하므로,
-        MSW 핸들러도 그 경로를 가로챈다. 서버 컨텍스트 테스트는 절대 URL 로
-        가는데, MSW 가 양쪽 다 처리.
+        템플릿의 <code>clientFetch</code> 는 브라우저에서{" "}
+        <code>/api/proxy</code>로 호출하고, <code>serverFetch</code> 는 RSC
+        에서 백엔드 절대 URL 로 직통한다. MSW 가 양쪽 경로 모두 가로챈다.
       </p>
       <CodePanel
         language="ts"
@@ -155,7 +155,7 @@ describe('getOrdersApi', () => {
 });`}
       />
       <p>
-        MSW 가 axios 호출을 가로채 핸들러의 mock 응답을 반환한다 — 백엔드 없이도
+        MSW 가 fetch 호출을 가로채 핸들러의 mock 응답을 반환한다 — 백엔드 없이도
         실제 호출 흐름을 그대로 테스트.
       </p>
 
@@ -243,9 +243,9 @@ describe('CreateOrderForm', () => {
       <h2>모킹 전략 — MSW vs vi.mock</h2>
       <ul>
         <li>
-          <strong>MSW 우선</strong> — http 호출 (queryFn · mutationFn 안에서
-          axios 부르는 모든 것). 실제 axios + interceptor + ApiError 흐름을 그대로
-          테스트.
+          <strong>MSW 우선</strong> — http 호출 (queryFn · mutationFn 안에서{" "}
+          <code>http()</code> 부르는 모든 것). 실제 transport + envelope 처리
+          + ApiError 흐름을 그대로 테스트.
         </li>
         <li>
           <strong><code>vi.mock</code> 보조</strong> —{" "}

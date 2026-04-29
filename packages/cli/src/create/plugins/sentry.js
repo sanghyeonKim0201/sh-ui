@@ -50,6 +50,11 @@ export const sentryPlugin = {
   providerWrappers: [],
 
   // ─── 독립 파일 ───
+  //
+  // Sentry 가 활성화될 때만 깔리는 파일.
+  // HTTP/proxy 인프라(http.ts, apiTypes.ts, error.ts, app/api/proxy 등)는
+  // 베이스 템플릿이 소유한다. Sentry 는 베이스의 observability.ts 를
+  // Sentry-aware 버전으로 덮어써서 캡처/로그를 활성화한다.
 
   files: {
     'sentry.server.config.ts': `import * as Sentry from '@sentry/nextjs';
@@ -61,10 +66,6 @@ Sentry.init({
   tracesSampleRate: 0,
   beforeSend: (event, hint) => {
     if (event.level === 'warning' || event.level === 'info' || event.level === 'debug' || event.level === 'log') {
-      return null;
-    }
-
-    if (event.exception?.values?.[0]?.type === 'AxiosError') {
       return null;
     }
 
@@ -95,11 +96,6 @@ Sentry.init({
     if (event.level === 'warning' || event.level === 'info' || event.level === 'debug' || event.level === 'log') {
       return null;
     }
-
-    if (event.exception?.values?.[0]?.type === 'AxiosError') {
-      return null;
-    }
-
     return event;
   },
 });
@@ -120,7 +116,7 @@ export const register = async () => {
 export const onRequestError = (
   ...[error, request, context]: Parameters<typeof Sentry.captureRequestError>
 ) => {
-  if (error instanceof Error && (error.name === 'ApiError' || error.name === 'AxiosError')) {
+  if (error instanceof Error && error.name === 'ApiError') {
     return;
   }
 
@@ -290,8 +286,9 @@ export default function Error({
   Suspense,
 } from 'react';
 import * as Sentry from '@sentry/nextjs';
-import { ApiError } from '../../api/error';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
+
+import { ApiError } from '../../api/error';
 
 interface ErrorFallbackProps {
   error: Error | null;
@@ -381,35 +378,23 @@ export function FallbackBoundary({
 }
 `,
 
-    'src/shared/api/apiTypes.ts': `export interface ApiErrorBody {
-  code: string;
-  message: string;
-}
+    // ─── observability 브릿지 ───
+    //
+    // 베이스의 no-op observability 를 Sentry-aware 버전으로 덮어쓴다.
+    // http.ts / serverFetch.ts / proxy/route.ts 가 이 모듈을 import 하므로,
+    // Sentry 플러그인이 켜지면 자동으로 캡처가 활성화된다.
 
-export interface ApiResponse<T = unknown> {
-  result: 'SUCCESS' | 'ERROR';
-  data: T | null;
-  error: ApiErrorBody | null;
-}
-`,
+    'src/shared/api/observability.ts': `import * as Sentry from '@sentry/nextjs';
 
-    'src/shared/api/error.ts': `import type { ApiErrorBody } from './apiTypes';
+type ApiCaptureParams = {
+  url: string;
+  apiPath: string;
+  method: string;
+  status: number | undefined;
+  responseBody?: unknown;
+};
 
-export class ApiError extends Error {
-  constructor(
-    public readonly status: number,
-    public readonly code: string,
-    public readonly data: ApiErrorBody | null,
-  ) {
-    super(data?.message ?? \`API 요청 실패 (\${status})\`);
-    this.name = 'ApiError';
-  }
-}
-`,
-
-    'src/shared/api/apiCore.ts': `import * as Sentry from '@sentry/nextjs';
-
-type ApiErrorLogParams = {
+type ApiLogParams = {
   url: string;
   method: string;
   status: number | undefined;
@@ -418,38 +403,10 @@ type ApiErrorLogParams = {
   responseBody?: unknown;
 };
 
-export const logApiError = (prefix: string, params: ApiErrorLogParams): void => {
-  const { url, method, status, requestHeaders, requestBody, responseBody } = params;
-
-  console.error(\`❌ [\${prefix} ERROR REPORT]\`);
-  console.error(\`- URL: \${method} \${url}\`);
-  console.error(\`- Status: \${status ?? 'N/A'}\`);
-
-  if (requestHeaders) {
-    const { Authorization: _, ...safeHeaders } = requestHeaders;
-    console.error('- Request Headers:', safeHeaders);
-  }
-
-  if (requestBody) {
-    console.error('- Request Body:', requestBody);
-  }
-
-  if (responseBody) {
-    console.error('- Response Body:', responseBody);
-  }
-};
-
-type ApiSentryCapture = {
-  url: string;
-  apiPath: string;
-  method: string;
-  status: number | undefined;
-  responseBody?: unknown;
-};
-
-export const captureApiError = (params: ApiSentryCapture): void => {
+export const captureApiError = (params: ApiCaptureParams): void => {
   const { url, apiPath, method, status, responseBody } = params;
 
+  // 5xx 서버 에러만 Sentry 로 보고 (4xx 비즈니스 에러는 UI 에서 처리)
   if (!status || status < 500) return;
 
   Sentry.withScope((scope) => {
@@ -461,228 +418,23 @@ export const captureApiError = (params: ApiSentryCapture): void => {
     });
     scope.setFingerprint([method, apiPath, String(status)]);
 
-    Sentry.captureException(
-      new Error(\`[API] \${method} \${apiPath} \${status}\`),
-    );
+    Sentry.captureException(new Error(\`[API] \${method} \${apiPath} \${status}\`));
   });
 };
-`,
 
-    'src/shared/api/http.ts': `import axios from 'axios';
-import { ApiError } from './error';
-import type { ApiResponse } from './apiTypes';
-import { captureApiError, logApiError } from './apiCore';
+export const logApiError = (prefix: string, params: ApiLogParams): void => {
+  const { url, method, status, requestHeaders, requestBody, responseBody } = params;
 
-const IS_SERVER = typeof window === 'undefined';
-const API_URL = process.env.API_URL || 'http://localhost:8080/api';
-const HTTP_TIMEOUT = 10_000;
+  console.error(\`❌ [\${prefix} ERROR REPORT]\`);
+  console.error(\`- URL: \${method} \${url}\`);
+  console.error(\`- Status: \${status ?? 'N/A'}\`);
 
-const http = axios.create({
-  baseURL: IS_SERVER ? API_URL : '/api/proxy',
-  timeout: HTTP_TIMEOUT,
-});
-
-http.interceptors.response.use(
-  (response) => {
-    const body = response.data as ApiResponse;
-
-    if (body && typeof body === 'object' && 'result' in body) {
-      if (body.result === 'ERROR') {
-        return Promise.reject(
-          new ApiError(response.status, body.error?.code ?? '', body.error),
-        );
-      }
-      response.data = body.data;
-    }
-
-    return response;
-  },
-  (error) => {
-    if (axios.isAxiosError(error)) {
-      const { config, response } = error;
-
-      const fullUrl = \`\${config?.baseURL ?? ''}\${config?.url ?? ''}\`;
-      const apiPath = config?.url ?? '';
-
-      const body = response?.data as ApiResponse | undefined;
-      const errorBody = body?.error ?? null;
-
-      if (process.env.NODE_ENV === 'development') {
-        logApiError('API', {
-          url: fullUrl,
-          method: config?.method?.toUpperCase() ?? 'UNKNOWN',
-          status: response?.status,
-          requestBody: config?.data,
-          responseBody: response?.data,
-        });
-      }
-
-      if (IS_SERVER) {
-        captureApiError({
-          url: fullUrl,
-          apiPath,
-          method: config?.method?.toUpperCase() ?? 'UNKNOWN',
-          status: response?.status,
-          responseBody: response?.data,
-        });
-      }
-
-      return Promise.reject(
-        new ApiError(
-          response?.status ?? 0,
-          errorBody?.code ?? '',
-          errorBody,
-        ),
-      );
-    }
-
-    return Promise.reject(error);
-  },
-);
-
-export { http };
-`,
-
-    'src/shared/api/index.ts': `export { http } from './http';
-export { ApiError } from './error';
-export type { ApiErrorBody, ApiResponse } from './apiTypes';
-export { captureApiError, logApiError } from './apiCore';
-`,
-
-    'app/api/proxy/[...path]/route.ts': `import { NextResponse, type NextRequest } from 'next/server';
-import {
-  logApiError,
-  captureApiError,
-} from '@/src/shared/api/apiCore';
-
-const API_URL = process.env.API_URL || 'http://localhost:8080/api';
-
-const proxyRequest = async (
-  request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> },
-  method: string,
-) => {
-  const { path } = await params;
-  const apiPath = path.join('/');
-  const url = new URL(\`\${API_URL}/\${apiPath}\`);
-
-  request.nextUrl.searchParams.forEach((value, key) => {
-    url.searchParams.set(key, value);
-  });
-
-  const headers: HeadersInit = {
-    'Accept-Language': request.headers.get('Accept-Language') || 'ko',
-  };
-
-  const contentType = request.headers.get('Content-Type');
-  let body: BodyInit | undefined;
-
-  if (method !== 'GET') {
-    if (contentType?.includes('multipart/form-data')) {
-      body = await request.formData();
-    } else {
-      headers['Content-Type'] = 'application/json';
-      body = await request.text();
-    }
+  if (requestHeaders) {
+    const { Authorization: _, ...safeHeaders } = requestHeaders;
+    console.error('- Request Headers:', safeHeaders);
   }
-
-  let response: Response;
-  try {
-    response = await fetch(url.toString(), { method, headers, body });
-  } catch (error) {
-    console.error(\`❌ [PROXY] \${method} \${url.toString()} — Network Error:\`, error);
-    return NextResponse.json(
-      { result: 'ERROR', data: null, error: { code: 'NETWORK_ERROR', message: '서버에 연결할 수 없습니다.' } },
-      { status: 502 },
-    );
-  }
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    logApiError('PROXY', {
-      url: url.toString(),
-      method,
-      status: response.status,
-      requestHeaders: headers as Record<string, string>,
-      requestBody: typeof body === 'string' ? body : undefined,
-      responseBody: data,
-    });
-
-    captureApiError({
-      url: url.toString(),
-      apiPath,
-      method,
-      status: response.status,
-      responseBody: data,
-    });
-  }
-
-  return NextResponse.json(data, { status: response.status });
-};
-
-export const GET = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
-  proxyRequest(req, ctx, 'GET');
-
-export const POST = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
-  proxyRequest(req, ctx, 'POST');
-
-export const PUT = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
-  proxyRequest(req, ctx, 'PUT');
-
-export const PATCH = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
-  proxyRequest(req, ctx, 'PATCH');
-
-export const DELETE = (req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) =>
-  proxyRequest(req, ctx, 'DELETE');
-`,
-
-    'src/shared/hooks/useAppMutation.ts': `import {
-  useMutation,
-  type UseMutationOptions,
-  type DefaultError,
-} from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { ApiError } from '../api/error';
-
-type AppMutationOptions<
-  TData = unknown,
-  TError = DefaultError,
-  TVariables = void,
-  TContext = unknown,
-> = UseMutationOptions<TData, TError, TVariables, TContext> & {
-  errorMessage?: string;
-  showErrorToast?: boolean;
-};
-
-export const useAppMutation = <
-  TData = unknown,
-  TError = DefaultError,
-  TVariables = void,
-  TContext = unknown,
->(
-  options: AppMutationOptions<TData, TError, TVariables, TContext>,
-) => {
-  const { errorMessage, showErrorToast = true, onError, ...rest } = options;
-
-  return useMutation({
-    ...rest,
-    onError: (...args) => {
-      onError?.(...args);
-
-      if (!showErrorToast) return;
-
-      const [error] = args;
-      const message =
-        error instanceof ApiError
-          ? error.data?.message ?? errorMessage
-          : errorMessage;
-
-      if (message) {
-        toast.error(message);
-      }
-    },
-  });
+  if (requestBody) console.error('- Request Body:', requestBody);
+  if (responseBody) console.error('- Response Body:', responseBody);
 };
 `,
   },
