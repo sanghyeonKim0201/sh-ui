@@ -32,12 +32,13 @@
   line-height: 1.4;
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
   -webkit-tap-highlight-color: transparent;
 }
 
-.sh-ui-accordion__trigger:hover .sh-ui-accordion__trigger-label {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+/* hover는 enabled 일 때만. background tint — 다른 hover 효과를 원하면 className/style 로 override. */
+.sh-ui-accordion__trigger:not([disabled]):not([data-disabled]):hover {
+  background: var(--background-muted);
 }
 
 .sh-ui-accordion__trigger:focus-visible {
@@ -84,6 +85,22 @@
   font-size: var(--text-sm);
   line-height: 1.6;
   color: var(--foreground-muted);
+}
+
+/* size="sm" — 좁은 사이드바·다중 섹션에 적합한 컴팩트 변형. */
+.sh-ui-accordion[data-size="sm"] .sh-ui-accordion__trigger {
+  padding: var(--space-2) var(--space-1);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}
+.sh-ui-accordion[data-size="sm"] .sh-ui-accordion__chevron {
+  width: 12px;
+  height: 12px;
+}
+.sh-ui-accordion[data-size="sm"] .sh-ui-accordion__content {
+  padding: 0 var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  line-height: 1.5;
 }
 
 @media (prefers-reduced-motion: reduce) {

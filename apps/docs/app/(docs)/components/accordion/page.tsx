@@ -325,6 +325,47 @@ ShUiAccordion(
         />
       </Preview>
 
+      <h3>size — 컴팩트 변형</h3>
+      <p className="muted">
+        좁은 사이드바·다중 섹션 패널에는 <code>size=&quot;sm&quot;</code> 으로
+        트리거 패딩·폰트·chevron 을 줄인다. 디폴트는 <code>md</code>.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <div style={{ width: "100%", maxWidth: 520 }}>
+            <Accordion size="sm" defaultValue={["a"]}>
+              <AccordionItem value="a">
+                <AccordionTrigger>여백</AccordionTrigger>
+                <AccordionContent>--space-0 ~ --space-16</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="b">
+                <AccordionTrigger>폰트 굵기</AccordionTrigger>
+                <AccordionContent>--weight-regular ~ --weight-bold</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="c">
+                <AccordionTrigger>모션</AccordionTrigger>
+                <AccordionContent>--duration-* / --ease-*</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Accordion size="sm" defaultValue={["a"]}>
+  <AccordionItem value="a">
+    <AccordionTrigger>여백</AccordionTrigger>
+    <AccordionContent>--space-0 ~ --space-16</AccordionContent>
+  </AccordionItem>
+</Accordion>`,
+            },
+          ]}
+        />
+      </Preview>
+
       <h2>구성 요소</h2>
       <SubComponents
         rows={[
@@ -378,8 +419,16 @@ ShUiAccordion(
       <p className="muted">
         React Props는 Base UI Accordion과 동일하다: <code>value</code>,{" "}
         <code>defaultValue</code>, <code>onValueChange</code>,{" "}
-        <code>disabled</code>, <code>orientation</code> 등.
+        <code>disabled</code>, <code>orientation</code> 등. 추가로 sh-ui 가
+        제공하는 prop:
       </p>
+      <ul>
+        <li>
+          <code>size</code> — <code>&quot;sm&quot; | &quot;md&quot;</code> (기본
+          <code>md</code>). <code>sm</code> 은 padding 8/4 + font 12px + chevron
+          12px 로 좁은 사이드바·다중 섹션에 적합.
+        </li>
+      </ul>
       <p className="muted">
         Flutter: <code>type</code>이 <code>single</code>이면{" "}
         <code>initialValue</code>와 <code>onValueChange</code>의 값 타입이{" "}
@@ -393,6 +442,11 @@ ShUiAccordion(
         네이티브 HTML 속성을 그대로 받는다. 보더·패딩·간격 조정은
         <code>style</code> / <code>className</code> 으로 직접 —{" "}
         <a href="/guidelines">가이드라인</a> 참조.
+      </p>
+      <p className="muted">
+        디폴트 hover 효과는 <code>--background-muted</code> 배경 틴트 (enabled
+        상태일 때만). 다른 효과 (밑줄·글자색 변경·아이콘 회전 등) 가 필요하면{" "}
+        <code>className</code> 을 통해 <code>:hover</code> 셀렉터로 override.
       </p>
     </main>
   );

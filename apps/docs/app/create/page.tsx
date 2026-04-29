@@ -148,10 +148,25 @@ export default function CreateProjectPage() {
     else setDark(next);
   };
 
-  const reset = () => {
-    if (mode === "light") setLight(lightDefaults);
-    else setDark(darkDefaults);
+  /** 모든 토큰 카테고리를 디폴트로 — light/dark 색뿐 아니라 공통 토큰(spacing 등) 까지. */
+  const resetAll = () => {
+    setLight(lightDefaults);
+    setDark(darkDefaults);
+    setRadius(DEFAULT_RADIUS);
+    setSpacing(spacingDefaults);
+    setTypography(typographyDefaults);
+    setWeights(weightDefaults);
+    setMotion(motionDefaults);
+    setBorders(borderDefaults);
+    setControls(controlDefaults);
+    setShadows(shadowDefaults);
+    setGradients(gradientDefaults);
   };
+
+  /** Light 모드의 색만 디폴트로. 공통 토큰·dark 색은 그대로. */
+  const resetLight = () => setLight(lightDefaults);
+  /** Dark 모드의 색만 디폴트로. 공통 토큰·light 색은 그대로. */
+  const resetDark = () => setDark(darkDefaults);
 
   const applyPreset = (p: { light: Record<TokenKey, string>; dark: Record<TokenKey, string>; radius: number }) => {
     setLight((prev) => ({ ...prev, ...p.light }));
@@ -270,7 +285,9 @@ export default function CreateProjectPage() {
           onApplyPreset={applyPreset}
           onApplyBaseTone={applyBaseTone}
           onApplyPrimaryFromColor={applyPrimaryFromColor}
-          onReset={reset}
+          onResetAll={resetAll}
+          onResetLight={resetLight}
+          onResetDark={resetDark}
           drawerOpen={editorDrawerOpen}
           onClose={() => setEditorDrawerOpen(false)}
         />

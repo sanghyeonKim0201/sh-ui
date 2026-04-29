@@ -83,6 +83,7 @@ const components: { title: string; href: string }[] = [
   { title: "Label", href: "/components/label" },
   { title: "MarkdownEditor", href: "/components/markdown-editor" },
   { title: "Menubar", href: "/components/menubar" },
+  { title: "NumericInput", href: "/components/numeric-input" },
   { title: "PageTOC", href: "/components/page-toc" },
   { title: "Pagination", href: "/components/pagination" },
   { title: "Popover", href: "/components/popover" },

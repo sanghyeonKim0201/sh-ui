@@ -5,6 +5,12 @@ import { THEME_PRESETS } from "sh-ui-cli/api";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Slider } from "@/components/ui/slider";
 import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import {
   Tabs,
   TabsList,
   TabsTrigger,
@@ -31,6 +37,8 @@ import {
 } from "./tokens";
 import { BASE_TONES, detectActiveBaseTone, type BaseTone, type BaseToneName } from "./baseTones";
 import { GradientBuilder } from "./GradientBuilder";
+import { ShadowBuilder } from "./ShadowBuilder";
+import { NumericInput } from "@/components/ui/numeric-input";
 import type { GradientTokens } from "./gradients";
 
 export type ThemePresetPayload = {
@@ -68,7 +76,9 @@ type Props = {
   onApplyPreset: (preset: ThemePresetPayload) => void;
   onApplyBaseTone: (tone: BaseTone) => void;
   onApplyPrimaryFromColor: (hex: string) => void;
-  onReset: () => void;
+  onResetAll: () => void;
+  onResetLight: () => void;
+  onResetDark: () => void;
   drawerOpen?: boolean;
   onClose?: () => void;
 };
@@ -100,7 +110,9 @@ export function TokenEditor({
   onApplyPreset,
   onApplyBaseTone,
   onApplyPrimaryFromColor,
-  onReset,
+  onResetAll,
+  onResetLight,
+  onResetDark,
   drawerOpen,
   onClose,
 }: Props) {
@@ -153,21 +165,6 @@ export function TokenEditor({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
         <strong style={{ fontSize: "0.875rem" }}>토큰 편집</strong>
         <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
-          <button
-            type="button"
-            onClick={onReset}
-            style={{
-              fontSize: "0.75rem",
-              padding: "0.25rem 0.5rem",
-              background: "transparent",
-              border: "1px solid var(--border)",
-              borderRadius: "calc(var(--radius) - 2px)",
-              cursor: "pointer",
-              color: "var(--foreground-muted)",
-            }}
-          >
-            {mode === "light" ? "Light" : "Dark"} 초기화
-          </button>
           {onClose && (
             <button
               type="button"
@@ -193,6 +190,20 @@ export function TokenEditor({
             </button>
           )}
         </div>
+      </div>
+
+      <div
+        role="group"
+        aria-label="초기화"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: "0.25rem",
+        }}
+      >
+        <ResetButton onClick={onResetAll}>전체 초기화</ResetButton>
+        <ResetButton onClick={onResetLight}>Light 초기화</ResetButton>
+        <ResetButton onClick={onResetDark}>Dark 초기화</ResetButton>
       </div>
 
       <SegmentedTabs
@@ -325,162 +336,191 @@ export function TokenEditor({
           </div>
         </>
       ) : (
-        <>
-          <Section label="색상" defaultOpen>
-            {TOKEN_GROUPS.map((g) => (
-              <div key={g.label} style={{ display: "flex", flexDirection: "column", gap: "0.375rem", marginBottom: "0.5rem" }}>
-                <div className="muted" style={{ fontSize: "0.6875rem", fontWeight: 500, color: "var(--foreground-muted)" }}>
-                  {g.label}
+        <Accordion size="sm" defaultValue={["colors"]}>
+          <AccordionItem value="colors">
+            <AccordionTrigger>색상</AccordionTrigger>
+            <AccordionContent>
+              {TOKEN_GROUPS.map((g) => (
+                <div key={g.label} style={{ display: "flex", flexDirection: "column", gap: "0.375rem", marginBottom: "0.5rem" }}>
+                  <div className="muted" style={{ fontSize: "0.6875rem", fontWeight: 500, color: "var(--foreground-muted)" }}>
+                    {g.label}
+                  </div>
+                  {g.keys.map((k) => (
+                    <ColorRow
+                      key={k}
+                      name={k}
+                      value={current[k]}
+                      open={openKey === k}
+                      onToggle={() => setOpenKey(openKey === k ? null : k)}
+                      onChange={(v) => onChangeCurrent({ ...current, [k]: v })}
+                    />
+                  ))}
                 </div>
-                {g.keys.map((k) => (
-                  <ColorRow
+              ))}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="control">
+            <AccordionTrigger>크기 (컨트롤 높이)</AccordionTrigger>
+            <AccordionContent>
+              {(["sm", "md", "lg"] as const).map((k) => (
+                <ScalarRow
+                  key={k}
+                  label={`control-${k}`}
+                  value={controls[k]}
+                  onChange={(v) => onControlsChange({ ...controls, [k]: v })}
+                  min={20}
+                  max={80}
+                  step={1}
+                  unit="px"
+                />
+              ))}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="border">
+            <AccordionTrigger>테두리 굵기</AccordionTrigger>
+            <AccordionContent>
+              <ScalarRow
+                label="border-width"
+                value={borders.width}
+                onChange={(v) => onBordersChange({ ...borders, width: v })}
+                min={0}
+                max={6}
+                step={1}
+                unit="px"
+              />
+              <ScalarRow
+                label="border-width-strong"
+                value={borders.widthStrong}
+                onChange={(v) => onBordersChange({ ...borders, widthStrong: v })}
+                min={0}
+                max={8}
+                step={1}
+                unit="px"
+              />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="shadow">
+            <AccordionTrigger>그림자</AccordionTrigger>
+            <AccordionContent>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+                {SHADOW_KEYS.map((k) => (
+                  <ShadowBuilder
                     key={k}
-                    name={k}
-                    value={current[k]}
-                    open={openKey === k}
-                    onToggle={() => setOpenKey(openKey === k ? null : k)}
-                    onChange={(v) => onChangeCurrent({ ...current, [k]: v })}
+                    label={`shadow-${k}`}
+                    value={shadows[k]}
+                    onChange={(v) => onShadowsChange({ ...shadows, [k]: v })}
                   />
                 ))}
               </div>
-            ))}
-          </Section>
+            </AccordionContent>
+          </AccordionItem>
 
-          <Section label="크기 (컨트롤 높이)">
-            {(["sm", "md", "lg"] as const).map((k) => (
+          <AccordionItem value="typography">
+            <AccordionTrigger>타이포</AccordionTrigger>
+            <AccordionContent>
+              {TYPOGRAPHY_KEYS.map((k) => (
+                <ScalarRow
+                  key={k}
+                  label={`text-${k}`}
+                  value={typography[k]}
+                  onChange={(v) => onTypographyChange({ ...typography, [k]: v })}
+                  min={8}
+                  max={64}
+                  step={1}
+                  unit="px"
+                />
+              ))}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="spacing">
+            <AccordionTrigger>여백</AccordionTrigger>
+            <AccordionContent>
+              {SPACING_KEYS.map((k) => (
+                <ScalarRow
+                  key={k}
+                  label={`space-${k}`}
+                  value={spacing[k]}
+                  onChange={(v) => onSpacingChange({ ...spacing, [k]: v })}
+                  min={0}
+                  max={128}
+                  step={1}
+                  unit="px"
+                />
+              ))}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="weight">
+            <AccordionTrigger>폰트 굵기</AccordionTrigger>
+            <AccordionContent>
+              {WEIGHT_KEYS.map((k) => (
+                <ScalarRow
+                  key={k}
+                  label={`weight-${k}`}
+                  value={weights[k]}
+                  onChange={(v) => onWeightsChange({ ...weights, [k]: v })}
+                  min={100}
+                  max={900}
+                  step={100}
+                />
+              ))}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="motion">
+            <AccordionTrigger>모션</AccordionTrigger>
+            <AccordionContent>
               <ScalarRow
-                key={k}
-                label={`control-${k}`}
-                value={controls[k]}
-                onChange={(v) => onControlsChange({ ...controls, [k]: v })}
-                min={20}
-                max={80}
-                step={1}
-                unit="px"
-              />
-            ))}
-          </Section>
-
-          <Section label="테두리 굵기">
-            <ScalarRow
-              label="border-width"
-              value={borders.width}
-              onChange={(v) => onBordersChange({ ...borders, width: v })}
-              min={0}
-              max={6}
-              step={1}
-              unit="px"
-            />
-            <ScalarRow
-              label="border-width-strong"
-              value={borders.widthStrong}
-              onChange={(v) => onBordersChange({ ...borders, widthStrong: v })}
-              min={0}
-              max={8}
-              step={1}
-              unit="px"
-            />
-          </Section>
-
-          <Section label="그림자">
-            {SHADOW_KEYS.map((k) => (
-              <ShadowRow
-                key={k}
-                label={`shadow-${k}`}
-                value={shadows[k]}
-                onChange={(v) => onShadowsChange({ ...shadows, [k]: v })}
-              />
-            ))}
-          </Section>
-
-          <Section label="타이포">
-            {TYPOGRAPHY_KEYS.map((k) => (
-              <ScalarRow
-                key={k}
-                label={`text-${k}`}
-                value={typography[k]}
-                onChange={(v) => onTypographyChange({ ...typography, [k]: v })}
-                min={8}
-                max={64}
-                step={1}
-                unit="px"
-              />
-            ))}
-          </Section>
-
-          <Section label="여백">
-            {SPACING_KEYS.map((k) => (
-              <ScalarRow
-                key={k}
-                label={`space-${k}`}
-                value={spacing[k]}
-                onChange={(v) => onSpacingChange({ ...spacing, [k]: v })}
+                label="duration-fast"
+                value={motion.durationFast}
+                onChange={(v) => onMotionChange({ ...motion, durationFast: v })}
                 min={0}
-                max={128}
-                step={1}
-                unit="px"
+                max={600}
+                step={10}
+                unit="ms"
               />
-            ))}
-          </Section>
-
-          <Section label="폰트 굵기">
-            {WEIGHT_KEYS.map((k) => (
               <ScalarRow
-                key={k}
-                label={`weight-${k}`}
-                value={weights[k]}
-                onChange={(v) => onWeightsChange({ ...weights, [k]: v })}
-                min={100}
-                max={900}
-                step={100}
+                label="duration-base"
+                value={motion.durationBase}
+                onChange={(v) => onMotionChange({ ...motion, durationBase: v })}
+                min={0}
+                max={800}
+                step={10}
+                unit="ms"
               />
-            ))}
-          </Section>
+              <ScalarRow
+                label="duration-slow"
+                value={motion.durationSlow}
+                onChange={(v) => onMotionChange({ ...motion, durationSlow: v })}
+                min={0}
+                max={1200}
+                step={10}
+                unit="ms"
+              />
+              <StringRow
+                label="ease-standard"
+                value={motion.easeStandard}
+                onChange={(v) => onMotionChange({ ...motion, easeStandard: v })}
+              />
+              <StringRow
+                label="ease-emphasized"
+                value={motion.easeEmphasized}
+                onChange={(v) => onMotionChange({ ...motion, easeEmphasized: v })}
+              />
+            </AccordionContent>
+          </AccordionItem>
 
-          <Section label="모션">
-            <ScalarRow
-              label="duration-fast"
-              value={motion.durationFast}
-              onChange={(v) => onMotionChange({ ...motion, durationFast: v })}
-              min={0}
-              max={600}
-              step={10}
-              unit="ms"
-            />
-            <ScalarRow
-              label="duration-base"
-              value={motion.durationBase}
-              onChange={(v) => onMotionChange({ ...motion, durationBase: v })}
-              min={0}
-              max={800}
-              step={10}
-              unit="ms"
-            />
-            <ScalarRow
-              label="duration-slow"
-              value={motion.durationSlow}
-              onChange={(v) => onMotionChange({ ...motion, durationSlow: v })}
-              min={0}
-              max={1200}
-              step={10}
-              unit="ms"
-            />
-            <StringRow
-              label="ease-standard"
-              value={motion.easeStandard}
-              onChange={(v) => onMotionChange({ ...motion, easeStandard: v })}
-            />
-            <StringRow
-              label="ease-emphasized"
-              value={motion.easeEmphasized}
-              onChange={(v) => onMotionChange({ ...motion, easeEmphasized: v })}
-            />
-          </Section>
-
-          <Section label="그라데이션">
-            <GradientBuilder value={gradients} onChange={onGradientsChange} />
-          </Section>
-        </>
+          <AccordionItem value="gradient">
+            <AccordionTrigger>그라데이션</AccordionTrigger>
+            <AccordionContent>
+              <GradientBuilder value={gradients} onChange={onGradientsChange} />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -527,38 +567,57 @@ export function TokenEditor({
         </div>
       </div>
 
-      <details style={{ borderTop: "1px solid var(--border)", paddingTop: "0.875rem" }}>
-        <summary
-          style={{
-            cursor: "pointer",
-            fontSize: "0.8125rem",
-            fontWeight: 500,
-            color: "var(--foreground-muted)",
-            listStyle: "none",
-          }}
-        >
-          내보내기
-        </summary>
-        <div style={{ marginTop: "0.5rem" }}>
-          <Tabs defaultValue="css">
-            <TabsList>
-              <TabsTrigger value="css">CSS</TabsTrigger>
-              <TabsTrigger value="dart">Dart</TabsTrigger>
-            </TabsList>
-            <TabsContent value="css">
-              <ExportBlock code={cssText} filename="tokens.css" />
-            </TabsContent>
-            <TabsContent value="dart">
-              <ExportBlock code={dartText} filename="sh_ui_tokens.dart" />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </details>
+      <Accordion size="sm">
+        <AccordionItem value="export">
+          <AccordionTrigger>내보내기</AccordionTrigger>
+          <AccordionContent>
+            <Tabs defaultValue="css">
+              <TabsList>
+                <TabsTrigger value="css">CSS</TabsTrigger>
+                <TabsTrigger value="dart">Dart</TabsTrigger>
+              </TabsList>
+              <TabsContent value="css">
+                <ExportBlock code={cssText} filename="tokens.css" />
+              </TabsContent>
+              <TabsContent value="dart">
+                <ExportBlock code={dartText} filename="sh_ui_tokens.dart" />
+              </TabsContent>
+            </Tabs>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
 
 /* ────── Sub-components ────── */
+
+function ResetButton({
+  onClick,
+  children,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        fontSize: "0.6875rem",
+        padding: "0.25rem 0.375rem",
+        background: "transparent",
+        border: "1px solid var(--border)",
+        borderRadius: "calc(var(--radius) - 2px)",
+        cursor: "pointer",
+        color: "var(--foreground-muted)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
 
 function SegmentedTabs<T extends string>({
   ariaLabel,
@@ -607,42 +666,6 @@ function SegmentedTabs<T extends string>({
         </button>
       ))}
     </div>
-  );
-}
-
-function Section({
-  label,
-  defaultOpen = false,
-  children,
-}: {
-  label: string;
-  defaultOpen?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <details
-      open={defaultOpen}
-      style={{
-        borderTop: "1px solid var(--border)",
-        paddingTop: "0.625rem",
-      }}
-    >
-      <summary
-        style={{
-          cursor: "pointer",
-          fontSize: "0.75rem",
-          fontWeight: 500,
-          color: "var(--foreground)",
-          listStyle: "none",
-          marginBottom: "0.5rem",
-        }}
-      >
-        {label}
-      </summary>
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-        {children}
-      </div>
-    </details>
   );
 }
 
@@ -754,20 +777,19 @@ function ScalarRow({
           aria-label={label}
         />
       </div>
-      <code
-        style={{
-          fontSize: "0.6875rem",
-          minWidth: "3rem",
-          textAlign: "right",
-          color: "var(--foreground)",
-        }}
-      >
-        {value}
-        {unit}
-      </code>
+      <NumericInput
+        value={value}
+        onValueChange={onChange}
+        min={min}
+        max={max}
+        step={step}
+        unit={unit}
+        aria-label={label}
+      />
     </div>
   );
 }
+
 
 function StringRow({
   label,
@@ -808,59 +830,4 @@ function StringRow({
   );
 }
 
-function ShadowRow({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", alignItems: "center", gap: "0.5rem" }}>
-        <span
-          aria-hidden
-          style={{
-            display: "inline-block",
-            width: "1.75rem",
-            height: "1.25rem",
-            borderRadius: "calc(var(--radius) - 4px)",
-            background: "var(--background)",
-            boxShadow: value,
-            border: "1px solid var(--border)",
-            flexShrink: 0,
-          }}
-        />
-        <code
-          style={{
-            fontSize: "0.6875rem",
-            color: "var(--foreground-muted)",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          --{label}
-        </code>
-      </div>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        spellCheck={false}
-        style={{
-          fontSize: "0.6875rem",
-          padding: "0.375rem 0.5rem",
-          border: "1px solid var(--border)",
-          borderRadius: "calc(var(--radius) - 4px)",
-          background: "var(--background)",
-          color: "var(--foreground)",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-        }}
-        aria-label={label}
-      />
-    </div>
-  );
-}
+// ShadowRow 는 ShadowBuilder 컴포넌트로 교체됨 (raw text input → 시각적 분해 편집).
