@@ -38,7 +38,7 @@ export default function NextIntlPlugin() {
       <CodePanel
         language="bash"
         filename="terminal"
-        code={`npm create sh-ui my-app -- --platform next --structure standalone --plugins next-intl --yes`}
+        code={`npx sh-ui-cli create my-app --platform next --structure standalone --plugins next-intl --yes`}
       />
 
       <h2>3. 폴더 구조</h2>

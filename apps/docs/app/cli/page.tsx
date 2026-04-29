@@ -48,7 +48,7 @@ export default function CliPage() {
         rows={[
           { prop: "--platform", type: `"next" | "flutter"` },
           { prop: "--structure", type: `"standalone" | "monorepo"`, description: "Next 전용." },
-          { prop: "--plugins", type: "string", description: "콤마 분리. 예: sentry,next-intl. Next 전용. 미지정 시 빈 배열." },
+          { prop: "--plugins", type: "string", description: "콤마 분리. 예: sentry,next-intl,auth-jwt. Next 전용. 미지정 시 빈 배열." },
           { prop: "--theme", type: "base64", description: "토큰 설정(base64). 플레이그라운드 UI 빌더가 생성." },
           { prop: "--yes", type: "boolean", description: "덮어쓰기 등 확인 프롬프트 스킵." },
         ]}

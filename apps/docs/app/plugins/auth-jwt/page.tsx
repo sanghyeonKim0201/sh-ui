@@ -40,7 +40,7 @@ export default function AuthJwtPlugin() {
       <CodePanel
         language="bash"
         filename="terminal"
-        code={`npm create sh-ui my-app -- --platform next --structure standalone --plugins auth-jwt --yes`}
+        code={`npx sh-ui-cli create my-app --platform next --structure standalone --plugins auth-jwt --yes`}
       />
       <p>
         Sentry / next-intl 와 함께:{" "}
