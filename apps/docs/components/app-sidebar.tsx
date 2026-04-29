@@ -11,6 +11,7 @@ import {
   LayoutTemplateIcon,
   PaletteIcon,
   PlugIcon,
+  PuzzleIcon,
   RocketIcon,
   TerminalIcon,
   WrenchIcon,
@@ -48,6 +49,12 @@ const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
   { title: "레시피", href: "/recipes", icon: WrenchIcon },
   { title: "실전 예제", href: "/examples", icon: LayoutTemplateIcon },
   { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
+];
+
+const plugins: { title: string; href: string }[] = [
+  { title: "auth-jwt", href: "/plugins/auth-jwt" },
+  { title: "sentry", href: "/plugins/sentry" },
+  { title: "next-intl", href: "/plugins/next-intl" },
 ];
 
 const components: { title: string; href: string }[] = [
@@ -99,6 +106,7 @@ const components: { title: string; href: string }[] = [
 export function AppSidebar() {
   const pathname = usePathname();
   const componentsActive = pathname.startsWith("/components/");
+  const pluginsActive = pathname.startsWith("/plugins/");
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
@@ -129,6 +137,35 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
+              <SidebarMenuItem>
+                <SidebarCollapsible defaultOpen={pluginsActive}>
+                  <SidebarCollapsibleTrigger>
+                    <PuzzleIcon />
+                    <span>플러그인</span>
+                  </SidebarCollapsibleTrigger>
+                  <SidebarCollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/plugins"}>
+                          <Link href="/plugins">
+                            <span>전체 보기</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      {plugins.map((p) => (
+                        <SidebarMenuSubItem key={p.href}>
+                          <SidebarMenuSubButton asChild isActive={isActive(p.href)}>
+                            <Link href={p.href}>
+                              <span>{p.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </SidebarCollapsibleContent>
+                </SidebarCollapsible>
+              </SidebarMenuItem>
 
               <SidebarMenuItem>
                 <SidebarCollapsible defaultOpen={componentsActive}>

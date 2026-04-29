@@ -8,8 +8,9 @@ export default function ApiLayerRecipe() {
       <h1>API 레이어</h1>
       <p className="muted">
         템플릿이 제공하는 isomorphic <code>http()</code> + 환경별 transport
-        (<code>serverFetch</code> / <code>clientFetch</code>) 와 TanStack Query
-        연동.
+        (<code>serverFetch</code> / <code>clientFetch</code>) 의 설계와 사용
+        규칙. RSC prefetch + hydration 패턴은{" "}
+        <a href="/recipes/data-fetching">데이터 페칭 레시피</a> 에서 다룬다.
       </p>
 
       <h2>구조</h2>
@@ -26,7 +27,7 @@ export default function ApiLayerRecipe() {
 
 [Client 컴포넌트] ──► clientFetch ──► /api/proxy/[...path] ──► API_URL
                                           · 쿠키 → Authorization 주입
-                                          · 401 → refreshSession 후 재시도
+                                          · auth-jwt 활성화 시 401 → refresh 후 재시도
                                           · 응답 그대로 반환`}
       />
       <p>
@@ -79,42 +80,22 @@ export const orderQueries = {
 };`}
       />
 
-      <h2>RSC Prefetch + Hydration</h2>
+      <h2>Mutation</h2>
+      <CodePanel
+        language="ts"
+        code={`import { http } from '@/src/shared/api/http';
+
+export const createOrder = (payload: NewOrder) =>
+  http<Order>('/v1/orders', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });`}
+      />
       <p>
-        서버에서 미리 채워두면 클라이언트는 즉시 hydrate. 추가 네트워크 0회.
+        <code>http()</code> 가 자동으로 <code>Content-Type: application/json</code>{" "}
+        을 붙인다. <code>FormData</code> 를 보낼 땐 직접{" "}
+        <code>headers</code> 비워서 브라우저가 boundary 를 채우게 둔다.
       </p>
-      <CodePanel
-        language="tsx"
-        filename="app/orders/page.tsx (RSC)"
-        code={`import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { getServerQueryClient } from '@/src/shared/api/queryClient';
-import { orderQueries } from '@/src/entities/order/api/orderQueries';
-import { OrderList } from '@/src/widgets/order/OrderList';
-
-export default async function Page() {
-  const qc = getServerQueryClient();
-  await qc.prefetchQuery(orderQueries.list());
-
-  return (
-    <HydrationBoundary state={dehydrate(qc)}>
-      <OrderList />
-    </HydrationBoundary>
-  );
-}`}
-      />
-      <CodePanel
-        language="tsx"
-        filename="src/widgets/order/OrderList.tsx (Client)"
-        code={`'use client';
-
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { orderQueries } from '@/src/entities/order/api/orderQueries';
-
-export function OrderList() {
-  const { data: orders } = useSuspenseQuery(orderQueries.list());
-  return <OrderListView orders={orders} />;
-}`}
-      />
 
       <h2>응답 envelope</h2>
       <p>
@@ -137,9 +118,8 @@ export function OrderList() {
 
       <h2>에러 처리</h2>
       <p>
-        모든 에러는 <code>ApiError</code> 로 통일된다.{" "}
-        <code>queryFn</code> 밖에서는 ErrorBoundary 로 잡고, 안에서는 다음
-        형태로 분기.
+        모든 에러는 <code>ApiError</code> 로 통일된다. <code>queryFn</code>{" "}
+        밖에서는 ErrorBoundary 로 잡고, 안에서는 다음 형태로 분기.
       </p>
       <CodePanel
         language="ts"
@@ -156,30 +136,38 @@ try {
 }`}
       />
 
-      <h2>의도적으로 제외된 것</h2>
+      <h2>의도적으로 제외된 것 (베이스에 없음)</h2>
       <ul>
         <li>
           <strong>토큰 refresh 로직</strong> — 401 자동 재발급은{" "}
-          <a href="/recipes/auth">auth-jwt 플러그인</a> 영역. 베이스 BFF 는
+          <a href="/plugins/auth-jwt">auth-jwt 플러그인</a> 영역. 베이스 BFF 는
           단순 패스스루다.
         </li>
         <li>
           <strong>로그인/로그아웃 쿠키 특례 처리</strong> — Server Action
-          으로 처리한다 (auth-jwt 레시피 참조).
+          으로 처리한다 (auth-jwt 페이지 참조).
         </li>
         <li>
-          <strong>Sentry 캡처</strong> — Sentry 플러그인이{" "}
+          <strong>Sentry 캡처</strong> —{" "}
+          <a href="/plugins/sentry">Sentry 플러그인</a> 이{" "}
           <code>observability.ts</code> 를 덮어쓰면 자동 활성화.
         </li>
       </ul>
 
-      <h2>트레이드오프 — 두 transport</h2>
-      <p>
-        RSC 와 클라이언트가 다른 경로를 타기 때문에 동작 검증을 양쪽 모두에서
-        해야 한다. 그 대신 RSC 는 추가 hop 없이 백엔드 직통이라 prefetch 가
-        빠르고, 브라우저는 <code>/api/proxy</code> 를 거쳐 httpOnly 쿠키와
-        refresh 책임자(BFF)를 한 곳으로 모은다.
-      </p>
+      <h2>관련 문서</h2>
+      <ul>
+        <li>
+          <a href="/recipes/data-fetching">데이터 페칭 (RSC prefetch + hydration)</a>{" "}
+          — <code>queryOptions</code>, <code>HydrationBoundary</code>, useSuspenseQuery 패턴
+        </li>
+        <li>
+          <a href="/plugins/auth-jwt">auth-jwt 플러그인</a> — 인증된 요청, BFF
+          refresh, Server Action
+        </li>
+        <li>
+          <a href="/plugins/sentry">sentry 플러그인</a> — 5xx 자동 캡처
+        </li>
+      </ul>
     </main>
   );
 }
