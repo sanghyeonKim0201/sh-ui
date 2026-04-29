@@ -331,7 +331,7 @@ export function TokenEditor({
           </div>
         </>
       ) : (
-        <Accordion defaultValue={["colors"]}>
+        <Accordion size="sm" defaultValue={["colors"]}>
           <AccordionItem value="colors">
             <AccordionTrigger>색상</AccordionTrigger>
             <AccordionContent>

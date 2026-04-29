@@ -8,16 +8,30 @@ function cx(...args: (string | undefined | false)[]) {
 
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-export const Accordion = React.forwardRef<
-  HTMLDivElement,
-  WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseAccordion.Root>>
->(({ className, ...props }, ref) => (
-  <BaseAccordion.Root
-    ref={ref}
-    className={cx("sh-ui-accordion", className)}
-    {...props}
-  />
-));
+export type AccordionSize = "sm" | "md";
+
+type AccordionProps = WithStringClassName<
+  React.ComponentPropsWithoutRef<typeof BaseAccordion.Root>
+> & {
+  /**
+   * 트리거 + chevron + content 의 패딩·폰트 크기 묶음.
+   * - `md` (기본) — padding 16/4, font 15px, chevron 16px
+   * - `sm` — padding 8/4, font 12px, chevron 12px. 좁은 사이드바·다중 섹션에 적합.
+   * @default "md"
+   */
+  size?: AccordionSize;
+};
+
+export const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
+  ({ className, size = "md", ...props }, ref) => (
+    <BaseAccordion.Root
+      ref={ref}
+      className={cx("sh-ui-accordion", className)}
+      data-size={size}
+      {...props}
+    />
+  ),
+);
 Accordion.displayName = "Accordion";
 
 export const AccordionItem = React.forwardRef<

@@ -86,6 +86,22 @@
   color: var(--foreground-muted);
 }
 
+/* size="sm" — 좁은 사이드바·다중 섹션에 적합한 컴팩트 변형. */
+.sh-ui-accordion[data-size="sm"] .sh-ui-accordion__trigger {
+  padding: var(--space-2) var(--space-1);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}
+.sh-ui-accordion[data-size="sm"] .sh-ui-accordion__chevron {
+  width: 12px;
+  height: 12px;
+}
+.sh-ui-accordion[data-size="sm"] .sh-ui-accordion__content {
+  padding: 0 var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sh-ui-accordion__panel,
   .sh-ui-accordion__chevron {
