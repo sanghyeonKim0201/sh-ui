@@ -40,3 +40,27 @@ export type PluginManifest = {
 };
 
 export const allPlugins: readonly PluginManifest[];
+
+/* ─────── 테마 프리셋 ─────── */
+
+export type ThemePresetName = 'neutral' | 'slate' | 'rose' | 'emerald' | 'violet';
+
+/** decode.js 의 TOKEN_KEYS — light/dark 양쪽이 가져야 하는 키 12개. */
+export type ThemeTokenKey =
+  | 'background' | 'background-subtle' | 'background-muted'
+  | 'foreground' | 'foreground-muted'
+  | 'border' | 'border-strong'
+  | 'primary' | 'primary-foreground' | 'primary-hover'
+  | 'danger' | 'danger-foreground';
+
+export interface ThemePreset {
+  /** UI 에 표시할 사람이 읽는 라벨. */
+  label: string;
+  light: Record<ThemeTokenKey, string>;
+  dark: Record<ThemeTokenKey, string>;
+  /** rem 단위 (0~1.5). */
+  radius: number;
+}
+
+export const THEME_PRESETS: Record<ThemePresetName, ThemePreset>;
+export const THEME_PRESET_NAMES: readonly ThemePresetName[];

@@ -207,37 +207,37 @@
 }
 
 .sh-ui-calendar__day--selected {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--primary);
+  color: var(--primary-foreground);
   font-weight: var(--weight-semibold);
 }
 
 .sh-ui-calendar__day--selected:hover:not(:disabled) {
-  background: var(--foreground);
-  opacity: 0.9;
+  background: var(--primary-hover);
+  color: var(--primary-foreground);
 }
 
 /* ── Range ── */
 
 .sh-ui-calendar__day--in-range {
-  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
   border-radius: 0;
 }
 
 .sh-ui-calendar__day--in-range:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--foreground) 18%, transparent);
+  background: color-mix(in srgb, var(--primary) 22%, transparent);
 }
 
 .sh-ui-calendar__day--range-start {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--primary);
+  color: var(--primary-foreground);
   font-weight: var(--weight-semibold);
   border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px);
 }
 
 .sh-ui-calendar__day--range-end {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--primary);
+  color: var(--primary-foreground);
   font-weight: var(--weight-semibold);
   border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0;
 }
@@ -248,8 +248,8 @@
 
 .sh-ui-calendar__day--range-start:hover:not(:disabled),
 .sh-ui-calendar__day--range-end:hover:not(:disabled) {
-  background: var(--foreground);
-  opacity: 0.9;
+  background: var(--primary-hover);
+  color: var(--primary-foreground);
 }
 
 /* ── Hint (range picker) ── */

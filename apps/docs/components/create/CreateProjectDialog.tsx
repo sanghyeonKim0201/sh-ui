@@ -25,6 +25,27 @@ import {
   type Structure,
 } from "./useCommandComposer";
 import { encodeTheme, type TokenKey, type Mode, type ThemeConfig } from "./encodeTheme";
+import {
+  borderDefaults,
+  controlDefaults,
+  motionDefaults,
+  shadowDefaults,
+  spacingDefaults,
+  typographyDefaults,
+  weightDefaults,
+  type BorderTokens,
+  type ControlTokens,
+  type MotionTokens,
+  type ShadowTokens,
+  type SpacingScale,
+  type TypographyScale,
+  type WeightScale,
+} from "./tokens";
+import {
+  gradientDefaults,
+  serializeGradient,
+  type GradientTokens,
+} from "./gradients";
 
 type Props = {
   open: boolean;
@@ -33,6 +54,34 @@ type Props = {
   dark: Record<TokenKey, string>;
   radius: number;
   mode: Mode;
+  spacing: SpacingScale;
+  typography: TypographyScale;
+  weights: WeightScale;
+  motion: MotionTokens;
+  borders: BorderTokens;
+  controls: ControlTokens;
+  shadows: ShadowTokens;
+  gradients: GradientTokens;
+};
+
+/** 사용자 값이 디폴트와 다른 키가 하나라도 있으면 current 를 그대로 (Record 형태) 반환. 모두 같으면 undefined. */
+const diffFromDefaults = <T extends object>(current: T, defaults: T): Record<string, number> | undefined => {
+  const c = current as unknown as Record<string, number>;
+  const d = defaults as unknown as Record<string, number>;
+  for (const k of Object.keys(d)) {
+    if (c[k] !== d[k]) return c;
+  }
+  return undefined;
+};
+
+/** 문자열 카테고리 동일. */
+const diffStringFromDefaults = <T extends object>(current: T, defaults: T): Record<string, string> | undefined => {
+  const c = current as unknown as Record<string, string>;
+  const d = defaults as unknown as Record<string, string>;
+  for (const k of Object.keys(d)) {
+    if (c[k] !== d[k]) return c;
+  }
+  return undefined;
 };
 
 const SWATCH_KEYS: TokenKey[] = ["background", "foreground", "primary", "danger"];
@@ -48,7 +97,10 @@ const validateProjectName = (name: string): string | null => {
   return null;
 };
 
-export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }: Props) {
+export function CreateProjectDialog({
+  open, onClose, light, dark, radius, mode,
+  spacing, typography, weights, motion, borders, controls, shadows, gradients,
+}: Props) {
   const [projectName, setProjectName] = useState("my-app");
   const [platform, setPlatform] = useState<Platform>("next");
   const [structure, setStructure] = useState<Structure>("standalone");
@@ -59,7 +111,51 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
   const nameError = useMemo(() => validateProjectName(projectName), [projectName]);
   const canCopy = nameError === null;
 
-  const theme: ThemeConfig = useMemo(() => ({ light, dark, radius }), [light, dark, radius]);
+  const theme: ThemeConfig = useMemo(() => {
+    const cfg: ThemeConfig = { light, dark, radius };
+    // 옵셔널 카테고리 — 디폴트와 다를 때만 포함 (base64 크기 절약 + CLI threading 명시성)
+    const sp = diffFromDefaults(spacing, spacingDefaults);
+    if (sp) cfg.spacing = sp;
+    const ty = diffFromDefaults(typography, typographyDefaults);
+    if (ty) cfg.typography = ty;
+    const we = diffFromDefaults(weights, weightDefaults);
+    if (we) cfg.weights = we;
+    const ct = diffFromDefaults(controls, controlDefaults);
+    if (ct) cfg.controls = ct;
+    const bd = diffFromDefaults(borders, borderDefaults);
+    if (bd) cfg.borders = bd;
+    // motion 은 string ease 가 섞여 있어 numeric duration 만 추출 (ease 는 Phase 3)
+    const durationsCurrent = {
+      fast: motion.durationFast, base: motion.durationBase, slow: motion.durationSlow,
+    };
+    const durationsDefault = {
+      fast: motionDefaults.durationFast, base: motionDefaults.durationBase, slow: motionDefaults.durationSlow,
+    };
+    const du = diffFromDefaults(durationsCurrent, durationsDefault);
+    if (du) cfg.durations = du;
+    // Phase 3 — string 카테고리
+    const sh = diffStringFromDefaults(shadows, shadowDefaults);
+    if (sh) cfg.shadows = sh;
+    // ease — motion 에 두 string 키만 추출
+    const easesCurrent = { standard: motion.easeStandard, emphasized: motion.easeEmphasized };
+    const easesDefault = { standard: motionDefaults.easeStandard, emphasized: motionDefaults.easeEmphasized };
+    const ea = diffStringFromDefaults(easesCurrent, easesDefault);
+    if (ea) cfg.eases = ea;
+    // gradient — slot 객체를 CSS 문자열로 직렬화한 후 비교
+    const gradStrCurrent = {
+      primary: serializeGradient(gradients.primary),
+      surface: serializeGradient(gradients.surface),
+      overlay: serializeGradient(gradients.overlay),
+    };
+    const gradStrDefault = {
+      primary: serializeGradient(gradientDefaults.primary),
+      surface: serializeGradient(gradientDefaults.surface),
+      overlay: serializeGradient(gradientDefaults.overlay),
+    };
+    const gr = diffStringFromDefaults(gradStrCurrent, gradStrDefault);
+    if (gr) cfg.gradients = gr;
+    return cfg;
+  }, [light, dark, radius, spacing, typography, weights, motion, borders, controls, shadows, gradients]);
   const themeBase64 = useMemo(() => encodeTheme(theme), [theme]);
 
   const command = useMemo(

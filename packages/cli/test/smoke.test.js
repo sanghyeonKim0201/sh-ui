@@ -47,6 +47,7 @@ describe('sh-ui create smoke tests', () => {
     prompts.input.mockResolvedValueOnce('my-app');
     prompts.select
       .mockResolvedValueOnce('next')         // platform
+      .mockResolvedValueOnce('__none__')      // theme
       .mockResolvedValueOnce('standalone');   // structure
     prompts.checkbox.mockResolvedValueOnce([]);
 
@@ -69,6 +70,7 @@ describe('sh-ui create smoke tests', () => {
       .mockResolvedValueOnce('3000');      // 포트
     prompts.select
       .mockResolvedValueOnce('next')         // platform
+      .mockResolvedValueOnce('__none__')      // theme
       .mockResolvedValueOnce('monorepo');     // structure
     prompts.checkbox.mockResolvedValueOnce([]);
 
@@ -144,7 +146,9 @@ describe('sh-ui create smoke tests', () => {
   });
   it('scenario 5 — flutter standalone', async () => {
     prompts.input.mockResolvedValueOnce('my-flutter-app');
-    prompts.select.mockResolvedValueOnce('flutter');
+    prompts.select
+      .mockResolvedValueOnce('flutter')   // platform
+      .mockResolvedValueOnce('__none__'); // theme
 
     await createProject();
 
@@ -193,8 +197,10 @@ describe('sh-ui create smoke tests', () => {
   });
 
   it('scenario 7 — 부분 플래그 (name, platform 만 제공, 나머지는 프롬프트)', async () => {
-    prompts.select.mockResolvedValueOnce('standalone'); // structure
-    prompts.checkbox.mockResolvedValueOnce([]);          // plugins
+    prompts.select
+      .mockResolvedValueOnce('__none__')    // theme
+      .mockResolvedValueOnce('standalone'); // structure
+    prompts.checkbox.mockResolvedValueOnce([]); // plugins
 
     await createProject({
       name: 'partial',
@@ -206,8 +212,8 @@ describe('sh-ui create smoke tests', () => {
 
     // name / platform 은 프롬프트 우회
     expect(prompts.input).not.toHaveBeenCalled();
-    // structure 는 프롬프트 호출됨 (select 1 번)
-    expect(prompts.select).toHaveBeenCalledTimes(1);
+    // theme + structure 두 번
+    expect(prompts.select).toHaveBeenCalledTimes(2);
   });
 
   it('scenario 8 — theme 주입 (Next.js standalone)', async () => {
@@ -274,16 +280,213 @@ describe('sh-ui create smoke tests', () => {
   });
 
   it('scenario 11 — 잘못된 theme base64 → 에러', async () => {
+    // 50자 초과 + base64 알파벳 밖 문자 — 프리셋 휴리스틱 통과 후 decodeTheme 가 거부
     await expect(
       createProject({
         name: 'bad-theme',
         platform: 'next',
         structure: 'standalone',
         plugins: [],
-        theme: 'not-valid-base64!!!',
+        theme: '!'.repeat(60),
         yes: true,
       }),
     ).rejects.toThrow(/theme 디코드 실패/);
+  });
+
+  it('scenario 11b — 짧은 오타 → 프리셋 안내 에러', async () => {
+    await expect(
+      createProject({
+        name: 'typo-theme',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        theme: 'rsoe',
+        yes: true,
+      }),
+    ).rejects.toThrow(/알 수 없는 테마 프리셋.*neutral.*slate/);
+  });
+
+  it('scenario 11d — 옵셔널 카테고리 (spacing) 주입', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = {
+      light: red, dark: blue, radius: 0.5,
+      spacing: { '0': 0, '1': 8, '2': 16, '3': 24, '4': 32, '5': 40, '6': 48, '8': 64, '10': 80, '12': 96, '16': 128 },
+    };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'spaced',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: themeB64,
+      yes: true,
+    });
+
+    const cssPath = path.join(tmpDir, 'spaced', 'src', 'shared', 'styles', 'tokens.css');
+    const css = await fs.readFile(cssPath, 'utf-8');
+    // spacing 마커 사이 새 값 — 디폴트 4 가 8 로 바뀜
+    expect(css).toContain('--space-1: 8px;');
+    expect(css).toContain('--space-16: 128px;');
+    // 다른 카테고리(text 등)는 그대로
+    expect(css).toContain('--text-xs: 12px;');
+  });
+
+  it('scenario 11e — 카테고리 누락 시 템플릿 디폴트 유지', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = { light: red, dark: blue, radius: 0.5 }; // 옵셔널 카테고리 모두 없음
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'minimal',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: themeB64,
+      yes: true,
+    });
+
+    const cssPath = path.join(tmpDir, 'minimal', 'src', 'shared', 'styles', 'tokens.css');
+    const css = await fs.readFile(cssPath, 'utf-8');
+    // 색은 주입됐고
+    expect(css).toMatch(/:root\s*\{[^}]*--background:\s*#FF0000/s);
+    // 다른 카테고리는 디폴트 그대로
+    expect(css).toContain('--space-1: 4px;');
+    expect(css).toContain('--text-base: 16px;');
+    expect(css).toContain('--weight-bold: 700;');
+  });
+
+  it('scenario 11f — Flutter 옵셔널 카테고리 주입 (typography)', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = {
+      light: red, dark: blue, radius: 0.5,
+      typography: { xs: 10, sm: 13, base: 15, lg: 17, xl: 19, '2xl': 22, '3xl': 28, '4xl': 34 },
+    };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'flutter-typed',
+      platform: 'flutter',
+      theme: themeB64,
+      yes: true,
+    });
+
+    const dartPath = path.join(
+      tmpDir, 'flutter-typed', 'lib', 'sh_ui', 'foundation', 'sh_ui_tokens.dart',
+    );
+    const dart = await fs.readFile(dartPath, 'utf-8');
+    expect(dart).toContain('xs: 10.0,');
+    expect(dart).toContain('xl4: 34.0,');
+    // 다른 카테고리(spacing 등) 디폴트
+    expect(dart).toContain('s4: 16.0,');
+  });
+
+  it('scenario 11g — Phase 3 shadow 주입 (Next + Flutter)', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = {
+      light: red, dark: blue, radius: 0.5,
+      shadows: {
+        sm: '0 2px 4px rgba(0, 0, 0, 0.2)',
+        md: '0 6px 16px rgba(0, 0, 0, 0.25)',
+        lg: '0 12px 32px rgba(0, 0, 0, 0.3)',
+        xl: '0 20px 64px rgba(0, 0, 0, 0.35)',
+      },
+    };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'shadowed',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: themeB64,
+      yes: true,
+    });
+
+    const css = await fs.readFile(
+      path.join(tmpDir, 'shadowed', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
+    );
+    expect(css).toContain('--shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);');
+    expect(css).toContain('--shadow-xl: 0 20px 64px rgba(0, 0, 0, 0.35);');
+  });
+
+  it('scenario 11h — Phase 3 ease 주입 (Flutter — Cubic 변환)', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = {
+      light: red, dark: blue, radius: 0.5,
+      eases: {
+        standard: 'cubic-bezier(0.5, 0, 0.5, 1)',
+        emphasized: 'ease-in-out',
+      },
+    };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'eased',
+      platform: 'flutter',
+      theme: themeB64,
+      yes: true,
+    });
+
+    const dart = await fs.readFile(
+      path.join(tmpDir, 'eased', 'lib', 'sh_ui', 'foundation', 'sh_ui_tokens.dart'), 'utf-8',
+    );
+    expect(dart).toContain('standard: Cubic(0.5, 0, 0.5, 1),');
+    // ease-in-out 는 Cubic(0.42, 0, 0.58, 1) 로 매핑
+    expect(dart).toContain('emphasized: Cubic(0.42, 0, 0.58, 1),');
+  });
+
+  it('scenario 11i — Phase 3 gradient 주입 (CSS + Dart 변환)', async () => {
+    const red = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#FF0000']));
+    const blue = Object.fromEntries(TOKEN_KEYS.map((k) => [k, '#0000FF']));
+    const theme = {
+      light: red, dark: blue, radius: 0.5,
+      gradients: {
+        primary: 'linear-gradient(45deg, #FF0000 0%, #0000FF 100%)',
+        surface: 'linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%)',
+        overlay: 'linear-gradient(180deg, #000000 0%, #1F1F1F 100%)',
+      },
+    };
+    const themeB64 = Buffer.from(JSON.stringify(theme), 'utf-8').toString('base64');
+
+    await createProject({
+      name: 'grad',
+      platform: 'flutter',
+      theme: themeB64,
+      yes: true,
+    });
+
+    const dart = await fs.readFile(
+      path.join(tmpDir, 'grad', 'lib', 'sh_ui', 'foundation', 'sh_ui_tokens.dart'), 'utf-8',
+    );
+    // 45deg primary → end ≈ (0.707, -0.707)
+    expect(dart).toMatch(/primary: LinearGradient\(begin: Alignment\(-0\.707, 0\.707\), end: Alignment\(0\.707, -0\.707\)/);
+    expect(dart).toContain('Color(0xFFFF0000), Color(0xFF0000FF)');
+  });
+
+  it('scenario 11c — 프리셋 이름 → 토큰 주입', async () => {
+    await createProject({
+      name: 'preset-rose',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: 'rose',
+      yes: true,
+    });
+
+    const cssPath = path.join(tmpDir, 'preset-rose', 'src', 'shared', 'styles', 'tokens.css');
+    const css = await fs.readFile(cssPath, 'utf-8');
+    // rose 프리셋의 light primary 색
+    expect(css).toMatch(/:root\s*\{[^}]*--primary:\s*#E11D48/s);
+    // dark primary
+    expect(css).toMatch(/\.dark\s*\{[^}]*--primary:\s*#FB7185/s);
+    // rose radius 0.75
+    expect(css).toContain('--radius: 0.75rem;');
   });
 
   it('scenario 12 — theme 주입 (monorepo) → ui-web 패키지에 반영', async () => {

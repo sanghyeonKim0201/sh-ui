@@ -4,9 +4,11 @@ import { parseArgs } from './cli-args.js';
 import { createProject, addApp, addComponent } from './generator.js';
 import { allPlugins } from './plugins/index.js';
 import { CREATE_PLATFORMS, CREATE_STRUCTURES } from '../constants.js';
+import { THEME_PRESET_NAMES } from './theme/presets.js';
 
 const PLUGIN_NAMES = allPlugins.map((p) => p.name);
 const PLUGINS_LIST = PLUGIN_NAMES.join(', ');
+const THEME_PRESETS_LIST = THEME_PRESET_NAMES.join('|');
 
 export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next.js / Flutter)
 
@@ -19,7 +21,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
   --platform <${CREATE_PLATFORMS.join('|')}>          타겟 플랫폼
   --structure <${CREATE_STRUCTURES.join('|')}>  Next.js 프로젝트 구조 (next 일 때)
   --plugins <a,b>                    플러그인 (${PLUGINS_LIST}). 미지정/"" → 없음
-  --theme <base64>                   테마 JSON (base64). 선택
+  --theme <preset|base64>            프리셋 이름(${THEME_PRESETS_LIST}) 또는 playground base64. 선택
   --yes                              디렉토리 덮어쓰기 + 모노레포 기본값 자동 채택
   --dry-run                          파일을 쓰지 않고 작성될 파일 목록만 출력
   -h, --help                         이 도움말
@@ -30,6 +32,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 예 (비대화형 / 에이전트 / CI):
   sh-ui create my-app --platform next --structure standalone --yes
   sh-ui create my-app --platform next --structure monorepo --plugins ${PLUGIN_NAMES.slice(0, 3).join(',')} --yes
+  sh-ui create my-app --platform next --structure standalone --theme rose --yes
   sh-ui create my-app --platform flutter --yes
 
 비대화형 환경(TTY 없음)에서는 누락된 필수 인자가 있으면 prompt 대신 에러로 종료한다.

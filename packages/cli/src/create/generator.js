@@ -4,13 +4,32 @@ import fs from 'fs-extra';
 import os from 'node:os';
 import path from 'node:path';
 import { getPluginChoices, getPluginsByNames } from './plugins/index.js';
-import { decodeTheme } from './theme/decode.js';
+import { resolveTheme } from './theme/decode.js';
+import { THEME_PRESETS, getThemePreset } from './theme/presets.js';
 import {
   replaceSection,
   buildCssColorsBlock,
   buildCssRadiusBlock,
+  buildCssSpacingBlock,
+  buildCssTypographyBlock,
+  buildCssWeightsBlock,
+  buildCssControlsBlock,
+  buildCssBordersBlock,
+  buildCssDurationsBlock,
+  buildCssShadowsBlock,
+  buildCssEasesBlock,
+  buildCssGradientsBlock,
   buildDartColorsBlock,
   buildDartRadiusBlock,
+  buildDartSpacingBlock,
+  buildDartTypographyBlock,
+  buildDartWeightsBlock,
+  buildDartControlsBlock,
+  buildDartBordersBlock,
+  buildDartDurationsBlock,
+  buildDartShadowsBlock,
+  buildDartEasesBlock,
+  buildDartGradientsBlock,
 } from './theme/inject.js';
 import { getTemplatesRoot } from '../paths.mjs';
 
@@ -52,7 +71,25 @@ export async function createProject(options = {}) {
     ],
   });
 
-  const theme = options.theme ? decodeTheme(options.theme) : null;
+  let theme = null;
+  if (options.theme) {
+    theme = resolveTheme(options.theme);
+  } else if (process.stdin.isTTY && !options.yes) {
+    // --yes 는 "선택 옵션은 기본값으로" 의미. 테마는 옵션이므로 prompt 우회.
+    const NONE = '__none__';
+    const choice = await select({
+      message: '테마:',
+      default: NONE,
+      choices: [
+        { name: '기본 (테마 없음 — sh-ui 기본 토큰 그대로)', value: NONE },
+        ...Object.entries(THEME_PRESETS).map(([name, preset]) => ({
+          name: preset.label,
+          value: name,
+        })),
+      ],
+    });
+    if (choice !== NONE) theme = getThemePreset(choice);
+  }
 
   // dry-run 은 tmpdir 에 그대로 생성한 뒤 파일 목록 출력 + 정리.
   // 사용자 cwd 를 건드리지 않으면서 실제 generation 흐름을 그대로 검증한다.
@@ -601,6 +638,34 @@ async function applyTransforms(targetDir, plugins) {
 // ─── Theme 주입 ───
 
 /** 여러 후보 경로 중 존재하는 첫 tokens.css 에 theme 주입 */
+/**
+ * 옵셔널 카테고리 → CSS 마커 / 빌더 매핑.
+ * theme 에 카테고리 키가 있을 때만 해당 마커 섹션 교체.
+ */
+const OPTIONAL_CSS_INJECTORS = [
+  ['spacing',    'theme-space',        buildCssSpacingBlock],
+  ['typography', 'theme-text',         buildCssTypographyBlock],
+  ['weights',    'theme-weight',       buildCssWeightsBlock],
+  ['controls',   'theme-control',      buildCssControlsBlock],
+  ['borders',    'theme-border-width', buildCssBordersBlock],
+  ['durations',  'theme-duration',     buildCssDurationsBlock],
+  ['shadows',    'theme-shadow',       buildCssShadowsBlock],
+  ['eases',      'theme-ease',         buildCssEasesBlock],
+  ['gradients',  'theme-gradient',     buildCssGradientsBlock],
+];
+
+const OPTIONAL_DART_INJECTORS = [
+  ['spacing',    'theme-space',        buildDartSpacingBlock],
+  ['typography', 'theme-text',         buildDartTypographyBlock],
+  ['weights',    'theme-weight',       buildDartWeightsBlock],
+  ['controls',   'theme-control',      buildDartControlsBlock],
+  ['borders',    'theme-border-width', buildDartBordersBlock],
+  ['durations',  'theme-duration',     buildDartDurationsBlock],
+  ['shadows',    'theme-shadow',       buildDartShadowsBlock],
+  ['eases',      'theme-ease',         buildDartEasesBlock],
+  ['gradients',  'theme-gradient',     buildDartGradientsBlock],
+];
+
 async function injectCssTheme(projectDir, theme) {
   if (!theme) return;
   const candidates = [
@@ -613,6 +678,11 @@ async function injectCssTheme(projectDir, theme) {
       let css = await fs.readFile(abs, 'utf-8');
       css = replaceSection(css, 'theme-colors', '/*', '*/', buildCssColorsBlock(theme));
       css = replaceSection(css, 'theme-radius', '/*', '*/', buildCssRadiusBlock(theme));
+      for (const [key, marker, builder] of OPTIONAL_CSS_INJECTORS) {
+        if (theme[key]) {
+          css = replaceSection(css, marker, '/*', '*/', builder(theme[key]));
+        }
+      }
       await fs.writeFile(abs, css);
       return;
     }
@@ -629,5 +699,10 @@ async function injectDartTheme(projectDir, theme) {
   let dart = await fs.readFile(abs, 'utf-8');
   dart = replaceSection(dart, 'theme-colors', '//', '', buildDartColorsBlock(theme));
   dart = replaceSection(dart, 'theme-radius', '//', '', buildDartRadiusBlock(theme));
+  for (const [key, marker, builder] of OPTIONAL_DART_INJECTORS) {
+    if (theme[key]) {
+      dart = replaceSection(dart, marker, '//', '', builder(theme[key]));
+    }
+  }
   await fs.writeFile(abs, dart);
 }

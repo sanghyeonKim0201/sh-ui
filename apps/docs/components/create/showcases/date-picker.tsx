@@ -1,7 +1,9 @@
 import { DatePicker } from "@/components/ui/date-picker";
-import type { ShowcaseManifest } from "./types";
+import type { ShowcaseDemoProps, ShowcaseManifest } from "./types";
 
-const Demo = () => <DatePicker />;
+const Demo = ({ containerRef }: ShowcaseDemoProps) => (
+  <DatePicker container={containerRef} />
+);
 
 const showcase: ShowcaseManifest = {
   id: "date-picker",
