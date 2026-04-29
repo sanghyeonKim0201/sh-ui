@@ -121,6 +121,23 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .sh-create-grid > .sh-create-pane--editor {
   border-left: 1px solid var(--border);
 }
+
+/* 토큰 편집기 패널 내부 Accordion 만 타이트하게 — 좁은 사이드바에 8 섹션이 들어가야 함. */
+.sh-create-pane--editor .sh-ui-accordion__trigger {
+  padding: 0.5rem 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.sh-create-pane--editor .sh-ui-accordion__chevron {
+  width: 12px;
+  height: 12px;
+}
+.sh-create-pane--editor .sh-ui-accordion__content {
+  padding: 0 0.125rem 0.625rem;
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--foreground);
+}
 .sh-create-drawer-toggle {
   display: none;
 }
