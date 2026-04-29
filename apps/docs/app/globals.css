@@ -63,7 +63,107 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   max-width: 100%;
 }
 
-/* Playground 2-col 레이아웃 */
+/* /create 독립 풀스크린 shell — docs 사이드바 없이 자체 헤더 + 3-col 그리드.
+   좌: 컴포넌트 피커 (full-height 사이드바, narrow 에서도 유지)
+   중: 캔버스 (flex)
+   우: 토큰 에디터 (280px, narrow 에서 drawer 로 전환)
+*/
+.sh-create-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--background);
+}
+.sh-create-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+  flex: none;
+}
+.sh-create-header__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8125rem;
+  color: var(--foreground-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--background);
+  transition: color var(--duration-fast), background var(--duration-fast);
+}
+.sh-create-header__back:hover {
+  color: var(--foreground);
+  background: var(--background-subtle);
+}
+.sh-create-header__title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0;
+}
+.sh-create-header__spacer {
+  flex: 1;
+}
+.sh-create-grid {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 280px;
+  flex: 1;
+  min-height: 0;
+}
+.sh-create-grid > .sh-create-pane--picker {
+  border-right: 1px solid var(--border);
+}
+.sh-create-grid > .sh-create-pane--editor {
+  border-left: 1px solid var(--border);
+}
+.sh-create-drawer-toggle {
+  display: none;
+}
+.sh-create-drawer-backdrop {
+  display: none;
+}
+@media (max-width: 1024px) {
+  .sh-create-grid {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+  .sh-create-pane--editor {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(20rem, 90vw);
+    z-index: 50;
+    transform: translateX(100%);
+    transition: transform var(--duration-slow) ease;
+    box-shadow: var(--shadow-lg);
+    border-left: 1px solid var(--border);
+  }
+  .sh-create-pane--editor[data-open="true"] {
+    transform: translateX(0);
+  }
+  .sh-create-drawer-toggle {
+    display: inline-flex;
+  }
+  .sh-create-drawer-backdrop[data-open="true"] {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+  }
+}
+@media (max-width: 640px) {
+  .sh-create-grid {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+}
+
+/* 레거시 클래스 — 다른 페이지가 쓸 수 있어 유지 */
 .playground-layout {
   display: grid;
   grid-template-columns: minmax(280px, 320px) 1fr;
@@ -152,24 +252,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 /* PageTOC 컴포넌트 자체 스타일은 components/ui/page-toc/styles.css 에 있음.
    여기서는 docs 앱의 sidebar-inset 과의 레이아웃 정렬만 담당 — 메인 영역 우측에
    TOC 폭만큼 padding 을 예약해 본문(centered, max 47.5rem)이 TOC 를 침범하지 않도록.
-   Preview 안의 embedded 데모에는 TOC 가 없으므로 스코프를 바깥 shell 로 한정. */
+   :has() 로 TOC 가 실제 렌더된 페이지에서만 발동 — TOC 없는 페이지(/create 등)는
+   본문이 sidebar-inset 전폭을 쓰도록. */
 @media (min-width: 80rem) {
-  .sh-ui-sidebar-wrapper:not([data-embedded]) > .sh-ui-sidebar-inset {
+  .sh-ui-sidebar-wrapper:not([data-embedded]) > .sh-ui-sidebar-inset:has(.sh-ui-page-toc) {
     padding-right: 16rem;
   }
 }
 
-/* /create 페이지 FAB 포커스·호버 */
-.sh-ui-fab:focus-visible {
-  outline: 2px solid var(--foreground);
-  outline-offset: 3px;
-}
-.sh-ui-fab:hover {
-  background: var(--primary-hover);
-}
-@media (prefers-reduced-motion: reduce) {
-  .sh-ui-fab { transition: none; }
-}
 
 /* Components index page cards */
 .sh-ui-component-card:hover {
