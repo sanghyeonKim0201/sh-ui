@@ -3,6 +3,25 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.40.0",
+      "date": "2026-04-29",
+      "title": "NumericInput 컴포넌트 + 토큰 편집기 UX 대폭 개선 (Accordion size, ShadowBuilder, XY 패드)",
+      "type": "minor",
+      "highlights": [
+        "**NumericInput** — 정식 sh-ui 컴포넌트 신설. 슬라이더 동반·토큰 편집기 같은 컴팩트 컨텍스트용 숫자 입력. type=text + inputMode=decimal + buffer state — Chrome 의 type=number select() 미지원 회피, '-'/'1.' 같은 transient 입력 허용, ArrowUp/Down step. NumberInput(폼·금액용) 과 책임 분리. `npx sh-ui-cli add numeric-input`",
+        "**Accordion size prop** — `size: 'sm' | 'md'`. sm 은 padding 8/4 + font 12px + chevron 12px 로 좁은 사이드바·다중 섹션에 적합. 페이지별 CSS override 대신 컴포넌트 레벨 variant 로 승격",
+        "**ShadowBuilder** (playground) — raw CSS `0 4px 12px rgba(...)` 직접 입력 → Figma 스타일 시각 편집기. X/Y/Blur/Spread NumericInput + ColorPicker + alpha %",
+        "**XY 패드 드래그** — ShadowBuilder 의 미리보기 박스가 ColorPicker 색공간처럼 클릭/드래그 가능. pointer 위치 → X/Y offset (1:1 px, ±50 클램프). pointer capture + touch-action: none 으로 모바일 터치 드래그도 지원",
+        "**advanced 모드 8 섹션** native details → sh-ui Accordion size=sm 으로 교체. chevron 인디케이터로 클릭 가능 신호 명확. 내보내기 섹션도 동일 패턴",
+        "**Accordion trigger hover** underline → background var(--background-muted) 틴트, disabled 가드(`:not([disabled]):not([data-disabled])`) — disabled 항목은 hover 무효과",
+        "**슬라이더 동반 키보드 입력** — 8 카테고리 31 슬라이더 + 그라데이션 9 슬라이더 옆 값 표시를 NumericInput 으로 교체. 드래그 + 키보드 입력 둘 다 지원. Slider docs 의 ControlledDemo 도 양방향 동기화로 업그레이드",
+        "**초기화 3분기** — '전체 초기화' / 'Light 초기화' / 'Dark 초기화'. 이전엔 모드별 한 버튼 (색만 reset) 또는 전체 한 버튼만 — 모드 색만 빠르게 되돌리는 use case + 모든 카테고리 nuke 둘 다 지원",
+        "**encodeTheme UTF-8 안전** — shadow/ease/gradient 가 자유 string 이라 한글 IME 입력 시 btoa(Latin1-only) InvalidCharacterError 회귀. TextEncoder UTF-8 바이트 → byte 별 String.fromCharCode → btoa 패턴으로 교체",
+        "**docs 페이지** — /components/numeric-input 신규 (server component + _demos 분리), Accordion size 예시 + API Reference 보강, '스타일 커스터마이즈' 에 hover 효과 override 안내"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.40.0"
+    },
+    {
       "version": "0.39.0",
       "date": "2026-04-29",
       "title": "프리셋 정체성 강화 — slate / rose / violet 이 typography·controls·borders 도 차별화",
