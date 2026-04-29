@@ -1,9 +1,17 @@
 import { useMemo } from "react";
 
+import type {
+  CreatePlatform,
+  CreateStructure,
+} from "sh-ui-cli/api";
+
 export type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
-export type Platform = "next" | "flutter";
-export type Structure = "standalone" | "monorepo";
-export type Plugin = "sentry" | "next-intl" | "auth-jwt";
+export type Platform = CreatePlatform;
+export type Structure = CreateStructure;
+
+// 플러그인 이름은 sh-ui-cli/api 의 allPlugins 에서 derive (단일 진실).
+// import 한 plugin manifest 의 name 필드만 사용하므로 string 으로 폭 넓게.
+export type Plugin = string;
 
 export type ComposerOptions = {
   projectName: string;

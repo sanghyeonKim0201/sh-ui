@@ -3,19 +3,22 @@ import { resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 
+import {
+  INIT_PLATFORMS,
+  THEME_BASES,
+  THEME_RADII,
+  THEME_MODES,
+  INIT_DEFAULTS,
+} from "./constants.js";
+
 const CHOICES = {
-  platform: ["react", "flutter"],
-  base: ["neutral", "zinc", "slate"],
-  radius: ["none", "sm", "md", "lg", "xl", "full"],
-  mode: ["light-dark", "light", "dark"],
+  platform: INIT_PLATFORMS,
+  base: THEME_BASES,
+  radius: THEME_RADII,
+  mode: THEME_MODES,
 };
 
-const DEFAULTS = {
-  platform: "react",
-  base: "neutral",
-  radius: "md",
-  mode: "light-dark",
-};
+const DEFAULTS = INIT_DEFAULTS;
 
 const PATHS = {
   react: {

@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { allPlugins } from "sh-ui-cli/api";
+
 import {
   Dialog,
   DialogContent,
@@ -194,33 +196,18 @@ export function CreateProjectDialog({ open, onClose, light, dark, radius, mode }
               <div role="group" aria-labelledby="plugins-label">
                 <Label id="plugins-label">플러그인</Label>
                 <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
-                  <Button
-                    type="button"
-                    variant={plugins.has("sentry") ? "primary" : "secondary"}
-                    size="sm"
-                    aria-pressed={plugins.has("sentry")}
-                    onClick={() => togglePlugin("sentry")}
-                  >
-                    {plugins.has("sentry") ? "✓ " : ""}Sentry
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={plugins.has("next-intl") ? "primary" : "secondary"}
-                    size="sm"
-                    aria-pressed={plugins.has("next-intl")}
-                    onClick={() => togglePlugin("next-intl")}
-                  >
-                    {plugins.has("next-intl") ? "✓ " : ""}next-intl
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={plugins.has("auth-jwt") ? "primary" : "secondary"}
-                    size="sm"
-                    aria-pressed={plugins.has("auth-jwt")}
-                    onClick={() => togglePlugin("auth-jwt")}
-                  >
-                    {plugins.has("auth-jwt") ? "✓ " : ""}auth-jwt
-                  </Button>
+                  {allPlugins.map((p) => (
+                    <Button
+                      key={p.name}
+                      type="button"
+                      variant={plugins.has(p.name) ? "primary" : "secondary"}
+                      size="sm"
+                      aria-pressed={plugins.has(p.name)}
+                      onClick={() => togglePlugin(p.name)}
+                    >
+                      {plugins.has(p.name) ? "✓ " : ""}{p.name}
+                    </Button>
+                  ))}
                 </div>
               </div>
             </>

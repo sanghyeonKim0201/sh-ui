@@ -29,11 +29,21 @@ import {
   getSummariesPath,
   getVersionsPath,
 } from "./paths.mjs";
+import {
+  CREATE_PLATFORMS,
+  CREATE_STRUCTURES,
+  INIT_PLATFORMS,
+  THEME_BASES,
+  THEME_RADII,
+  THEME_MODES,
+} from "./constants.js";
+import { allPlugins } from "./create/plugins/index.js";
 
-const PLATFORMS = ["react", "flutter"];
-const BASES = ["neutral", "zinc", "slate"];
-const RADII = ["none", "sm", "md", "lg", "xl", "full"];
-const MODES = ["light-dark", "light", "dark"];
+const PLATFORMS = INIT_PLATFORMS;
+const BASES = THEME_BASES;
+const RADII = THEME_RADII;
+const MODES = THEME_MODES;
+const PLUGIN_NAMES = allPlugins.map((p) => p.name);
 
 const INIT_DESCRIPTIONS = {
   platform: {
@@ -161,12 +171,12 @@ export async function startMcpServer() {
       inputSchema: {
         name: z.string().min(1)
           .describe("프로젝트 디렉토리 이름. 예: my-app"),
-        platform: z.enum(["next", "flutter"])
+        platform: z.enum(CREATE_PLATFORMS)
           .describe("타겟 플랫폼"),
-        structure: z.enum(["standalone", "monorepo"]).optional()
+        structure: z.enum(CREATE_STRUCTURES).optional()
           .describe("Next.js 구조 — platform=next 일 때 필수. standalone(단독) | monorepo(Turborepo)"),
-        plugins: z.array(z.enum(["sentry", "next-intl", "auth-jwt"])).optional()
-          .describe("Next.js 플러그인. 미지정시 빈 배열"),
+        plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
+          .describe(`Next.js 플러그인 (${PLUGIN_NAMES.join(', ')}). 미지정시 빈 배열`),
         theme: z.string().optional()
           .describe("base64 인코딩된 테마 JSON (선택)"),
         cwd: z.string().optional()
