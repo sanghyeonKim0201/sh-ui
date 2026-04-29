@@ -32,12 +32,13 @@
   line-height: 1.4;
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
   -webkit-tap-highlight-color: transparent;
 }
 
-.sh-ui-accordion__trigger:hover .sh-ui-accordion__trigger-label {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+/* hover는 enabled 일 때만. background tint — 다른 hover 효과를 원하면 className/style 로 override. */
+.sh-ui-accordion__trigger:not([disabled]):not([data-disabled]):hover {
+  background: var(--background-muted);
 }
 
 .sh-ui-accordion__trigger:focus-visible {

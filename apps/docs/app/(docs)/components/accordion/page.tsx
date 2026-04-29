@@ -443,6 +443,11 @@ ShUiAccordion(
         <code>style</code> / <code>className</code> 으로 직접 —{" "}
         <a href="/guidelines">가이드라인</a> 참조.
       </p>
+      <p className="muted">
+        디폴트 hover 효과는 <code>--background-muted</code> 배경 틴트 (enabled
+        상태일 때만). 다른 효과 (밑줄·글자색 변경·아이콘 회전 등) 가 필요하면{" "}
+        <code>className</code> 을 통해 <code>:hover</code> 셀렉터로 override.
+      </p>
     </main>
   );
 }
