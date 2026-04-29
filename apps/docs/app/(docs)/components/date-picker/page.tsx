@@ -459,6 +459,7 @@ ShUiDateRangePicker(
           { prop: "readOnly", type: "boolean" },
           { prop: "aria-invalid", type: `boolean | "true"`, description: "에러 상태. 보더가 --danger로 전환." },
           { prop: "closeOnSelect", type: "boolean", default: "true", description: "날짜 선택 시 팝오버 자동 닫기. Footer 액션을 노출하려면 false." },
+          { prop: "container", type: "HTMLElement | RefObject<HTMLElement | null>", default: "document.body", description: "Portal 마운트 노드. 다크 모드를 page subtree 에만 입힌 환경(playground 캔버스 등)에서 캘린더가 토큰 스코프를 벗어나지 않도록 컨테이너 ref 전달." },
           { prop: "children", type: "ReactNode", description: "조립 모드. 생략 시 Trigger + Content + Calendar가 자동 렌더." },
         ]}
       />
@@ -476,6 +477,7 @@ ShUiDateRangePicker(
           { prop: "disabled", type: "boolean" },
           { prop: "readOnly", type: "boolean" },
           { prop: "aria-invalid", type: `boolean | "true"`, description: "에러 상태." },
+          { prop: "container", type: "HTMLElement | RefObject<HTMLElement | null>", default: "document.body", description: "Portal 마운트 노드. DatePicker 와 동일." },
         ]}
       />
 

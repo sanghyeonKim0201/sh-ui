@@ -243,6 +243,46 @@ export default function TokensPage() {
         ))}
       </div>
 
+      <h3>Gradient</h3>
+      <p className="muted">
+        브랜드 표면용 슬롯 3개 (primary / surface / overlay). 컴포넌트별 inline 사용 대신 토큰
+        하나로 묶어 Light/Dark 모드 전환 시에도 일관성 유지. CSS는 <code>linear-gradient(...)</code>
+        문자열 그대로, Flutter는 <code>LinearGradient</code> 로 자동 변환된다.
+      </p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: "var(--space-6)",
+          margin: "var(--space-4) 0 var(--space-8)",
+        }}
+      >
+        {(["primary", "surface", "overlay"] as const).map((name) => (
+          <div
+            key={name}
+            style={{
+              padding: "var(--space-6) var(--space-3)",
+              background: `var(--gradient-${name})`,
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius)",
+              textAlign: "center",
+              minHeight: "5rem",
+            }}
+          >
+            <code
+              style={{
+                fontSize: "var(--text-xs)",
+                background: "var(--background)",
+                padding: "0.125rem 0.375rem",
+                borderRadius: "calc(var(--radius) - 4px)",
+              }}
+            >
+              --gradient-{name}
+            </code>
+          </div>
+        ))}
+      </div>
+
       <h3>Motion</h3>
       <h4>Duration</h4>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)", margin: "var(--space-4) 0" }}>
