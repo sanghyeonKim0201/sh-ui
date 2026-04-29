@@ -333,7 +333,7 @@ export default function CreateProjectPage() {
 
   return (
     <>
-      <main style={{ padding: "2rem 1rem 6rem", maxWidth: 1280, margin: "0 auto" }}>
+      <main style={{ padding: "3rem 1.5rem 6rem", maxWidth: 1024, margin: "0 auto" }}>
         <h1>프로젝트 생성</h1>
         <p className="muted">
           색과 radius 를 직접 편집하면서 컴포넌트가 어떻게 변하는지 본 다음, 우하단 버튼으로 그 디자인이 그대로 적용된 새 프로젝트를 만든다.

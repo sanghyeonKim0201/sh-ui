@@ -152,9 +152,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 /* PageTOC 컴포넌트 자체 스타일은 components/ui/page-toc/styles.css 에 있음.
    여기서는 docs 앱의 sidebar-inset 과의 레이아웃 정렬만 담당 — 메인 영역 우측에
    TOC 폭만큼 padding 을 예약해 본문(centered, max 47.5rem)이 TOC 를 침범하지 않도록.
-   Preview 안의 embedded 데모에는 TOC 가 없으므로 스코프를 바깥 shell 로 한정. */
+   :has() 로 TOC 가 실제 렌더된 페이지에서만 발동 — TOC 없는 페이지(/create 등)는
+   본문이 sidebar-inset 전폭을 쓰도록. */
 @media (min-width: 80rem) {
-  .sh-ui-sidebar-wrapper:not([data-embedded]) > .sh-ui-sidebar-inset {
+  .sh-ui-sidebar-wrapper:not([data-embedded]) > .sh-ui-sidebar-inset:has(.sh-ui-page-toc) {
     padding-right: 16rem;
   }
 }
