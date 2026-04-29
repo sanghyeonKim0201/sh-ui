@@ -37,6 +37,7 @@ import {
 } from "./tokens";
 import { BASE_TONES, detectActiveBaseTone, type BaseTone, type BaseToneName } from "./baseTones";
 import { GradientBuilder } from "./GradientBuilder";
+import { ShadowBuilder } from "./ShadowBuilder";
 import { NumericInput } from "@/components/ui/numeric-input";
 import type { GradientTokens } from "./gradients";
 
@@ -401,14 +402,16 @@ export function TokenEditor({
           <AccordionItem value="shadow">
             <AccordionTrigger>그림자</AccordionTrigger>
             <AccordionContent>
-              {SHADOW_KEYS.map((k) => (
-                <ShadowRow
-                  key={k}
-                  label={`shadow-${k}`}
-                  value={shadows[k]}
-                  onChange={(v) => onShadowsChange({ ...shadows, [k]: v })}
-                />
-              ))}
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+                {SHADOW_KEYS.map((k) => (
+                  <ShadowBuilder
+                    key={k}
+                    label={`shadow-${k}`}
+                    value={shadows[k]}
+                    onChange={(v) => onShadowsChange({ ...shadows, [k]: v })}
+                  />
+                ))}
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -797,59 +800,4 @@ function StringRow({
   );
 }
 
-function ShadowRow({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", alignItems: "center", gap: "0.5rem" }}>
-        <span
-          aria-hidden
-          style={{
-            display: "inline-block",
-            width: "1.75rem",
-            height: "1.25rem",
-            borderRadius: "calc(var(--radius) - 4px)",
-            background: "var(--background)",
-            boxShadow: value,
-            border: "1px solid var(--border)",
-            flexShrink: 0,
-          }}
-        />
-        <code
-          style={{
-            fontSize: "0.6875rem",
-            color: "var(--foreground-muted)",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          --{label}
-        </code>
-      </div>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        spellCheck={false}
-        style={{
-          fontSize: "0.6875rem",
-          padding: "0.375rem 0.5rem",
-          border: "1px solid var(--border)",
-          borderRadius: "calc(var(--radius) - 4px)",
-          background: "var(--background)",
-          color: "var(--foreground)",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-        }}
-        aria-label={label}
-      />
-    </div>
-  );
-}
+// ShadowRow 는 ShadowBuilder 컴포넌트로 교체됨 (raw text input → 시각적 분해 편집).
