@@ -60,6 +60,13 @@ export interface ThemePreset {
   dark: Record<ThemeTokenKey, string>;
   /** rem 단위 (0~1.5). */
   radius: number;
+  /** v0.39.0+ — 프리셋 별 정체성 차별화 (옵셔널). decode.js SCALAR_CATEGORIES 와 동일 키. */
+  typography?: Record<string, number>;
+  controls?: Record<string, number>;
+  borders?: Record<string, number>;
+  spacing?: Record<string, number>;
+  weights?: Record<string, number>;
+  durations?: Record<string, number>;
 }
 
 export const THEME_PRESETS: Record<ThemePresetName, ThemePreset>;

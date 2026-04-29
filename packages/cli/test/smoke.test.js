@@ -469,6 +469,79 @@ describe('sh-ui create smoke tests', () => {
     expect(dart).toContain('Color(0xFFFF0000), Color(0xFF0000FF)');
   });
 
+  it('scenario 11j — Phase 4: rose 프리셋이 control-md 44px 까지 주입', async () => {
+    await createProject({
+      name: 'rose-controls',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: 'rose',
+      yes: true,
+    });
+    const css = await fs.readFile(
+      path.join(tmpDir, 'rose-controls', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
+    );
+    // rose 의 controls = { sm: 36, md: 44, lg: 52 } 가 주입되어 디폴트 32/40/48 을 덮어씀
+    expect(css).toContain('--control-sm: 36px;');
+    expect(css).toContain('--control-md: 44px;');
+    expect(css).toContain('--control-lg: 52px;');
+    // typography 는 미정의 — 디폴트 그대로
+    expect(css).toContain('--text-base: 16px;');
+  });
+
+  it('scenario 11k — Phase 4: slate 프리셋이 typography + controls 둘 다 차별화', async () => {
+    await createProject({
+      name: 'slate-dense',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: 'slate',
+      yes: true,
+    });
+    const css = await fs.readFile(
+      path.join(tmpDir, 'slate-dense', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
+    );
+    // slate typography 14px 본문 + 작은 컨트롤
+    expect(css).toContain('--text-base: 14px;');
+    expect(css).toContain('--text-xs: 11px;');
+    expect(css).toContain('--control-md: 36px;');
+  });
+
+  it('scenario 11l — Phase 4: violet 프리셋이 borders.widthStrong 3px 까지 차별화', async () => {
+    await createProject({
+      name: 'violet-borders',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: 'violet',
+      yes: true,
+    });
+    const css = await fs.readFile(
+      path.join(tmpDir, 'violet-borders', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
+    );
+    expect(css).toContain('--border-width: 1px;');
+    expect(css).toContain('--border-width-strong: 3px;');
+    expect(css).toContain('--control-md: 42px;');
+  });
+
+  it('scenario 11m — Phase 4: neutral / emerald 는 카테고리 차별화 없음 (디폴트 유지)', async () => {
+    await createProject({
+      name: 'neutral-baseline',
+      platform: 'next',
+      structure: 'standalone',
+      plugins: [],
+      theme: 'neutral',
+      yes: true,
+    });
+    const css = await fs.readFile(
+      path.join(tmpDir, 'neutral-baseline', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
+    );
+    // neutral 은 디폴트 — 그대로 유지
+    expect(css).toContain('--control-md: 40px;');
+    expect(css).toContain('--text-base: 16px;');
+    expect(css).toContain('--border-width-strong: 2px;');
+  });
+
   it('scenario 11c — 프리셋 이름 → 토큰 주입', async () => {
     await createProject({
       name: 'preset-rose',
