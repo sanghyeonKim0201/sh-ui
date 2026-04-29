@@ -3,6 +3,23 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.39.0",
+      "date": "2026-04-29",
+      "title": "프리셋 정체성 강화 — slate / rose / violet 이 typography·controls·borders 도 차별화",
+      "type": "minor",
+      "highlights": [
+        "0.38.0 까지 5 프리셋이 색·radius 만 차별화 → 이제 typography·controls·borders 까지 프리셋 별 인상이 다름. neutral / emerald 는 디폴트 baseline (변화 없음), 나머지 셋은 정체성 부여",
+        "**slate** (정보 밀도) — text-base 14px (xs 11/sm 12/lg 16/xl 18/2xl 21/3xl 26/4xl 32), control-md 36px (sm 28/lg 44). 대시보드/관리자 인상",
+        "**rose** (친근·여유) — control-md 44px (sm 36/lg 52). 큼직한 터치 타겟 + 0.75rem 라운드 → 소비자 앱 인상",
+        "**violet** (모던·또렷) — control-md 42px (sm 34/lg 50), border-width-strong 3px (디폴트 2px). 약간 두꺼운 강조 보더로 창의·디자인 도구 인상",
+        "getThemePreset 시그니처 — 이전 `{light, dark, radius}` 만 → 이제 label 빼고 모든 카테고리 forward. CLI inject 가 자동으로 마커 섹션 교체",
+        "api.d.ts ThemePreset 인터페이스에 옵셔널 카테고리 6종 추가 (typography/controls/borders/spacing/weights/durations) — apps/docs 등 외부 사용자가 타입 안전",
+        "테스트 111개 (전 104 → +7). end-to-end 검증 — `--theme rose` 가 control-md 40 → 44 로 덮어쓰는지, `--theme slate` 가 text-base 16 → 14 로, `--theme violet` 이 border-width-strong 2 → 3 으로",
+        "참고: 기존 사용자가 0.38.0 까지 `--theme rose` 로 만든 프로젝트는 영향 없음 (이미 생성된 tokens.css 는 그대로). 새로 `--theme rose` 하면 0.39.0 정체성 그대로 들어감"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.39.0"
+    },
+    {
       "version": "0.38.0",
       "date": "2026-04-29",
       "title": "테마 시스템 풀스택 — 5 프리셋 + 풀 토큰 편집기 + 스캐폴드 threading + CSS↔Flutter 변환기",

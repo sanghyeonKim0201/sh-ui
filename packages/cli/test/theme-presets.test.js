@@ -22,10 +22,35 @@ describe('THEME_PRESETS', () => {
     }
   });
 
-  it('getThemePreset — 알려진 이름이면 ThemeConfig (light/dark/radius) 만 반환', () => {
+  it('getThemePreset — 알려진 이름이면 ThemeConfig 반환 (label 제외, 옵셔널 카테고리 포함)', () => {
     const preset = getThemePreset('rose');
     expect(preset).not.toBeNull();
+    // rose 는 컨트롤 크기를 차별화 — 색·radius·controls 가 들어 있어야 함, label 은 없어야 함
+    expect(preset).toHaveProperty('light');
+    expect(preset).toHaveProperty('dark');
+    expect(preset).toHaveProperty('radius');
+    expect(preset).toHaveProperty('controls');
+    expect(preset).not.toHaveProperty('label');
+  });
+
+  it('getThemePreset — neutral 은 옵셔널 카테고리 없음 (디폴트와 동일)', () => {
+    const preset = getThemePreset('neutral');
+    expect(preset).not.toBeNull();
     expect(Object.keys(preset).sort()).toEqual(['dark', 'light', 'radius']);
+  });
+
+  it('getThemePreset — slate 는 typography + controls 모두 차별화', () => {
+    const preset = getThemePreset('slate');
+    expect(preset.typography).toEqual({
+      xs: 11, sm: 12, base: 14, lg: 16, xl: 18, '2xl': 21, '3xl': 26, '4xl': 32,
+    });
+    expect(preset.controls).toEqual({ sm: 28, md: 36, lg: 44 });
+  });
+
+  it('getThemePreset — violet 은 borders 도 차별화 (widthStrong 3px)', () => {
+    const preset = getThemePreset('violet');
+    expect(preset.borders).toEqual({ width: 1, widthStrong: 3 });
+    expect(preset.controls).toEqual({ sm: 34, md: 42, lg: 50 });
   });
 
   it('getThemePreset — 모르는 이름이면 null', () => {

@@ -50,7 +50,7 @@ export const THEME_PRESETS = {
     radius: 0.5,
   },
   slate: {
-    label: '슬레이트 — 차분한 슬레이트 + 인디고',
+    label: '슬레이트 — 차분한 슬레이트 + 인디고 (정보 밀도)',
     light: {
       'background': '#FFFFFF',
       'background-subtle': '#F8FAFC',
@@ -86,9 +86,12 @@ export const THEME_PRESETS = {
       'danger-foreground': '#450A0A',
     },
     radius: 0.375,
+    // 정보 밀도 ↑ — 본문 14px 부터, 컨트롤 36px (대시보드/관리자 인상)
+    typography: { xs: 11, sm: 12, base: 14, lg: 16, xl: 18, '2xl': 21, '3xl': 26, '4xl': 32 },
+    controls: { sm: 28, md: 36, lg: 44 },
   },
   rose: {
-    label: '로즈 — 핑크 강조 + 둥근 모서리',
+    label: '로즈 — 핑크 강조 + 둥근 모서리 (친근·여유)',
     light: {
       ...NEUTRAL_LIGHT,
       'primary': '#E11D48',
@@ -102,6 +105,8 @@ export const THEME_PRESETS = {
       'primary-hover': '#FDA4AF',
     },
     radius: 0.75,
+    // 큰 모서리 + 큼직한 컨트롤 — 소비자 앱 / 캐주얼 인상
+    controls: { sm: 36, md: 44, lg: 52 },
   },
   emerald: {
     label: '에메랄드 — 그린 강조',
@@ -120,7 +125,7 @@ export const THEME_PRESETS = {
     radius: 0.5,
   },
   violet: {
-    label: '바이올렛 — 퍼플 강조 + 살짝 라운드',
+    label: '바이올렛 — 퍼플 강조 + 살짝 라운드 (모던·또렷)',
     light: {
       ...NEUTRAL_LIGHT,
       'primary': '#7C3AED',
@@ -134,14 +139,22 @@ export const THEME_PRESETS = {
       'primary-hover': '#C4B5FD',
     },
     radius: 0.625,
+    // 살짝 큰 컨트롤 + 진한 강조 보더 (creative/디자인 도구 인상)
+    controls: { sm: 34, md: 42, lg: 50 },
+    borders: { width: 1, widthStrong: 3 },
   },
 };
 
 export const THEME_PRESET_NAMES = Object.keys(THEME_PRESETS);
 
-/** 프리셋 객체에서 inject 가 기대하는 ThemeConfig 형태(light/dark/radius)만 추출 */
+/**
+ * 프리셋 객체에서 ThemeConfig 형태로 변환 — 사용자에게 보이는 label 빼고 모두 forward.
+ * v0.39.0 부터 light/dark/radius 외에 옵셔널 카테고리(typography/controls/borders/...)
+ * 도 그대로 전달돼 CLI inject 가 카테고리별 마커 섹션을 교체한다.
+ */
 export const getThemePreset = (name) => {
   const preset = THEME_PRESETS[name];
   if (!preset) return null;
-  return { light: preset.light, dark: preset.dark, radius: preset.radius };
+  const { label: _label, ...themeConfig } = preset;
+  return themeConfig;
 };
