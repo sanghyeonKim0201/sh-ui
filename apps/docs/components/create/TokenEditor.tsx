@@ -174,7 +174,7 @@ export function TokenEditor({
               color: "var(--foreground-muted)",
             }}
           >
-            {mode === "light" ? "Light" : "Dark"} 초기화
+            전체 초기화
           </button>
           {onClose && (
             <button

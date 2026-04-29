@@ -148,9 +148,19 @@ export default function CreateProjectPage() {
     else setDark(next);
   };
 
+  /** 모든 토큰 카테고리를 디폴트로 — light/dark 색뿐 아니라 공통 토큰 (spacing 등) 까지. */
   const reset = () => {
-    if (mode === "light") setLight(lightDefaults);
-    else setDark(darkDefaults);
+    setLight(lightDefaults);
+    setDark(darkDefaults);
+    setRadius(DEFAULT_RADIUS);
+    setSpacing(spacingDefaults);
+    setTypography(typographyDefaults);
+    setWeights(weightDefaults);
+    setMotion(motionDefaults);
+    setBorders(borderDefaults);
+    setControls(controlDefaults);
+    setShadows(shadowDefaults);
+    setGradients(gradientDefaults);
   };
 
   const applyPreset = (p: { light: Record<TokenKey, string>; dark: Record<TokenKey, string>; radius: number }) => {
