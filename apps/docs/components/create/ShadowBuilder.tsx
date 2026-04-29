@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { NumericInput } from "@/components/ui/numeric-input";
+
+/** offset X/Y 의 클램프 범위 — 패드 시각 크기와 일치. */
+const OFFSET_RANGE = 50;
 
 /**
  * CSS box-shadow 문자열을 X/Y/Blur/Spread/Color/Alpha 로 분해해 시각적으로 편집.
@@ -132,32 +135,128 @@ export function ShadowBuilder({
 }) {
   const parts = parseShadow(value) ?? DEFAULT_PARTS;
   const [colorOpen, setColorOpen] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  // 빠른 pointerdown→pointermove 시 setState 가 아직 flush 되지 않아 첫 move 를
+  // 놓치는 회귀를 막기 위해 sync ref 도 같이 보관.
+  const draggingRef = useRef(false);
+  const padRef = useRef<HTMLDivElement>(null);
 
   const update = (patch: Partial<ShadowParts>) => {
     onChange(serializeShadow({ ...parts, ...patch }));
   };
 
+  /**
+   * 패드 중심을 원점(0,0) 으로 잡고, pointer 위치 → (X, Y) offset.
+   * 1:1 px 매핑, [-50, +50] 클램프.
+   */
+  const applyXYFromPointer = (clientX: number, clientY: number) => {
+    const pad = padRef.current;
+    if (!pad) return;
+    const rect = pad.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const x = Math.max(-OFFSET_RANGE, Math.min(OFFSET_RANGE, Math.round(clientX - cx)));
+    const y = Math.max(-OFFSET_RANGE, Math.min(OFFSET_RANGE, Math.round(clientY - cy)));
+    update({ x, y });
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    draggingRef.current = true;
+    setDragging(true);
+    applyXYFromPointer(e.clientX, e.clientY);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current) return;
+    applyXYFromPointer(e.clientX, e.clientY);
+  };
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    draggingRef.current = false;
+    setDragging(false);
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
-      {/* 라벨 + 라이브 프리뷰 */}
-      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", alignItems: "center", gap: "0.5rem" }}>
-        <code
-          style={{
-            fontSize: "0.6875rem",
-            color: "var(--foreground-muted)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          --{label}
-        </code>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <code
+        style={{
+          fontSize: "0.6875rem",
+          color: "var(--foreground-muted)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        --{label}
+      </code>
+
+      {/* XY 패드 — 클릭/드래그로 offset 설정. ColorPicker 의 색공간과 같은 패턴. */}
+      <div
+        ref={padRef}
+        role="application"
+        aria-label={`${label} XY offset 패드`}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        style={{
+          position: "relative",
+          height: `${OFFSET_RANGE * 2}px`,
+          background: "var(--background-muted)",
+          border: "1px solid var(--border)",
+          borderRadius: "calc(var(--radius) - 2px)",
+          cursor: dragging ? "grabbing" : "crosshair",
+          overflow: "hidden",
+          touchAction: "none",
+          userSelect: "none",
+        }}
+      >
+        {/* 가운데 카드 — 실제 shadow 가 적용된 미리보기. */}
         <div
           aria-hidden
           style={{
-            height: "2rem",
-            borderRadius: "calc(var(--radius) - 4px)",
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "2.25rem",
+            height: "2.25rem",
             background: "var(--background)",
-            border: "1px solid var(--border)",
+            borderRadius: "calc(var(--radius) - 4px)",
             boxShadow: value,
+            pointerEvents: "none",
+          }}
+        />
+        {/* 원점 마커 — 중심 표시. */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 4,
+            height: 4,
+            borderRadius: "50%",
+            background: "var(--foreground-muted)",
+            opacity: 0.5,
+            pointerEvents: "none",
+          }}
+        />
+        {/* 핸들 — 현재 (X, Y) 위치. */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: `translate(calc(-50% + ${parts.x}px), calc(-50% + ${parts.y}px))`,
+            width: 12,
+            height: 12,
+            borderRadius: "50%",
+            background: "var(--foreground)",
+            border: "2px solid var(--background)",
+            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.25)",
+            pointerEvents: "none",
+            transition: dragging ? "none" : "transform var(--duration-fast) var(--ease-standard)",
           }}
         />
       </div>
