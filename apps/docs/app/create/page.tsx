@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CreateProjectFab } from "@/components/create/CreateProjectFab";
 import { CreateProjectDialog } from "@/components/create/CreateProjectDialog";
 import { TokenEditor } from "@/components/create/TokenEditor";
 import { ShowcasePicker } from "@/components/create/ShowcasePicker";
@@ -115,6 +114,26 @@ export default function CreateProjectPage() {
           <span aria-hidden>⚙</span>
           토큰
         </button>
+        <button
+          type="button"
+          onClick={() => setCreateOpen(true)}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.375rem",
+            padding: "0.4375rem 0.875rem",
+            fontSize: "0.8125rem",
+            fontWeight: 500,
+            border: "none",
+            borderRadius: "calc(var(--radius) - 2px)",
+            background: "var(--primary)",
+            color: "var(--primary-foreground)",
+            cursor: "pointer",
+          }}
+        >
+          <span aria-hidden>＋</span>
+          프로젝트 만들기
+        </button>
       </header>
 
       <div className="sh-create-grid">
@@ -146,7 +165,6 @@ export default function CreateProjectPage() {
         aria-hidden
       />
 
-      <CreateProjectFab onClick={() => setCreateOpen(true)} />
       <CreateProjectDialog
         open={createOpen}
         onClose={() => setCreateOpen(false)}

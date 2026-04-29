@@ -260,17 +260,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   }
 }
 
-/* /create 페이지 FAB 포커스·호버 */
-.sh-ui-fab:focus-visible {
-  outline: 2px solid var(--foreground);
-  outline-offset: 3px;
-}
-.sh-ui-fab:hover {
-  background: var(--primary-hover);
-}
-@media (prefers-reduced-motion: reduce) {
-  .sh-ui-fab { transition: none; }
-}
 
 /* Components index page cards */
 .sh-ui-component-card:hover {
