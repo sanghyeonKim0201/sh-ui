@@ -38,12 +38,14 @@ import {
   THEME_MODES,
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
+import { THEME_PRESET_NAMES } from "./create/theme/presets.js";
 
 const PLATFORMS = INIT_PLATFORMS;
 const BASES = THEME_BASES;
 const RADII = THEME_RADII;
 const MODES = THEME_MODES;
 const PLUGIN_NAMES = allPlugins.map((p) => p.name);
+const THEME_PRESETS_LIST = THEME_PRESET_NAMES.join(", ");
 
 const INIT_DESCRIPTIONS = {
   platform: {
@@ -178,7 +180,7 @@ export async function startMcpServer() {
         plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
           .describe(`Next.js 플러그인 (${PLUGIN_NAMES.join(', ')}). 미지정시 빈 배열`),
         theme: z.string().optional()
-          .describe("base64 인코딩된 테마 JSON (선택)"),
+          .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 playground 에서 생성한 base64 (선택)`),
         cwd: z.string().optional()
           .describe("부모 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()

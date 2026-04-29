@@ -122,6 +122,7 @@ class ShUiSpacingTokens {
   });
 
   static const tokens = ShUiSpacingTokens(
+    // sh-ui:theme-space-start
     s0: 0.0,
     s1: 4.0,
     s2: 8.0,
@@ -133,6 +134,7 @@ class ShUiSpacingTokens {
     s10: 40.0,
     s12: 48.0,
     s16: 64.0,
+    // sh-ui:theme-space-end
   );
 }
 
@@ -159,6 +161,7 @@ class ShUiTextTokens {
   });
 
   static const tokens = ShUiTextTokens(
+    // sh-ui:theme-text-start
     xs: 12.0,
     sm: 14.0,
     base: 16.0,
@@ -167,6 +170,7 @@ class ShUiTextTokens {
     xl2: 24.0,
     xl3: 30.0,
     xl4: 36.0,
+    // sh-ui:theme-text-end
   );
 }
 
@@ -185,10 +189,12 @@ class ShUiWeightTokens {
   });
 
   static const tokens = ShUiWeightTokens(
+    // sh-ui:theme-weight-start
     regular: FontWeight.w400,
     medium: FontWeight.w500,
     semibold: FontWeight.w600,
     bold: FontWeight.w700,
+    // sh-ui:theme-weight-end
   );
 }
 
@@ -207,10 +213,12 @@ class ShUiShadowTokens {
   });
 
   static const tokens = ShUiShadowTokens(
+    // sh-ui:theme-shadow-start
     sm: <BoxShadow>[BoxShadow(offset: Offset(0.0, 1.0), blurRadius: 2.0, spreadRadius: 0.0, color: Color(0x14000000))],
     md: <BoxShadow>[BoxShadow(offset: Offset(0.0, 4.0), blurRadius: 12.0, spreadRadius: 0.0, color: Color(0x1F000000))],
     lg: <BoxShadow>[BoxShadow(offset: Offset(0.0, 8.0), blurRadius: 24.0, spreadRadius: 0.0, color: Color(0x26000000))],
     xl: <BoxShadow>[BoxShadow(offset: Offset(0.0, 16.0), blurRadius: 48.0, spreadRadius: 0.0, color: Color(0x2E000000))],
+    // sh-ui:theme-shadow-end
   );
 }
 
@@ -227,9 +235,11 @@ class ShUiDurationTokens {
   });
 
   static const tokens = ShUiDurationTokens(
+    // sh-ui:theme-duration-start
     fast: Duration(milliseconds: 120),
     base: Duration(milliseconds: 160),
     slow: Duration(milliseconds: 200),
+    // sh-ui:theme-duration-end
   );
 }
 
@@ -244,8 +254,10 @@ class ShUiEaseTokens {
   });
 
   static const tokens = ShUiEaseTokens(
+    // sh-ui:theme-ease-start
     standard: Cubic(0.4, 0, 0.2, 1),
     emphasized: Cubic(0.2, 0, 0, 1),
+    // sh-ui:theme-ease-end
   );
 }
 
@@ -262,9 +274,11 @@ class ShUiControlTokens {
   });
 
   static const tokens = ShUiControlTokens(
+    // sh-ui:theme-control-start
     sm: 32.0,
     md: 40.0,
     lg: 48.0,
+    // sh-ui:theme-control-end
   );
 }
 
@@ -279,8 +293,10 @@ class ShUiBorderWidthTokens {
   });
 
   static const tokens = ShUiBorderWidthTokens(
+    // sh-ui:theme-border-width-start
     normal: 1.0,
     strong: 2.0,
+    // sh-ui:theme-border-width-end
   );
 }
 
@@ -294,6 +310,27 @@ class ShUiOpacityTokens {
 
   static const tokens = ShUiOpacityTokens(
     disabled: 0.5,
+  );
+}
+
+@immutable
+class ShUiGradientTokens {
+  final LinearGradient primary;
+  final LinearGradient surface;
+  final LinearGradient overlay;
+
+  const ShUiGradientTokens({
+    required this.primary,
+    required this.surface,
+    required this.overlay,
+  });
+
+  static const tokens = ShUiGradientTokens(
+    // sh-ui:theme-gradient-start
+    primary: LinearGradient(begin: Alignment(-0.707, 0.707), end: Alignment(0.707, -0.707), colors: <Color>[Color(0xFF171717), Color(0xFF525252)], stops: <double>[0.00, 1.00]),
+    surface: LinearGradient(begin: Alignment(0.0, -1.0), end: Alignment(0.0, 1.0), colors: <Color>[Color(0xFFFFFFFF), Color(0xFFF5F5F5)], stops: <double>[0.00, 1.00]),
+    overlay: LinearGradient(begin: Alignment(0.0, -1.0), end: Alignment(0.0, 1.0), colors: <Color>[Color(0xFF000000), Color(0xFF1F1F1F)], stops: <double>[0.00, 1.00]),
+    // sh-ui:theme-gradient-end
   );
 }
 
@@ -330,6 +367,7 @@ class ShUiTheme extends ThemeExtension<ShUiTheme> {
   final ShUiEaseTokens ease;
   final ShUiControlTokens control;
   final ShUiBorderWidthTokens borderWidth;
+  final ShUiGradientTokens gradient;
   final ShUiOpacityTokens opacity;
   final ShUiBreakpointTokens breakpoint;
 
@@ -344,6 +382,7 @@ class ShUiTheme extends ThemeExtension<ShUiTheme> {
     required this.ease,
     required this.control,
     required this.borderWidth,
+    required this.gradient,
     required this.opacity,
     required this.breakpoint,
   });
@@ -359,6 +398,7 @@ class ShUiTheme extends ThemeExtension<ShUiTheme> {
     ease: ShUiEaseTokens.tokens,
     control: ShUiControlTokens.tokens,
     borderWidth: ShUiBorderWidthTokens.tokens,
+    gradient: ShUiGradientTokens.tokens,
     opacity: ShUiOpacityTokens.tokens,
     breakpoint: ShUiBreakpointTokens.tokens,
   );
@@ -373,13 +413,14 @@ class ShUiTheme extends ThemeExtension<ShUiTheme> {
     ease: ShUiEaseTokens.tokens,
     control: ShUiControlTokens.tokens,
     borderWidth: ShUiBorderWidthTokens.tokens,
+    gradient: ShUiGradientTokens.tokens,
     opacity: ShUiOpacityTokens.tokens,
     breakpoint: ShUiBreakpointTokens.tokens,
   );
 
   @override
-  ShUiTheme copyWith({ShUiColorTokens? colors, ShUiRadiusTokens? radius, ShUiSpacingTokens? spacing, ShUiTextTokens? text, ShUiWeightTokens? weight, ShUiShadowTokens? shadow, ShUiDurationTokens? duration, ShUiEaseTokens? ease, ShUiControlTokens? control, ShUiBorderWidthTokens? borderWidth, ShUiOpacityTokens? opacity, ShUiBreakpointTokens? breakpoint}) =>
-      ShUiTheme(colors: colors ?? this.colors, radius: radius ?? this.radius, spacing: spacing ?? this.spacing, text: text ?? this.text, weight: weight ?? this.weight, shadow: shadow ?? this.shadow, duration: duration ?? this.duration, ease: ease ?? this.ease, control: control ?? this.control, borderWidth: borderWidth ?? this.borderWidth, opacity: opacity ?? this.opacity, breakpoint: breakpoint ?? this.breakpoint);
+  ShUiTheme copyWith({ShUiColorTokens? colors, ShUiRadiusTokens? radius, ShUiSpacingTokens? spacing, ShUiTextTokens? text, ShUiWeightTokens? weight, ShUiShadowTokens? shadow, ShUiDurationTokens? duration, ShUiEaseTokens? ease, ShUiControlTokens? control, ShUiBorderWidthTokens? borderWidth, ShUiGradientTokens? gradient, ShUiOpacityTokens? opacity, ShUiBreakpointTokens? breakpoint}) =>
+      ShUiTheme(colors: colors ?? this.colors, radius: radius ?? this.radius, spacing: spacing ?? this.spacing, text: text ?? this.text, weight: weight ?? this.weight, shadow: shadow ?? this.shadow, duration: duration ?? this.duration, ease: ease ?? this.ease, control: control ?? this.control, borderWidth: borderWidth ?? this.borderWidth, gradient: gradient ?? this.gradient, opacity: opacity ?? this.opacity, breakpoint: breakpoint ?? this.breakpoint);
 
   @override
   ShUiTheme lerp(ThemeExtension<ShUiTheme>? other, double t) {

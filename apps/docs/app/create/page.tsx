@@ -7,12 +7,36 @@ import { TokenEditor } from "@/components/create/TokenEditor";
 import { ShowcasePicker } from "@/components/create/ShowcasePicker";
 import { ShowcaseCanvas } from "@/components/create/ShowcaseCanvas";
 import {
+  borderDefaults,
+  controlDefaults,
   darkDefaults,
   DEFAULT_RADIUS,
   lightDefaults,
+  motionDefaults,
+  shadowDefaults,
+  spacingDefaults,
+  typographyDefaults,
+  weightDefaults,
+  type BorderTokens,
+  type ControlTokens,
   type Mode,
+  type MotionTokens,
+  type ShadowTokens,
+  type SpacingScale,
   type TokenKey,
+  type TypographyScale,
+  type WeightScale,
 } from "@/components/create/tokens";
+import {
+  gradientDefaults,
+  serializeGradient,
+  type GradientTokens,
+} from "@/components/create/gradients";
+import type { BaseTone } from "@/components/create/baseTones";
+import {
+  derivePrimaryForeground,
+  derivePrimaryHover,
+} from "@/components/create/derivePrimary";
 
 const STORAGE_KEY = "sh-ui-playground-tokens";
 const SELECTION_KEY = "sh-ui-playground-selection";
@@ -22,6 +46,14 @@ export default function CreateProjectPage() {
   const [light, setLight] = useState(lightDefaults);
   const [dark, setDark] = useState(darkDefaults);
   const [radius, setRadius] = useState(DEFAULT_RADIUS);
+  const [spacing, setSpacing] = useState<SpacingScale>(spacingDefaults);
+  const [typography, setTypography] = useState<TypographyScale>(typographyDefaults);
+  const [weights, setWeights] = useState<WeightScale>(weightDefaults);
+  const [motion, setMotion] = useState<MotionTokens>(motionDefaults);
+  const [borders, setBorders] = useState<BorderTokens>(borderDefaults);
+  const [controls, setControls] = useState<ControlTokens>(controlDefaults);
+  const [shadows, setShadows] = useState<ShadowTokens>(shadowDefaults);
+  const [gradients, setGradients] = useState<GradientTokens>(gradientDefaults);
   const [hydrated, setHydrated] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
@@ -33,9 +65,18 @@ export default function CreateProjectPage() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const p = JSON.parse(raw);
+        // 기존 v1 (light/dark/radius 만 저장된 경우) 도 동작 — 새 키는 누락 시 디폴트.
         if (p.light) setLight({ ...lightDefaults, ...p.light });
         if (p.dark) setDark({ ...darkDefaults, ...p.dark });
         if (typeof p.radius === "number") setRadius(p.radius);
+        if (p.spacing) setSpacing({ ...spacingDefaults, ...p.spacing });
+        if (p.typography) setTypography({ ...typographyDefaults, ...p.typography });
+        if (p.weights) setWeights({ ...weightDefaults, ...p.weights });
+        if (p.motion) setMotion({ ...motionDefaults, ...p.motion });
+        if (p.borders) setBorders({ ...borderDefaults, ...p.borders });
+        if (p.controls) setControls({ ...controlDefaults, ...p.controls });
+        if (p.shadows) setShadows({ ...shadowDefaults, ...p.shadows });
+        if (p.gradients) setGradients({ ...gradientDefaults, ...p.gradients });
       }
       const rawSel = localStorage.getItem(SELECTION_KEY);
       if (rawSel) {
@@ -48,8 +89,14 @@ export default function CreateProjectPage() {
 
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ light, dark, radius }));
-  }, [light, dark, radius, hydrated]);
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        light, dark, radius,
+        spacing, typography, weights, motion, borders, controls, shadows, gradients,
+      }),
+    );
+  }, [light, dark, radius, spacing, typography, weights, motion, borders, controls, shadows, gradients, hydrated]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -58,12 +105,43 @@ export default function CreateProjectPage() {
 
   const previewVars = useMemo(() => {
     const obj: Record<string, string> = { "--radius": `${radius}rem` };
-    const set = mode === "light" ? light : dark;
-    for (const k of Object.keys(set) as TokenKey[]) {
-      obj[`--${k}`] = set[k];
+    const colorSet = mode === "light" ? light : dark;
+    for (const k of Object.keys(colorSet) as TokenKey[]) {
+      obj[`--${k}`] = colorSet[k];
     }
+    // spacing — px
+    for (const [k, v] of Object.entries(spacing)) obj[`--space-${k}`] = `${v}px`;
+    // typography — px
+    for (const [k, v] of Object.entries(typography)) obj[`--text-${k}`] = `${v}px`;
+    // weights — number
+    for (const [k, v] of Object.entries(weights)) obj[`--weight-${k}`] = String(v);
+    // motion
+    obj["--duration-fast"] = `${motion.durationFast}ms`;
+    obj["--duration-base"] = `${motion.durationBase}ms`;
+    obj["--duration-slow"] = `${motion.durationSlow}ms`;
+    obj["--ease-standard"] = motion.easeStandard;
+    obj["--ease-emphasized"] = motion.easeEmphasized;
+    // borders
+    obj["--border-width"] = `${borders.width}px`;
+    obj["--border-width-strong"] = `${borders.widthStrong}px`;
+    // controls
+    obj["--control-sm"] = `${controls.sm}px`;
+    obj["--control-md"] = `${controls.md}px`;
+    obj["--control-lg"] = `${controls.lg}px`;
+    // shadows
+    obj["--shadow-sm"] = shadows.sm;
+    obj["--shadow-md"] = shadows.md;
+    obj["--shadow-lg"] = shadows.lg;
+    obj["--shadow-xl"] = shadows.xl;
+    // gradients
+    obj["--gradient-primary"] = serializeGradient(gradients.primary);
+    obj["--gradient-surface"] = serializeGradient(gradients.surface);
+    obj["--gradient-overlay"] = serializeGradient(gradients.overlay);
     return obj as React.CSSProperties;
-  }, [mode, light, dark, radius]);
+  }, [
+    mode, light, dark, radius,
+    spacing, typography, weights, motion, borders, controls, shadows, gradients,
+  ]);
 
   const setCurrent = (next: Record<TokenKey, string>) => {
     if (mode === "light") setLight(next);
@@ -73,6 +151,27 @@ export default function CreateProjectPage() {
   const reset = () => {
     if (mode === "light") setLight(lightDefaults);
     else setDark(darkDefaults);
+  };
+
+  const applyPreset = (p: { light: Record<TokenKey, string>; dark: Record<TokenKey, string>; radius: number }) => {
+    setLight((prev) => ({ ...prev, ...p.light }));
+    setDark((prev) => ({ ...prev, ...p.dark }));
+    setRadius(p.radius);
+  };
+
+  const applyBaseTone = (tone: BaseTone) => {
+    setLight((prev) => ({ ...prev, ...tone.light }));
+    setDark((prev) => ({ ...prev, ...tone.dark }));
+  };
+
+  const applyPrimaryFromColor = (hex: string) => {
+    const patch = {
+      primary: hex,
+      "primary-foreground": derivePrimaryForeground(hex),
+      "primary-hover": derivePrimaryHover(hex, mode),
+    };
+    if (mode === "light") setLight((prev) => ({ ...prev, ...patch }));
+    else setDark((prev) => ({ ...prev, ...patch }));
   };
 
   const toggleShowcase = (id: string) => {
@@ -152,6 +251,25 @@ export default function CreateProjectPage() {
           onChangeCurrent={setCurrent}
           radius={radius}
           onRadiusChange={setRadius}
+          spacing={spacing}
+          onSpacingChange={setSpacing}
+          typography={typography}
+          onTypographyChange={setTypography}
+          weights={weights}
+          onWeightsChange={setWeights}
+          motion={motion}
+          onMotionChange={setMotion}
+          borders={borders}
+          onBordersChange={setBorders}
+          controls={controls}
+          onControlsChange={setControls}
+          shadows={shadows}
+          onShadowsChange={setShadows}
+          gradients={gradients}
+          onGradientsChange={setGradients}
+          onApplyPreset={applyPreset}
+          onApplyBaseTone={applyBaseTone}
+          onApplyPrimaryFromColor={applyPrimaryFromColor}
           onReset={reset}
           drawerOpen={editorDrawerOpen}
           onClose={() => setEditorDrawerOpen(false)}
@@ -172,6 +290,14 @@ export default function CreateProjectPage() {
         dark={dark}
         radius={radius}
         mode={mode}
+        spacing={spacing}
+        typography={typography}
+        weights={weights}
+        motion={motion}
+        borders={borders}
+        controls={controls}
+        shadows={shadows}
+        gradients={gradients}
       />
     </div>
   );

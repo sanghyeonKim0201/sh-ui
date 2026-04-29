@@ -42,6 +42,7 @@
   /* sh-ui:theme-radius-start */
   --radius: 0.5rem;
   /* sh-ui:theme-radius-end */
+  /* sh-ui:theme-space-start */
   --space-0: 0px;
   --space-1: 4px;
   --space-2: 8px;
@@ -53,6 +54,8 @@
   --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
+  /* sh-ui:theme-space-end */
+  /* sh-ui:theme-text-start */
   --text-xs: 12px;
   --text-sm: 14px;
   --text-base: 16px;
@@ -61,24 +64,42 @@
   --text-2xl: 24px;
   --text-3xl: 30px;
   --text-4xl: 36px;
+  /* sh-ui:theme-text-end */
+  /* sh-ui:theme-weight-start */
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
+  /* sh-ui:theme-weight-end */
+  /* sh-ui:theme-shadow-start */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.18);
+  /* sh-ui:theme-shadow-end */
+  /* sh-ui:theme-duration-start */
   --duration-fast: 120ms;
   --duration-base: 160ms;
   --duration-slow: 200ms;
+  /* sh-ui:theme-duration-end */
+  /* sh-ui:theme-ease-start */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  /* sh-ui:theme-ease-end */
+  /* sh-ui:theme-control-start */
   --control-sm: 32px;
   --control-md: 40px;
   --control-lg: 48px;
+  /* sh-ui:theme-control-end */
+  /* sh-ui:theme-border-width-start */
   --border-width: 1px;
   --border-width-strong: 2px;
+  /* sh-ui:theme-border-width-end */
+  /* sh-ui:theme-gradient-start */
+  --gradient-primary: linear-gradient(135deg, #171717 0%, #525252 100%);
+  --gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+  --gradient-overlay: linear-gradient(180deg, #000000 0%, #1F1F1F 100%);
+  /* sh-ui:theme-gradient-end */
   --opacity-disabled: 0.5;
   --z-base: 0;
   --z-sticky: 100;

@@ -3,6 +3,25 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.38.0",
+      "date": "2026-04-29",
+      "title": "테마 시스템 풀스택 — 5 프리셋 + 풀 토큰 편집기 + 스캐폴드 threading + CSS↔Flutter 변환기",
+      "type": "minor",
+      "highlights": [
+        "**프리셋 5종 (CLI + 플레이그라운드)** — neutral · slate · rose · emerald · violet. `sh-ui create --theme rose` 처럼 짧게 받거나 playground 에서 만든 base64 그대로. 플레이그라운드 토큰 편집기 위쪽 '프리셋' 행 클릭 한 번으로 light/dark/radius 동시 적용. sh-ui-cli/api 가 단일 소스",
+        "**쉬운 / 고급 토글** — 쉬운 모드는 베이스 톤 4(neutral/slate/warm/cool) + 포인트 컬러 1개 픽커(primary-foreground/primary-hover 자동 파생). 고급 모드는 8 카테고리 collapsible 섹션 — 색(15) · 크기 · 테두리 · 그림자 · 타이포 · 여백 · 폰트굵기 · 모션. 모든 슬라이더는 sh-ui Slider 사용",
+        "**그라데이션 빌더 + 슬롯 3개** (primary/surface/overlay) — 각도 슬라이더 + 2 컬러스톱 + 위치 슬라이더 + 라이브 프리뷰. CSS 변수 `--gradient-*` 로 캔버스 흘러감",
+        "**스캐폴드 threading 풀스택** — 색 15 + radius + 9 옵셔널 카테고리 (spacing 11 / typography 8 / weights 4 / controls 3 / borders 2 / durations 3 / shadows 4 / eases 2 / gradients 3). theme JSON 에 키가 있으면 tokens.css / sh_ui_tokens.dart 의 마커 섹션 교체, 없으면 템플릿 디폴트 유지. 디폴트와 다른 카테고리만 base64 에 포함돼 페이로드 최소화",
+        "**CSS↔Flutter 변환기** — shadow `0 1px 2px rgba(0,0,0,0.08)` → `BoxShadow(offset, blurRadius, spreadRadius, color: Color(0x14000000))` (alpha = 0.08 × 255). ease `cubic-bezier(0.4,0,0.2,1)` → `Cubic(0.4,0,0.2,1)` (named easing 도 정확한 4-인자로). gradient `linear-gradient(135deg, ...)` → `LinearGradient(begin: Alignment(-0.707,-0.707), end: Alignment(0.707,0.707), colors, stops)`. CSS deg → Flutter Alignment (0deg=topCenter, 시계방향)",
+        "**확장 색 직접 편집** — background-inverse / foreground-inverse / foreground-subtle 3개를 사용자가 직접 잡음. 기존 Dart 자동 inverse 거울 / 고정 foregroundSubtle 디폴트 폐기. 5 프리셋 light/dark 모두 15키 풀세트",
+        "**Flutter 템플릿** — ShUiGradientTokens 클래스 신설 + ShUiTheme 에 gradient 필드 통합. tokens.css / sh_ui_tokens.dart 에 카테고리별 마커 9쌍 (theme-space/text/weight/shadow/duration/ease/control/border-width/gradient)",
+        "**DatePicker 회귀 픽스 2개** — (1) container prop 누락 → 추가 (Select·Combobox·Popover 와 동일 패턴). 다크 모드를 page subtree 에만 입힌 환경에서 캘린더 popover 가 토큰 스코프 벗어나 흰 배경으로 뜨던 문제 해결. (2) 선택일 색을 --foreground 에서 --primary / --primary-foreground 로 전환 — rose/emerald 같은 primary 변경 프리셋이 캘린더에도 일관되게 반영. **호환성 주의**: primary 를 안 바꾸고 쓰던 사용자는 선택일 색이 검정 → 자기 primary 색으로 변경됨",
+        "**MCP** sh_ui_create_project 의 theme 파라미터가 프리셋 이름 수용 — IDE 에이전트가 `theme: \"slate\"` 한 줄로 호출. 짧은 오타는 base64 디코드 에러 대신 '알 수 없는 테마 프리셋: 지원 목록 …' 친절 안내",
+        "**테스트 104** (전 68 → +36). 옵셔널 카테고리 검증, 빌더 출력 형식, 파서 (rgba alpha / hex 8자리 / spread / multi-shadow / named ease / Alignment 각도 0·45·90·135·180), 잘못된 형식 throw, end-to-end Next + Flutter 스캐폴드 주입. localStorage 마이그레이션 (v0.34 까지 저장된 데이터는 새 키 디폴트 보강)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.38.0"
+    },
+    {
       "version": "0.34.0",
       "date": "2026-04-29",
       "title": "Next 템플릿 — RSC prefetch / 에러 바운더리 / 테스트 헬퍼 + KRW·날짜 포맷 유틸 기본 탑재",

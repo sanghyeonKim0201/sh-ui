@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.31.0 (2026-04-28) — Editor 3종(Code/Markdown/RichText) uncontrolled 모드 추가
+**최신 버전**: v0.34.0 (2026-04-29) — Next 템플릿 — RSC prefetch / 에러 바운더리 / 테스트 헬퍼 + KRW·날짜 포맷 유틸 기본 탑재
 
 ## React — Components
 
@@ -814,40 +814,42 @@
 
 ## 최근 릴리즈 (최대 5개)
 
-### v0.31.0 — Editor 3종(Code/Markdown/RichText) uncontrolled 모드 추가 (2026-04-28)
-- CodeEditor / MarkdownEditor / RichTextEditor 모두 value 를 옵셔널로 만들고 defaultValue 를 추가 — 라우터·외부 상태와 동기화할 게 없는 폼이면 useState 없이 한 줄로 끝 (Tabs/RadioGroup/Header NavMatch 와 동일 패턴)
-- controlled (value 명시) 모드는 종전과 동일하게 동작 — 외부 동기화 effect 가 isControlled 일 때만 작동하도록 가드. uncontrolled 모드에서는 에디터(CodeMirror/Tiptap)가 자체 source-of-truth
-- onChange 는 controlled / uncontrolled 양 모드 모두에서 변경마다 호출 — 외부 관찰만 필요할 땐 onChange 만 받아도 OK
-- MarkdownEditor 는 미리보기 패널이 현재 값을 필요로 하므로 uncontrolled 모드에서도 자체 React state 로 트래킹
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.31.0
+### v0.34.0 — Next 템플릿 — RSC prefetch / 에러 바운더리 / 테스트 헬퍼 + KRW·날짜 포맷 유틸 기본 탑재 (2026-04-29)
+- shared/ui/PrefetchBoundary + shared/lib/getQueryClient — RSC 에서 prefetch 후 dehydrate → 클라이언트 hydrate. 단일/배열 fetchOptions 모두 지원, 이미 깔린 TanStack Query 인프라와 즉시 호환
+- shared/ui/FallbackBoundary — Suspense + ErrorBoundary 합성, QueryErrorResetBoundary 와 연동돼 errorFallback 의 resetErrorBoundary 가 쿼리까지 함께 리셋. onError 콜백으로 외부 옵저버빌리티 (Sentry 등) 훅인 자유
+- shared/test/renderWithProviders + createTestQueryClient — RTL render + QueryClientProvider + userEvent 한 번에. 기존 vitest 인프라에 컴포넌트 테스트 진입장벽 제거
+- shared/lib/formatDate / formatPrice — 로케일 기반 Intl 포맷 유틸. formatPrice 는 한국 원화(KRW, 소수점 없음) 기본
+- @testing-library/react + user-event devDeps 추가 (양쪽 nextjs 템플릿)
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.34.0
 
-### v0.30.0 — PageTOC + CodeTabs registry 승격 — docs 인프라 컴포넌트 공개 (2026-04-28)
-- PageTOC 신규 — 페이지 안의 헤딩(기본 h2/h3)을 자동 스캔해 우측 레일에 목차(On this page)를 렌더. 자동 slugify·id 부여, IntersectionObserver 로 현재 보이는 섹션 active 표시(aria-current 자동), 클릭 시 smooth scroll. 라우터 비종속 — routeKey 로 라우트 변경 신호를 받아 재스캔하므로 Next.js / React Router / no-router 모두 지원. levels·containerSelector·excludeSelector·label·headerOffsetRem 으로 커스터마이즈
-- CodeTabs 신규 — 같은 예제의 여러 코드 뷰(예: React/Flutter, 또는 "강조 / 전체 코드")를 탭으로 전환. 각 탭은 그대로 CodePanel 로 렌더되어 shiki 하이라이팅·복사 버튼·파일명 헤더 등을 그대로 사용. registryDependencies = tabs · code-panel
-- 두 컴포넌트 모두 그동안 docs 내부 전용으로 쓰이던 것을 일반화 — 이제 사용자 프로젝트에서 `npx sh-ui-cli add page-toc` / `npx sh-ui-cli add code-tabs` 로 설치 가능. /components 인덱스에도 등록
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.30.0
+### v0.33.0 — 중앙관리형 SSOT — sh-ui-cli/api 노출 + 플러그인 스키마 + --dry-run + CI 스캐폴드 게이트 (2026-04-29)
+- 신규 public API — `import { allPlugins, CREATE_PLATFORMS, ... } from 'sh-ui-cli/api'`. 다른 워크스페이스 (apps/docs 등) 가 플러그인 메타와 enum 을 동기화 없이 사용. CreateProjectDialog / 사이드바 / 플러그인 허브 가 모두 derive 하도록 변경 — 새 플러그인 추가 시 plugins/ 폴더 한 군데만 건드리면 됨
+- 신규 --dry-run 플래그 — 실제 파일 쓰지 않고 스캐폴드 결과 파일 목록만 출력. 디버깅 + CI 검증 보조. tmpdir 에 생성 후 즉시 정리해 사용자 cwd 무영향
+- 플러그인 manifest zod 스키마 검증 — 모듈 로드 시점에 모든 플러그인 형태 체크. 'src/proxy.ts' 같은 잘못된 경로는 빌드 타임 거부 (v0.32.0 에서 발생한 회귀 차단)
+- CI 스캐폴드 게이트 — publish 전에 5가지 플러그인 조합으로 실제 스캐폴드 → fresh install → tsc --noEmit 까지 돌리는 스모크 단계 추가. 사용자가 받게 될 결과물을 publish 직전에 검증
+- 통합 테스트 7개 추가 — 각 플러그인 + 조합의 핵심 파일 위치 / 내용 / 합성 검증 (proxy.ts root 위치, 합성된 proxy.ts 의 intl + 인증 가드, observability 의 Sentry vs no-op, axios 부재 등)
+- 내부 정리 — packages/cli/src/constants.js 신설로 PLATFORMS/STRUCTURES/THEME_* 단일화. cli-args / mcp / init / generator 도움말 모두 derive
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.33.0
 
-### v0.29.0 — Header — 서브메뉴·그룹·a11y·active 자동 매칭 보강 + variant/stickyHide 정식 도입 (2026-04-28)
-- a11y — drawer 가 열릴 때 focus trap · ESC 닫기 · 닫힐 때 트리거로 포커스 복원 자동화. drawer 패널에 role=dialog + aria-modal=true 부여
-- HeaderMenu / HeaderMenuTrigger / HeaderMenuContent — 데스크탑은 document.body 로 portal 된 dropdown(부모 overflow 클리핑 회피, 트리거 위치를 scroll/resize 마다 추종, 클릭 외부·ESC 닫기), 모바일 drawer 안에서는 collapsible 로 자동 전환. NavLocationContext 가 자식 위치를 전파해 한 자식 트리로 두 모드 처리
-- HeaderNavGroup(label) — drawer 안에서 nav 항목을 섹션으로 묶음(라벨 + 들여쓰기). inline 모드는 display:contents 로 자식만 평면 렌더, 데스크탑 레이아웃 무영향
-- HeaderDesktopOnly / HeaderMobileOnly — drawer 로 옮기지 않고 단순히 가시성만 토글하는 슬롯. display:contents 라 부모 flex 흐름 그대로 유지. 데스크탑 검색/로그인/마이페이지 같은 항목을 모바일에서 자체 drawer 트리거로 대체할 때 사용
-- active 자동 매칭 — HeaderNav 의 value(controlled) 또는 defaultValue+onValueChange(uncontrolled) 로 자식 HeaderItem 의 active 가 일괄 결정 (Tabs/RadioGroup 패턴). 라우터 앱은 value=pathname, 라우터 없는 위젯은 defaultValue 만으로 클릭 자동 추적. 기본 매칭은 exact 또는 prefix(root 제외), match 함수로 커스터마이즈, 개별 active prop 으로 override. 자동/수동 어느 쪽이든 data-active 와 aria-current="page" 부여
-- variant="solid"|"transparent"|"blur" 로 헤더 배경 표현 전환. blur 는 표준 글래스 헤더 수준의 85% opacity + saturate(180%) blur(16px), --sh-ui-header-blur-opacity / --sh-ui-header-blur-radius CSS 변수로 instance 별 조정. backdrop-filter 미지원 브라우저는 @supports 폴백으로 불투명 배경 자동 적용
-- stickyHide + stickyHideThreshold — 스크롤 다운 시 자동 숨김. 가장 가까운 스크롤 가능 조상을 자동 감지해 페이지 스크롤뿐 아니라 컨테이너 내부 스크롤에도 반응. prefers-reduced-motion: reduce 환경에서는 슬라이드 트랜지션 비활성화
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.29.0
+### v0.32.1 — auth-jwt 의 proxy.ts 경로 버그 수정 + next-intl 와 자동 합성 (2026-04-29)
+- auth-jwt 플러그인이 proxy.ts 를 src/proxy.ts 로 잘못 깔아 Next 16 이 인식 못 하던 문제 — 베이스 템플릿이 app/ 을 root 에 두므로 proxy.ts 도 root 로 가야 함. 결과적으로 v0.32.0 의 인증 라우트 가드가 동작하지 않았음, 이번 패치에서 해결
+- auth-jwt + next-intl 동시 활성화 시 generator 가 proxy.ts 를 자동 합성 — intl 미들웨어 + locale prefix 를 벗긴 경로 기반 인증 가드. 단독 사용 시에는 각 플러그인의 단일 proxy.ts 그대로 적용
+- /cli 페이지 플러그인 섹션 갱신 — Sentry 의 옛 axios 인터셉터/apiCore 설명 제거, observability 브릿지 정확화, auth-jwt 항목 신설. 기본 스택의 'Axios' 표기를 fetch 기반 isomorphic http() 로 정정
+- auth-jwt / next-intl 플러그인 페이지의 폴더 트리 + 파일 설명을 실제 manifest 와 동기화
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.32.1
 
-### v0.28.1 — RichTextEditor — Link 버튼이 빈 선택에서 호출돼도 anchor 가 생기도록 수정 (2026-04-28)
-- Link 버튼: 텍스트 선택이 없고 기존 링크 위도 아닐 때 URL 자체를 anchor 텍스트로 삽입 — 빈 link 마크만 걸려 사용자가 추가로 타이핑해야 했던 어색한 상태 제거
-- 선택이 있거나 기존 링크 위에서 호출하면 종전과 동일하게 selection·기존 링크에 setLink
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.1
+### v0.32.0 — auth-jwt 플러그인 신설 + isomorphic HTTP transport 재설계 (2026-04-29)
+- 신규 --plugins auth-jwt — Next 16 proxy.ts 미들웨어, refresh placeholder, withAuthRetry 헬퍼, refresh-aware BFF 를 한 번에 추가. 백엔드 refresh API 명세 확정 후 refreshSession.ts 본문만 채우면 자동 활성화
+- 베이스 HTTP 레이어 재설계 — axios 단일 인스턴스를 isomorphic http() + serverFetch / clientFetch 두 갈래 transport 로 교체. RSC 는 백엔드 직통, 브라우저는 /api/proxy 경유 → API 함수는 한 번만 작성하고 RSC prefetch + hydration 패턴과 자연스럽게 어울림
+- Sentry 플러그인 슬림화 — HTTP/proxy 인프라 파일을 베이스로 이관하고, Sentry 는 observability.ts 를 Sentry-aware 버전으로 덮어써 5xx 캡처/로깅을 활성화. 두 플러그인이 독립적으로 조합됨
+- queryClient.ts 추가 — React cache() 기반 RSC 스코프 + 브라우저 싱글톤. 요청 간 캐시 누수 방지. apps/docs 의 auth / api-layer / testing 레시피도 새 설계에 맞춰 갱신
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.32.0
 
-### v0.28.0 — RichTextEditor 컴포넌트 — Tiptap 3 + sh-ui 토큰 테마 + 기본 toolbar (2026-04-28)
-- RichTextEditor 신규 — Tiptap 3 (StarterKit + Placeholder + Link) 위에 sh-ui 토큰 테마와 기본 toolbar 를 얹은 controlled WYSIWYG. value 는 HTML 문자열로 입출력
-- 툴바: 헤딩(H1~H3) · 리스트(불릿/숫자) · 인용 · 코드(인라인/블록) · 링크 · 강조(B/I/S) · 구분선 · undo/redo. 본문 포커스를 잃지 않도록 mousedown 가로채기
-- SSR 안전 — `immediatelyRender: false` 로 Next 15+ stricter SSR 환경에서 hydration mismatch 없음. readOnly·hideToolbar·minHeight/maxHeight prop 지원
-- 추가 확장(이미지·테이블·멘션 등)은 registry 카피본을 직접 수정해 `extensions` 배열에 끼워 넣는 방식으로 확장
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.28.0
+### v0.31.1 — Header drawer 그룹 라벨을 사이드바와 동일한 캡션 스타일로 정렬 (2026-04-28)
+- HeaderNavGroup 의 drawer 라벨이 uppercase + letter-spacing 으로 두드러져 같은 모바일 메뉴 안의 HeaderMenu 트리거(서브메뉴 헤더)와 시각적으로 헷갈리던 문제 해결
+- 스타일을 Sidebar 의 group-label 과 동일하게 통일 — text-xs / weight-medium / foreground-muted, height 2rem, padding 0 var(--space-2) (uppercase·letter-spacing 제거)
+- 그룹 라벨은 "섹션 캡션", 메뉴 트리거는 "클릭 가능한 nav 항목" 으로 역할이 명확히 갈라짐
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.31.1
 
 ## Resources
 

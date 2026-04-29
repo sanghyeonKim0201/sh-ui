@@ -19,3 +19,4 @@ export {
 } from './constants.js';
 
 export { allPlugins } from './create/plugins/index.js';
+export { THEME_PRESETS, THEME_PRESET_NAMES } from './create/theme/presets.js';

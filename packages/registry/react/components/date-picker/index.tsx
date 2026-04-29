@@ -330,6 +330,11 @@ export interface DatePickerProps {
    */
   closeOnSelect?: boolean;
   /**
+   * Portal이 마운트될 DOM 노드. 토큰 스코프(다크 모드 등) 안에 popover를 띄우려면 해당 컨테이너 ref 전달.
+   * @default document.body
+   */
+  container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
+  /**
    * compound 모드. 미지정 시 기본 레이아웃(Trigger + Content + Calendar)이 자동 렌더된다.
    * 직접 조립하려면 `DatePickerTrigger`/`DatePickerContent`/`DatePickerCalendar`/`DatePickerFooter`를 자식으로 넘긴다.
    */
@@ -353,6 +358,7 @@ export function DatePicker({
   "aria-invalid": ariaInvalid,
   className,
   closeOnSelect = true,
+  container,
   children,
 }: DatePickerProps) {
   const isControlled = value !== undefined;
@@ -417,7 +423,7 @@ export function DatePicker({
         {children ?? (
           <>
             <DatePickerTrigger className={className} />
-            <DatePickerContent>
+            <DatePickerContent container={container}>
               <DatePickerCalendar />
             </DatePickerContent>
           </>
@@ -525,19 +531,24 @@ export interface DatePickerContentProps
    * @default "start"
    */
   align?: React.ComponentPropsWithoutRef<typeof BasePopover.Positioner>["align"];
+  /**
+   * Portal이 마운트될 DOM 노드. 토큰 스코프(다크 모드 등) 안에 popover를 띄우려면 해당 컨테이너 ref 전달.
+   * @default document.body
+   */
+  container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
 }
 
 /** 캘린더 popover 본문. portal로 마운트되며 `disabled`/`readOnly`이면 렌더되지 않는다. */
 export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerContentProps>(
   function DatePickerContent(
-    { className, children, sideOffset = 4, side = "bottom", align = "start", ...props },
+    { className, children, sideOffset = 4, side = "bottom", align = "start", container, ...props },
     ref,
   ) {
     const ctx = useDatePickerContext("DatePickerContent");
     if (ctx.disabled || ctx.readOnly) return null;
 
     return (
-      <BasePopover.Portal>
+      <BasePopover.Portal container={container}>
         <BasePopover.Positioner
           className="sh-ui-date-picker__positioner"
           sideOffset={sideOffset}
@@ -639,6 +650,11 @@ export interface DateRangePickerProps {
   /** invalid 상태. */
   "aria-invalid"?: boolean | "true";
   className?: string;
+  /**
+   * Portal이 마운트될 DOM 노드. 토큰 스코프(다크 모드 등) 안에 popover를 띄우려면 해당 컨테이너 ref 전달.
+   * @default document.body
+   */
+  container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
 }
 
 /**
@@ -659,6 +675,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       readOnly,
       "aria-invalid": ariaInvalid,
       className,
+      container,
     },
     ref,
   ) {
@@ -724,7 +741,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
         </BasePopover.Trigger>
 
         {!disabled && !readOnly && (
-          <BasePopover.Portal>
+          <BasePopover.Portal container={container}>
             <BasePopover.Positioner
               className="sh-ui-date-picker__positioner"
               sideOffset={4}
