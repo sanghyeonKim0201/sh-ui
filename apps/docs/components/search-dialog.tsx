@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import "./search-dialog.css";
 
-type Record = {
+type IndexRecord = {
   id: string;
   url: string;
   title: string;
@@ -23,11 +23,31 @@ type Record = {
 type Hit = SearchResult & {
   url: string;
   title: string;
-  headings: string[];
 };
 
 const MAX_RESULTS = 12;
-const SNIPPET_LEN = 140;
+const SNIPPET_LEN = 110;
+
+const CATEGORY_LABELS: Record<string, string> = {
+  components: "Components",
+  recipes: "Recipes",
+  plugins: "Plugins",
+  examples: "Examples",
+  "getting-started": "시작하기",
+  cli: "CLI",
+  mcp: "MCP",
+  tokens: "토큰",
+  theming: "테마",
+  guidelines: "가이드라인",
+  changelog: "변경 내역",
+  create: "프로젝트 생성",
+};
+
+function categoryLabel(url: string) {
+  const segs = url.split("/").filter(Boolean);
+  if (!segs.length) return "Home";
+  return CATEGORY_LABELS[segs[0]] ?? segs[0];
+}
 
 function isMac() {
   if (typeof navigator === "undefined") return false;
@@ -40,7 +60,7 @@ function buildSnippet(body: string, query: string) {
   const lower = body.toLowerCase();
   const idx = lower.indexOf(query.toLowerCase());
   if (idx < 0) return body.slice(0, SNIPPET_LEN);
-  const start = Math.max(0, idx - 40);
+  const start = Math.max(0, idx - 30);
   const end = Math.min(body.length, start + SNIPPET_LEN);
   return (start > 0 ? "…" : "") + body.slice(start, end) + (end < body.length ? "…" : "");
 }
@@ -64,11 +84,11 @@ export function SearchDialog() {
   const [active, setActive] = React.useState(0);
   const [mac, setMac] = React.useState(false);
 
-  const indexRef = React.useRef<MiniSearch<Record> | null>(null);
-  const recordsRef = React.useRef<Map<string, Record>>(new Map());
+  const indexRef = React.useRef<MiniSearch<IndexRecord> | null>(null);
+  const recordsRef = React.useRef<Map<string, IndexRecord>>(new Map());
   const loadingRef = React.useRef<Promise<void> | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const listRef = React.useRef<HTMLUListElement | null>(null);
+  const listRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     setMac(isMac());
@@ -99,8 +119,8 @@ export function SearchDialog() {
     if (loadingRef.current) return loadingRef.current;
     loadingRef.current = (async () => {
       const res = await fetch("/search-index.json", { cache: "force-cache" });
-      const data = (await res.json()) as { records: Record[] };
-      const ms = new MiniSearch<Record>({
+      const data = (await res.json()) as { records: IndexRecord[] };
+      const ms = new MiniSearch<IndexRecord>({
         idField: "id",
         fields: ["title", "headings", "body"],
         storeFields: ["url", "title", "headings"],
@@ -213,55 +233,80 @@ export function SearchDialog() {
           )}
 
           {hits.length > 0 && (
-            <ul
+            <div
               ref={listRef}
               id="sh-ui-search-results"
               role="listbox"
               className="sh-ui-search-dialog__list"
             >
-              {hits.map((hit, i) => {
-                const rec = recordsRef.current.get(hit.id);
-                const snippet = buildSnippet(rec?.body ?? "", query);
-                const matchedHeading = hit.headings?.find((h) =>
-                  h.toLowerCase().includes(query.toLowerCase()),
-                );
-                return (
-                  <li key={hit.id}>
-                    <button
-                      type="button"
-                      id={`sh-ui-search-result-${i}`}
-                      role="option"
-                      aria-selected={i === active}
-                      data-active={i === active}
-                      className="sh-ui-search-dialog__item"
-                      onClick={() => go(hit.url)}
-                      onMouseEnter={() => setActive(i)}
-                    >
-                      <span className="sh-ui-search-dialog__item-title">
-                        {highlight(hit.title, query)}
-                      </span>
-                      {matchedHeading && (
-                        <span className="sh-ui-search-dialog__item-heading">
-                          › {highlight(matchedHeading, query)}
-                        </span>
-                      )}
-                      <span className="sh-ui-search-dialog__item-url">{hit.url}</span>
-                      {snippet && (
-                        <span className="sh-ui-search-dialog__item-snippet">
-                          {highlight(snippet, query)}
-                        </span>
-                      )}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+              {(() => {
+                // 등장 순서를 보존하면서 같은 카테고리 항목들을 그룹화.
+                const groups: { label: string; items: { hit: Hit; idx: number }[] }[] = [];
+                hits.forEach((hit, idx) => {
+                  const label = categoryLabel(hit.url);
+                  const last = groups[groups.length - 1];
+                  if (last && last.label === label) last.items.push({ hit, idx });
+                  else groups.push({ label, items: [{ hit, idx }] });
+                });
+                return groups.map((group) => (
+                  <div key={`${group.label}-${group.items[0].idx}`} className="sh-ui-search-dialog__group">
+                    <div className="sh-ui-search-dialog__group-label">{group.label}</div>
+                    <ul className="sh-ui-search-dialog__group-list">
+                      {group.items.map(({ hit, idx }) => {
+                        const rec = recordsRef.current.get(hit.id);
+                        const matchedHeading = rec?.headings?.find((h) =>
+                          h.toLowerCase().includes(query.toLowerCase()),
+                        );
+                        const sub = matchedHeading
+                          ? `› ${matchedHeading}`
+                          : buildSnippet(rec?.body ?? "", query);
+                        return (
+                          <li key={hit.id}>
+                            <button
+                              type="button"
+                              id={`sh-ui-search-result-${idx}`}
+                              role="option"
+                              aria-selected={idx === active}
+                              data-active={idx === active}
+                              className="sh-ui-search-dialog__item"
+                              onClick={() => go(hit.url)}
+                              onMouseEnter={() => setActive(idx)}
+                            >
+                              <span className="sh-ui-search-dialog__item-title">
+                                {highlight(hit.title, query)}
+                              </span>
+                              {sub && (
+                                <span className="sh-ui-search-dialog__item-sub">
+                                  {highlight(sub, query)}
+                                </span>
+                              )}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ));
+              })()}
+            </div>
           )}
 
           <div className="sh-ui-search-dialog__footer">
-            <span><kbd>↑</kbd><kbd>↓</kbd> 이동</span>
-            <span><kbd>Enter</kbd> 열기</span>
-            <span><kbd>Esc</kbd> 닫기</span>
+            <span className="sh-ui-search-dialog__hint">
+              <span className="sh-ui-search-dialog__hint-keys">
+                <kbd>↑</kbd>
+                <kbd>↓</kbd>
+              </span>
+              <span>이동</span>
+            </span>
+            <span className="sh-ui-search-dialog__hint">
+              <kbd>Enter</kbd>
+              <span>열기</span>
+            </span>
+            <span className="sh-ui-search-dialog__hint">
+              <kbd>Esc</kbd>
+              <span>닫기</span>
+            </span>
           </div>
         </DialogContent>
       </Dialog>
