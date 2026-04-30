@@ -128,7 +128,36 @@
   border-radius: calc(var(--radius) - 2px);
 }
 
-/* ── Day cell ── */
+/* ── Cell (column slot, range strip carrier) ── */
+
+.sh-ui-calendar__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 2.375rem;
+  min-width: 0;
+}
+
+.sh-ui-calendar__cell--in-range,
+.sh-ui-calendar__cell--range-start,
+.sh-ui-calendar__cell--range-end {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.sh-ui-calendar__cell--range-start:not(.sh-ui-calendar__cell--range-end) {
+  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px);
+}
+
+.sh-ui-calendar__cell--range-end:not(.sh-ui-calendar__cell--range-start) {
+  border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0;
+}
+
+.sh-ui-calendar__cell--range-start.sh-ui-calendar__cell--range-end {
+  border-radius: calc(var(--radius) - 2px);
+}
+
+/* ── Day button ── */
 
 .sh-ui-calendar__day {
   display: flex;
@@ -136,7 +165,6 @@
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  margin: 0.0625rem auto;
   padding: 0;
   border: none;
   border-radius: calc(var(--radius) - 2px);
@@ -162,13 +190,6 @@
   opacity: 0.4;
 }
 
-.sh-ui-calendar__day--hidden {
-  visibility: hidden;
-  pointer-events: none;
-  cursor: default;
-  background: transparent;
-}
-
 .sh-ui-calendar__day--today {
   font-weight: var(--weight-bold);
   text-decoration: underline;
@@ -189,39 +210,4 @@
 .sh-ui-calendar__day:disabled {
   opacity: 0.3;
   cursor: not-allowed;
-}
-
-/* ── Range ── */
-
-.sh-ui-calendar__day--in-range {
-  background: color-mix(in srgb, var(--primary) 12%, transparent);
-  border-radius: 0;
-}
-
-.sh-ui-calendar__day--in-range:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--primary) 22%, transparent);
-}
-
-.sh-ui-calendar__day--range-start {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  font-weight: var(--weight-semibold);
-  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px);
-}
-
-.sh-ui-calendar__day--range-end {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  font-weight: var(--weight-semibold);
-  border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0;
-}
-
-.sh-ui-calendar__day--range-start.sh-ui-calendar__day--range-end {
-  border-radius: calc(var(--radius) - 2px);
-}
-
-.sh-ui-calendar__day--range-start:hover:not(:disabled),
-.sh-ui-calendar__day--range-end:hover:not(:disabled) {
-  background: var(--primary-hover);
-  color: var(--primary-foreground);
 }

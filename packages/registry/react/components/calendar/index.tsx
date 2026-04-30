@@ -745,33 +745,39 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
             const hidden = !current && !ctx.showOutsideDays;
 
             if (hidden) {
-              return <span key={i} className="sh-ui-calendar__day sh-ui-calendar__day--hidden" aria-hidden />;
+              return <span key={i} className="sh-ui-calendar__cell sh-ui-calendar__cell--hidden" aria-hidden />;
             }
 
             return (
-              <button
+              <div
                 key={i}
-                type="button"
                 className={cx(
-                  "sh-ui-calendar__day",
-                  !current && "sh-ui-calendar__day--outside",
-                  selected && "sh-ui-calendar__day--selected",
-                  isToday && "sh-ui-calendar__day--today",
-                  inRange && "sh-ui-calendar__day--in-range",
-                  isStart && "sh-ui-calendar__day--range-start",
-                  isEnd && "sh-ui-calendar__day--range-end",
+                  "sh-ui-calendar__cell",
+                  inRange && "sh-ui-calendar__cell--in-range",
+                  isStart && "sh-ui-calendar__cell--range-start",
+                  isEnd && "sh-ui-calendar__cell--range-end",
                 )}
-                disabled={dDisabled}
-                tabIndex={-1}
-                onClick={() => { if (!dDisabled) ctx.handleSelect(date); }}
-                onMouseEnter={() => ctx.setHoverDate(date)}
-                onMouseLeave={() => ctx.setHoverDate(undefined)}
-                aria-label={formatIsoDate(date)}
-                aria-selected={selected || inRange || undefined}
-                data-today={isToday || undefined}
               >
-                {date.getDate()}
-              </button>
+                <button
+                  type="button"
+                  className={cx(
+                    "sh-ui-calendar__day",
+                    !current && "sh-ui-calendar__day--outside",
+                    selected && "sh-ui-calendar__day--selected",
+                    isToday && "sh-ui-calendar__day--today",
+                  )}
+                  disabled={dDisabled}
+                  tabIndex={-1}
+                  onClick={() => { if (!dDisabled) ctx.handleSelect(date); }}
+                  onMouseEnter={() => ctx.setHoverDate(date)}
+                  onMouseLeave={() => ctx.setHoverDate(undefined)}
+                  aria-label={formatIsoDate(date)}
+                  aria-selected={selected || inRange || undefined}
+                  data-today={isToday || undefined}
+                >
+                  {date.getDate()}
+                </button>
+              </div>
             );
           })}
         </div>
