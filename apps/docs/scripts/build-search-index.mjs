@@ -65,6 +65,22 @@ function collectJsxTextChildren(node) {
   return parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 }
 
+// HTML 엔티티 디코드 — page.tsx 안의 &lt;nav&gt; · &quot; · &amp; 등을 평문으로.
+function decodeEntities(s) {
+  if (!s) return s;
+  return s
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&hellip;/g, "…")
+    .replace(/&mdash;/g, "—")
+    .replace(/&ndash;/g, "–")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)));
+}
+
 // 의미 있는 텍스트만 통과 — 문장 같은 한국어/영어 텍스트.
 function isMeaningful(s) {
   if (!s) return false;
@@ -151,8 +167,10 @@ function extractFromFile(filePath) {
     title = segs.length ? segs[segs.length - 1] : "Home";
   }
 
-  const body = bodyParts.join(" ").replace(/\s+/g, " ").trim();
-  return { id: url, url, title, headings, body };
+  const body = decodeEntities(bodyParts.join(" ").replace(/\s+/g, " ").trim());
+  const decodedHeadings = headings.map(decodeEntities);
+  const decodedTitle = decodeEntities(title);
+  return { id: url, url, title: decodedTitle, headings: decodedHeadings, body };
 }
 
 function main() {
