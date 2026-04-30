@@ -249,10 +249,10 @@ describe("CSS framework — registry frameworks 분기 (button 파일럿)", () =
     const origLog = console.log;
     console.log = (...args) => logs.push(args.map(String).join(" "));
     try {
-      // tabs 는 (현재) tailwind 변종 미제공 — fallback 으로 plain 변종이 설치돼야 함
+      // calendar 는 tailwind 변종 미제공 — fallback 으로 plain 변종이 설치돼야 함
       await add({
         cwd: tmpDir,
-        names: ["tabs"],
+        names: ["calendar"],
         skipInstall: true,
         onConflict: "overwrite",
       });
@@ -263,8 +263,8 @@ describe("CSS framework — registry frameworks 분기 (button 파일럿)", () =
     const allLogs = logs.join("\n");
     expect(allLogs).toMatch(/Tailwind 변종 미제공/);
 
-    const indexPath = path.join(tmpDir, "src/components/ui/tabs/index.tsx");
-    const stylesPath = path.join(tmpDir, "src/components/ui/tabs/styles.css");
+    const indexPath = path.join(tmpDir, "src/components/ui/calendar/index.tsx");
+    const stylesPath = path.join(tmpDir, "src/components/ui/calendar/styles.css");
     expect(await fs.pathExists(indexPath)).toBe(true);
     // plain 변종이라 styles.css 도 같이
     expect(await fs.pathExists(stylesPath)).toBe(true);

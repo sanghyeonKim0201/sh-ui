@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.44.0",
+      "date": "2026-04-30",
+      "title": "Tailwind 변종 대규모 확대 — 32 컴포넌트 utility-class 변종",
+      "type": "minor",
+      "highlights": [
+        "**32 컴포넌트가 Tailwind utility-class 변종 제공** — separator, skeleton, avatar, spinner, progress, tooltip, badge, label, switch, toggle, checkbox, radio, textarea, breadcrumb, menubar, numeric-input, page-toc, slider, popover, accordion, dialog, code-panel, pagination, date-picker, tabs, dropdown-menu, context-menu, select, combobox + 기존 button/card/input. cva 기반 variant 매트릭스로 prop 시그니처는 plain 변종과 100% 동일.",
+        "**dependency 분기 일반화** — `class-variance-authority` 같은 Tailwind 전용 의존성은 `{name, frameworks: [\"tailwind\"]}` 객체 형식으로 표기 — plain 사용자에게는 install 안 됨. 6 개 컴포넌트 (button, avatar, badge, spinner, switch, toggle) 가 cva 사용.",
+        "**fallback 자연 동작** — Tailwind 변종이 아직 없는 form, code-editor, calendar, color-picker, markdown-editor, rich-text-editor, carousel, file-upload, toast, header, sidebar 는 add 시 plain 변종으로 자동 설치 + `ℹ <name> — Tailwind 변종 미제공` 알림. plain CSS 도 @theme inline 브리지 덕에 Tailwind v4 환경에서 그대로 동작."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.44.0"
+    },
+    {
       "version": "0.43.0",
       "date": "2026-04-30",
       "title": "CSS 프레임워크 변종 시스템 + Tailwind 1차 지원",
