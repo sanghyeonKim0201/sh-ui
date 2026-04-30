@@ -8,21 +8,32 @@
         {
           "src": "components/button/index.tsx",
           "dest": "{components}/button/index.tsx",
-          "frameworks": ["plain"]
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/button/styles.css",
           "dest": "{components}/button/styles.css",
-          "frameworks": ["plain"]
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/button/index.tailwind.tsx",
           "dest": "{components}/button/index.tsx",
-          "frameworks": ["tailwind"]
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
-        { "name": "class-variance-authority", "frameworks": ["tailwind"] }
+        {
+          "name": "class-variance-authority",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
       ],
       "registryDependencies": []
     },
@@ -33,17 +44,23 @@
         {
           "src": "components/card/index.tsx",
           "dest": "{components}/card/index.tsx",
-          "frameworks": ["plain"]
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/card/styles.css",
           "dest": "{components}/card/styles.css",
-          "frameworks": ["plain"]
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/card/index.tailwind.tsx",
           "dest": "{components}/card/index.tsx",
-          "frameworks": ["tailwind"]
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -56,17 +73,23 @@
         {
           "src": "components/input/index.tsx",
           "dest": "{components}/input/index.tsx",
-          "frameworks": ["plain"]
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/input/styles.css",
           "dest": "{components}/input/styles.css",
-          "frameworks": ["plain"]
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/input/index.tailwind.tsx",
           "dest": "{components}/input/index.tsx",
-          "frameworks": ["tailwind"]
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -78,11 +101,24 @@
       "files": [
         {
           "src": "components/numeric-input/index.tsx",
-          "dest": "{components}/numeric-input/index.tsx"
+          "dest": "{components}/numeric-input/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/numeric-input/styles.css",
-          "dest": "{components}/numeric-input/styles.css"
+          "dest": "{components}/numeric-input/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/numeric-input/index.tailwind.tsx",
+          "dest": "{components}/numeric-input/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -180,15 +216,31 @@
       "files": [
         {
           "src": "components/code-panel/index.tsx",
-          "dest": "{components}/code-panel/index.tsx"
+          "dest": "{components}/code-panel/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/code-panel/copy.tsx",
-          "dest": "{components}/code-panel/copy.tsx"
+          "dest": "{components}/code-panel/copy.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/code-panel/styles.css",
-          "dest": "{components}/code-panel/styles.css"
+          "dest": "{components}/code-panel/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/code-panel/index.tailwind.tsx",
+          "dest": "{components}/code-panel/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -217,11 +269,24 @@
       "files": [
         {
           "src": "components/page-toc/index.tsx",
-          "dest": "{components}/page-toc/index.tsx"
+          "dest": "{components}/page-toc/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/page-toc/styles.css",
-          "dest": "{components}/page-toc/styles.css"
+          "dest": "{components}/page-toc/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/page-toc/index.tailwind.tsx",
+          "dest": "{components}/page-toc/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -302,11 +367,24 @@
       "files": [
         {
           "src": "components/select/index.tsx",
-          "dest": "{components}/select/index.tsx"
+          "dest": "{components}/select/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/select/styles.css",
-          "dest": "{components}/select/styles.css"
+          "dest": "{components}/select/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/select/index.tailwind.tsx",
+          "dest": "{components}/select/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -452,11 +530,24 @@
       "files": [
         {
           "src": "components/label/index.tsx",
-          "dest": "{components}/label/index.tsx"
+          "dest": "{components}/label/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/label/styles.css",
-          "dest": "{components}/label/styles.css"
+          "dest": "{components}/label/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/label/index.tailwind.tsx",
+          "dest": "{components}/label/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -484,11 +575,24 @@
       "files": [
         {
           "src": "components/slider/index.tsx",
-          "dest": "{components}/slider/index.tsx"
+          "dest": "{components}/slider/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/slider/styles.css",
-          "dest": "{components}/slider/styles.css"
+          "dest": "{components}/slider/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/slider/index.tailwind.tsx",
+          "dest": "{components}/slider/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -500,11 +604,24 @@
       "files": [
         {
           "src": "components/tabs/index.tsx",
-          "dest": "{components}/tabs/index.tsx"
+          "dest": "{components}/tabs/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/tabs/styles.css",
-          "dest": "{components}/tabs/styles.css"
+          "dest": "{components}/tabs/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/tabs/index.tailwind.tsx",
+          "dest": "{components}/tabs/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -518,11 +635,24 @@
       "files": [
         {
           "src": "components/combobox/index.tsx",
-          "dest": "{components}/combobox/index.tsx"
+          "dest": "{components}/combobox/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/combobox/styles.css",
-          "dest": "{components}/combobox/styles.css"
+          "dest": "{components}/combobox/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/combobox/index.tailwind.tsx",
+          "dest": "{components}/combobox/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -536,11 +666,24 @@
       "files": [
         {
           "src": "components/popover/index.tsx",
-          "dest": "{components}/popover/index.tsx"
+          "dest": "{components}/popover/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/popover/styles.css",
-          "dest": "{components}/popover/styles.css"
+          "dest": "{components}/popover/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/popover/index.tailwind.tsx",
+          "dest": "{components}/popover/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -554,11 +697,24 @@
       "files": [
         {
           "src": "components/dialog/index.tsx",
-          "dest": "{components}/dialog/index.tsx"
+          "dest": "{components}/dialog/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/dialog/styles.css",
-          "dest": "{components}/dialog/styles.css"
+          "dest": "{components}/dialog/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/dialog/index.tailwind.tsx",
+          "dest": "{components}/dialog/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -572,11 +728,24 @@
       "files": [
         {
           "src": "components/dropdown-menu/index.tsx",
-          "dest": "{components}/dropdown-menu/index.tsx"
+          "dest": "{components}/dropdown-menu/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/dropdown-menu/styles.css",
-          "dest": "{components}/dropdown-menu/styles.css"
+          "dest": "{components}/dropdown-menu/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/dropdown-menu/index.tailwind.tsx",
+          "dest": "{components}/dropdown-menu/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -590,11 +759,24 @@
       "files": [
         {
           "src": "components/context-menu/index.tsx",
-          "dest": "{components}/context-menu/index.tsx"
+          "dest": "{components}/context-menu/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/context-menu/styles.css",
-          "dest": "{components}/context-menu/styles.css"
+          "dest": "{components}/context-menu/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/context-menu/index.tailwind.tsx",
+          "dest": "{components}/context-menu/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -608,11 +790,24 @@
       "files": [
         {
           "src": "components/menubar/index.tsx",
-          "dest": "{components}/menubar/index.tsx"
+          "dest": "{components}/menubar/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/menubar/styles.css",
-          "dest": "{components}/menubar/styles.css"
+          "dest": "{components}/menubar/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/menubar/index.tailwind.tsx",
+          "dest": "{components}/menubar/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -628,11 +823,24 @@
       "files": [
         {
           "src": "components/tooltip/index.tsx",
-          "dest": "{components}/tooltip/index.tsx"
+          "dest": "{components}/tooltip/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/tooltip/styles.css",
-          "dest": "{components}/tooltip/styles.css"
+          "dest": "{components}/tooltip/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/tooltip/index.tailwind.tsx",
+          "dest": "{components}/tooltip/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -646,11 +854,24 @@
       "files": [
         {
           "src": "components/breadcrumb/index.tsx",
-          "dest": "{components}/breadcrumb/index.tsx"
+          "dest": "{components}/breadcrumb/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/breadcrumb/styles.css",
-          "dest": "{components}/breadcrumb/styles.css"
+          "dest": "{components}/breadcrumb/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/breadcrumb/index.tailwind.tsx",
+          "dest": "{components}/breadcrumb/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -662,11 +883,24 @@
       "files": [
         {
           "src": "components/pagination/index.tsx",
-          "dest": "{components}/pagination/index.tsx"
+          "dest": "{components}/pagination/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/pagination/styles.css",
-          "dest": "{components}/pagination/styles.css"
+          "dest": "{components}/pagination/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/pagination/index.tailwind.tsx",
+          "dest": "{components}/pagination/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -678,15 +912,34 @@
       "files": [
         {
           "src": "components/avatar/index.tsx",
-          "dest": "{components}/avatar/index.tsx"
+          "dest": "{components}/avatar/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/avatar/styles.css",
-          "dest": "{components}/avatar/styles.css"
+          "dest": "{components}/avatar/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/avatar/index.tailwind.tsx",
+          "dest": "{components}/avatar/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        {
+          "name": "class-variance-authority",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
       ],
       "registryDependencies": []
     },
@@ -696,14 +949,34 @@
       "files": [
         {
           "src": "components/badge/index.tsx",
-          "dest": "{components}/badge/index.tsx"
+          "dest": "{components}/badge/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/badge/styles.css",
-          "dest": "{components}/badge/styles.css"
+          "dest": "{components}/badge/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/badge/index.tailwind.tsx",
+          "dest": "{components}/badge/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
-      "dependencies": [],
+      "dependencies": [
+        {
+          "name": "class-variance-authority",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
+      ],
       "registryDependencies": []
     },
     "progress": {
@@ -712,11 +985,24 @@
       "files": [
         {
           "src": "components/progress/index.tsx",
-          "dest": "{components}/progress/index.tsx"
+          "dest": "{components}/progress/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/progress/styles.css",
-          "dest": "{components}/progress/styles.css"
+          "dest": "{components}/progress/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/progress/index.tailwind.tsx",
+          "dest": "{components}/progress/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -728,14 +1014,34 @@
       "files": [
         {
           "src": "components/spinner/index.tsx",
-          "dest": "{components}/spinner/index.tsx"
+          "dest": "{components}/spinner/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/spinner/styles.css",
-          "dest": "{components}/spinner/styles.css"
+          "dest": "{components}/spinner/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/spinner/index.tailwind.tsx",
+          "dest": "{components}/spinner/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
-      "dependencies": [],
+      "dependencies": [
+        {
+          "name": "class-variance-authority",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
+      ],
       "registryDependencies": []
     },
     "separator": {
@@ -744,11 +1050,24 @@
       "files": [
         {
           "src": "components/separator/index.tsx",
-          "dest": "{components}/separator/index.tsx"
+          "dest": "{components}/separator/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/separator/styles.css",
-          "dest": "{components}/separator/styles.css"
+          "dest": "{components}/separator/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/separator/index.tailwind.tsx",
+          "dest": "{components}/separator/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -772,11 +1091,24 @@
       "files": [
         {
           "src": "components/checkbox/index.tsx",
-          "dest": "{components}/checkbox/index.tsx"
+          "dest": "{components}/checkbox/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/checkbox/styles.css",
-          "dest": "{components}/checkbox/styles.css"
+          "dest": "{components}/checkbox/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/checkbox/index.tailwind.tsx",
+          "dest": "{components}/checkbox/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -790,11 +1122,24 @@
       "files": [
         {
           "src": "components/radio/index.tsx",
-          "dest": "{components}/radio/index.tsx"
+          "dest": "{components}/radio/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/radio/styles.css",
-          "dest": "{components}/radio/styles.css"
+          "dest": "{components}/radio/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/radio/index.tailwind.tsx",
+          "dest": "{components}/radio/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -808,15 +1153,34 @@
       "files": [
         {
           "src": "components/switch/index.tsx",
-          "dest": "{components}/switch/index.tsx"
+          "dest": "{components}/switch/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/switch/styles.css",
-          "dest": "{components}/switch/styles.css"
+          "dest": "{components}/switch/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/switch/index.tailwind.tsx",
+          "dest": "{components}/switch/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        {
+          "name": "class-variance-authority",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
       ],
       "registryDependencies": []
     },
@@ -826,15 +1190,34 @@
       "files": [
         {
           "src": "components/toggle/index.tsx",
-          "dest": "{components}/toggle/index.tsx"
+          "dest": "{components}/toggle/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/toggle/styles.css",
-          "dest": "{components}/toggle/styles.css"
+          "dest": "{components}/toggle/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/toggle/index.tailwind.tsx",
+          "dest": "{components}/toggle/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        {
+          "name": "class-variance-authority",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
       ],
       "registryDependencies": []
     },
@@ -844,11 +1227,24 @@
       "files": [
         {
           "src": "components/textarea/index.tsx",
-          "dest": "{components}/textarea/index.tsx"
+          "dest": "{components}/textarea/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/textarea/styles.css",
-          "dest": "{components}/textarea/styles.css"
+          "dest": "{components}/textarea/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/textarea/index.tailwind.tsx",
+          "dest": "{components}/textarea/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -894,11 +1290,24 @@
       "files": [
         {
           "src": "components/date-picker/index.tsx",
-          "dest": "{components}/date-picker/index.tsx"
+          "dest": "{components}/date-picker/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/date-picker/styles.css",
-          "dest": "{components}/date-picker/styles.css"
+          "dest": "{components}/date-picker/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/date-picker/index.tailwind.tsx",
+          "dest": "{components}/date-picker/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -914,11 +1323,24 @@
       "files": [
         {
           "src": "components/skeleton/index.tsx",
-          "dest": "{components}/skeleton/index.tsx"
+          "dest": "{components}/skeleton/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/skeleton/styles.css",
-          "dest": "{components}/skeleton/styles.css"
+          "dest": "{components}/skeleton/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/skeleton/index.tailwind.tsx",
+          "dest": "{components}/skeleton/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -930,11 +1352,24 @@
       "files": [
         {
           "src": "components/accordion/index.tsx",
-          "dest": "{components}/accordion/index.tsx"
+          "dest": "{components}/accordion/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/accordion/styles.css",
-          "dest": "{components}/accordion/styles.css"
+          "dest": "{components}/accordion/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/accordion/index.tailwind.tsx",
+          "dest": "{components}/accordion/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
