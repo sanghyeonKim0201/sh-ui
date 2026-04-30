@@ -63,6 +63,35 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   max-width: 100%;
 }
 
+/* ── docs 상단 헤더 ── 메인 영역과 TOC 영역을 가로질러 inset 전폭 차지. */
+.docs-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--background);
+  z-index: 10;
+}
+.docs-header__search {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* 헤더 아래 본문 영역 — TOC 가 있는 페이지에서만 우측에 TOC 폭만큼 padding 예약.
+   inset 자체가 아니라 이 래퍼에 padding 을 줘서 헤더가 영향을 받지 않게 한다. */
+.docs-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 /* /create 독립 풀스크린 shell — docs 사이드바 없이 자체 헤더 + 3-col 그리드.
    좌: 컴포넌트 피커 (full-height 사이드바, narrow 에서도 유지)
    중: 캔버스 (flex)
@@ -250,12 +279,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 }
 
 /* PageTOC 컴포넌트 자체 스타일은 components/ui/page-toc/styles.css 에 있음.
-   여기서는 docs 앱의 sidebar-inset 과의 레이아웃 정렬만 담당 — 메인 영역 우측에
-   TOC 폭만큼 padding 을 예약해 본문(centered, max 47.5rem)이 TOC 를 침범하지 않도록.
+   여기서는 docs 앱의 본문 영역 우측에 TOC 폭만큼 padding 을 예약해
+   본문(centered, max 47.5rem)이 TOC 를 침범하지 않도록.
    :has() 로 TOC 가 실제 렌더된 페이지에서만 발동 — TOC 없는 페이지(/create 등)는
-   본문이 sidebar-inset 전폭을 쓰도록. */
+   본문이 docs-main 전폭을 쓰도록. */
 @media (min-width: 80rem) {
-  .sh-ui-sidebar-wrapper:not([data-embedded]) > .sh-ui-sidebar-inset:has(.sh-ui-page-toc) {
+  .docs-main:has(.sh-ui-page-toc) {
     padding-right: 16rem;
   }
 }

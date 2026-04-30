@@ -3,6 +3,22 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.42.0",
+      "date": "2026-04-30",
+      "title": "Calendar 컴포넌트 + DatePicker 내부 리팩터링",
+      "type": "minor",
+      "highlights": [
+        "**신규 `Calendar` 컴포넌트** — 인라인 캘린더 primitive. `mode=\"single\" | \"multiple\" | \"range\"` 3종, `numberOfMonths` 로 동시에 여러 달 표시, `disabled(date)` 콜백으로 날짜별 비활성 처리(e.g. 주말 비활성)",
+        "**빠른 헤더 내비게이션** — `‹‹ / ››` (1년 단위), `‹ / ›` (1개월 단위) + 연도/월 dropdown 으로 임의 연도·월 점프. dropdown 은 sh-ui `Select` 로 빌드되어 어포던스(chevron) 와 키보드 내비게이션을 그대로 가짐. `fromYear` / `toYear` 로 dropdown 범위 커스터마이징",
+        "**Compound API** — `CalendarHeader` / `CalendarPrevYearButton` / `CalendarPrevMonthButton` / `CalendarYearSelect` / `CalendarMonthSelect` / `CalendarNextMonthButton` / `CalendarNextYearButton` / `CalendarGrid` 컴파운드 파츠로 헤더를 자유롭게 조립. 화살표를 선택적으로 숨기거나 dropdown 만 노출하는 식의 변형이 가능",
+        "`weekStartsOn` (0=일/1=월), `weekdayLabels`, `formatMonthLabel` 등 i18n/표시 옵션. 키보드는 ←→↑↓ 외에 `PageUp/Down`(월), `Home/End`(월의 시작/끝)도 지원",
+        "**`DatePicker` 내부 리팩터링** — 중복 구현되어 있던 캘린더 그리드를 신규 `Calendar` 로 교체. 공개 API(`DatePicker` / `DateRangePicker` / `DatePickerCalendar` 등)는 변경 없음",
+        "registry: `calendar` 가 `select` 를, `date-picker` 가 `calendar` 를 registryDependency 로 의존 — `npx sh-ui-cli add date-picker` 시 `calendar` + `select` 도 자동 설치",
+        "**CLI: 기존 파일 충돌 처리** — registryDependency 로 끌려온 컴포넌트가 이미 존재 + 사용자가 커스터마이즈한 경우 자동으로 덮어쓰지 않는다. TTY 에서는 keep / overwrite / keep-all / overwrite-all 4지선다 prompt, 비대화형(CI·파이프·MCP) 환경에서는 자동으로 keep. `--force` / `--keep` 플래그로 동작 고정 가능. MCP `sh_ui_add_component` 도 기본 keep + `overwrite: true` 옵션 노출"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.42.0"
+    },
+    {
       "version": "0.41.0",
       "date": "2026-04-30",
       "title": "sh-ui create — git 자동 초기화 + .gitignore 자동 생성",

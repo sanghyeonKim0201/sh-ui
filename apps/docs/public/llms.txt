@@ -22,13 +22,14 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.34.0 (2026-04-29) — Next 템플릿 — RSC prefetch / 에러 바운더리 / 테스트 헬퍼 + KRW·날짜 포맷 유틸 기본 탑재
+**최신 버전**: v0.42.0 (2026-04-30) — Calendar 컴포넌트 + DatePicker 내부 리팩터링
 
 ## React Components
 
 - **button** — 기본 버튼 — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).
 - **card** — 카드 컨테이너 — compound (Card.Header / Card.Body / Card.Footer / Card.Title / Card.Description).
-- **input** — 단일 행 텍스트 입력 — hasError 지원.
+- **input** — 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PasswordInput / PhoneInput / BusinessNumberInput 변형 포함.
+- **numeric-input** — 슬라이더 동반·토큰 편집기용 컴팩트 숫자 입력 — onChange 즉시 min/max clamp, focus select-all, 단위(px/ms/%/° 등) suffix. 일반 폼 입력은 NumberInput 권장.
 - **file-upload** — 파일 업로드 — 드롭존, 다중 파일, 진행률.
 - **form** — Form 컴포넌트.
 - **form-yup** — FormYup 컴포넌트.
@@ -66,6 +67,7 @@
 - **toggle** — 단일 토글 / 토글 그룹 — pressed 상태 (Base UI).
 - **textarea** — 여러 행 텍스트 입력 — rows, autoResize.
 - **toast** — 임시 알림 — useToast 훅 + ToastProvider. aria-live 자동.
+- **calendar** — Calendar 컴포넌트.
 - **date-picker** — 날짜 선택 — 캘린더 팝업 (Base UI).
 - **skeleton** — 스켈레톤 로딩 플레이스홀더.
 - **accordion** — 펼침/접힘 아코디언 — single/multiple (Base UI).

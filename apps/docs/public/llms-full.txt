@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.34.0 (2026-04-29) — Next 템플릿 — RSC prefetch / 에러 바운더리 / 테스트 헬퍼 + KRW·날짜 포맷 유틸 기본 탑재
+**최신 버전**: v0.42.0 (2026-04-30) — Calendar 컴포넌트 + DatePicker 내부 리팩터링
 
 ## React — Components
 
@@ -45,10 +45,18 @@
 ### input
 
 - Type: component
-- Summary: 단일 행 텍스트 입력 — hasError 지원.
+- Summary: 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PasswordInput / PhoneInput / BusinessNumberInput 변형 포함.
 - Install: `npx sh-ui-cli add input`
 - Import: `@/components/ui/input`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/input
+
+### numeric-input
+
+- Type: component
+- Summary: 슬라이더 동반·토큰 편집기용 컴팩트 숫자 입력 — onChange 즉시 min/max clamp, focus select-all, 단위(px/ms/%/° 등) suffix. 일반 폼 입력은 NumberInput 권장.
+- Install: `npx sh-ui-cli add numeric-input`
+- Import: `@/components/ui/numeric-input`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/numeric-input
 
 ### file-upload
 
@@ -368,12 +376,21 @@
 - Import: `@/components/ui/toast`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/toast
 
+### calendar
+
+- Type: component
+- Install: `npx sh-ui-cli add calendar`
+- Registry deps: select (자동 설치됨)
+- Import: `@/components/ui/calendar`
+- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/calendar
+
 ### date-picker
 
 - Type: component
 - Summary: 날짜 선택 — 캘린더 팝업 (Base UI).
 - Install: `npx sh-ui-cli add date-picker`
 - npm/pub deps: @base-ui/react
+- Registry deps: calendar (자동 설치됨)
 - Import: `@/components/ui/date-picker`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/date-picker
 
@@ -814,42 +831,59 @@
 
 ## 최근 릴리즈 (최대 5개)
 
-### v0.34.0 — Next 템플릿 — RSC prefetch / 에러 바운더리 / 테스트 헬퍼 + KRW·날짜 포맷 유틸 기본 탑재 (2026-04-29)
-- shared/ui/PrefetchBoundary + shared/lib/getQueryClient — RSC 에서 prefetch 후 dehydrate → 클라이언트 hydrate. 단일/배열 fetchOptions 모두 지원, 이미 깔린 TanStack Query 인프라와 즉시 호환
-- shared/ui/FallbackBoundary — Suspense + ErrorBoundary 합성, QueryErrorResetBoundary 와 연동돼 errorFallback 의 resetErrorBoundary 가 쿼리까지 함께 리셋. onError 콜백으로 외부 옵저버빌리티 (Sentry 등) 훅인 자유
-- shared/test/renderWithProviders + createTestQueryClient — RTL render + QueryClientProvider + userEvent 한 번에. 기존 vitest 인프라에 컴포넌트 테스트 진입장벽 제거
-- shared/lib/formatDate / formatPrice — 로케일 기반 Intl 포맷 유틸. formatPrice 는 한국 원화(KRW, 소수점 없음) 기본
-- @testing-library/react + user-event devDeps 추가 (양쪽 nextjs 템플릿)
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.34.0
+### v0.42.0 — Calendar 컴포넌트 + DatePicker 내부 리팩터링 (2026-04-30)
+- **신규 `Calendar` 컴포넌트** — 인라인 캘린더 primitive. `mode="single" | "multiple" | "range"` 3종, `numberOfMonths` 로 동시에 여러 달 표시, `disabled(date)` 콜백으로 날짜별 비활성 처리(e.g. 주말 비활성)
+- **빠른 헤더 내비게이션** — `‹‹ / ››` (1년 단위), `‹ / ›` (1개월 단위) + 연도/월 dropdown 으로 임의 연도·월 점프. dropdown 은 sh-ui `Select` 로 빌드되어 어포던스(chevron) 와 키보드 내비게이션을 그대로 가짐. `fromYear` / `toYear` 로 dropdown 범위 커스터마이징
+- **Compound API** — `CalendarHeader` / `CalendarPrevYearButton` / `CalendarPrevMonthButton` / `CalendarYearSelect` / `CalendarMonthSelect` / `CalendarNextMonthButton` / `CalendarNextYearButton` / `CalendarGrid` 컴파운드 파츠로 헤더를 자유롭게 조립. 화살표를 선택적으로 숨기거나 dropdown 만 노출하는 식의 변형이 가능
+- `weekStartsOn` (0=일/1=월), `weekdayLabels`, `formatMonthLabel` 등 i18n/표시 옵션. 키보드는 ←→↑↓ 외에 `PageUp/Down`(월), `Home/End`(월의 시작/끝)도 지원
+- **`DatePicker` 내부 리팩터링** — 중복 구현되어 있던 캘린더 그리드를 신규 `Calendar` 로 교체. 공개 API(`DatePicker` / `DateRangePicker` / `DatePickerCalendar` 등)는 변경 없음
+- registry: `calendar` 가 `select` 를, `date-picker` 가 `calendar` 를 registryDependency 로 의존 — `npx sh-ui-cli add date-picker` 시 `calendar` + `select` 도 자동 설치
+- **CLI: 기존 파일 충돌 처리** — registryDependency 로 끌려온 컴포넌트가 이미 존재 + 사용자가 커스터마이즈한 경우 자동으로 덮어쓰지 않는다. TTY 에서는 keep / overwrite / keep-all / overwrite-all 4지선다 prompt, 비대화형(CI·파이프·MCP) 환경에서는 자동으로 keep. `--force` / `--keep` 플래그로 동작 고정 가능. MCP `sh_ui_add_component` 도 기본 keep + `overwrite: true` 옵션 노출
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.42.0
 
-### v0.33.0 — 중앙관리형 SSOT — sh-ui-cli/api 노출 + 플러그인 스키마 + --dry-run + CI 스캐폴드 게이트 (2026-04-29)
-- 신규 public API — `import { allPlugins, CREATE_PLATFORMS, ... } from 'sh-ui-cli/api'`. 다른 워크스페이스 (apps/docs 등) 가 플러그인 메타와 enum 을 동기화 없이 사용. CreateProjectDialog / 사이드바 / 플러그인 허브 가 모두 derive 하도록 변경 — 새 플러그인 추가 시 plugins/ 폴더 한 군데만 건드리면 됨
-- 신규 --dry-run 플래그 — 실제 파일 쓰지 않고 스캐폴드 결과 파일 목록만 출력. 디버깅 + CI 검증 보조. tmpdir 에 생성 후 즉시 정리해 사용자 cwd 무영향
-- 플러그인 manifest zod 스키마 검증 — 모듈 로드 시점에 모든 플러그인 형태 체크. 'src/proxy.ts' 같은 잘못된 경로는 빌드 타임 거부 (v0.32.0 에서 발생한 회귀 차단)
-- CI 스캐폴드 게이트 — publish 전에 5가지 플러그인 조합으로 실제 스캐폴드 → fresh install → tsc --noEmit 까지 돌리는 스모크 단계 추가. 사용자가 받게 될 결과물을 publish 직전에 검증
-- 통합 테스트 7개 추가 — 각 플러그인 + 조합의 핵심 파일 위치 / 내용 / 합성 검증 (proxy.ts root 위치, 합성된 proxy.ts 의 intl + 인증 가드, observability 의 Sentry vs no-op, axios 부재 등)
-- 내부 정리 — packages/cli/src/constants.js 신설로 PLATFORMS/STRUCTURES/THEME_* 단일화. cli-args / mcp / init / generator 도움말 모두 derive
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.33.0
+### v0.41.0 — sh-ui create — git 자동 초기화 + .gitignore 자동 생성 (2026-04-30)
+- **`sh-ui create` 직후 `git init` 자동 실행** — 별도 명령 없이 바로 첫 커밋 가능한 상태. git 미설치 등 실패 시는 조용히 스킵 (스캐폴드 자체는 성공)
+- **`.gitignore` 자동 생성** — Next.js standalone / monorepo / Flutter 각 템플릿에 맞는 ignore 패턴 동봉. 모노레포는 `.turbo` `.vercel`, Flutter 는 `.dart_tool/` `**/ios/Flutter/.last_build_id` 등 플랫폼 표준 패턴 + `.claude/settings.local.json` 공통
+- **npm strip 우회** — npm publish 가 패키지 내 `.gitignore` 를 자동 strip 하던 이슈를 템플릿 파일명 `gitignore` (no-dot) → 스캐폴드 시 `.gitignore` 로 리네이밍하는 방식으로 해결
+- dry-run 모드는 git init / 파일 쓰기 모두 우회 (기존 동작 유지)
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.41.0
 
-### v0.32.1 — auth-jwt 의 proxy.ts 경로 버그 수정 + next-intl 와 자동 합성 (2026-04-29)
-- auth-jwt 플러그인이 proxy.ts 를 src/proxy.ts 로 잘못 깔아 Next 16 이 인식 못 하던 문제 — 베이스 템플릿이 app/ 을 root 에 두므로 proxy.ts 도 root 로 가야 함. 결과적으로 v0.32.0 의 인증 라우트 가드가 동작하지 않았음, 이번 패치에서 해결
-- auth-jwt + next-intl 동시 활성화 시 generator 가 proxy.ts 를 자동 합성 — intl 미들웨어 + locale prefix 를 벗긴 경로 기반 인증 가드. 단독 사용 시에는 각 플러그인의 단일 proxy.ts 그대로 적용
-- /cli 페이지 플러그인 섹션 갱신 — Sentry 의 옛 axios 인터셉터/apiCore 설명 제거, observability 브릿지 정확화, auth-jwt 항목 신설. 기본 스택의 'Axios' 표기를 fetch 기반 isomorphic http() 로 정정
-- auth-jwt / next-intl 플러그인 페이지의 폴더 트리 + 파일 설명을 실제 manifest 와 동기화
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.32.1
+### v0.40.0 — NumericInput 컴포넌트 + 토큰 편집기 UX 대폭 개선 (Accordion size, ShadowBuilder, XY 패드) (2026-04-29)
+- **NumericInput** — 정식 sh-ui 컴포넌트 신설. 슬라이더 동반·토큰 편집기 같은 컴팩트 컨텍스트용 숫자 입력. type=text + inputMode=decimal + buffer state — Chrome 의 type=number select() 미지원 회피, '-'/'1.' 같은 transient 입력 허용, ArrowUp/Down step. NumberInput(폼·금액용) 과 책임 분리. `npx sh-ui-cli add numeric-input`
+- **Accordion size prop** — `size: 'sm' | 'md'`. sm 은 padding 8/4 + font 12px + chevron 12px 로 좁은 사이드바·다중 섹션에 적합. 페이지별 CSS override 대신 컴포넌트 레벨 variant 로 승격
+- **ShadowBuilder** (playground) — raw CSS `0 4px 12px rgba(...)` 직접 입력 → Figma 스타일 시각 편집기. X/Y/Blur/Spread NumericInput + ColorPicker + alpha %
+- **XY 패드 드래그** — ShadowBuilder 의 미리보기 박스가 ColorPicker 색공간처럼 클릭/드래그 가능. pointer 위치 → X/Y offset (1:1 px, ±50 클램프). pointer capture + touch-action: none 으로 모바일 터치 드래그도 지원
+- **advanced 모드 8 섹션** native details → sh-ui Accordion size=sm 으로 교체. chevron 인디케이터로 클릭 가능 신호 명확. 내보내기 섹션도 동일 패턴
+- **Accordion trigger hover** underline → background var(--background-muted) 틴트, disabled 가드(`:not([disabled]):not([data-disabled])`) — disabled 항목은 hover 무효과
+- **슬라이더 동반 키보드 입력** — 8 카테고리 31 슬라이더 + 그라데이션 9 슬라이더 옆 값 표시를 NumericInput 으로 교체. 드래그 + 키보드 입력 둘 다 지원. Slider docs 의 ControlledDemo 도 양방향 동기화로 업그레이드
+- **초기화 3분기** — '전체 초기화' / 'Light 초기화' / 'Dark 초기화'. 이전엔 모드별 한 버튼 (색만 reset) 또는 전체 한 버튼만 — 모드 색만 빠르게 되돌리는 use case + 모든 카테고리 nuke 둘 다 지원
+- **encodeTheme UTF-8 안전** — shadow/ease/gradient 가 자유 string 이라 한글 IME 입력 시 btoa(Latin1-only) InvalidCharacterError 회귀. TextEncoder UTF-8 바이트 → byte 별 String.fromCharCode → btoa 패턴으로 교체
+- **docs 페이지** — /components/numeric-input 신규 (server component + _demos 분리), Accordion size 예시 + API Reference 보강, '스타일 커스터마이즈' 에 hover 효과 override 안내
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.40.0
 
-### v0.32.0 — auth-jwt 플러그인 신설 + isomorphic HTTP transport 재설계 (2026-04-29)
-- 신규 --plugins auth-jwt — Next 16 proxy.ts 미들웨어, refresh placeholder, withAuthRetry 헬퍼, refresh-aware BFF 를 한 번에 추가. 백엔드 refresh API 명세 확정 후 refreshSession.ts 본문만 채우면 자동 활성화
-- 베이스 HTTP 레이어 재설계 — axios 단일 인스턴스를 isomorphic http() + serverFetch / clientFetch 두 갈래 transport 로 교체. RSC 는 백엔드 직통, 브라우저는 /api/proxy 경유 → API 함수는 한 번만 작성하고 RSC prefetch + hydration 패턴과 자연스럽게 어울림
-- Sentry 플러그인 슬림화 — HTTP/proxy 인프라 파일을 베이스로 이관하고, Sentry 는 observability.ts 를 Sentry-aware 버전으로 덮어써 5xx 캡처/로깅을 활성화. 두 플러그인이 독립적으로 조합됨
-- queryClient.ts 추가 — React cache() 기반 RSC 스코프 + 브라우저 싱글톤. 요청 간 캐시 누수 방지. apps/docs 의 auth / api-layer / testing 레시피도 새 설계에 맞춰 갱신
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.32.0
+### v0.39.0 — 프리셋 정체성 강화 — slate / rose / violet 이 typography·controls·borders 도 차별화 (2026-04-29)
+- 0.38.0 까지 5 프리셋이 색·radius 만 차별화 → 이제 typography·controls·borders 까지 프리셋 별 인상이 다름. neutral / emerald 는 디폴트 baseline (변화 없음), 나머지 셋은 정체성 부여
+- **slate** (정보 밀도) — text-base 14px (xs 11/sm 12/lg 16/xl 18/2xl 21/3xl 26/4xl 32), control-md 36px (sm 28/lg 44). 대시보드/관리자 인상
+- **rose** (친근·여유) — control-md 44px (sm 36/lg 52). 큼직한 터치 타겟 + 0.75rem 라운드 → 소비자 앱 인상
+- **violet** (모던·또렷) — control-md 42px (sm 34/lg 50), border-width-strong 3px (디폴트 2px). 약간 두꺼운 강조 보더로 창의·디자인 도구 인상
+- getThemePreset 시그니처 — 이전 `{light, dark, radius}` 만 → 이제 label 빼고 모든 카테고리 forward. CLI inject 가 자동으로 마커 섹션 교체
+- api.d.ts ThemePreset 인터페이스에 옵셔널 카테고리 6종 추가 (typography/controls/borders/spacing/weights/durations) — apps/docs 등 외부 사용자가 타입 안전
+- 테스트 111개 (전 104 → +7). end-to-end 검증 — `--theme rose` 가 control-md 40 → 44 로 덮어쓰는지, `--theme slate` 가 text-base 16 → 14 로, `--theme violet` 이 border-width-strong 2 → 3 으로
+- 참고: 기존 사용자가 0.38.0 까지 `--theme rose` 로 만든 프로젝트는 영향 없음 (이미 생성된 tokens.css 는 그대로). 새로 `--theme rose` 하면 0.39.0 정체성 그대로 들어감
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.39.0
 
-### v0.31.1 — Header drawer 그룹 라벨을 사이드바와 동일한 캡션 스타일로 정렬 (2026-04-28)
-- HeaderNavGroup 의 drawer 라벨이 uppercase + letter-spacing 으로 두드러져 같은 모바일 메뉴 안의 HeaderMenu 트리거(서브메뉴 헤더)와 시각적으로 헷갈리던 문제 해결
-- 스타일을 Sidebar 의 group-label 과 동일하게 통일 — text-xs / weight-medium / foreground-muted, height 2rem, padding 0 var(--space-2) (uppercase·letter-spacing 제거)
-- 그룹 라벨은 "섹션 캡션", 메뉴 트리거는 "클릭 가능한 nav 항목" 으로 역할이 명확히 갈라짐
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.31.1
+### v0.38.0 — 테마 시스템 풀스택 — 5 프리셋 + 풀 토큰 편집기 + 스캐폴드 threading + CSS↔Flutter 변환기 (2026-04-29)
+- **프리셋 5종 (CLI + 플레이그라운드)** — neutral · slate · rose · emerald · violet. `sh-ui create --theme rose` 처럼 짧게 받거나 playground 에서 만든 base64 그대로. 플레이그라운드 토큰 편집기 위쪽 '프리셋' 행 클릭 한 번으로 light/dark/radius 동시 적용. sh-ui-cli/api 가 단일 소스
+- **쉬운 / 고급 토글** — 쉬운 모드는 베이스 톤 4(neutral/slate/warm/cool) + 포인트 컬러 1개 픽커(primary-foreground/primary-hover 자동 파생). 고급 모드는 8 카테고리 collapsible 섹션 — 색(15) · 크기 · 테두리 · 그림자 · 타이포 · 여백 · 폰트굵기 · 모션. 모든 슬라이더는 sh-ui Slider 사용
+- **그라데이션 빌더 + 슬롯 3개** (primary/surface/overlay) — 각도 슬라이더 + 2 컬러스톱 + 위치 슬라이더 + 라이브 프리뷰. CSS 변수 `--gradient-*` 로 캔버스 흘러감
+- **스캐폴드 threading 풀스택** — 색 15 + radius + 9 옵셔널 카테고리 (spacing 11 / typography 8 / weights 4 / controls 3 / borders 2 / durations 3 / shadows 4 / eases 2 / gradients 3). theme JSON 에 키가 있으면 tokens.css / sh_ui_tokens.dart 의 마커 섹션 교체, 없으면 템플릿 디폴트 유지. 디폴트와 다른 카테고리만 base64 에 포함돼 페이로드 최소화
+- **CSS↔Flutter 변환기** — shadow `0 1px 2px rgba(0,0,0,0.08)` → `BoxShadow(offset, blurRadius, spreadRadius, color: Color(0x14000000))` (alpha = 0.08 × 255). ease `cubic-bezier(0.4,0,0.2,1)` → `Cubic(0.4,0,0.2,1)` (named easing 도 정확한 4-인자로). gradient `linear-gradient(135deg, ...)` → `LinearGradient(begin: Alignment(-0.707,-0.707), end: Alignment(0.707,0.707), colors, stops)`. CSS deg → Flutter Alignment (0deg=topCenter, 시계방향)
+- **확장 색 직접 편집** — background-inverse / foreground-inverse / foreground-subtle 3개를 사용자가 직접 잡음. 기존 Dart 자동 inverse 거울 / 고정 foregroundSubtle 디폴트 폐기. 5 프리셋 light/dark 모두 15키 풀세트
+- **Flutter 템플릿** — ShUiGradientTokens 클래스 신설 + ShUiTheme 에 gradient 필드 통합. tokens.css / sh_ui_tokens.dart 에 카테고리별 마커 9쌍 (theme-space/text/weight/shadow/duration/ease/control/border-width/gradient)
+- **DatePicker 회귀 픽스 2개** — (1) container prop 누락 → 추가 (Select·Combobox·Popover 와 동일 패턴). 다크 모드를 page subtree 에만 입힌 환경에서 캘린더 popover 가 토큰 스코프 벗어나 흰 배경으로 뜨던 문제 해결. (2) 선택일 색을 --foreground 에서 --primary / --primary-foreground 로 전환 — rose/emerald 같은 primary 변경 프리셋이 캘린더에도 일관되게 반영. **호환성 주의**: primary 를 안 바꾸고 쓰던 사용자는 선택일 색이 검정 → 자기 primary 색으로 변경됨
+- **MCP** sh_ui_create_project 의 theme 파라미터가 프리셋 이름 수용 — IDE 에이전트가 `theme: "slate"` 한 줄로 호출. 짧은 오타는 base64 디코드 에러 대신 '알 수 없는 테마 프리셋: 지원 목록 …' 친절 안내
+- **테스트 104** (전 68 → +36). 옵셔널 카테고리 검증, 빌더 출력 형식, 파서 (rgba alpha / hex 8자리 / spread / multi-shadow / named ease / Alignment 각도 0·45·90·135·180), 잘못된 형식 throw, end-to-end Next + Flutter 스캐폴드 주입. localStorage 마이그레이션 (v0.34 까지 저장된 데이터는 새 키 디폴트 보강)
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.38.0
 
 ## Resources
 

@@ -21,6 +21,7 @@ const groups: Group[] = [
       { name: "Toggle", slug: "toggle", description: "단일 토글 / 토글 그룹." },
       { name: "Slider", slug: "slider", description: "수평 슬라이더 — 단일/범위 값." },
       { name: "ColorPicker", slug: "color-picker", description: "색상 선택 — hex/rgb, 프리셋." },
+      { name: "Calendar", slug: "calendar", description: "인라인 캘린더 — 단일/다중/범위 선택." },
       { name: "DatePicker", slug: "date-picker", description: "날짜 선택 — 캘린더 팝업." },
       { name: "FileUpload", slug: "file-upload", description: "드롭존 · 다중 파일 · 진행률." },
       { name: "Form", slug: "form", description: "폼 어댑터 — yup/RHF/TanStack Form." },

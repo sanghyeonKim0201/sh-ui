@@ -3,8 +3,9 @@
   "version": "0.6.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/build-search-index.mjs",
     "dev": "next dev",
-    "prebuild": "pnpm --filter @sh-ui/llms gen",
+    "prebuild": "pnpm --filter @sh-ui/llms gen && node scripts/build-search-index.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -32,6 +33,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^1.11.0",
+    "minisearch": "^7.1.2",
     "next": "^16.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -21,8 +21,10 @@ const usage = `사용법:
   옵션:
     --skip-install                 (add) 외부 패키지 자동 설치 생략
     --diff                         (add) 파일을 쓰지 않고 변경 내역만 출력
+    --force                        (add) 기존 파일을 모두 덮어쓰기 (prompt 없음)
+                                   (remove) 사용자가 수정한 파일도 삭제
+    --keep                         (add) 기존 파일을 모두 유지 (prompt 없음)
     --all                          (list) 설치되지 않은 컴포넌트까지 표시
-    --force                        (remove) 사용자가 수정한 파일도 삭제
     --dry-run                      (remove) 삭제 대상만 출력하고 실행 안 함
 `;
 
@@ -39,13 +41,20 @@ try {
     case "add": {
       const skipInstall = rest.includes("--skip-install");
       const diffMode = rest.includes("--diff");
+      const force = rest.includes("--force");
+      const keepFlag = rest.includes("--keep");
+      if (force && keepFlag) {
+        console.error("에러: --force 와 --keep 은 함께 쓸 수 없습니다.\n");
+        process.exit(1);
+      }
+      const onConflict = force ? "overwrite" : keepFlag ? "keep" : "prompt";
       const names = rest.filter((a) => !a.startsWith("--"));
       if (names.length === 0) {
         console.error("에러: 추가할 컴포넌트 이름이 필요합니다.\n");
         console.error(usage);
         process.exit(1);
       }
-      await add({ cwd: process.cwd(), names, skipInstall, diffMode });
+      await add({ cwd: process.cwd(), names, skipInstall, diffMode, onConflict });
       break;
     }
     case "list": {

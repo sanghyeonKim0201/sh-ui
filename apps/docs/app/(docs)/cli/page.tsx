@@ -322,8 +322,28 @@ npx sh-ui-cli add tokens`}
         rows={[
           { prop: "--skip-install", type: "boolean", description: "외부 npm 패키지 자동 설치 생략. 명령어만 출력해 수동 실행 가능." },
           { prop: "--diff", type: "boolean", description: "파일을 쓰지 않고 기존 파일과의 변경 내역(unified diff)만 출력. 업데이트 전 미리보기용." },
+          { prop: "--keep", type: "boolean", description: "충돌(이미 존재 + 내용 다름) 시 prompt 없이 모두 기존 파일 유지. 비대화형 환경(CI)에서 안전한 기본 동작." },
+          { prop: "--force", type: "boolean", description: "충돌 시 prompt 없이 모두 registry 버전으로 덮어쓰기." },
         ]}
       />
+
+      <h4>기존 파일 충돌 처리</h4>
+      <p>
+        registryDependency 로 끌려온 컴포넌트가 이미 프로젝트에 존재하고 사용자가 커스터마이즈해 둔 경우, CLI 가 자동으로 덮어쓰지 않는다.
+        예: <code>add calendar</code> 가 <code>select</code> 를 의존하는데 사용자 select 가 이미 있으면 → 파일별로 어떻게 할지 묻는다.
+      </p>
+      <PropsTable
+        rows={[
+          { prop: "그대로 두기", type: "keep", description: "현재 파일을 유지. 사용자 변경 보존." },
+          { prop: "덮어쓰기", type: "overwrite", description: "registry 버전으로 교체. 사용자 변경 사라짐." },
+          { prop: "남은 충돌도 모두 그대로 두기", type: "keep-all", description: "이번 실행의 나머지 충돌도 prompt 없이 keep." },
+          { prop: "남은 충돌도 모두 덮어쓰기", type: "overwrite-all", description: "이번 실행의 나머지 충돌도 prompt 없이 overwrite." },
+        ]}
+      />
+      <p className="muted">
+        TTY 환경(터미널 직접 실행)에서는 위 4지선다 prompt 가 뜨고, 비대화형(CI·파이프·MCP)에서는 자동으로 <code>keep</code> 으로 강등돼 사용자 파일이 보존된다.
+        명시적으로 동작을 고정하려면 <code>--keep</code> / <code>--force</code> 사용.
+      </p>
 
       <h4>업데이트 미리보기 (--diff)</h4>
       <p>
