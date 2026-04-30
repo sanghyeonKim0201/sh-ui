@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.45.0",
+      "date": "2026-04-30",
+      "title": "Tailwind 변종 100% 커버리지 — 11 컴포넌트 추가로 전체 완성",
+      "type": "minor",
+      "highlights": [
+        "**나머지 11 컴포넌트 Tailwind 변종 추가** — calendar, carousel, color-picker, file-upload, toast, header, sidebar, form, code-editor, markdown-editor, rich-text-editor. 이제 `cssFramework: \"tailwind\"` 로 만든 프로젝트는 모든 styled 컴포넌트가 utility-class 변종으로 설치 — fallback 알림이 더 이상 발생하지 않음.",
+        "**form 멀티파일 변종** — `index.tailwind.tsx` + `form.tailwind.tsx` + `field.tailwind.tsx` 세 파일이 함께 카피되어 sub-component(Field, Section, Error 등) 모두 utility-class. registry.json 의 file-단위 frameworks 분기가 멀티파일 컴포넌트도 깔끔하게 처리.",
+        "**editor 컴포넌트의 descendant 스타일 처리** — code-editor (CodeMirror `.cm-*`), markdown-editor (react-markdown 렌더 트리), rich-text-editor (Tiptap `.ProseMirror`) 는 3rd-party 라이브러리 자식 element 에 직접 CSS 가 필요 — outer wrapper 만 utility class 로 변환하고 descendant 규칙은 컴포넌트 모듈이 한 번 inject 하는 패턴 (`<style>` 태그). 토큰은 동일하게 사용해 테마 자동 추종."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.45.0"
+    },
+    {
       "version": "0.44.0",
       "date": "2026-04-30",
       "title": "Tailwind 변종 대규모 확대 — 32 컴포넌트 utility-class 변종",

@@ -152,7 +152,7 @@ const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter �
 
 export async function startMcpServer() {
   const server = new McpServer(
-    { name: "sh-ui", version: "0.44.0" }, // sh-ui-cli 와 동기화
+    { name: "sh-ui", version: "0.45.0" }, // sh-ui-cli 와 동기화
     {
       capabilities: { tools: {} },
       instructions: SERVER_INSTRUCTIONS,

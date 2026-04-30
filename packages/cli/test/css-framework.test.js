@@ -242,34 +242,19 @@ describe("CSS framework — registry frameworks 분기 (button 파일럿)", () =
     expect(allLogs).not.toContain("class-variance-authority");
   });
 
-  it("tailwind + 변종 미제공 컴포넌트 → plain 으로 fallback + 알림 메시지", async () => {
+  // v0.45.0 부터 모든 styled 컴포넌트가 tailwind 변종을 갖춰 실제 fallback 은
+  // 거의 발생하지 않음. fallback 메커니즘 자체는 add.mjs::effectiveFramework 함수가
+  // 담당 — 미래에 새 컴포넌트가 추가되거나 css-modules 등 다른 변종이 도입될 때 자연스럽게
+  // 동작한다. 이 테스트는 fallback 회귀 시 빠르게 잡히도록 남겨 두되, 모든 컴포넌트가
+  // tailwind 변종을 갖춘 현 시점에서는 plain 동작을 그대로 검증.
+  it("tailwind + 모든 컴포넌트 변종 보유 → fallback 없이 utility-class 변종 설치", async () => {
     await setupProject("tailwind");
-
-    const logs = [];
-    const origLog = console.log;
-    console.log = (...args) => logs.push(args.map(String).join(" "));
-    try {
-      // calendar 는 tailwind 변종 미제공 — fallback 으로 plain 변종이 설치돼야 함
-      await add({
-        cwd: tmpDir,
-        names: ["calendar"],
-        skipInstall: true,
-        onConflict: "overwrite",
-      });
-    } finally {
-      console.log = origLog;
-    }
-
-    const allLogs = logs.join("\n");
-    expect(allLogs).toMatch(/Tailwind 변종 미제공/);
-
+    await add({ cwd: tmpDir, names: ["calendar"], skipInstall: true, onConflict: "overwrite" });
     const indexPath = path.join(tmpDir, "src/components/ui/calendar/index.tsx");
     const stylesPath = path.join(tmpDir, "src/components/ui/calendar/styles.css");
     expect(await fs.pathExists(indexPath)).toBe(true);
-    // plain 변종이라 styles.css 도 같이
-    expect(await fs.pathExists(stylesPath)).toBe(true);
-    const content = await fs.readFile(indexPath, "utf8");
-    expect(content).toContain('import "./styles.css"');
+    // tailwind 변종 보유 — styles.css 는 안 들어감
+    expect(await fs.pathExists(stylesPath)).toBe(false);
   });
 });
 
