@@ -4,10 +4,8 @@ import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export const Select = BaseSelect.Root;
 
 /** shadcn 호환: <SelectValue placeholder="..." /> */
@@ -20,7 +18,7 @@ export function SelectValue({
   "children"
 >) {
   return (
-    <BaseSelect.Value className={cx("sh-ui-select__value", className)} {...props}>
+    <BaseSelect.Value className={cn("sh-ui-select__value", className)} {...props}>
       {(value) =>
         value !== null && value !== undefined && value !== "" ? (
           (value as React.ReactNode)
@@ -38,7 +36,7 @@ export const SelectTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Trigger
     ref={ref}
-    className={cx("sh-ui-select__trigger", className)}
+    className={cn("sh-ui-select__trigger", className)}
     {...props}
   >
     {children}
@@ -74,7 +72,7 @@ export const SelectContent = React.forwardRef<
     >
       <BaseSelect.Popup
         ref={ref}
-        className={cx("sh-ui-select__content", className)}
+        className={cn("sh-ui-select__content", className)}
         {...props}
       >
         {children}
@@ -92,7 +90,7 @@ export const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseSelect.GroupLabel
     ref={ref}
-    className={cx("sh-ui-select__label", className)}
+    className={cn("sh-ui-select__label", className)}
     {...props}
   />
 ));
@@ -104,7 +102,7 @@ export const SelectItem = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Item
     ref={ref}
-    className={cx("sh-ui-select__item", className)}
+    className={cn("sh-ui-select__item", className)}
     {...props}
   >
     <BaseSelect.ItemIndicator className="sh-ui-select__indicator" aria-hidden>
@@ -131,7 +129,7 @@ export const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseSelect.Separator
     ref={ref}
-    className={cx("sh-ui-select__separator", className)}
+    className={cn("sh-ui-select__separator", className)}
     {...props}
   />
 ));
@@ -223,7 +221,7 @@ export function MultiSelectValue({
 >) {
   const { remove, clear } = useMultiSelect();
   return (
-    <BaseSelect.Value className={cx("sh-ui-select__value", className)} {...props}>
+    <BaseSelect.Value className={cn("sh-ui-select__value", className)} {...props}>
       {(value) => {
         const arr = Array.isArray(value) ? (value as string[]) : [];
         if (arr.length === 0) {

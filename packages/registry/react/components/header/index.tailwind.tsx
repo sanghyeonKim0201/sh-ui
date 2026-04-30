@@ -3,10 +3,8 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -151,7 +149,7 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
     <HeaderContext.Provider value={ctx}>
       <header
         ref={setRefs}
-        className={cx(
+        className={cn(
           "relative flex items-center gap-[var(--space-4)] h-[var(--control-md)] px-[var(--space-3)] border-b border-border transition-[transform,background-color] duration-[var(--duration-base)] [--sh-ui-header-hover-bg:var(--background-muted)] [--sh-ui-header-blur-opacity:85%] [--sh-ui-header-blur-radius:16px] motion-reduce:transition-none max-md:gap-[var(--space-2)] data-[sticky-hide][data-hidden]:-translate-y-full",
           variantClasses[variant],
           className,
@@ -169,19 +167,19 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
 
 export const HeaderBrand = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   function HeaderBrand({ className, ...props }, ref) {
-    return <div ref={ref} className={cx("inline-flex items-center gap-[var(--space-2)] shrink-0", className)} {...props} />;
+    return <div ref={ref} className={cn("inline-flex items-center gap-[var(--space-2)] shrink-0", className)} {...props} />;
   },
 );
 
 export const HeaderLogo = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>(
   function HeaderLogo({ className, ...props }, ref) {
-    return <span ref={ref} className={cx("inline-flex items-center text-foreground", className)} {...props} />;
+    return <span ref={ref} className={cn("inline-flex items-center text-foreground", className)} {...props} />;
   },
 );
 
 export const HeaderTitle = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement>>(
   function HeaderTitle({ className, ...props }, ref) {
-    return <span ref={ref} className={cx("text-[length:var(--text-base)] font-bold text-foreground tracking-[-0.3px]", className)} {...props} />;
+    return <span ref={ref} className={cn("text-[length:var(--text-base)] font-bold text-foreground tracking-[-0.3px]", className)} {...props} />;
   },
 );
 
@@ -198,7 +196,7 @@ export const HeaderTrigger = React.forwardRef<HTMLButtonElement, React.ButtonHTM
       <button
         ref={setRefs}
         type="button"
-        className={cx(
+        className={cn(
           "hidden items-center justify-center w-9 h-9 p-0 bg-transparent border-0 text-foreground rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color] duration-[var(--duration-fast)] hover:bg-[var(--sh-ui-header-hover-bg)] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 max-md:inline-flex max-md:order-[-1]",
           className,
         )}
@@ -244,7 +242,7 @@ export const HeaderNav = React.forwardRef<HTMLElement, HeaderNavProps>(
         <NavLocationContext.Provider value="inline">
           <nav
             ref={ref}
-            className={cx(
+            className={cn(
               "flex items-center gap-[var(--space-1)] flex-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-md:hidden",
               className,
             )}
@@ -293,7 +291,7 @@ export const HeaderItem = React.forwardRef<
     <a
       ref={ref}
       href={href}
-      className={cx(
+      className={cn(
         "inline-flex items-center gap-[var(--space-1)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground-muted no-underline bg-transparent border-0 rounded-[calc(var(--radius)-2px)] cursor-pointer whitespace-nowrap transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-[var(--sh-ui-header-hover-bg)] data-[active]:text-foreground data-[active]:font-semibold focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none max-md:py-[var(--space-3)] max-md:px-[var(--space-3)]",
         className,
       )}
@@ -311,19 +309,19 @@ export const HeaderItem = React.forwardRef<
 
 export const HeaderActions = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   function HeaderActions({ className, ...props }, ref) {
-    return <div ref={ref} className={cx("inline-flex items-center gap-[var(--space-2)] ml-auto shrink-0", className)} {...props} />;
+    return <div ref={ref} className={cn("inline-flex items-center gap-[var(--space-2)] ml-auto shrink-0", className)} {...props} />;
   },
 );
 
 export const HeaderDesktopOnly = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   function HeaderDesktopOnly({ className, ...props }, ref) {
-    return <div ref={ref} className={cx("contents max-md:hidden", className)} {...props} />;
+    return <div ref={ref} className={cn("contents max-md:hidden", className)} {...props} />;
   },
 );
 
 export const HeaderMobileOnly = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   function HeaderMobileOnly({ className, ...props }, ref) {
-    return <div ref={ref} className={cx("hidden max-md:contents", className)} {...props} />;
+    return <div ref={ref} className={cn("hidden max-md:contents", className)} {...props} />;
   },
 );
 
@@ -335,12 +333,12 @@ export const HeaderNavGroup = React.forwardRef<HTMLDivElement, HeaderNavGroupPro
   function HeaderNavGroup({ className, label, children, ...props }, ref) {
     const location = React.useContext(NavLocationContext);
     if (location === "inline") {
-      return <div ref={ref} className={cx("contents", className)} {...props}>{children}</div>;
+      return <div ref={ref} className={cn("contents", className)} {...props}>{children}</div>;
     }
     return (
       <div
         ref={ref}
-        className={cx("flex flex-col mt-[var(--space-3)] first:mt-0", className)}
+        className={cn("flex flex-col mt-[var(--space-3)] first:mt-0", className)}
         role="group"
         aria-label={typeof label === "string" ? label : undefined}
         {...props}
@@ -407,7 +405,7 @@ export function HeaderMenu({ children, className, defaultOpen = false }: { child
     <MenuContext.Provider value={ctx}>
       <div
         ref={containerRef}
-        className={cx(
+        className={cn(
           "relative",
           location === "inline" ? "inline-block" : "flex flex-col",
           className,
@@ -438,7 +436,7 @@ export const HeaderMenuTrigger = React.forwardRef<HTMLButtonElement, React.Butto
         aria-expanded={open}
         aria-controls={contentId}
         data-open={open ? "" : undefined}
-        className={cx(
+        className={cn(
           "inline-flex items-center gap-[var(--space-1)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground-muted bg-transparent border-0 rounded-[calc(var(--radius)-2px)] cursor-pointer whitespace-nowrap transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-[var(--sh-ui-header-hover-bg)] data-[open]:text-foreground data-[open]:bg-[var(--sh-ui-header-hover-bg)] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none",
           location === "drawer" && "max-md:justify-between max-md:w-full max-md:py-[var(--space-3)] max-md:px-[var(--space-3)]",
           className,
@@ -471,7 +469,7 @@ export const HeaderMenuContent = React.forwardRef<HTMLDivElement, React.HTMLAttr
           aria-labelledby={triggerId}
           data-open={open ? "" : undefined}
           hidden={!open}
-          className={cx(
+          className={cn(
             "max-md:flex max-md:flex-col max-md:py-[var(--space-1)] max-md:pl-[var(--space-4)] max-md:gap-px max-md:[&[hidden]]:hidden",
             className,
           )}
@@ -513,7 +511,7 @@ export const HeaderMenuContent = React.forwardRef<HTMLDivElement, React.HTMLAttr
         role="menu"
         aria-labelledby={triggerId}
         data-open=""
-        className={cx(
+        className={cn(
           "z-[var(--z-dropdown,50)] p-[var(--space-1)] bg-background border border-border rounded-[var(--radius)] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.18)] flex flex-col gap-px text-foreground",
           className,
         )}

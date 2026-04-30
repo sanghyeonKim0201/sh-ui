@@ -165,6 +165,11 @@ describe("CSS framework — registry frameworks 분기 (button 파일럿)", () =
         components: "src/components/ui",
         utils: "src/lib/utils.ts",
       },
+      aliases: {
+        components: "@/components",
+        utils: "@/lib/utils",
+        ui: "@/components/ui",
+      },
     });
   }
 

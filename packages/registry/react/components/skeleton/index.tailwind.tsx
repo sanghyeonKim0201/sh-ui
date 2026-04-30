@@ -1,9 +1,7 @@
 import * as React from "react";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 /**
  * 로딩 중 콘텐츠 자리를 채우는 placeholder 박스 (Tailwind utility 변종).
  * `aria-hidden`이 기본 적용되므로 스크린리더에 노출되지 않는다.
@@ -15,7 +13,7 @@ export const Skeleton = React.forwardRef<
   <div
     ref={ref}
     aria-hidden="true"
-    className={cx(
+    className={cn(
       "block w-full h-4 bg-background-muted rounded-[calc(var(--radius)-2px)] animate-[sh-ui-skeleton-pulse_1.6s_ease-in-out_infinite] motion-reduce:animate-none",
       className,
     )}

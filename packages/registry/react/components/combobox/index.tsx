@@ -4,11 +4,9 @@ import * as React from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * Select + Input의 결합 — 타이핑으로 목록이 자동 필터링된다.
@@ -40,7 +38,7 @@ export const ComboboxInput = React.forwardRef<
   return (
     <BaseCombobox.Input
       ref={ref}
-      className={cx("sh-ui-combobox__input", className)}
+      className={cn("sh-ui-combobox__input", className)}
       {...props}
     />
   );
@@ -66,7 +64,7 @@ export const ComboboxContent = React.forwardRef<
       >
         <BaseCombobox.Popup
           ref={ref}
-          className={cx("sh-ui-combobox__content", className)}
+          className={cn("sh-ui-combobox__content", className)}
           {...props}
         >
           {children}
@@ -85,7 +83,7 @@ export const ComboboxItem = React.forwardRef<
   return (
     <BaseCombobox.Item
       ref={ref}
-      className={cx("sh-ui-combobox__item", className)}
+      className={cn("sh-ui-combobox__item", className)}
       {...props}
     >
       <BaseCombobox.ItemIndicator className="sh-ui-combobox__item-indicator">
@@ -103,7 +101,7 @@ export const ComboboxEmpty = React.forwardRef<
   return (
     <BaseCombobox.Empty
       ref={ref}
-      className={cx("sh-ui-combobox__empty", className)}
+      className={cn("sh-ui-combobox__empty", className)}
       {...props}
     />
   );
@@ -116,7 +114,7 @@ export const ComboboxGroupLabel = React.forwardRef<
   return (
     <BaseCombobox.GroupLabel
       ref={ref}
-      className={cx("sh-ui-combobox__group-label", className)}
+      className={cn("sh-ui-combobox__group-label", className)}
       {...props}
     />
   );
@@ -130,7 +128,7 @@ export const ComboboxChip = React.forwardRef<
   return (
     <BaseCombobox.Chip
       ref={ref}
-      className={cx("sh-ui-combobox__chip", className)}
+      className={cn("sh-ui-combobox__chip", className)}
       {...props}
     />
   );
@@ -144,7 +142,7 @@ export const ComboboxChipRemove = React.forwardRef<
   return (
     <BaseCombobox.ChipRemove
       ref={ref}
-      className={cx("sh-ui-combobox__chip-remove", className)}
+      className={cn("sh-ui-combobox__chip-remove", className)}
       {...props}
     >
       {children ?? "×"}

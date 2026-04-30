@@ -1,10 +1,8 @@
 import * as React from "react";
 import { Accordion as BaseAccordion } from "@base-ui/react/accordion";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
 export type AccordionSize = "sm" | "md";
@@ -19,7 +17,7 @@ export const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
   ({ className, size = "md", ...props }, ref) => (
     <BaseAccordion.Root
       ref={ref}
-      className={cx("flex flex-col w-full", className)}
+      className={cn("flex flex-col w-full", className)}
       data-size={size}
       {...props}
     />
@@ -33,7 +31,7 @@ export const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseAccordion.Item
     ref={ref}
-    className={cx("border-b border-border first:border-t", className)}
+    className={cn("border-b border-border first:border-t", className)}
     {...props}
   />
 ));
@@ -46,7 +44,7 @@ export const AccordionTrigger = React.forwardRef<
   <BaseAccordion.Header className="m-0 font-[inherit]">
     <BaseAccordion.Trigger
       ref={ref}
-      className={cx(
+      className={cn(
         "flex items-center justify-between gap-[var(--space-4)] w-full px-[var(--space-1)] py-[var(--space-4)] bg-transparent border-none text-foreground text-[0.9375rem] font-medium leading-snug text-left cursor-pointer transition-[background-color] duration-[var(--duration-fast)] hover:not-disabled:not-data-[disabled]:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 focus-visible:rounded-[calc(var(--radius)-2px)] disabled:cursor-not-allowed disabled:text-foreground-muted data-[disabled]:cursor-not-allowed data-[disabled]:text-foreground-muted [[data-size=sm]_&]:py-[var(--space-2)] [[data-size=sm]_&]:text-[length:var(--text-xs)] [[data-size=sm]_&]:leading-[1.2] motion-reduce:transition-none",
         className,
       )}
@@ -74,7 +72,7 @@ export const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseAccordion.Panel
     ref={ref}
-    className={cx(
+    className={cn(
       "overflow-hidden h-[var(--accordion-panel-height)] transition-[height] duration-[var(--duration-slow)] data-[starting-style]:h-0 data-[ending-style]:h-0 motion-reduce:transition-none",
       className,
     )}

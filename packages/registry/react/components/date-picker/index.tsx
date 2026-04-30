@@ -5,13 +5,11 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Calendar, type DateRange } from "../calendar";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 export type { DateRange };
 
 /* ───────── Helpers ───────── */
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 const formatDefault = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -247,7 +245,7 @@ export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerT
       return (
         <>
           <span
-            className={cx(
+            className={cn(
               "sh-ui-date-picker__value",
               !displayText && "sh-ui-date-picker__placeholder",
             )}
@@ -264,7 +262,7 @@ export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerT
     return (
       <BasePopover.Trigger
         ref={ref}
-        className={cx("sh-ui-date-picker__trigger", className)}
+        className={cn("sh-ui-date-picker__trigger", className)}
         disabled={ctx.disabled}
         aria-invalid={ctx.ariaInvalid}
         aria-haspopup="dialog"
@@ -326,7 +324,7 @@ export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerCont
         >
           <BasePopover.Popup
             ref={ref}
-            className={cx("sh-ui-date-picker__popup", className)}
+            className={cn("sh-ui-date-picker__popup", className)}
             {...props}
           >
             {children}
@@ -371,7 +369,7 @@ export const DatePickerFooter = React.forwardRef<HTMLDivElement, DatePickerFoote
     return (
       <div
         ref={ref}
-        className={cx("sh-ui-date-picker__footer", className)}
+        className={cn("sh-ui-date-picker__footer", className)}
         {...props}
       />
     );
@@ -478,7 +476,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       <BasePopover.Root open={open} onOpenChange={setOpen}>
         <BasePopover.Trigger
           ref={ref}
-          className={cx("sh-ui-date-picker__trigger", className)}
+          className={cn("sh-ui-date-picker__trigger", className)}
           disabled={disabled}
           aria-invalid={ariaInvalid}
           aria-haspopup="dialog"
@@ -486,7 +484,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
             if (readOnly) e.preventDefault();
           }}
         >
-          <span className={cx("sh-ui-date-picker__value", !displayText && "sh-ui-date-picker__placeholder")}>
+          <span className={cn("sh-ui-date-picker__value", !displayText && "sh-ui-date-picker__placeholder")}>
             {displayText ?? placeholder}
           </span>
           <span className="sh-ui-date-picker__icon" aria-hidden>

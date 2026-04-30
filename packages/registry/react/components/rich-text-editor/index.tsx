@@ -5,6 +5,7 @@ import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
+import { cn } from "@SH_UI_UTILS@";
 import {
   BoldIcon,
   ItalicIcon,
@@ -51,9 +52,6 @@ export interface RichTextEditorProps {
   "aria-label"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * Tiptap 기반 리치 텍스트 에디터.
@@ -117,7 +115,7 @@ export function RichTextEditor({
 
   return (
     <div
-      className={cx("sh-ui-rte", className)}
+      className={cn("sh-ui-rte", className)}
       data-readonly={readOnly || undefined}
       style={
         {
@@ -330,7 +328,7 @@ function ToolbarButton({
   return (
     <button
       type="button"
-      className={cx("sh-ui-rte__btn", isActive && "is-active")}
+      className={cn("sh-ui-rte__btn", isActive && "is-active")}
       aria-label={label}
       aria-pressed={isActive || undefined}
       title={label}

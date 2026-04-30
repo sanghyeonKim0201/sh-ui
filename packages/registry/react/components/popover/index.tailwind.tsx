@@ -1,11 +1,9 @@
 import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 export const Popover = BasePopover.Root;
 export const PopoverTrigger = BasePopover.Trigger;
@@ -35,7 +33,7 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentPro
         >
           <BasePopover.Popup
             ref={ref}
-            className={cx(
+            className={cn(
               "min-w-48 p-[var(--space-2)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[0_8px_24px_rgba(0,0,0,0.12)] outline-none text-[length:var(--text-sm)] leading-snug origin-[var(--transform-origin)] transition-[opacity,transform] duration-[140ms] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 motion-reduce:data-[starting-style]:scale-100 motion-reduce:data-[ending-style]:scale-100 focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2",
               className,
             )}
@@ -57,7 +55,7 @@ export const PopoverTitle = React.forwardRef<
   return (
     <BasePopover.Title
       ref={ref}
-      className={cx("m-0 mb-[var(--space-1)] font-semibold text-[0.9375rem]", className)}
+      className={cn("m-0 mb-[var(--space-1)] font-semibold text-[0.9375rem]", className)}
       {...props}
     />
   );
@@ -70,7 +68,7 @@ export const PopoverDescription = React.forwardRef<
   return (
     <BasePopover.Description
       ref={ref}
-      className={cx("m-0 text-foreground-muted text-[0.8125rem]", className)}
+      className={cn("m-0 text-foreground-muted text-[0.8125rem]", className)}
       {...props}
     />
   );

@@ -429,7 +429,7 @@ npx sh-ui-cli add button`}
       <PropsTable
         rows={[
           { prop: "platform", type: `"react" | "flutter"`, description: "대상 플랫폼. 이 값에 따라 다른 registry를 사용." },
-          { prop: "cssFramework", type: `"plain" | "tailwind"`, default: `"plain"`, description: "CSS 프레임워크. plain(CSS custom properties + .css 파일) 또는 tailwind(class-variance-authority 기반 utility-class 변종 — 변종 미제공 컴포넌트는 plain 으로 자동 fallback)." },
+          { prop: "cssFramework", type: `"plain" | "tailwind"`, default: `"plain"`, description: <>CSS 프레임워크. plain(CSS custom properties + .css 파일) 또는 tailwind(cva 기반 utility-class 변종). 자세한 차이·전환·fallback 동작은 <a href="/css-framework">CSS 프레임워크</a> 페이지 참고.</> },
           { prop: "theme.base", type: "enum", description: "기본 무채색 스케일." },
           { prop: "theme.radius", type: "enum", description: "토큰 --radius 값." },
           { prop: "theme.mode", type: "enum", description: "light / dark / light-dark(둘 다 생성)." },

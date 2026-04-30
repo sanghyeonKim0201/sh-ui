@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@SH_UI_UTILS@";
 import {
   Select,
   SelectContent,
@@ -11,9 +12,6 @@ import "./styles.css";
 
 /* ───────── Helpers ───────── */
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 const DEFAULT_WEEKDAYS_KO = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
@@ -505,7 +503,7 @@ export function Calendar(props: CalendarProps) {
 
   return (
     <div
-      className={cx("sh-ui-calendar", numberOfMonths > 1 && "sh-ui-calendar--multi", className)}
+      className={cn("sh-ui-calendar", numberOfMonths > 1 && "sh-ui-calendar--multi", className)}
       aria-label={ariaLabel}
     >
       {children
@@ -545,7 +543,7 @@ export interface CalendarHeaderProps extends React.HTMLAttributes<HTMLDivElement
 /** 헤더 컨테이너. 화살표/dropdown 등을 children 으로 자유롭게 배치. */
 export const CalendarHeader = React.forwardRef<HTMLDivElement, CalendarHeaderProps>(
   function CalendarHeader({ className, ...props }, ref) {
-    return <div ref={ref} className={cx("sh-ui-calendar__header", className)} {...props} />;
+    return <div ref={ref} className={cn("sh-ui-calendar__header", className)} {...props} />;
   },
 );
 
@@ -574,7 +572,7 @@ function makeNavButton(
         <button
           ref={ref}
           type="button"
-          className={cx("sh-ui-calendar__nav", className)}
+          className={cn("sh-ui-calendar__nav", className)}
           aria-label={ariaLabel ?? defaultLabel}
           onClick={(e) => {
             resolveHandler(ctx)();
@@ -649,7 +647,7 @@ export function CalendarYearSelect({
       onValueChange={(v) => ctx.setYearForVisible(Number(v))}
     >
       <SelectTrigger
-        className={cx("sh-ui-calendar__select-trigger", className)}
+        className={cn("sh-ui-calendar__select-trigger", className)}
         aria-label="연도"
       >
         <span className="sh-ui-calendar__select-value">{formatYear(year)}</span>
@@ -684,7 +682,7 @@ export function CalendarMonthSelect({
       onValueChange={(v) => ctx.setMonthForVisible(Number(v))}
     >
       <SelectTrigger
-        className={cx("sh-ui-calendar__select-trigger", className)}
+        className={cn("sh-ui-calendar__select-trigger", className)}
         aria-label="월"
       >
         <span className="sh-ui-calendar__select-value">{formatMonth(month)}</span>
@@ -716,7 +714,7 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
     const ariaLabel = ctx.ariaLabel ?? monthLabel;
 
     return (
-      <div ref={ref} className={cx("sh-ui-calendar__grid-wrap", className)} {...rest}>
+      <div ref={ref} className={cn("sh-ui-calendar__grid-wrap", className)} {...rest}>
         <div className="sh-ui-calendar__weekdays" role="row">
           {ctx.weekdayLabels.map((label) => (
             <span
@@ -751,7 +749,7 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
             return (
               <div
                 key={i}
-                className={cx(
+                className={cn(
                   "sh-ui-calendar__cell",
                   inRange && "sh-ui-calendar__cell--in-range",
                   isStart && "sh-ui-calendar__cell--range-start",
@@ -760,7 +758,7 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
               >
                 <button
                   type="button"
-                  className={cx(
+                  className={cn(
                     "sh-ui-calendar__day",
                     !current && "sh-ui-calendar__day--outside",
                     selected && "sh-ui-calendar__day--selected",

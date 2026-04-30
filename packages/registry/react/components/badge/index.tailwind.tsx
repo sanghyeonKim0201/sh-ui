@@ -1,10 +1,8 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 const badgeVariants = cva(
   "inline-flex items-center gap-1 px-2 border border-transparent rounded-full font-medium leading-none whitespace-nowrap align-middle select-none",
   {
@@ -39,7 +37,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     return (
       <span
         ref={ref}
-        className={cx(badgeVariants({ variant, size }), className)}
+        className={cn(badgeVariants({ variant, size }), className)}
         {...props}
       />
     );

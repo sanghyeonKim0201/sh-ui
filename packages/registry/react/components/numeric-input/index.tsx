@@ -3,10 +3,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | null | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export interface NumericInputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
@@ -93,7 +91,7 @@ export const NumericInput = React.forwardRef<HTMLInputElement, NumericInputProps
           ref={ref}
           type="text"
           inputMode="decimal"
-          className={cx("sh-ui-numeric-input__input", className)}
+          className={cn("sh-ui-numeric-input__input", className)}
           value={buffer}
           onChange={(e) => {
             const raw = e.target.value;

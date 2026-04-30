@@ -5,6 +5,7 @@ import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
+import { cn } from "@SH_UI_UTILS@";
 import {
   BoldIcon, ItalicIcon, StrikethroughIcon,
   Heading1Icon, Heading2Icon, Heading3Icon,
@@ -26,9 +27,6 @@ export interface RichTextEditorProps {
   "aria-label"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 export function RichTextEditor({
   value: valueProp, defaultValue, onChange, placeholder, readOnly = false, hideToolbar = false,
@@ -68,7 +66,7 @@ export function RichTextEditor({
 
   return (
     <div
-      className={cx(
+      className={cn(
         "sh-ui-rte flex flex-col border border-border rounded-[var(--radius)] bg-background overflow-hidden transition-[border-color] duration-[var(--duration-fast)] focus-within:border-foreground focus-within:outline-[length:var(--border-width-strong)] focus-within:outline-foreground focus-within:outline-offset-2 data-[readonly]:bg-background-subtle motion-reduce:transition-none",
         className,
       )}
@@ -158,7 +156,7 @@ function ToolbarButton({ editor, label, icon, isActive, canRun, run, disabled }:
   return (
     <button
       type="button"
-      className={cx(
+      className={cn(
         "inline-flex items-center justify-center w-7 h-7 p-0 bg-transparent text-foreground-muted border border-transparent rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[color,background-color,border-color] duration-[var(--duration-fast)] hover:not-disabled:text-foreground hover:not-disabled:bg-background hover:not-disabled:border-border focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-1 disabled:opacity-50 disabled:cursor-not-allowed motion-reduce:transition-none",
         isActive && "text-foreground bg-background border-border-strong",
       )}

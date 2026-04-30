@@ -4,11 +4,9 @@ import * as React from "react";
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /* ───────── Root ───────── */
 
@@ -23,7 +21,7 @@ export const DropdownMenuTrigger = React.forwardRef<
   return (
     <BaseMenu.Trigger
       ref={ref}
-      className={cx("sh-ui-dm__trigger", className)}
+      className={cn("sh-ui-dm__trigger", className)}
       {...props}
     />
   );
@@ -63,7 +61,7 @@ export const DropdownMenuContent = React.forwardRef<
       >
         <BaseMenu.Popup
           ref={ref}
-          className={cx("sh-ui-dm__content", className)}
+          className={cn("sh-ui-dm__content", className)}
           {...props}
         >
           {children}
@@ -82,7 +80,7 @@ export const DropdownMenuItem = React.forwardRef<
   return (
     <BaseMenu.Item
       ref={ref}
-      className={cx("sh-ui-dm__item", className)}
+      className={cn("sh-ui-dm__item", className)}
       {...props}
     />
   );
@@ -102,7 +100,7 @@ export const DropdownMenuCheckboxItem = React.forwardRef<
   return (
     <BaseMenu.CheckboxItem
       ref={ref}
-      className={cx("sh-ui-dm__item", "sh-ui-dm__item--check", className)}
+      className={cn("sh-ui-dm__item", "sh-ui-dm__item--check", className)}
       {...props}
     >
       <span className="sh-ui-dm__item-indicator" aria-hidden>
@@ -131,7 +129,7 @@ export const DropdownMenuRadioItem = React.forwardRef<
   return (
     <BaseMenu.RadioItem
       ref={ref}
-      className={cx("sh-ui-dm__item", "sh-ui-dm__item--check", className)}
+      className={cn("sh-ui-dm__item", "sh-ui-dm__item--check", className)}
       {...props}
     >
       <span className="sh-ui-dm__item-indicator" aria-hidden>
@@ -153,7 +151,7 @@ export const DropdownMenuGroup = React.forwardRef<
   return (
     <BaseMenu.Group
       ref={ref}
-      className={cx("sh-ui-dm__group", className)}
+      className={cn("sh-ui-dm__group", className)}
       {...props}
     />
   );
@@ -166,7 +164,7 @@ export const DropdownMenuLabel = React.forwardRef<
   return (
     <BaseMenu.GroupLabel
       ref={ref}
-      className={cx("sh-ui-dm__label", className)}
+      className={cn("sh-ui-dm__label", className)}
       {...props}
     />
   );
@@ -185,7 +183,7 @@ export const DropdownMenuSeparator = React.forwardRef<
       ref={ref}
       role="separator"
       aria-orientation="horizontal"
-      className={cx("sh-ui-dm__separator", className)}
+      className={cn("sh-ui-dm__separator", className)}
       {...props}
     />
   );
@@ -204,7 +202,7 @@ export const DropdownMenuSubTrigger = React.forwardRef<
   return (
     <BaseMenu.SubmenuTrigger
       ref={ref}
-      className={cx("sh-ui-dm__item", "sh-ui-dm__sub-trigger", className)}
+      className={cn("sh-ui-dm__item", "sh-ui-dm__sub-trigger", className)}
       {...props}
     >
       <span className="sh-ui-dm__item-text">{children}</span>

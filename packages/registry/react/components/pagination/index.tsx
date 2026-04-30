@@ -1,10 +1,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 /* ───────── Pagination (nav) ─────────
  * 시맨틱: <nav aria-label="Pagination"><ul>...</ul></nav>.
  * 현재 페이지 링크에 aria-current="page"를 부여해 스크린리더가 위치를 읽게 한다.
@@ -22,7 +20,7 @@ export const Pagination = React.forwardRef<
     <nav
       ref={ref}
       aria-label="Pagination"
-      className={cx("sh-ui-pagination", className)}
+      className={cn("sh-ui-pagination", className)}
       {...props}
     />
   );
@@ -38,7 +36,7 @@ export const PaginationContent = React.forwardRef<
   return (
     <ul
       ref={ref}
-      className={cx("sh-ui-pagination__content", className)}
+      className={cn("sh-ui-pagination__content", className)}
       {...props}
     />
   );
@@ -54,7 +52,7 @@ export const PaginationItem = React.forwardRef<
   return (
     <li
       ref={ref}
-      className={cx("sh-ui-pagination__item", className)}
+      className={cn("sh-ui-pagination__item", className)}
       {...props}
     />
   );
@@ -98,7 +96,7 @@ export const PaginationLink = React.forwardRef<
       aria-current={isActive ? "page" : undefined}
       data-active={isActive ? "" : undefined}
       data-size={size}
-      className={cx("sh-ui-pagination__link", className)}
+      className={cn("sh-ui-pagination__link", className)}
       {...props}
     />
   );
@@ -117,7 +115,7 @@ export const PaginationPrevious = React.forwardRef<
     <PaginationLink
       ref={ref}
       aria-label="이전 페이지"
-      className={cx("sh-ui-pagination__nav", className)}
+      className={cn("sh-ui-pagination__nav", className)}
       {...props}
     >
       <ChevronLeftIcon />
@@ -135,7 +133,7 @@ export const PaginationNext = React.forwardRef<
     <PaginationLink
       ref={ref}
       aria-label="다음 페이지"
-      className={cx("sh-ui-pagination__nav", className)}
+      className={cn("sh-ui-pagination__nav", className)}
       {...props}
     >
       {children ?? <span>다음</span>}
@@ -156,7 +154,7 @@ export const PaginationEllipsis = React.forwardRef<
       ref={ref}
       role="presentation"
       aria-hidden="true"
-      className={cx("sh-ui-pagination__ellipsis", className)}
+      className={cn("sh-ui-pagination__ellipsis", className)}
       {...props}
     >
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>

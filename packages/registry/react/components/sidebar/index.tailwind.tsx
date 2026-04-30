@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@SH_UI_UTILS@";
 import { ChevronRightIcon, PanelLeftIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 
@@ -116,14 +117,12 @@ export function SidebarProvider({
   return (
     <SidebarContext.Provider value={value}>
       <div
-        className={[
-          "[--sidebar-width:16rem] [--sidebar-width-icon:3rem] [--sidebar-width-mobile:18rem]",
+        className={cn("[--sidebar-width:16rem] [--sidebar-width-icon:3rem] [--sidebar-width-mobile:18rem]",
           "[--sidebar-bg:var(--background-subtle)] [--sidebar-fg:var(--foreground)] [--sidebar-border:var(--border)]",
           "[--sidebar-accent:var(--background-muted)] [--sidebar-accent-fg:var(--foreground)]",
           "flex w-full",
           embedded ? "min-h-0 h-full" : "min-h-[100svh]",
-          className,
-        ].filter(Boolean).join(" ")}
+          className)}
         style={style}
         data-embedded={embedded || undefined}
         data-panel-open={activePanel ? "true" : undefined}
@@ -160,7 +159,7 @@ export function Sidebar({ side = "left", variant = "sidebar", collapsible = "off
   if (collapsible === "none") {
     return wrap(
       <aside
-        className={[sidebarRoot, "h-[100svh] sticky top-0", className].filter(Boolean).join(" ")}
+        className={cn(sidebarRoot, "h-[100svh] sticky top-0", className)}
         data-side={side}
         data-variant={variant}
         {...props}
@@ -180,7 +179,7 @@ export function Sidebar({ side = "left", variant = "sidebar", collapsible = "off
 
   return wrap(
     <aside
-      className={[sidebarRoot, className].filter(Boolean).join(" ")}
+      className={cn(sidebarRoot, className)}
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
@@ -208,13 +207,11 @@ function MobileSidebar({ side, className, openMobile, setOpenMobile, children, .
       )}
       <aside
         ref={asideRef}
-        className={[
-          "fixed top-0 bottom-0 w-[var(--sidebar-width-mobile)] z-[var(--z-overlay)] transition-transform duration-[var(--duration-slow)] flex flex-col bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] motion-reduce:transition-none",
+        className={cn("fixed top-0 bottom-0 w-[var(--sidebar-width-mobile)] z-[var(--z-overlay)] transition-transform duration-[var(--duration-slow)] flex flex-col bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] motion-reduce:transition-none",
           side === "left"
             ? "left-0 border-r border-[var(--sidebar-border)] data-[state=open]:translate-x-0 data-[state=closed]:-translate-x-full"
             : "right-0 border-l border-[var(--sidebar-border)] data-[state=open]:translate-x-0 data-[state=closed]:translate-x-full",
-          className,
-        ].filter(Boolean).join(" ")}
+          className)}
         data-side={side}
         data-state={openMobile ? "open" : "closed"}
         role="dialog"
@@ -236,10 +233,8 @@ export function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerP
     <button
       type="button"
       aria-label="Toggle Sidebar"
-      className={[
-        "inline-flex items-center justify-center w-8 h-8 border border-transparent bg-transparent text-foreground-muted rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color,color,border-color] duration-[var(--duration-fast)] hover:bg-[var(--sidebar-accent)] hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none",
-        className,
-      ].filter(Boolean).join(" ")}
+      className={cn("inline-flex items-center justify-center w-8 h-8 border border-transparent bg-transparent text-foreground-muted rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color,color,border-color] duration-[var(--duration-fast)] hover:bg-[var(--sidebar-accent)] hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none",
+        className)}
       onClick={(e) => { onClick?.(e); toggleSidebar(); }}
       {...props}
     >
@@ -267,10 +262,8 @@ export function SidebarPanel({ id, className, children, ...props }: SidebarPanel
   return (
     <aside
       ref={ref}
-      className={[
-        "[--sidebar-panel-width:20rem] flex flex-col w-[var(--sidebar-panel-width)] shrink-0 bg-background border-r border-[var(--sidebar-border)] relative z-[4] overflow-hidden animate-[sh-ui-sidebar-panel-in_180ms_ease-out] data-[state=closed]:hidden max-md:fixed max-md:top-0 max-md:bottom-0 max-md:left-0 max-md:w-[min(var(--sidebar-panel-width),90vw)] max-md:z-[var(--z-modal)] max-md:shadow-[0_10px_30px_rgba(0,0,0,0.15)] motion-reduce:animate-none",
-        className,
-      ].filter(Boolean).join(" ")}
+      className={cn("[--sidebar-panel-width:20rem] flex flex-col w-[var(--sidebar-panel-width)] shrink-0 bg-background border-r border-[var(--sidebar-border)] relative z-[4] overflow-hidden animate-[sh-ui-sidebar-panel-in_180ms_ease-out] data-[state=closed]:hidden max-md:fixed max-md:top-0 max-md:bottom-0 max-md:left-0 max-md:w-[min(var(--sidebar-panel-width),90vw)] max-md:z-[var(--z-modal)] max-md:shadow-[0_10px_30px_rgba(0,0,0,0.15)] motion-reduce:animate-none",
+        className)}
       data-state={open ? "open" : "closed"}
       role={isMobile ? "dialog" : undefined}
       aria-modal={open && isMobile ? "true" : undefined}
@@ -293,7 +286,7 @@ export function SidebarPanel({ id, className, children, ...props }: SidebarPanel
 export function SidebarPanelHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["flex items-center gap-[var(--space-2)] py-3.5 px-[var(--space-4)] border-b border-[var(--sidebar-border)] font-semibold text-[0.9375rem]", className].filter(Boolean).join(" ")}
+      className={cn("flex items-center gap-[var(--space-2)] py-3.5 px-[var(--space-4)] border-b border-[var(--sidebar-border)] font-semibold text-[0.9375rem]", className)}
       {...props}
     />
   );
@@ -302,58 +295,56 @@ export function SidebarPanelHeader({ className, ...props }: React.HTMLAttributes
 export function SidebarPanelContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["flex-1 min-h-0 overflow-y-auto py-[var(--space-3)] px-[var(--space-4)] pb-[var(--space-4)]", className].filter(Boolean).join(" ")}
+      className={cn("flex-1 min-h-0 overflow-y-auto py-[var(--space-3)] px-[var(--space-4)] pb-[var(--space-4)]", className)}
       {...props}
     />
   );
 }
 
 export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
-  return <main className={["flex-1 min-w-0 bg-background flex flex-col", className].filter(Boolean).join(" ")} {...props} />;
+  return <main className={cn("flex-1 min-w-0 bg-background flex flex-col", className)} {...props} />;
 }
 
 export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={["flex flex-col gap-[var(--space-2)] p-[var(--space-2)] overflow-hidden", className].filter(Boolean).join(" ")} {...props} />;
+  return <div className={cn("flex flex-col gap-[var(--space-2)] p-[var(--space-2)] overflow-hidden", className)} {...props} />;
 }
 
 export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={["flex flex-col gap-[var(--space-2)] p-[var(--space-2)] overflow-hidden", className].filter(Boolean).join(" ")} {...props} />;
+  return <div className={cn("flex flex-col gap-[var(--space-2)] p-[var(--space-2)] overflow-hidden", className)} {...props} />;
 }
 
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={["flex flex-col flex-1 min-h-0 overflow-y-auto gap-0", className].filter(Boolean).join(" ")} {...props} />;
+  return <div className={cn("flex flex-col flex-1 min-h-0 overflow-y-auto gap-0", className)} {...props} />;
 }
 
 export function SidebarSeparator({ className, ...props }: React.HTMLAttributes<HTMLHRElement>) {
-  return <hr className={["my-[var(--space-1)] mx-[var(--space-2)] border-0 border-t border-[var(--sidebar-border)] w-auto", className].filter(Boolean).join(" ")} {...props} />;
+  return <hr className={cn("my-[var(--space-1)] mx-[var(--space-2)] border-0 border-t border-[var(--sidebar-border)] w-auto", className)} {...props} />;
 }
 
 export function SidebarGroup({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={["flex flex-col p-[var(--space-2)] min-w-0", className].filter(Boolean).join(" ")} {...props} />;
+  return <div className={cn("flex flex-col p-[var(--space-2)] min-w-0", className)} {...props} />;
 }
 
 export function SidebarGroupLabel({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={[
-        "flex items-center h-8 px-[var(--space-2)] text-[length:var(--text-xs)] font-medium text-foreground-muted rounded-[calc(var(--radius)-2px)] [[data-state=collapsed][data-collapsible=icon]_&]:hidden",
-        className,
-      ].filter(Boolean).join(" ")}
+      className={cn("flex items-center h-8 px-[var(--space-2)] text-[length:var(--text-xs)] font-medium text-foreground-muted rounded-[calc(var(--radius)-2px)] [[data-state=collapsed][data-collapsible=icon]_&]:hidden",
+        className)}
       {...props}
     />
   );
 }
 
 export function SidebarGroupContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={["w-full text-[length:var(--text-sm)]", className].filter(Boolean).join(" ")} {...props} />;
+  return <div className={cn("w-full text-[length:var(--text-sm)]", className)} {...props} />;
 }
 
 export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
-  return <ul className={["list-none m-0 p-0 flex flex-col min-w-0 gap-0", className].filter(Boolean).join(" ")} {...props} />;
+  return <ul className={cn("list-none m-0 p-0 flex flex-col min-w-0 gap-0", className)} {...props} />;
 }
 
 export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
-  return <li className={["relative m-0", className].filter(Boolean).join(" ")} {...props} />;
+  return <li className={cn("relative m-0", className)} {...props} />;
 }
 
 export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -385,14 +376,14 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
       if (!e.defaultPrevented && panelId != null && ctx) ctx.setActivePanel(panelId);
     }, [onClick, panelId, ctx]);
 
-    const cls = [menuButtonBase, menuButtonSize[size], className].filter(Boolean).join(" ");
+    const cls = cn(menuButtonBase, menuButtonSize[size], className);
 
     if (asChild && React.isValidElement(children)) {
       const child = children as React.ReactElement<Record<string, unknown>>;
       const merged: Record<string, unknown> = {
         ...props,
         onClick: handleClick,
-        className: [(child.props.className as string) || "", cls].filter(Boolean).join(" "),
+        className: cn((child.props.className as string) || "", cls),
         "data-active": resolvedIsActive || undefined,
       };
       return React.cloneElement(child, merged);
@@ -409,17 +400,15 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
 export function SidebarMenuSub({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
-      className={[
-        "list-none mt-0.5 ml-3.5 pt-0.5 pr-0 pb-0.5 pl-2.5 border-l border-[var(--sidebar-border)] flex flex-col gap-0.5 min-w-0 [[data-state=collapsed][data-collapsible=icon]_&]:hidden",
-        className,
-      ].filter(Boolean).join(" ")}
+      className={cn("list-none mt-0.5 ml-3.5 pt-0.5 pr-0 pb-0.5 pl-2.5 border-l border-[var(--sidebar-border)] flex flex-col gap-0.5 min-w-0 [[data-state=collapsed][data-collapsible=icon]_&]:hidden",
+        className)}
       {...props}
     />
   );
 }
 
 export function SidebarMenuSubItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
-  return <li className={["relative", className].filter(Boolean).join(" ")} {...props} />;
+  return <li className={cn("relative", className)} {...props} />;
 }
 
 export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -436,13 +425,13 @@ export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarM
   function SidebarMenuSubButton({ className, isActive, size = "md", asChild, sectionId, children, ...props }, ref) {
     const tocActive = useTOCActiveId();
     const resolvedIsActive = isActive ?? (sectionId != null ? tocActive === sectionId : undefined);
-    const cls = [menuSubButtonBase, size === "sm" && "text-[length:var(--text-xs)]", className].filter(Boolean).join(" ");
+    const cls = cn(menuSubButtonBase, size === "sm" && "text-[length:var(--text-xs)]", className);
 
     if (asChild && React.isValidElement(children)) {
       const child = children as React.ReactElement<Record<string, unknown>>;
       const merged: Record<string, unknown> = {
         ...props,
-        className: [(child.props.className as string) || "", cls].filter(Boolean).join(" "),
+        className: cn((child.props.className as string) || "", cls),
         "data-active": resolvedIsActive || undefined,
       };
       return React.cloneElement(child, merged);
@@ -503,7 +492,7 @@ export interface SidebarCollapsibleTriggerProps extends React.ButtonHTMLAttribut
 
 export function SidebarCollapsibleTrigger({ className, size = "md", children, onClick, ...props }: SidebarCollapsibleTriggerProps) {
   const { open, toggle, flyoutMode, flyoutOpen } = useCollapsible();
-  const cls = [menuButtonBase, menuButtonSize[size], className].filter(Boolean).join(" ");
+  const cls = cn(menuButtonBase, menuButtonSize[size], className);
   const isOpen = flyoutMode ? flyoutOpen : open;
 
   const content = (

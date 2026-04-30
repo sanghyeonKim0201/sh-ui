@@ -3,10 +3,8 @@ import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 /* ───────────── Radio ───────────── */
 
 export type RadioProps = Omit<
@@ -24,7 +22,7 @@ export const Radio = React.forwardRef<HTMLElement, RadioProps>(
   ({ className, ...props }, ref) => (
     <BaseRadio.Root
       ref={ref}
-      className={cx("sh-ui-radio", className)}
+      className={cn("sh-ui-radio", className)}
       {...props}
     >
       <BaseRadio.Indicator className="sh-ui-radio__indicator" />
@@ -58,7 +56,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
   ({ className, orientation = "vertical", ...props }, ref) => (
     <BaseRadioGroup
       ref={ref}
-      className={cx("sh-ui-radio-group", className)}
+      className={cn("sh-ui-radio-group", className)}
       data-orientation={orientation}
       {...props}
     />

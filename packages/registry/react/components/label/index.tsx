@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   /**
    * 필수 필드 표시. `true`면 `::after`로 `*` 표시가 붙는다.
@@ -11,9 +12,6 @@ export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> 
   isRequired?: boolean;
 }
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 폼 컨트롤과 1:1로 연결되는 레이블. `htmlFor`로 컨트롤의 `id`와 매칭하거나
@@ -23,7 +21,7 @@ export const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
   ({ className, children, isRequired, ...props }, ref) => (
     <label
       ref={ref}
-      className={cx("sh-ui-label", className)}
+      className={cn("sh-ui-label", className)}
       data-required={isRequired || undefined}
       {...props}
     >
@@ -35,20 +33,20 @@ Label.displayName = "Label";
 
 /** Label 안의 주 라벨 텍스트. 구조적 그룹핑이 필요할 때 Label과 함께 사용. */
 export function LabelTitle({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
-  return <span className={cx("sh-ui-label__title", className)} {...props} />;
+  return <span className={cn("sh-ui-label__title", className)} {...props} />;
 }
 
 /** 라벨 옆에 약하게 표시되는 보조 텍스트(예: "선택 사항"). */
 export function LabelSubtitle({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
-  return <span className={cx("sh-ui-label__subtitle", className)} {...props} />;
+  return <span className={cn("sh-ui-label__subtitle", className)} {...props} />;
 }
 
 /** 라벨 아래에 붙는 안내 문구. 컨트롤과 `aria-describedby`로 연결할 것. */
 export function LabelDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cx("sh-ui-label__description", className)} {...props} />;
+  return <p className={cn("sh-ui-label__description", className)} {...props} />;
 }
 
 /** 라벨 아래의 보조 캡션(예: 입력 형식 예시, 글자 수 제한). */
 export function LabelCaption({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cx("sh-ui-label__caption", className)} {...props} />;
+  return <p className={cn("sh-ui-label__caption", className)} {...props} />;
 }

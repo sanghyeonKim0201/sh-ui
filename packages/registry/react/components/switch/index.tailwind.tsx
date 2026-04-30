@@ -2,10 +2,8 @@ import * as React from "react";
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
 import { cva, type VariantProps } from "class-variance-authority";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 const switchRoot = cva(
   "inline-flex items-center border-none rounded-full bg-background-muted cursor-pointer shrink-0 p-0.5 transition-colors duration-150 hover:not-data-[disabled]:bg-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[checked]:bg-primary data-[checked]:hover:not-data-[disabled]:bg-primary-hover data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none",
   {
@@ -46,11 +44,11 @@ export const Switch = React.forwardRef<HTMLElement, SwitchProps>(
   ({ className, size = "md", ...props }, ref) => (
     <BaseSwitch.Root
       ref={ref}
-      className={cx(switchRoot({ size }), className)}
+      className={cn(switchRoot({ size }), className)}
       {...props}
     >
       <BaseSwitch.Thumb
-        className={cx(
+        className={cn(
           switchThumb({ size }),
           size === "sm" && "data-[checked]:translate-x-3.5",
           size === "md" && "data-[checked]:translate-x-[1.125rem]",

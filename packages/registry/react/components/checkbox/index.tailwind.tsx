@@ -2,10 +2,8 @@ import * as React from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export type CheckboxProps = Omit<
   React.ComponentPropsWithoutRef<typeof BaseCheckbox.Root>,
   "className"
@@ -17,7 +15,7 @@ export const Checkbox = React.forwardRef<HTMLElement, CheckboxProps>(
   ({ className, ...props }, ref) => (
     <BaseCheckbox.Root
       ref={ref}
-      className={cx(
+      className={cn(
         "inline-flex items-center justify-center w-[1.125rem] h-[1.125rem] border border-border-strong rounded-[calc(var(--radius)-2px)] bg-background text-primary-foreground cursor-pointer shrink-0 transition-[background-color,border-color] duration-[var(--duration-fast)] hover:not-data-[disabled]:border-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[checked]:bg-primary data-[checked]:border-primary data-[indeterminate]:bg-primary data-[indeterminate]:border-primary data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5",
         className,
       )}
@@ -43,7 +41,7 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
   ({ className, orientation = "vertical", ...props }, ref) => (
     <BaseCheckboxGroup
       ref={ref}
-      className={cx(
+      className={cn(
         "flex gap-2.5",
         orientation === "vertical" ? "flex-col" : "flex-row flex-wrap",
         className,

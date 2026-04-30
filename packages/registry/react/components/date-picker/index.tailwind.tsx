@@ -4,11 +4,9 @@ import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Calendar, type DateRange } from "../calendar";
 
+import { cn } from "@SH_UI_UTILS@";
 export type { DateRange };
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 const formatDefault = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -121,7 +119,7 @@ export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerT
       if (children !== undefined) return children;
       return (
         <>
-          <span className={cx("overflow-hidden text-ellipsis whitespace-nowrap", !displayText && "text-foreground-subtle")}>
+          <span className={cn("overflow-hidden text-ellipsis whitespace-nowrap", !displayText && "text-foreground-subtle")}>
             {displayText ?? ctx.placeholder}
           </span>
           <span className="shrink-0 inline-flex text-foreground-muted ml-[var(--space-2)]" aria-hidden>
@@ -133,7 +131,7 @@ export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerT
     return (
       <BasePopover.Trigger
         ref={ref}
-        className={cx(triggerClasses, className)}
+        className={cn(triggerClasses, className)}
         disabled={ctx.disabled}
         aria-invalid={ctx.ariaInvalid}
         aria-haspopup="dialog"
@@ -165,7 +163,7 @@ export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerCont
     return (
       <BasePopover.Portal container={container}>
         <BasePopover.Positioner className="z-[var(--z-popover)] outline-none" sideOffset={sideOffset} side={side} align={align}>
-          <BasePopover.Popup ref={ref} className={cx(popupClasses, className)} {...props}>
+          <BasePopover.Popup ref={ref} className={cn(popupClasses, className)} {...props}>
             {children}
           </BasePopover.Popup>
         </BasePopover.Positioner>
@@ -199,7 +197,7 @@ export const DatePickerFooter = React.forwardRef<HTMLDivElement, DatePickerFoote
     return (
       <div
         ref={ref}
-        className={cx(
+        className={cn(
           "flex items-center justify-end gap-[var(--space-2)] mt-[var(--space-2)] pt-[var(--space-2)] border-t border-border",
           className,
         )}
@@ -257,13 +255,13 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       <BasePopover.Root open={open} onOpenChange={setOpen}>
         <BasePopover.Trigger
           ref={ref}
-          className={cx(triggerClasses, className)}
+          className={cn(triggerClasses, className)}
           disabled={disabled}
           aria-invalid={ariaInvalid}
           aria-haspopup="dialog"
           onClick={(e) => { if (readOnly) e.preventDefault(); }}
         >
-          <span className={cx("overflow-hidden text-ellipsis whitespace-nowrap", !displayText && "text-foreground-subtle")}>
+          <span className={cn("overflow-hidden text-ellipsis whitespace-nowrap", !displayText && "text-foreground-subtle")}>
             {displayText ?? placeholder}
           </span>
           <span className="shrink-0 inline-flex text-foreground-muted ml-[var(--space-2)]" aria-hidden>

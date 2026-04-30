@@ -2,11 +2,9 @@ import * as React from "react";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 모달 다이얼로그 루트. 열림 상태를 가지며 자식으로 Trigger·Content를 둔다.
@@ -24,7 +22,7 @@ export const DialogClose = BaseDialog.Close;
 export function DialogCloseX({ className, children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <BaseDialog.Close
-      className={cx("sh-ui-dialog__close", className)}
+      className={cn("sh-ui-dialog__close", className)}
       aria-label="닫기"
       {...props}
     >
@@ -35,7 +33,7 @@ export function DialogCloseX({ className, children, ...props }: React.ButtonHTML
 
 /** Dialog 본문 하단의 액션 버튼 영역. 보통 [취소, 확인] 순서로 배치. */
 export function DialogFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cx("sh-ui-dialog__footer", className)} {...props} />;
+  return <div className={cn("sh-ui-dialog__footer", className)} {...props} />;
 }
 
 export interface DialogContentProps
@@ -58,7 +56,7 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
         <BaseDialog.Backdrop className="sh-ui-dialog__backdrop" />
         <BaseDialog.Popup
           ref={ref}
-          className={cx("sh-ui-dialog__content", className)}
+          className={cn("sh-ui-dialog__content", className)}
           {...props}
         >
           {children}
@@ -76,7 +74,7 @@ export const DialogTitle = React.forwardRef<
   return (
     <BaseDialog.Title
       ref={ref}
-      className={cx("sh-ui-dialog__title", className)}
+      className={cn("sh-ui-dialog__title", className)}
       {...props}
     />
   );
@@ -90,7 +88,7 @@ export const DialogDescription = React.forwardRef<
   return (
     <BaseDialog.Description
       ref={ref}
-      className={cx("sh-ui-dialog__description", className)}
+      className={cn("sh-ui-dialog__description", className)}
       {...props}
     />
   );

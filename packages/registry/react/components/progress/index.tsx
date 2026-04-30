@@ -1,10 +1,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
@@ -42,7 +40,7 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         aria-valuemax={isDeterminate ? max : undefined}
         aria-valuenow={isDeterminate ? value : undefined}
         data-state={isDeterminate ? "determinate" : "indeterminate"}
-        className={cx("sh-ui-progress", className)}
+        className={cn("sh-ui-progress", className)}
         {...props}
       >
         <div

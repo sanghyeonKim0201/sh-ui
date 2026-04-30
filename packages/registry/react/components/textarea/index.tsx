@@ -1,11 +1,9 @@
 import * as React from "react";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 여러 줄 텍스트 입력. 네이티브 `<textarea>` 위에 sh-ui 토큰 스타일만 입혔다.
@@ -16,7 +14,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <textarea
         ref={ref}
-        className={cx("sh-ui-textarea", className)}
+        className={cn("sh-ui-textarea", className)}
         {...props}
       />
     );

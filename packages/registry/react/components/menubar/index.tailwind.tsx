@@ -1,11 +1,9 @@
 import * as React from "react";
 import { Menubar as BaseMenubar } from "@base-ui/react/menubar";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 상단 앱 메뉴바 (Tailwind 변종). DropdownMenu 와 함께 사용 — DropdownMenu 의
@@ -22,7 +20,7 @@ export const Menubar = React.forwardRef<
   return (
     <BaseMenubar
       ref={ref}
-      className={cx(
+      className={cn(
         "inline-flex items-center gap-[var(--space-1)] p-[var(--space-1)] bg-background border border-border rounded-[var(--radius)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
         className,
       )}

@@ -35,7 +35,9 @@
           ]
         }
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "card": {
       "name": "card",
@@ -64,7 +66,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "input": {
       "name": "input",
@@ -93,7 +97,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "numeric-input": {
       "name": "numeric-input",
@@ -122,7 +128,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "file-upload": {
       "name": "file-upload",
@@ -151,7 +159,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "form": {
       "name": "form",
@@ -240,7 +250,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "form-yup": {
       "name": "form-yup",
@@ -292,7 +304,9 @@
       "dependencies": [
         "shiki"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "code-tabs": {
       "name": "code-tabs",
@@ -336,7 +350,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "code-editor": {
       "name": "code-editor",
@@ -374,7 +390,9 @@
         "@codemirror/lang-html",
         "@codemirror/lang-markdown"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "markdown-editor": {
       "name": "markdown-editor",
@@ -407,7 +425,8 @@
         "remark-gfm"
       ],
       "registryDependencies": [
-        "code-editor"
+        "code-editor",
+        "utils"
       ]
     },
     "rich-text-editor": {
@@ -444,7 +463,9 @@
         "@tiptap/extension-link",
         "lucide-react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "select": {
       "name": "select",
@@ -475,7 +496,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "sidebar": {
       "name": "sidebar",
@@ -507,7 +530,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "popover"
+        "popover",
+        "utils"
       ]
     },
     "header": {
@@ -537,7 +561,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "base": {
       "name": "base",
@@ -662,7 +688,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "color-picker": {
       "name": "color-picker",
@@ -691,7 +719,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "slider": {
       "name": "slider",
@@ -720,7 +750,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "tabs": {
       "name": "tabs",
@@ -751,7 +783,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "combobox": {
       "name": "combobox",
@@ -782,7 +816,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "popover": {
       "name": "popover",
@@ -813,7 +849,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "dialog": {
       "name": "dialog",
@@ -844,7 +882,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "dropdown-menu": {
       "name": "dropdown-menu",
@@ -875,7 +915,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "context-menu": {
       "name": "context-menu",
@@ -906,7 +948,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "menubar": {
       "name": "menubar",
@@ -938,7 +982,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "dropdown-menu"
+        "dropdown-menu",
+        "utils"
       ]
     },
     "tooltip": {
@@ -970,7 +1015,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "breadcrumb": {
       "name": "breadcrumb",
@@ -999,7 +1046,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "pagination": {
       "name": "pagination",
@@ -1028,7 +1077,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "avatar": {
       "name": "avatar",
@@ -1065,7 +1116,9 @@
           ]
         }
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "badge": {
       "name": "badge",
@@ -1101,7 +1154,9 @@
           ]
         }
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "progress": {
       "name": "progress",
@@ -1130,7 +1185,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "spinner": {
       "name": "spinner",
@@ -1166,7 +1223,9 @@
           ]
         }
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "separator": {
       "name": "separator",
@@ -1195,7 +1254,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "theme": {
       "name": "theme",
@@ -1238,7 +1299,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "radio": {
       "name": "radio",
@@ -1269,7 +1332,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "switch": {
       "name": "switch",
@@ -1306,7 +1371,9 @@
           ]
         }
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "toggle": {
       "name": "toggle",
@@ -1343,7 +1410,9 @@
           ]
         }
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "textarea": {
       "name": "textarea",
@@ -1372,7 +1441,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "toast": {
       "name": "toast",
@@ -1401,7 +1472,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "calendar": {
       "name": "calendar",
@@ -1431,7 +1504,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [
-        "select"
+        "select",
+        "utils"
       ]
     },
     "date-picker": {
@@ -1464,7 +1538,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
-        "calendar"
+        "calendar",
+        "utils"
       ]
     },
     "skeleton": {
@@ -1494,7 +1569,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "accordion": {
       "name": "accordion",
@@ -1525,7 +1602,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "carousel": {
       "name": "carousel",
@@ -1554,7 +1633,9 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": []
+      "registryDependencies": [
+        "utils"
+      ]
     },
     "form-rhf": {
       "name": "form-rhf",
@@ -1587,6 +1668,41 @@
       "registryDependencies": [
         "form"
       ]
+    },
+    "utils": {
+      "name": "utils",
+      "type": "lib",
+      "files": [
+        {
+          "src": "lib/cn.ts",
+          "dest": "{utils}",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "lib/cn.tailwind.ts",
+          "dest": "{utils}",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "clsx",
+          "frameworks": [
+            "tailwind"
+          ]
+        },
+        {
+          "name": "tailwind-merge",
+          "frameworks": [
+            "tailwind"
+          ]
+        }
+      ],
+      "registryDependencies": []
     }
   }
 }

@@ -3,10 +3,8 @@ import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 /* ───────────── Checkbox ───────────── */
 
 export type CheckboxProps = Omit<
@@ -24,7 +22,7 @@ export const Checkbox = React.forwardRef<HTMLElement, CheckboxProps>(
   ({ className, ...props }, ref) => (
     <BaseCheckbox.Root
       ref={ref}
-      className={cx("sh-ui-checkbox", className)}
+      className={cn("sh-ui-checkbox", className)}
       {...props}
     >
       <BaseCheckbox.Indicator className="sh-ui-checkbox__indicator">
@@ -60,7 +58,7 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
   ({ className, orientation = "vertical", ...props }, ref) => (
     <BaseCheckboxGroup
       ref={ref}
-      className={cx("sh-ui-checkbox-group", className)}
+      className={cn("sh-ui-checkbox-group", className)}
       data-orientation={orientation}
       {...props}
     />

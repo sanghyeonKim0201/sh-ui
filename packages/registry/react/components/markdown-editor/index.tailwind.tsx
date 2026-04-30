@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeEditor } from "../code-editor";
 
+import { cn } from "@SH_UI_UTILS@";
 export interface MarkdownEditorProps {
   value?: string;
   defaultValue?: string;
@@ -19,9 +20,6 @@ export interface MarkdownEditorProps {
   "aria-label"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 마크다운 에디터 (Tailwind 변종) — react-markdown 의 출력 HTML 트리에 대한
@@ -50,7 +48,7 @@ export function MarkdownEditor({
 
   return (
     <div
-      className={cx("grid gap-[var(--space-3)]", layoutClass, className)}
+      className={cn("grid gap-[var(--space-3)]", layoutClass, className)}
       data-readonly={readOnly || undefined}
     >
       <div className="min-w-0">

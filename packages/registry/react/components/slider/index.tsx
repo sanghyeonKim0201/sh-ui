@@ -3,10 +3,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
@@ -128,7 +126,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         <div
           ref={ref}
           {...rest}
-          className={cx(
+          className={cn(
             "sh-ui-slider",
             disabled && "sh-ui-slider--disabled",
             className,
@@ -199,7 +197,7 @@ export const SliderTrack = React.forwardRef<
   return (
     <div
       ref={mergedRef}
-      className={cx("sh-ui-slider__track", className)}
+      className={cn("sh-ui-slider__track", className)}
       onPointerDown={onPointerDown}
       {...props}
     >
@@ -225,7 +223,7 @@ export const SliderRange = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={cx("sh-ui-slider__range", className)}
+      className={cn("sh-ui-slider__range", className)}
       style={{ width: percent, ...style }}
       {...props}
     />
@@ -291,7 +289,7 @@ export const SliderThumb = React.forwardRef<
       aria-valuenow={value}
       aria-disabled={disabled || undefined}
       onKeyDown={onKeyDown}
-      className={cx("sh-ui-slider__thumb", className)}
+      className={cn("sh-ui-slider__thumb", className)}
       style={{ left: percent, ...style }}
       {...props}
     />
