@@ -19,10 +19,18 @@ import { homedir, platform as osPlatform } from "node:os";
 
 const CLIENTS = ["claude-code", "cursor", "claude-desktop"];
 
-const SH_UI_ENTRY = {
-  command: "npx",
-  args: ["-y", "sh-ui-cli", "mcp"],
-};
+/**
+ * `npx -y <cliName> mcp` 형태의 MCP 엔트리 빌더.
+ * 패키지명을 package.json 에서 동적으로 읽어 cli rename 시에도 자동 따라감.
+ */
+async function buildShUiEntry() {
+  const pkgUrl = new URL("../package.json", import.meta.url);
+  const pkg = JSON.parse(await readFile(pkgUrl, "utf8"));
+  return {
+    command: "npx",
+    args: ["-y", pkg.name, "mcp"],
+  };
+}
 
 /** 클라이언트·스코프별 설정 파일 절대 경로. */
 function resolveConfigPath(client, scope, cwd) {
@@ -115,7 +123,7 @@ export async function mcpInit({ cwd, args }) {
   }
 
   const before = config.mcpServers["sh-ui"];
-  config.mcpServers["sh-ui"] = SH_UI_ENTRY;
+  config.mcpServers["sh-ui"] = await buildShUiEntry();
 
   await mkdir(dirname(configPath), { recursive: true });
   await writeFile(configPath, JSON.stringify(config, null, 2) + "\n", "utf8");

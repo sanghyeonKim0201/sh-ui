@@ -120,7 +120,22 @@ function resolveCwd(input) {
   return input?.cwd ? resolve(input.cwd) : process.cwd();
 }
 
-const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter 디자인 시스템.
+/**
+ * 하드코딩 제거 — packages/cli/package.json 에서 version + name 을 시작 시점에 읽어 그대로 사용.
+ * mcp.mjs 가 src/ 에 있고 package.json 은 그 상위 (../package.json) 라 상대 URL 로 해석.
+ * 출고 모드 (data/ 번들) 에서도 동일 경로 (src/mcp.mjs ↔ package.json) 라 그대로 동작.
+ *
+ * version: McpServer 식별자 — 클라이언트가 캐시·진단용으로 표시
+ * name: SERVER_INSTRUCTIONS 의 `npx <cli> ...` 예시에 보간 — cli rename 시 자동 따라감
+ */
+async function readPackageMeta() {
+  const pkgUrl = new URL("../package.json", import.meta.url);
+  const pkg = JSON.parse(await readFile(pkgUrl, "utf8"));
+  return { version: pkg.version, name: pkg.name };
+}
+
+function buildServerInstructions(cliName) {
+  return `sh-ui — Base UI 위에 빌드된 React/Flutter 디자인 시스템.
 
 ## 새 프로젝트를 만드는 경우
 
@@ -131,7 +146,7 @@ const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter �
   - 인터랙티브 프롬프트 없이 한 번에 스캐폴드 + 토큰 + sh-ui.config.json 생성
 
 **2차 — Bash** (사용자가 직접 셸에서 돌리고 싶다고 명시할 때만):
-  npx sh-ui-cli create my-app --platform next --structure standalone --yes
+  npx ${cliName} create my-app --platform next --structure standalone --yes
 
 \`create-next-app\` + \`sh_ui_init\` 조합은 **쓰지 말 것** — 위 두 경로가 더 짧고 sh-ui 관용에 맞다.
 
@@ -149,25 +164,15 @@ const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter �
 - \`sh_ui_add_component\` / \`sh_ui_remove_component\` — 설치/삭제
 - \`sh_ui_get_changelog\` — 최근 변경 내역
 `;
-
-/**
- * 하드코딩 제거 — packages/cli/package.json 의 version 을 시작 시점에 읽어 그대로 사용.
- * mcp.mjs 가 src/ 에 있고 package.json 은 그 상위 (../package.json) 라 상대 URL 로 해석.
- * 출고 모드 (data/ 번들) 에서도 동일 경로 (src/mcp.mjs ↔ package.json) 라 그대로 동작.
- */
-async function readPackageVersion() {
-  const pkgUrl = new URL("../package.json", import.meta.url);
-  const pkg = JSON.parse(await readFile(pkgUrl, "utf8"));
-  return pkg.version;
 }
 
 export async function startMcpServer() {
-  const version = await readPackageVersion();
+  const { version, name: cliName } = await readPackageMeta();
   const server = new McpServer(
     { name: "sh-ui", version },
     {
       capabilities: { tools: {} },
-      instructions: SERVER_INSTRUCTIONS,
+      instructions: buildServerInstructions(cliName),
     },
   );
 
@@ -187,7 +192,7 @@ export async function startMcpServer() {
     {
       description:
         "빈 폴더에 sh-ui 프로젝트 스캐폴드 — Next.js (standalone/monorepo) 또는 Flutter. " +
-        "FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx sh-ui-cli create 직접 호출보다 우선).",
+        `FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx ${cliName} create 직접 호출보다 우선).`,
       inputSchema: {
         name: z.string().min(1)
           .describe("프로젝트 디렉토리 이름. 예: my-app"),
