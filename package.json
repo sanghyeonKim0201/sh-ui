@@ -10,6 +10,7 @@
     "typecheck": "turbo typecheck",
     "gen:llms": "pnpm --filter @sh-ui/llms gen",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,css}\"",
+    "release": "node scripts/release.mjs",
     "showcase": "open -a Simulator && cd apps/showcase && flutter run",
     "showcase:ios": "open -a Simulator && cd apps/showcase && flutter run -d iphone",
     "showcase:web": "cd apps/showcase && flutter run -d chrome",

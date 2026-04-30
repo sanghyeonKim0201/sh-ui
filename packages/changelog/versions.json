@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.45.1",
+      "date": "2026-04-30",
+      "title": "릴리즈 자동화 — `pnpm release` 명령 + mcp.mjs 동적 버전",
+      "type": "patch",
+      "highlights": [
+        "**`pnpm release <patch|minor|major|X.Y.Z>` 명령 신설** — packages/cli/package.json 의 version 갱신 + packages/changelog/versions.json 에 placeholder 엔트리 prepend 를 한 번에 처리. 매 릴리즈 6단계 수작업 → highlights 채우기 + git/PR/merge/tag 6 명령으로 단순화. 거꾸로 가는 버전·중복 엔트리·잘못된 형식 인자는 모두 거부.",
+        "**MCP 서버 버전 동적 읽기** — `packages/cli/src/mcp.mjs` 가 시작 시점에 package.json 의 version 을 읽도록 변경. 하드코딩된 `version: \"X.Y.Z\"` 문자열 제거 — 매 릴리즈마다 손으로 갱신할 필요 영구 사라짐 (실제로 v0.45.0 출고 시 거의 빠뜨릴 뻔한 drift 위험을 잡은 변경).",
+        "기능 변경 0 — 릴리즈 워크플로 신뢰성만 향상."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.45.1"
+    },
+    {
       "version": "0.45.0",
       "date": "2026-04-30",
       "title": "Tailwind 변종 100% 커버리지 — 11 컴포넌트 추가로 전체 완성",
