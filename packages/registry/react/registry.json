@@ -847,6 +847,24 @@
       "dependencies": [],
       "registryDependencies": []
     },
+    "calendar": {
+      "name": "calendar",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/calendar/index.tsx",
+          "dest": "{components}/calendar/index.tsx"
+        },
+        {
+          "src": "components/calendar/styles.css",
+          "dest": "{components}/calendar/styles.css"
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "select"
+      ]
+    },
     "date-picker": {
       "name": "date-picker",
       "type": "component",
@@ -863,7 +881,9 @@
       "dependencies": [
         "@base-ui/react"
       ],
-      "registryDependencies": []
+      "registryDependencies": [
+        "calendar"
+      ]
     },
     "skeleton": {
       "name": "skeleton",

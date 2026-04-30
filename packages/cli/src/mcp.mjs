@@ -357,6 +357,8 @@ export async function startMcpServer() {
           .describe("작업 디렉토리. 기본 process.cwd()"),
         skipInstall: z.boolean().optional()
           .describe("외부 패키지 자동 설치 생략. 기본 false"),
+        overwrite: z.boolean().optional()
+          .describe("이미 존재하는 파일도 덮어쓸지. 기본 false (= 사용자 변경 보존)"),
       },
     },
     async (input) => {
@@ -365,6 +367,8 @@ export async function startMcpServer() {
           cwd: resolveCwd(input),
           names: input.names,
           skipInstall: input.skipInstall === true,
+          // MCP 컨텍스트는 비대화형 — 명시적으로 overwrite=true 일 때만 덮어쓰고, 아니면 기존 파일 보존.
+          onConflict: input.overwrite === true ? "overwrite" : "keep",
         }),
       );
       return textResult(text || "✓ add 완료");

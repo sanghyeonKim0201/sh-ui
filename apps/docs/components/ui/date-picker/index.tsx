@@ -2,7 +2,10 @@
 
 import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
+import { Calendar, type DateRange } from "../calendar";
 import "./styles.css";
+
+export type { DateRange };
 
 /* ───────── Helpers ───────── */
 
@@ -10,75 +13,13 @@ function cx(...args: (string | undefined | false)[]) {
   return args.filter(Boolean).join(" ");
 }
 
-const WEEK_LABELS = ["일", "월", "화", "수", "목", "금", "토"] as const;
-
-const isSameDay = (a: Date, b: Date) =>
-  a.getFullYear() === b.getFullYear() &&
-  a.getMonth() === b.getMonth() &&
-  a.getDate() === b.getDate();
-
-const toDateOnly = (d: Date) =>
-  new Date(d.getFullYear(), d.getMonth(), d.getDate());
-
 const formatDefault = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-const clampMonth = (year: number, month: number): [number, number] => {
-  if (month < 0) return [year - 1, 11];
-  if (month > 11) return [year + 1, 0];
-  return [year, month];
-};
-
-function getDaysGrid(year: number, month: number) {
-  const first = new Date(year, month, 1);
-  const startDay = first.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const prevDays = new Date(year, month, 0).getDate();
-
-  const cells: { date: Date; current: boolean }[] = [];
-
-  for (let i = startDay - 1; i >= 0; i--) {
-    cells.push({ date: new Date(year, month - 1, prevDays - i), current: false });
-  }
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({ date: new Date(year, month, d), current: true });
-  }
-  const remaining = 7 - (cells.length % 7);
-  if (remaining < 7) {
-    for (let d = 1; d <= remaining; d++) {
-      cells.push({ date: new Date(year, month + 1, d), current: false });
-    }
-  }
-
-  return cells;
-}
-
-/* ───────── Types ───────── */
-
-export interface DateRange {
-  /** 시작일 (포함). */
-  from: Date;
-  /** 종료일 (포함). */
-  to: Date;
-}
+const startOfMonth = (d: Date) =>
+  new Date(d.getFullYear(), d.getMonth(), 1);
 
 /* ───────── Icons ───────── */
-
-function ChevronLeftIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden>
-      <path d="M10 3 5.5 8 10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden>
-      <path d="M6 3 10.5 8 6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function CalendarIcon() {
   return (
@@ -116,178 +57,6 @@ function useDatePickerContext(component: string) {
     throw new Error(`${component}는 <DatePicker> 내부에서 사용해야 합니다.`);
   }
   return ctx;
-}
-
-/* ───────── Internal Calendar Grid (shared w/ range picker) ───────── */
-
-interface CalendarProps {
-  selected?: Date;
-  onSelect: (date: Date) => void;
-  min?: Date;
-  max?: Date;
-  focusedDate: Date;
-  onFocusedDateChange: (date: Date) => void;
-  rangeFrom?: Date;
-  rangeTo?: Date;
-  hoverDate?: Date;
-  onHoverDate?: (date: Date | undefined) => void;
-}
-
-function Calendar({
-  selected,
-  onSelect,
-  min,
-  max,
-  focusedDate,
-  onFocusedDateChange,
-  rangeFrom,
-  rangeTo,
-  hoverDate,
-  onHoverDate,
-}: CalendarProps) {
-  const year = focusedDate.getFullYear();
-  const month = focusedDate.getMonth();
-  const cells = getDaysGrid(year, month);
-  const today = new Date();
-
-  const navigate = (newYear: number, newMonth: number) => {
-    const [y, m] = clampMonth(newYear, newMonth);
-    onFocusedDateChange(new Date(y, m, 1));
-  };
-
-  const isDisabled = (date: Date) => {
-    if (min && date < toDateOnly(min)) return true;
-    if (max && date > toDateOnly(max)) return true;
-    return false;
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    let next: Date | null = null;
-    const cursor = selected ?? focusedDate;
-
-    switch (e.key) {
-      case "ArrowLeft":
-        next = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() - 1);
-        break;
-      case "ArrowRight":
-        next = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1);
-        break;
-      case "ArrowUp":
-        next = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() - 7);
-        break;
-      case "ArrowDown":
-        next = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 7);
-        break;
-      case "Enter":
-      case " ":
-        e.preventDefault();
-        if (!isDisabled(cursor)) onSelect(cursor);
-        return;
-      default:
-        return;
-    }
-
-    e.preventDefault();
-    if (next && !isDisabled(next)) {
-      if (next.getMonth() !== month || next.getFullYear() !== year) {
-        onFocusedDateChange(new Date(next.getFullYear(), next.getMonth(), 1));
-      }
-      onSelect(next);
-    }
-  };
-
-  const getRangeState = (date: Date) => {
-    if (!rangeFrom) return { inRange: false, isStart: false, isEnd: false };
-
-    const end = rangeTo ?? hoverDate;
-    if (!end) return { inRange: false, isStart: isSameDay(date, rangeFrom), isEnd: false };
-
-    let [rStart, rEnd] = rangeFrom <= end ? [rangeFrom, end] : [end, rangeFrom];
-    rStart = toDateOnly(rStart);
-    rEnd = toDateOnly(rEnd);
-    const d = toDateOnly(date);
-
-    return {
-      inRange: d >= rStart && d <= rEnd,
-      isStart: isSameDay(d, rStart),
-      isEnd: isSameDay(d, rEnd),
-    };
-  };
-
-  const monthLabel = `${year}년 ${month + 1}월`;
-
-  return (
-    <div className="sh-ui-calendar" role="group" aria-label={monthLabel}>
-      <div className="sh-ui-calendar__header">
-        <button
-          type="button"
-          className="sh-ui-calendar__nav"
-          onClick={() => navigate(year, month - 1)}
-          aria-label="이전 달"
-        >
-          <ChevronLeftIcon />
-        </button>
-        <span className="sh-ui-calendar__title">{monthLabel}</span>
-        <button
-          type="button"
-          className="sh-ui-calendar__nav"
-          onClick={() => navigate(year, month + 1)}
-          aria-label="다음 달"
-        >
-          <ChevronRightIcon />
-        </button>
-      </div>
-
-      <div className="sh-ui-calendar__weekdays" role="row">
-        {WEEK_LABELS.map((label) => (
-          <span key={label} className="sh-ui-calendar__weekday" role="columnheader" aria-label={label}>
-            {label}
-          </span>
-        ))}
-      </div>
-
-      <div
-        className="sh-ui-calendar__grid"
-        role="grid"
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
-        aria-label={monthLabel}
-      >
-        {cells.map(({ date, current }, i) => {
-          const disabled = isDisabled(date);
-          const isSelected = selected && isSameDay(date, selected);
-          const isToday = isSameDay(date, today);
-          const { inRange, isStart, isEnd } = getRangeState(date);
-
-          return (
-            <button
-              key={i}
-              type="button"
-              className={cx(
-                "sh-ui-calendar__day",
-                !current && "sh-ui-calendar__day--outside",
-                isSelected && "sh-ui-calendar__day--selected",
-                isToday && "sh-ui-calendar__day--today",
-                inRange && "sh-ui-calendar__day--in-range",
-                isStart && "sh-ui-calendar__day--range-start",
-                isEnd && "sh-ui-calendar__day--range-end",
-              )}
-              disabled={disabled}
-              tabIndex={-1}
-              onClick={() => { if (!disabled) onSelect(date); }}
-              onMouseEnter={() => onHoverDate?.(date)}
-              onMouseLeave={() => onHoverDate?.(undefined)}
-              aria-label={formatDefault(date)}
-              aria-selected={isSelected || inRange || undefined}
-              data-today={isToday || undefined}
-            >
-              {date.getDate()}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
 }
 
 /* ───────── DatePicker Root ───────── */
@@ -372,7 +141,7 @@ export function DatePicker({
 
   React.useEffect(() => {
     if (open && selected) {
-      setFocusedDate(new Date(selected.getFullYear(), selected.getMonth(), 1));
+      setFocusedDate(startOfMonth(selected));
     }
   }, [open, selected]);
 
@@ -574,19 +343,20 @@ export const DatePickerContent = React.forwardRef<HTMLDivElement, DatePickerCont
 export function DatePickerCalendar() {
   const ctx = useDatePickerContext("DatePickerCalendar");
 
-  const handleSelect = (date: Date) => {
+  const handleSelect = (date: Date | undefined) => {
     ctx.setSelected(date);
-    if (ctx.closeOnSelect) ctx.setOpen(false);
+    if (date && ctx.closeOnSelect) ctx.setOpen(false);
   };
 
   return (
     <Calendar
-      selected={ctx.selected}
-      onSelect={handleSelect}
+      mode="single"
+      value={ctx.selected}
+      onValueChange={handleSelect}
+      month={ctx.focusedDate}
+      onMonthChange={ctx.setFocusedDate}
       min={ctx.min}
       max={ctx.max}
-      focusedDate={ctx.focusedDate}
-      onFocusedDateChange={ctx.setFocusedDate}
     />
   );
 }
@@ -684,36 +454,20 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
     const selected = isControlled ? value : internal;
 
     const [open, setOpen] = React.useState(false);
-    const [picking, setPicking] = React.useState<Date | undefined>(undefined);
-    const [hoverDate, setHoverDate] = React.useState<Date | undefined>(undefined);
-    const [focusedDate, setFocusedDate] = React.useState(
+    const [calendarMonth, setCalendarMonth] = React.useState<Date>(
       () => selected?.from ?? new Date(),
     );
 
     React.useEffect(() => {
-      if (open) {
-        setPicking(undefined);
-        setHoverDate(undefined);
-        if (selected?.from) {
-          setFocusedDate(new Date(selected.from.getFullYear(), selected.from.getMonth(), 1));
-        }
+      if (open && selected?.from) {
+        setCalendarMonth(startOfMonth(selected.from));
       }
     }, [open, selected?.from]);
 
-    const handleSelect = (date: Date) => {
-      if (!picking) {
-        setPicking(date);
-        return;
-      }
-
-      const [from, to] = picking <= date ? [picking, date] : [date, picking];
-      const range: DateRange = { from, to };
-
+    const handleRangeChange = (range: DateRange | undefined) => {
       if (!isControlled) setInternal(range);
       onValueChange?.(range);
-      setPicking(undefined);
-      setHoverDate(undefined);
-      setOpen(false);
+      if (range) setOpen(false);
     };
 
     const displayText = selected
@@ -749,20 +503,14 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
               align="start"
             >
               <BasePopover.Popup className="sh-ui-date-picker__popup">
-                {picking && (
-                  <p className="sh-ui-date-picker__hint">종료일을 선택하세요</p>
-                )}
                 <Calendar
-                  selected={picking}
-                  onSelect={handleSelect}
+                  mode="range"
+                  value={selected}
+                  onValueChange={handleRangeChange}
+                  month={calendarMonth}
+                  onMonthChange={setCalendarMonth}
                   min={min}
                   max={max}
-                  focusedDate={focusedDate}
-                  onFocusedDateChange={setFocusedDate}
-                  rangeFrom={picking ?? selected?.from}
-                  rangeTo={picking ? undefined : selected?.to}
-                  hoverDate={picking ? hoverDate : undefined}
-                  onHoverDate={picking ? setHoverDate : undefined}
                 />
               </BasePopover.Popup>
             </BasePopover.Positioner>

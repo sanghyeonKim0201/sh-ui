@@ -3,8 +3,43 @@ import { existsSync } from "node:fs";
 import { dirname, resolve, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
+import { select } from "@inquirer/prompts";
 import { formatUnifiedDiff } from "./diff.mjs";
 import { getRegistryRoot, getTokensRoot, getPeerVersionsPath } from "./paths.mjs";
+
+/**
+ * 기존 파일과 registry 파일 내용이 다를 때 keep/overwrite 결정.
+ * strategy 가 "prompt" 면 사용자에게 묻고, 그 외엔 즉시 결정.
+ * "ALL" 선택은 이번 add 실행 동안만 유지된다.
+ */
+function makeConflictResolver(strategy) {
+  // strategy: "prompt" | "keep" | "overwrite"
+  let sticky = strategy === "prompt" ? null : strategy;
+  return {
+    async resolve(rel) {
+      if (sticky) return sticky;
+      const choice = await select({
+        message: `이미 존재합니다: ${rel} — 어떻게 할까요?`,
+        choices: [
+          { name: "그대로 두기 (사용자 변경 유지)", value: "keep" },
+          { name: "덮어쓰기 (registry 버전으로 교체)", value: "overwrite" },
+          { name: "남은 충돌도 모두 그대로 두기", value: "keep-all" },
+          { name: "남은 충돌도 모두 덮어쓰기", value: "overwrite-all" },
+        ],
+        default: "keep",
+      });
+      if (choice === "keep-all") {
+        sticky = "keep";
+        return "keep";
+      }
+      if (choice === "overwrite-all") {
+        sticky = "overwrite";
+        return "overwrite";
+      }
+      return choice;
+    },
+  };
+}
 
 /**
  * `dependencies` 에 적힌 패키지명을 peer-versions.json 의 버전 범위와 결합.
@@ -54,10 +89,12 @@ async function ensureDir(filePath) {
 }
 
 /**
- * 대상 파일 쓰기 래퍼. diff 모드면 기존 파일과 비교해 diff만 출력하고 skip.
- * @returns "new" | "unchanged" | "modified" | "previewed"
+ * 대상 파일 쓰기 래퍼.
+ * - diff 모드면 기존 파일과 비교해 diff만 출력하고 skip.
+ * - 일반 모드에서 기존 파일과 내용이 다르면 conflictResolver 에 위임.
+ * @returns "new" | "unchanged" | "modified" | "kept" | "previewed"
  */
-async function writeOrDiff({ dest, content, cwd, diffMode, summary, isBinary = false }) {
+async function writeOrDiff({ dest, content, cwd, diffMode, summary, conflictResolver, isBinary = false }) {
   const rel = relative(cwd, dest);
   const exists = existsSync(dest);
 
@@ -72,11 +109,13 @@ async function writeOrDiff({ dest, content, cwd, diffMode, summary, isBinary = f
   }
 
   if (isBinary) {
-    // 바이너리는 diff 의미가 없으므로 size만 비교
+    // 바이너리는 diff 비교가 의미 없음. 기존 파일이 있으면 conflictResolver 에 위임.
     if (diffMode) {
       summary.push({ kind: "binary", rel });
       return "previewed";
     }
+    const choice = await conflictResolver.resolve(rel);
+    if (choice === "keep") return "kept";
     await writeFile(dest, content, "utf8");
     return "modified";
   }
@@ -97,12 +136,15 @@ async function writeOrDiff({ dest, content, cwd, diffMode, summary, isBinary = f
     return "previewed";
   }
 
+  const choice = await conflictResolver.resolve(rel);
+  if (choice === "keep") return "kept";
+
   await writeFile(dest, content, "utf8");
   return "modified";
 }
 
 /** 특수 컴포넌트: 설정으로 토큰 파일 생성 */
-async function addTokens(config, cwd, diffMode, summary) {
+async function addTokens(config, cwd, diffMode, summary, conflictResolver) {
   const destRel = config.paths?.tokens;
   if (!destRel) throw new Error("paths.tokens 가 설정에 없습니다.");
   const dest = resolve(cwd, destRel);
@@ -113,13 +155,15 @@ async function addTokens(config, cwd, diffMode, summary) {
       ? await buildTokensCss(config)
       : await buildTokensDart(config);
 
-  const result = await writeOrDiff({ dest, content, cwd, diffMode, summary });
+  const result = await writeOrDiff({ dest, content, cwd, diffMode, summary, conflictResolver });
   if (!diffMode && result !== "unchanged") {
-    console.log(`✓ tokens → ${relative(cwd, dest)}`);
+    const prefix = result === "kept" ? "↷" : "✓";
+    const suffix = result === "kept" ? " (kept)" : "";
+    console.log(`${prefix} tokens → ${relative(cwd, dest)}${suffix}`);
   }
 }
 
-async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary) {
+async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver) {
   const registryRoot = getRegistryRoot(config.platform);
   const registry = JSON.parse(
     await readFile(resolve(registryRoot, "registry.json"), "utf8"),
@@ -132,16 +176,18 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   }
 
   for (const dep of entry.registryDependencies ?? []) {
-    await addOne(dep, config, cwd, installed, pendingDeps, diffMode, summary);
+    await addOne(dep, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver);
   }
 
   for (const file of entry.files) {
     const src = resolve(registryRoot, file.src);
     const dest = resolve(cwd, resolveDest(file.dest, config));
     const content = await readFile(src, "utf8");
-    const result = await writeOrDiff({ dest, content, cwd, diffMode, summary });
+    const result = await writeOrDiff({ dest, content, cwd, diffMode, summary, conflictResolver });
     if (!diffMode && result !== "unchanged") {
-      console.log(`✓ ${name} → ${relative(cwd, dest)}`);
+      const prefix = result === "kept" ? "↷" : "✓";
+      const suffix = result === "kept" ? " (kept)" : "";
+      console.log(`${prefix} ${name} → ${relative(cwd, dest)}${suffix}`);
     }
   }
 
@@ -197,7 +243,19 @@ function runInstall(pm, deps, cwd) {
   });
 }
 
-export async function add({ cwd, names, skipInstall = false, diffMode = false }) {
+export async function add({
+  cwd,
+  names,
+  skipInstall = false,
+  diffMode = false,
+  /**
+   * 기존 파일과 registry 파일이 충돌할 때 동작.
+   * "prompt" — 인터랙티브 (기본). 비대화형 환경에선 자동으로 "keep" 으로 강등.
+   * "keep"   — 기존 파일 유지 (사용자 변경 보존).
+   * "overwrite" — registry 버전으로 덮어쓰기 (`--force`).
+   */
+  onConflict = "prompt",
+}) {
   const configPath = resolve(cwd, "sh-ui.config.json");
   let config;
   try {
@@ -208,11 +266,16 @@ export async function add({ cwd, names, skipInstall = false, diffMode = false })
     );
   }
 
+  // 비대화형(non-TTY)이면 prompt 를 못 띄우니 안전하게 keep 으로 강등.
+  const effectiveStrategy =
+    onConflict === "prompt" && !process.stdin.isTTY ? "keep" : onConflict;
+  const conflictResolver = makeConflictResolver(effectiveStrategy);
+
   const installed = new Set();
   const pendingDeps = new Set();
   const summary = [];
   for (const name of names) {
-    await addOne(name, config, cwd, installed, pendingDeps, diffMode, summary);
+    await addOne(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver);
   }
 
   if (diffMode) {
@@ -255,13 +318,13 @@ export async function add({ cwd, names, skipInstall = false, diffMode = false })
   }
 }
 
-async function addOne(name, config, cwd, installed, pendingDeps, diffMode, summary) {
+async function addOne(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver) {
   if (installed.has(name)) return;
   installed.add(name);
   if (name === "tokens") {
-    await addTokens(config, cwd, diffMode, summary);
+    await addTokens(config, cwd, diffMode, summary, conflictResolver);
   } else {
-    await addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary);
+    await addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver);
   }
 }
 
