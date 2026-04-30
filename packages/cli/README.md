@@ -151,7 +151,7 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user
 ```json
 {
   "platform": "react",
-  "style": "default",
+  "cssFramework": "plain",
   "theme": { "base": "neutral", "radius": "md", "mode": "light-dark" },
   "paths": {
     "tokens": "src/shared/styles/tokens.css",
@@ -160,6 +160,11 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user
   }
 }
 ```
+
+`cssFramework` 옵션:
+
+- `"plain"` — CSS custom properties + 일반 .css 파일. 모든 컴포넌트 지원 (기본).
+- `"tailwind"` — Tailwind v4 utility class TSX 변종 (`class-variance-authority` 기반). button/card/input 부터 시작해 점진적으로 확대 중. 변종 미제공 컴포넌트는 add 시 plain 으로 자동 fallback — Tailwind v4 의 `@theme inline` 브리지가 sh-ui 토큰을 매핑하므로 plain CSS 도 그대로 동작.
 
 ## 더 알아보기
 

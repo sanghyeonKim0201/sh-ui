@@ -1,5 +1,5 @@
 {
-  "$description": "Flutter 레지스트리 매니페스트 — CLI가 각 컴포넌트 name으로 조회해 files를 사용자 프로젝트의 lib/ 아래로 복사한다.",
+  "$description": "Flutter 레지스트리 매니페스트 — CLI가 각 컴포넌트 name으로 조회해 files를 사용자 프로젝트의 lib/ 아래로 복사한다. 컴포넌트 또는 file 엔트리에 frameworks?: string[] 옵션 — 미지정시 모든 cssFramework 에 적용, 지정시 해당 배열에 포함된 경우만 복사.",
   "components": {
     "tokens": {
       "name": "tokens",

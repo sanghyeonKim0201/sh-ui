@@ -63,4 +63,24 @@ describe('parseArgs', () => {
     expect(parseArgs(['node', 'create.js', '--help']).flags.help).toBe(true);
     expect(parseArgs(['node', 'create.js', '-h']).flags.help).toBe(true);
   });
+
+  it('--css plain → flags.css = "plain"', () => {
+    const r = parseArgs(['node', 'create.js', '--css', 'plain']);
+    expect(r.flags.css).toBe('plain');
+  });
+
+  it('--css tailwind → flags.css = "tailwind" (SUPPORTED 승격)', () => {
+    const r = parseArgs(['node', 'create.js', '--css', 'tailwind']);
+    expect(r.flags.css).toBe('tailwind');
+  });
+
+  it('--css css-modules → "곧 지원 예정" 친절 에러', () => {
+    expect(() => parseArgs(['node', 'create.js', '--css', 'css-modules']))
+      .toThrow(/곧 지원 예정/);
+  });
+
+  it('--css garbage → 일반 enum 에러', () => {
+    expect(() => parseArgs(['node', 'create.js', '--css', 'garbage']))
+      .toThrow(/--css/);
+  });
 });

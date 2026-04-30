@@ -36,6 +36,7 @@ import {
   THEME_BASES,
   THEME_RADII,
   THEME_MODES,
+  CSS_FRAMEWORKS_SUPPORTED,
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
 import { THEME_PRESET_NAMES } from "./create/theme/presets.js";
@@ -44,6 +45,7 @@ const PLATFORMS = INIT_PLATFORMS;
 const BASES = THEME_BASES;
 const RADII = THEME_RADII;
 const MODES = THEME_MODES;
+const CSS_FRAMEWORKS = CSS_FRAMEWORKS_SUPPORTED;
 const PLUGIN_NAMES = allPlugins.map((p) => p.name);
 const THEME_PRESETS_LIST = THEME_PRESET_NAMES.join(", ");
 
@@ -69,6 +71,10 @@ const INIT_DESCRIPTIONS = {
     "light-dark": "라이트/다크 자동 전환 (prefers-color-scheme, 권장)",
     light: "라이트 전용",
     dark: "다크 전용",
+  },
+  cssFramework: {
+    plain: "플레인 CSS — CSS custom properties + 일반 .css 파일 (모든 컴포넌트 지원)",
+    tailwind: "Tailwind v4 utility class — class-variance-authority 기반. 변종 미제공 컴포넌트는 plain 으로 자동 fallback",
   },
 };
 
@@ -146,7 +152,7 @@ const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter �
 
 export async function startMcpServer() {
   const server = new McpServer(
-    { name: "sh-ui", version: "0.23.1" }, // sh-ui-cli 와 동기화
+    { name: "sh-ui", version: "0.43.0" }, // sh-ui-cli 와 동기화
     {
       capabilities: { tools: {} },
       instructions: SERVER_INSTRUCTIONS,
@@ -181,6 +187,8 @@ export async function startMcpServer() {
           .describe(`Next.js 플러그인 (${PLUGIN_NAMES.join(', ')}). 미지정시 빈 배열`),
         theme: z.string().optional()
           .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 playground 에서 생성한 base64 (선택)`),
+        cssFramework: z.enum(CSS_FRAMEWORKS).optional()
+          .describe(`CSS 프레임워크. 기본 plain. 현재 ${CSS_FRAMEWORKS.join('/')} 지원 (향후 tailwind 등 추가 예정)`),
         cwd: z.string().optional()
           .describe("부모 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()
@@ -222,6 +230,7 @@ export async function startMcpServer() {
             structure: input.structure,
             plugins: input.plugins,
             theme: input.theme,
+            css: input.cssFramework,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
@@ -249,6 +258,8 @@ export async function startMcpServer() {
           .describe("기본 radius. 기본 md"),
         mode: z.enum(MODES).optional()
           .describe("색 모드. 기본 light-dark"),
+        cssFramework: z.enum(CSS_FRAMEWORKS).optional()
+          .describe(`CSS 프레임워크. 기본 plain. 현재 ${CSS_FRAMEWORKS.join('/')} 지원 (향후 tailwind 등 추가 예정)`),
         cwd: z.string().optional()
           .describe("작업 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()
@@ -257,7 +268,7 @@ export async function startMcpServer() {
     },
     async (input) => {
       const args = ["--yes"];
-      for (const k of ["platform", "base", "radius", "mode"]) {
+      for (const k of ["platform", "base", "radius", "mode", "cssFramework"]) {
         if (input[k]) args.push(`--${k}`, input[k]);
       }
       if (input.force) args.push("--force");

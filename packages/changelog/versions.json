@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.43.0",
+      "date": "2026-04-30",
+      "title": "CSS 프레임워크 변종 시스템 + Tailwind 1차 지원",
+      "type": "minor",
+      "highlights": [
+        "**`cssFramework` 옵션 신설** — `sh-ui.config.json` 에 `cssFramework: \"plain\" | \"tailwind\"`. CLI `--css` / `sh-ui-cli init --cssFramework` / MCP `sh_ui_create_project` 의 `cssFramework` / playground UI 에서 모두 선택 가능. 기존 `style: \"default\"` 필드는 deprecated (무시).",
+        "**Tailwind v4 utility-class 변종** — `button`, `card`, `input` 의 utility-class 변종 (`class-variance-authority` 기반) 추가. registry.json 의 `frameworks: [\"plain\" | \"tailwind\"]` 분기 + dependency 분기 (`{name, frameworks}` 객체 형식) 지원. `cssFramework=\"tailwind\"` 인데 변종이 없는 컴포넌트는 plain 으로 자동 fallback — Tailwind v4 환경에서 그대로 동작.",
+        "**`@theme inline` 단일 소스** — `tokens.css` 가 Tailwind v4 의 `@theme inline { --color-*: var(--*); --radius-{sm,md,lg,xl}; }` 블록을 자동 emit. 템플릿(`nextjs-standalone`, `ui-app-template`)의 하드코딩 `@theme` 제거 — 토큰이 추가/변경돼도 매핑이 자동 동기화.",
+        "**토큰 emitter 디스패처** — `packages/tokens/build.mjs` 에 `(platform × cssFramework) → emitter` 테이블. 향후 `react/css-modules`, `react/vanilla-extract` 등 추가 시 한 줄로 등록."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.43.0"
+    },
+    {
       "version": "0.42.1",
       "date": "2026-04-30",
       "title": "Calendar range 셀 연결 + 검색 다이얼로그 픽스",

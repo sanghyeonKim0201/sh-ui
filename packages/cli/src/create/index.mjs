@@ -3,7 +3,7 @@
 import { parseArgs } from './cli-args.js';
 import { createProject, addApp, addComponent } from './generator.js';
 import { allPlugins } from './plugins/index.js';
-import { CREATE_PLATFORMS, CREATE_STRUCTURES } from '../constants.js';
+import { CREATE_PLATFORMS, CREATE_STRUCTURES, CSS_FRAMEWORKS_SUPPORTED } from '../constants.js';
 import { THEME_PRESET_NAMES } from './theme/presets.js';
 
 const PLUGIN_NAMES = allPlugins.map((p) => p.name);
@@ -22,6 +22,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
   --structure <${CREATE_STRUCTURES.join('|')}>  Next.js 프로젝트 구조 (next 일 때)
   --plugins <a,b>                    플러그인 (${PLUGINS_LIST}). 미지정/"" → 없음
   --theme <preset|base64>            프리셋 이름(${THEME_PRESETS_LIST}) 또는 playground base64. 선택
+  --css <${CSS_FRAMEWORKS_SUPPORTED.join('|')}>                        CSS 프레임워크 (현재 plain만 지원, 향후 tailwind 등 추가 예정)
   --yes                              디렉토리 덮어쓰기 + 모노레포 기본값 자동 채택
   --dry-run                          파일을 쓰지 않고 작성될 파일 목록만 출력
   -h, --help                         이 도움말
@@ -70,6 +71,7 @@ export async function runCreate(rest) {
       structure: flags.structure,
       plugins: flags.plugins,
       theme: flags.theme,
+      css: flags.css,
       yes: flags.yes,
       dryRun: flags.dryRun,
     });

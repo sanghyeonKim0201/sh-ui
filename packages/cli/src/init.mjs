@@ -9,6 +9,8 @@ import {
   THEME_RADII,
   THEME_MODES,
   INIT_DEFAULTS,
+  CSS_FRAMEWORKS_SUPPORTED,
+  CSS_FRAMEWORKS_PLANNED,
 } from "./constants.js";
 
 const CHOICES = {
@@ -16,6 +18,7 @@ const CHOICES = {
   base: THEME_BASES,
   radius: THEME_RADII,
   mode: THEME_MODES,
+  cssFramework: CSS_FRAMEWORKS_SUPPORTED,
 };
 
 const DEFAULTS = INIT_DEFAULTS;
@@ -80,11 +83,20 @@ async function prompt(rl, label, choices, def) {
 }
 
 function validateOrThrow(key, value) {
-  if (!CHOICES[key].includes(value)) {
+  if (CHOICES[key].includes(value)) return;
+
+  // cssFramework 는 향후 지원 예정 값에 대해 별도 안내. 사용자가 "tailwind"
+  // 같은 값을 미리 시도해 보고 싶을 때, 단순한 unknown 메시지보다 "곧 옵니다"
+  // 신호가 의도를 더 잘 전달함.
+  if (key === "cssFramework" && CSS_FRAMEWORKS_PLANNED.includes(value)) {
     throw new Error(
-      `--${key}에 '${value}'는 허용되지 않습니다. 허용: ${CHOICES[key].join(", ")}`,
+      `--cssFramework='${value}'는 곧 지원 예정입니다. 현재는 ${CHOICES[key].join(", ")} 만 가능합니다.`,
     );
   }
+
+  throw new Error(
+    `--${key}에 '${value}'는 허용되지 않습니다. 허용: ${CHOICES[key].join(", ")}`,
+  );
 }
 
 /** 플래그/TTY 상태에 따라 4개 축 값을 결정. 필요한 경우에만 프롬프트. */
@@ -97,7 +109,11 @@ async function resolveAnswers(flags) {
     }
   }
 
-  const missingKeys = Object.keys(CHOICES).filter((k) => flags[k] == null);
+  // 선택지가 1개뿐인 축은 프롬프트 스킵 — 기본값으로 자동 채움.
+  // (예: cssFramework 가 plain 만일 때 의미 없는 "[plain] (plain):" 질문 회피)
+  const missingKeys = Object.keys(CHOICES).filter(
+    (k) => flags[k] == null && CHOICES[k].length > 1,
+  );
   if (flags.yes || missingKeys.length === 0) return answers;
 
   if (!stdin.isTTY) {
@@ -125,14 +141,15 @@ function labelFor(key) {
     base: "기본 색 스케일",
     radius: "radius",
     mode: "모드",
+    cssFramework: "CSS 프레임워크",
   }[key];
 }
 
-function buildConfig({ platform, base, radius, mode }) {
+function buildConfig({ platform, base, radius, mode, cssFramework }) {
   return {
     $schema: "https://your-ds.dev/sh-ui.schema.json",
     platform,
-    style: "default",
+    cssFramework,
     theme: { base, radius, mode },
     paths: PATHS[platform],
     ...(ALIASES[platform] ? { aliases: ALIASES[platform] } : {}),
@@ -153,7 +170,8 @@ export async function init({ cwd, args }) {
   await writeFile(configPath, JSON.stringify(config, null, 2) + "\n", "utf8");
 
   console.log(`\n✓ sh-ui.config.json 생성 완료`);
-  console.log(`  platform: ${answers.platform}`);
-  console.log(`  theme:    base=${answers.base}, radius=${answers.radius}, mode=${answers.mode}`);
+  console.log(`  platform:     ${answers.platform}`);
+  console.log(`  cssFramework: ${answers.cssFramework}`);
+  console.log(`  theme:        base=${answers.base}, radius=${answers.radius}, mode=${answers.mode}`);
   console.log(`\n다음 단계:  sh-ui add tokens button`);
 }

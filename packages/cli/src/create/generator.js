@@ -32,8 +32,27 @@ import {
   buildDartGradientsBlock,
 } from './theme/inject.js';
 import { getTemplatesRoot } from '../paths.mjs';
+import {
+  CSS_FRAMEWORK_DEFAULT,
+  CSS_FRAMEWORKS_SUPPORTED,
+  CSS_FRAMEWORKS_PLANNED,
+} from '../constants.js';
 
 const TEMPLATES_DIR = getTemplatesRoot();
+
+/**
+ * 템플릿 복사 직후 sh-ui.config.json 의 cssFramework 필드를 갱신.
+ * 템플릿엔 이미 기본값이 박혀 있지만, 사용자가 --css 로 다른 값을 지정한
+ * 경우 그 값으로 덮어쓴다. 1단계는 plain 만 지원하므로 사실상 idempotent
+ * 이지만 2단계 emitter 가 추가되면 이 한 호출만으로 곧바로 동작.
+ */
+async function patchShUiConfig(configPath, cssFramework) {
+  const fw = cssFramework ?? CSS_FRAMEWORK_DEFAULT;
+  if (!(await fs.pathExists(configPath))) return;
+  const config = await fs.readJson(configPath);
+  config.cssFramework = fw;
+  await fs.writeJson(configPath, config, { spaces: 2 });
+}
 
 // ─── Create new project ───
 
@@ -70,6 +89,33 @@ export async function createProject(options = {}) {
       { name: 'Flutter', value: 'flutter' },
     ],
   });
+
+  // CSS 프레임워크 — 현재는 plain 만 지원하지만, 곧 추가될 옵션을 disabled 로
+  // 미리 노출해 사용자가 변종 시스템의 존재를 인지할 수 있게 한다.
+  // Flutter 는 CSS 프레임워크 개념이 무의미하므로 자동 plain.
+  let cssFramework = options.css ?? CSS_FRAMEWORK_DEFAULT;
+  if (
+    options.css == null &&
+    platform !== 'flutter' &&
+    process.stdin.isTTY &&
+    !options.yes
+  ) {
+    cssFramework = await select({
+      message: 'CSS 프레임워크:',
+      default: CSS_FRAMEWORK_DEFAULT,
+      choices: [
+        ...CSS_FRAMEWORKS_SUPPORTED.map((fw) => ({
+          name: `${fw} — 플레인 CSS + custom properties`,
+          value: fw,
+        })),
+        ...CSS_FRAMEWORKS_PLANNED.map((fw) => ({
+          name: fw,
+          value: fw,
+          disabled: '곧 지원',
+        })),
+      ],
+    });
+  }
 
   let theme = null;
   if (options.theme) {
@@ -114,7 +160,7 @@ export async function createProject(options = {}) {
   }
 
   if (platform === 'flutter') {
-    await generateFlutter(targetDir, projectName, theme);
+    await generateFlutter(targetDir, projectName, theme, cssFramework);
     await finalizeProject(targetDir, { dryRun: options.dryRun });
     console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
     console.log(`\n  cd ${projectName}`);
@@ -140,9 +186,9 @@ export async function createProject(options = {}) {
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
 
   if (projectType === 'standalone') {
-    await generateStandalone(targetDir, projectName, plugins, theme);
+    await generateStandalone(targetDir, projectName, plugins, theme, cssFramework);
   } else {
-    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme });
+    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme, css: cssFramework });
   }
 
   await finalizeProject(targetDir, { dryRun: options.dryRun });
@@ -302,13 +348,14 @@ export async function addComponent(componentName, appName) {
 
 // ─── Generators ───
 
-async function generateFlutter(targetDir, projectName, theme) {
+async function generateFlutter(targetDir, projectName, theme, css) {
   await fs.copy(path.join(TEMPLATES_DIR, 'flutter-standalone'), targetDir);
   await replaceInAllFiles(targetDir, '{{project_name}}', projectName);
   await injectDartTheme(targetDir, theme);
+  await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css);
 }
 
-async function generateStandalone(targetDir, projectName, plugins, theme) {
+async function generateStandalone(targetDir, projectName, plugins, theme, css) {
   await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-standalone'), targetDir);
 
   // Update package.json
@@ -331,9 +378,10 @@ async function generateStandalone(targetDir, projectName, plugins, theme) {
   await composeProviders(targetDir, plugins);
   await applyTransforms(targetDir, plugins);
   await injectCssTheme(targetDir, theme);
+  await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -367,6 +415,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   await generateApp(appsDir, appName, port, plugins);
   const uiAppDir = path.join(targetDir, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
   await injectCssTheme(uiAppDir, theme);
+  await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css);
 }
 
 async function generateApp(targetDir, appName, port, plugins) {

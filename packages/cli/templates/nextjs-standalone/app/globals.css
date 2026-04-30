@@ -3,27 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-background-subtle: var(--background-subtle);
-  --color-background-muted: var(--background-muted);
-  --color-background-inverse: var(--background-inverse);
-  --color-foreground: var(--foreground);
-  --color-foreground-muted: var(--foreground-muted);
-  --color-foreground-subtle: var(--foreground-subtle);
-  --color-foreground-inverse: var(--foreground-inverse);
-  --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary-hover: var(--primary-hover);
-  --color-danger: var(--danger);
-  --color-danger-foreground: var(--danger-foreground);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 4px);
-}
+/* Tailwind v4 @theme inline 블록은 tokens.css 가 자동으로 emit. */
 
 @layer base {
   body {
