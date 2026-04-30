@@ -1,0 +1,309 @@
+"use client";
+
+import * as React from "react";
+
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
+
+type Orientation = "horizontal" | "vertical";
+
+interface CarouselContextValue {
+  orientation: Orientation; loop: boolean;
+  index: number; count: number;
+  goTo: (i: number) => void; goPrev: () => void; goNext: () => void;
+  registerItem: () => () => void;
+  setContentEl: (el: HTMLDivElement | null) => void;
+  contentRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const CarouselContext = React.createContext<CarouselContextValue | null>(null);
+
+function useCarousel() {
+  const ctx = React.useContext(CarouselContext);
+  if (!ctx) throw new Error("Carousel parts must be used within <Carousel>");
+  return ctx;
+}
+
+export function useCarouselState() {
+  const { orientation, loop, index, count, goTo, goPrev, goNext } = useCarousel();
+  return { orientation, loop, index, count, goTo, goPrev, goNext };
+}
+
+export interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
+  orientation?: Orientation;
+  loop?: boolean;
+  autoPlay?: boolean | number;
+  defaultIndex?: number;
+  index?: number;
+  onIndexChange?: (index: number) => void;
+}
+
+export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
+  ({ className, orientation = "horizontal", loop = false, autoPlay, defaultIndex = 0, index: controlledIndex, onIndexChange, children, onKeyDown: userOnKeyDown, ...props }, ref) => {
+    const isControlled = controlledIndex !== undefined;
+    const [uncontrolled, setUncontrolled] = React.useState(defaultIndex);
+    const index = isControlled ? controlledIndex : uncontrolled;
+    const [count, setCount] = React.useState(0);
+    const contentRef = React.useRef<HTMLDivElement | null>(null);
+    const scrollTargetRef = React.useRef<number | null>(null);
+
+    const setContentEl = React.useCallback((el: HTMLDivElement | null) => { contentRef.current = el; }, []);
+    const registerItem = React.useCallback(() => {
+      setCount((c) => c + 1);
+      return () => setCount((c) => Math.max(0, c - 1));
+    }, []);
+
+    const setIndex = React.useCallback((next: number) => {
+      if (!isControlled) setUncontrolled(next);
+      onIndexChange?.(next);
+    }, [isControlled, onIndexChange]);
+
+    const clamp = React.useCallback((i: number) => {
+      if (count <= 0) return 0;
+      if (loop) return ((i % count) + count) % count;
+      return Math.max(0, Math.min(count - 1, i));
+    }, [count, loop]);
+
+    const goTo = React.useCallback((i: number) => setIndex(clamp(i)), [clamp, setIndex]);
+    const goPrev = React.useCallback(() => setIndex(clamp(index - 1)), [clamp, index, setIndex]);
+    const goNext = React.useCallback(() => setIndex(clamp(index + 1)), [clamp, index, setIndex]);
+
+    React.useEffect(() => {
+      const el = contentRef.current;
+      if (!el) return;
+      const child = el.children[index] as HTMLElement | undefined;
+      if (!child) return;
+      scrollTargetRef.current = index;
+      if (orientation === "horizontal") el.scrollTo({ left: child.offsetLeft, behavior: "smooth" });
+      else el.scrollTo({ top: child.offsetTop, behavior: "smooth" });
+    }, [index, orientation, count]);
+
+    React.useEffect(() => {
+      const el = contentRef.current;
+      if (!el) return;
+      let raf = 0;
+      const onScroll = () => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          const children = Array.from(el.children) as HTMLElement[];
+          if (children.length === 0) return;
+          const axis = orientation === "horizontal" ? "offsetLeft" : "offsetTop";
+          const scroll = orientation === "horizontal" ? el.scrollLeft : el.scrollTop;
+          let nearest = 0; let minDelta = Infinity;
+          children.forEach((c, i) => {
+            const d = Math.abs(c[axis] - scroll);
+            if (d < minDelta) { minDelta = d; nearest = i; }
+          });
+          if (nearest !== index) {
+            if (scrollTargetRef.current !== null && nearest !== scrollTargetRef.current) return;
+            scrollTargetRef.current = null;
+            setIndex(nearest);
+          } else scrollTargetRef.current = null;
+        });
+      };
+      el.addEventListener("scroll", onScroll, { passive: true });
+      return () => { cancelAnimationFrame(raf); el.removeEventListener("scroll", onScroll); };
+    }, [orientation, index, setIndex]);
+
+    React.useEffect(() => {
+      if (!autoPlay || count <= 1) return;
+      const delay = autoPlay === true ? 4000 : autoPlay;
+      const el = contentRef.current;
+      let paused = false;
+      const pause = () => (paused = true);
+      const resume = () => (paused = false);
+      el?.addEventListener("mouseenter", pause);
+      el?.addEventListener("mouseleave", resume);
+      el?.addEventListener("focusin", pause);
+      el?.addEventListener("focusout", resume);
+      const id = window.setInterval(() => { if (paused) return; setIndex(clamp(index + 1)); }, delay);
+      return () => {
+        window.clearInterval(id);
+        el?.removeEventListener("mouseenter", pause);
+        el?.removeEventListener("mouseleave", resume);
+        el?.removeEventListener("focusin", pause);
+        el?.removeEventListener("focusout", resume);
+      };
+    }, [autoPlay, count, index, clamp, setIndex]);
+
+    const onKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+      userOnKeyDown?.(event);
+      if (event.defaultPrevented) return;
+      const prevKey = orientation === "horizontal" ? "ArrowLeft" : "ArrowUp";
+      const nextKey = orientation === "horizontal" ? "ArrowRight" : "ArrowDown";
+      if (event.key === prevKey) { event.preventDefault(); goPrev(); }
+      else if (event.key === nextKey) { event.preventDefault(); goNext(); }
+    }, [orientation, goPrev, goNext, userOnKeyDown]);
+
+    const value = React.useMemo<CarouselContextValue>(() => ({
+      orientation, loop, index, count, goTo, goPrev, goNext, registerItem, setContentEl, contentRef,
+    }), [orientation, loop, index, count, goTo, goPrev, goNext, registerItem, setContentEl]);
+
+    return (
+      <CarouselContext.Provider value={value}>
+        <div
+          ref={ref}
+          className={cx("relative w-full", className)}
+          data-orientation={orientation}
+          role="region"
+          aria-roledescription="carousel"
+          onKeyDown={onKeyDown}
+          {...props}
+        >
+          {children}
+        </div>
+      </CarouselContext.Provider>
+    );
+  },
+);
+Carousel.displayName = "Carousel";
+
+export const CarouselContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => {
+    const { orientation, setContentEl } = useCarousel();
+    const mergedRef = React.useCallback((el: HTMLDivElement | null) => {
+      setContentEl(el);
+      if (typeof ref === "function") ref(el);
+      else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    }, [ref, setContentEl]);
+
+    return (
+      <div
+        ref={mergedRef}
+        className={cx(
+          "flex gap-[var(--space-4)] overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] overscroll-x-contain [&::-webkit-scrollbar]:hidden motion-reduce:scroll-auto",
+          orientation === "vertical" && "flex-col overflow-x-hidden overflow-y-auto snap-y snap-mandatory h-80",
+          className,
+        )}
+        data-orientation={orientation}
+        {...props}
+      />
+    );
+  },
+);
+CarouselContent.displayName = "CarouselContent";
+
+export const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => {
+    const { orientation, registerItem } = useCarousel();
+    React.useEffect(() => registerItem(), [registerItem]);
+    return (
+      <div
+        ref={ref}
+        role="group"
+        aria-roledescription="slide"
+        className={cx(
+          "flex-[0_0_100%] min-w-0 snap-start snap-always",
+          orientation === "vertical" && "basis-auto",
+          className,
+        )}
+        data-orientation={orientation}
+        {...props}
+      />
+    );
+  },
+);
+CarouselItem.displayName = "CarouselItem";
+
+const navClasses =
+  "absolute top-1/2 w-8 h-8 inline-flex items-center justify-center bg-background text-foreground border border-border rounded-full cursor-pointer -translate-y-1/2 z-[1] transition-[opacity,background-color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed motion-reduce:transition-none data-[orientation=vertical]:left-1/2 data-[orientation=vertical]:-translate-x-1/2 data-[orientation=vertical]:[top:auto]";
+
+export const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  ({ className, onClick, disabled, children, ...props }, ref) => {
+    const { goPrev, orientation, index, count, loop } = useCarousel();
+    const atStart = !loop && index <= 0;
+    return (
+      <button
+        ref={ref}
+        type="button"
+        aria-label="이전"
+        className={cx(
+          navClasses,
+          orientation === "horizontal" ? "-left-4" : "-top-4 left-1/2",
+          className,
+        )}
+        data-orientation={orientation}
+        disabled={disabled || atStart || count === 0}
+        onClick={(e) => { onClick?.(e); if (!e.defaultPrevented) goPrev(); }}
+        {...props}
+      >
+        {children ?? (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d={orientation === "horizontal" ? "M10 4l-4 4 4 4" : "M4 10l4-4 4 4"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
+    );
+  },
+);
+CarouselPrevious.displayName = "CarouselPrevious";
+
+export const CarouselNext = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  ({ className, onClick, disabled, children, ...props }, ref) => {
+    const { goNext, orientation, index, count, loop } = useCarousel();
+    const atEnd = !loop && index >= count - 1;
+    return (
+      <button
+        ref={ref}
+        type="button"
+        aria-label="다음"
+        className={cx(
+          navClasses,
+          orientation === "horizontal" ? "-right-4" : "-bottom-4 left-1/2 [top:auto]",
+          className,
+        )}
+        data-orientation={orientation}
+        disabled={disabled || atEnd || count === 0}
+        onClick={(e) => { onClick?.(e); if (!e.defaultPrevented) goNext(); }}
+        {...props}
+      >
+        {children ?? (
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d={orientation === "horizontal" ? "M6 4l4 4-4 4" : "M4 6l4 4 4-4"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </button>
+    );
+  },
+);
+CarouselNext.displayName = "CarouselNext";
+
+export interface CarouselIndicatorsProps extends React.HTMLAttributes<HTMLDivElement> {
+  labelFor?: (index: number) => string;
+}
+
+export const CarouselIndicators = React.forwardRef<HTMLDivElement, CarouselIndicatorsProps>(
+  ({ className, labelFor, ...props }, ref) => {
+    const { count, index, goTo, orientation } = useCarousel();
+    if (count <= 0) return null;
+    return (
+      <div
+        ref={ref}
+        role="tablist"
+        aria-label="슬라이드 선택"
+        className={cx(
+          "flex justify-center items-center gap-[var(--space-2)] mt-[var(--space-3)]",
+          orientation === "vertical" && "absolute top-1/2 right-2 mt-0 flex-col -translate-y-1/2",
+          className,
+        )}
+        data-orientation={orientation}
+        {...props}
+      >
+        {Array.from({ length: count }).map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-label={labelFor ? labelFor(i) : `${i + 1}번 슬라이드`}
+            className="w-2 h-2 p-0 bg-border border-none rounded-full cursor-pointer transition-[background-color,transform] duration-[var(--duration-fast)] hover:bg-border-strong data-[active]:bg-foreground data-[active]:scale-[1.2] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none"
+            data-active={i === index || undefined}
+            onClick={() => goTo(i)}
+          />
+        ))}
+      </div>
+    );
+  },
+);
+CarouselIndicators.displayName = "CarouselIndicators";

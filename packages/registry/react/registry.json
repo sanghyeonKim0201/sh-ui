@@ -130,11 +130,24 @@
       "files": [
         {
           "src": "components/file-upload/index.tsx",
-          "dest": "{components}/file-upload/index.tsx"
+          "dest": "{components}/file-upload/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/file-upload/styles.css",
-          "dest": "{components}/file-upload/styles.css"
+          "dest": "{components}/file-upload/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/file-upload/index.tailwind.tsx",
+          "dest": "{components}/file-upload/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -146,15 +159,24 @@
       "files": [
         {
           "src": "components/form/index.tsx",
-          "dest": "{components}/form/index.tsx"
+          "dest": "{components}/form/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/form/form.tsx",
-          "dest": "{components}/form/form.tsx"
+          "dest": "{components}/form/form.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/form/field.tsx",
-          "dest": "{components}/form/field.tsx"
+          "dest": "{components}/form/field.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/form/steps.tsx",
@@ -190,7 +212,31 @@
         },
         {
           "src": "components/form/styles.css",
-          "dest": "{components}/form/styles.css"
+          "dest": "{components}/form/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/form/index.tailwind.tsx",
+          "dest": "{components}/form/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
+        },
+        {
+          "src": "components/form/form.tailwind.tsx",
+          "dest": "{components}/form/form.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
+        },
+        {
+          "src": "components/form/field.tailwind.tsx",
+          "dest": "{components}/form/field.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -298,11 +344,24 @@
       "files": [
         {
           "src": "components/code-editor/index.tsx",
-          "dest": "{components}/code-editor/index.tsx"
+          "dest": "{components}/code-editor/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/code-editor/styles.css",
-          "dest": "{components}/code-editor/styles.css"
+          "dest": "{components}/code-editor/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/code-editor/index.tailwind.tsx",
+          "dest": "{components}/code-editor/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -323,11 +382,24 @@
       "files": [
         {
           "src": "components/markdown-editor/index.tsx",
-          "dest": "{components}/markdown-editor/index.tsx"
+          "dest": "{components}/markdown-editor/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/markdown-editor/styles.css",
-          "dest": "{components}/markdown-editor/styles.css"
+          "dest": "{components}/markdown-editor/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/markdown-editor/index.tailwind.tsx",
+          "dest": "{components}/markdown-editor/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -344,11 +416,24 @@
       "files": [
         {
           "src": "components/rich-text-editor/index.tsx",
-          "dest": "{components}/rich-text-editor/index.tsx"
+          "dest": "{components}/rich-text-editor/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/rich-text-editor/styles.css",
-          "dest": "{components}/rich-text-editor/styles.css"
+          "dest": "{components}/rich-text-editor/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/rich-text-editor/index.tailwind.tsx",
+          "dest": "{components}/rich-text-editor/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -398,11 +483,24 @@
       "files": [
         {
           "src": "components/sidebar/index.tsx",
-          "dest": "{components}/sidebar/index.tsx"
+          "dest": "{components}/sidebar/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/sidebar/styles.css",
-          "dest": "{components}/sidebar/styles.css"
+          "dest": "{components}/sidebar/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/sidebar/index.tailwind.tsx",
+          "dest": "{components}/sidebar/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [
@@ -418,11 +516,24 @@
       "files": [
         {
           "src": "components/header/index.tsx",
-          "dest": "{components}/header/index.tsx"
+          "dest": "{components}/header/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/header/styles.css",
-          "dest": "{components}/header/styles.css"
+          "dest": "{components}/header/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/header/index.tailwind.tsx",
+          "dest": "{components}/header/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -559,11 +670,24 @@
       "files": [
         {
           "src": "components/color-picker/index.tsx",
-          "dest": "{components}/color-picker/index.tsx"
+          "dest": "{components}/color-picker/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/color-picker/styles.css",
-          "dest": "{components}/color-picker/styles.css"
+          "dest": "{components}/color-picker/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/color-picker/index.tailwind.tsx",
+          "dest": "{components}/color-picker/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -1256,11 +1380,24 @@
       "files": [
         {
           "src": "components/toast/index.tsx",
-          "dest": "{components}/toast/index.tsx"
+          "dest": "{components}/toast/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/toast/styles.css",
-          "dest": "{components}/toast/styles.css"
+          "dest": "{components}/toast/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/toast/index.tailwind.tsx",
+          "dest": "{components}/toast/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -1272,11 +1409,24 @@
       "files": [
         {
           "src": "components/calendar/index.tsx",
-          "dest": "{components}/calendar/index.tsx"
+          "dest": "{components}/calendar/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/calendar/styles.css",
-          "dest": "{components}/calendar/styles.css"
+          "dest": "{components}/calendar/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/calendar/index.tailwind.tsx",
+          "dest": "{components}/calendar/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
@@ -1383,11 +1533,24 @@
       "files": [
         {
           "src": "components/carousel/index.tsx",
-          "dest": "{components}/carousel/index.tsx"
+          "dest": "{components}/carousel/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
         },
         {
           "src": "components/carousel/styles.css",
-          "dest": "{components}/carousel/styles.css"
+          "dest": "{components}/carousel/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/carousel/index.tailwind.tsx",
+          "dest": "{components}/carousel/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
         }
       ],
       "dependencies": [],
