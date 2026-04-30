@@ -1,5 +1,5 @@
 {
-  "$description": "React 레지스트리 매니페스트 — CLI가 각 컴포넌트 name으로 조회해 files를 사용자 프로젝트로 복사한다.",
+  "$description": "React 레지스트리 매니페스트 — CLI가 각 컴포넌트 name으로 조회해 files를 사용자 프로젝트로 복사한다. 컴포넌트 또는 file 엔트리에 frameworks?: string[] 옵션 — 미지정시 모든 cssFramework 에 적용, 지정시 해당 배열에 포함된 경우만 복사.",
   "components": {
     "button": {
       "name": "button",
@@ -7,14 +7,23 @@
       "files": [
         {
           "src": "components/button/index.tsx",
-          "dest": "{components}/button/index.tsx"
+          "dest": "{components}/button/index.tsx",
+          "frameworks": ["plain"]
         },
         {
           "src": "components/button/styles.css",
-          "dest": "{components}/button/styles.css"
+          "dest": "{components}/button/styles.css",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/button/index.tailwind.tsx",
+          "dest": "{components}/button/index.tsx",
+          "frameworks": ["tailwind"]
         }
       ],
-      "dependencies": [],
+      "dependencies": [
+        { "name": "class-variance-authority", "frameworks": ["tailwind"] }
+      ],
       "registryDependencies": []
     },
     "card": {
@@ -23,11 +32,18 @@
       "files": [
         {
           "src": "components/card/index.tsx",
-          "dest": "{components}/card/index.tsx"
+          "dest": "{components}/card/index.tsx",
+          "frameworks": ["plain"]
         },
         {
           "src": "components/card/styles.css",
-          "dest": "{components}/card/styles.css"
+          "dest": "{components}/card/styles.css",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/card/index.tailwind.tsx",
+          "dest": "{components}/card/index.tsx",
+          "frameworks": ["tailwind"]
         }
       ],
       "dependencies": [],
@@ -39,11 +55,18 @@
       "files": [
         {
           "src": "components/input/index.tsx",
-          "dest": "{components}/input/index.tsx"
+          "dest": "{components}/input/index.tsx",
+          "frameworks": ["plain"]
         },
         {
           "src": "components/input/styles.css",
-          "dest": "{components}/input/styles.css"
+          "dest": "{components}/input/styles.css",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/input/index.tailwind.tsx",
+          "dest": "{components}/input/index.tsx",
+          "frameworks": ["tailwind"]
         }
       ],
       "dependencies": [],

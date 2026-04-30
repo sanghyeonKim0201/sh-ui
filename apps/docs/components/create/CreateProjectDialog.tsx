@@ -1,7 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { allPlugins } from "sh-ui-cli/api";
+import {
+  allPlugins,
+  CSS_FRAMEWORKS_SUPPORTED,
+  CSS_FRAMEWORKS_PLANNED,
+  CSS_FRAMEWORK_DEFAULT,
+} from "sh-ui-cli/api";
 
 import {
   Dialog,
@@ -19,6 +24,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   composeCommand,
   type ComposerOptions,
+  type CssFramework,
   type PackageManager,
   type Platform,
   type Plugin,
@@ -106,6 +112,7 @@ export function CreateProjectDialog({
   const [structure, setStructure] = useState<Structure>("standalone");
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
   const [packageManager, setPackageManager] = useState<PackageManager>("pnpm");
+  const [cssFramework, setCssFramework] = useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
   const [copied, setCopied] = useState(false);
 
   const nameError = useMemo(() => validateProjectName(projectName), [projectName]);
@@ -167,8 +174,9 @@ export function CreateProjectDialog({
         plugins,
         packageManager,
         themeBase64,
+        cssFramework,
       } satisfies ComposerOptions),
-    [projectName, platform, structure, plugins, packageManager, themeBase64],
+    [projectName, platform, structure, plugins, packageManager, themeBase64, cssFramework],
   );
 
   const togglePlugin = (p: Plugin) => {
@@ -288,6 +296,39 @@ export function CreateProjectDialog({
                   <ToggleGroupItem value="standalone">Standalone</ToggleGroupItem>
                   <ToggleGroupItem value="monorepo">Monorepo</ToggleGroupItem>
                 </ToggleGroup>
+              </div>
+              <div>
+                <Label>CSS 프레임워크</Label>
+                <ToggleGroup
+                  value={[cssFramework]}
+                  onValueChange={(v: any[]) => {
+                    const next = v[0] as CssFramework | undefined;
+                    if (next) setCssFramework(next);
+                  }}
+                >
+                  {CSS_FRAMEWORKS_SUPPORTED.map((fw) => (
+                    <ToggleGroupItem key={fw} value={fw}>{fw}</ToggleGroupItem>
+                  ))}
+                  {CSS_FRAMEWORKS_PLANNED.map((fw) => (
+                    <ToggleGroupItem
+                      key={fw}
+                      value={fw}
+                      disabled
+                      title="곧 지원 예정"
+                    >
+                      {fw}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <div
+                  style={{
+                    marginTop: "0.25rem",
+                    fontSize: "0.6875rem",
+                    color: "var(--foreground-muted)",
+                  }}
+                >
+                  tailwind 변종 미제공 컴포넌트는 add 시 plain 으로 자동 fallback (Tailwind v4 환경에서 그대로 동작).
+                </div>
               </div>
               <div role="group" aria-labelledby="plugins-label">
                 <Label id="plugins-label">플러그인</Label>

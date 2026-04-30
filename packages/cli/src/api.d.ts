@@ -10,18 +10,32 @@ export type ThemeBase = 'neutral' | 'zinc' | 'slate';
 export type ThemeRadius = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 export type ThemeMode = 'light-dark' | 'light' | 'dark';
 
+/** 현재 실제로 동작하는 CSS 프레임워크.
+ * - plain: 모든 컴포넌트가 plain 변종 보유.
+ * - tailwind: 일부 컴포넌트가 utility-class 변종 보유 — 미지원 컴포넌트는 add 시 plain 으로 자동 fallback. */
+export type CssFrameworkSupported = 'plain' | 'tailwind';
+/** 향후 추가 예정 — UI 에서 "곧 지원" 으로 노출되지만 CLI 는 거부. */
+export type CssFrameworkPlanned = 'css-modules' | 'vanilla-extract';
+/** 알려진 전체 (validation 메시지용). */
+export type CssFramework = CssFrameworkSupported | CssFrameworkPlanned;
+
 export const CREATE_PLATFORMS: readonly CreatePlatform[];
 export const CREATE_STRUCTURES: readonly CreateStructure[];
 export const INIT_PLATFORMS: readonly InitPlatform[];
 export const THEME_BASES: readonly ThemeBase[];
 export const THEME_RADII: readonly ThemeRadius[];
 export const THEME_MODES: readonly ThemeMode[];
+export const CSS_FRAMEWORKS_SUPPORTED: readonly CssFrameworkSupported[];
+export const CSS_FRAMEWORKS_PLANNED: readonly CssFrameworkPlanned[];
+export const CSS_FRAMEWORKS_ALL: readonly CssFramework[];
+export const CSS_FRAMEWORK_DEFAULT: CssFrameworkSupported;
 
 export const INIT_DEFAULTS: {
   platform: InitPlatform;
   base: ThemeBase;
   radius: ThemeRadius;
   mode: ThemeMode;
+  cssFramework: CssFrameworkSupported;
 };
 
 export type PluginManifest = {

@@ -3,6 +3,7 @@
   "versions": {
     "@base-ui/react": "^1.4.1",
     "@tanstack/react-form": "^1.29.1",
+    "class-variance-authority": "^0.7.1",
     "lucide-react": "^1.11.0",
     "react-hook-form": "^7.74.0",
     "shiki": "^4.0.2"

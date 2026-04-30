@@ -47,6 +47,7 @@ describe('sh-ui create smoke tests', () => {
     prompts.input.mockResolvedValueOnce('my-app');
     prompts.select
       .mockResolvedValueOnce('next')         // platform
+      .mockResolvedValueOnce('plain')         // cssFramework
       .mockResolvedValueOnce('__none__')      // theme
       .mockResolvedValueOnce('standalone');   // structure
     prompts.checkbox.mockResolvedValueOnce([]);
@@ -70,6 +71,7 @@ describe('sh-ui create smoke tests', () => {
       .mockResolvedValueOnce('3000');      // 포트
     prompts.select
       .mockResolvedValueOnce('next')         // platform
+      .mockResolvedValueOnce('plain')         // cssFramework
       .mockResolvedValueOnce('__none__')      // theme
       .mockResolvedValueOnce('monorepo');     // structure
     prompts.checkbox.mockResolvedValueOnce([]);
@@ -196,8 +198,38 @@ describe('sh-ui create smoke tests', () => {
     expect(prompts.checkbox).not.toHaveBeenCalled();
   });
 
+  it('scenario 6b — --css 명시 시 cssFramework 프롬프트 우회', async () => {
+    await createProject({
+      name: 'css-flag',
+      platform: 'next',
+      structure: 'standalone',
+      css: 'plain',
+      yes: true,
+    });
+
+    const cfg = await fs.readJson(path.join(tmpDir, 'css-flag', 'sh-ui.config.json'));
+    expect(cfg.cssFramework).toBe('plain');
+    // --yes + 모든 플래그 → 어떤 select 도 호출되지 않아야
+    expect(prompts.select).not.toHaveBeenCalled();
+  });
+
+  it('scenario 6c — flutter → cssFramework 프롬프트 스킵 (개념상 무의미)', async () => {
+    prompts.input.mockResolvedValueOnce('my-flutter');
+    prompts.select
+      .mockResolvedValueOnce('flutter')   // platform
+      .mockResolvedValueOnce('__none__'); // theme — cssFramework 프롬프트는 없음
+
+    await createProject();
+
+    // Flutter 는 cssFramework 프롬프트를 띄우지 않으므로 select 호출은 정확히 2회
+    expect(prompts.select).toHaveBeenCalledTimes(2);
+    const cfg = await fs.readJson(path.join(tmpDir, 'my-flutter', 'sh-ui.config.json'));
+    expect(cfg.cssFramework).toBe('plain');
+  });
+
   it('scenario 7 — 부분 플래그 (name, platform 만 제공, 나머지는 프롬프트)', async () => {
     prompts.select
+      .mockResolvedValueOnce('plain')        // cssFramework
       .mockResolvedValueOnce('__none__')    // theme
       .mockResolvedValueOnce('standalone'); // structure
     prompts.checkbox.mockResolvedValueOnce([]); // plugins
@@ -212,8 +244,8 @@ describe('sh-ui create smoke tests', () => {
 
     // name / platform 은 프롬프트 우회
     expect(prompts.input).not.toHaveBeenCalled();
-    // theme + structure 두 번
-    expect(prompts.select).toHaveBeenCalledTimes(2);
+    // cssFramework + theme + structure 세 번
+    expect(prompts.select).toHaveBeenCalledTimes(3);
   });
 
   it('scenario 8 — theme 주입 (Next.js standalone)', async () => {

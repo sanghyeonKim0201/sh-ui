@@ -1,11 +1,16 @@
-import { CREATE_PLATFORMS, CREATE_STRUCTURES } from '../constants.js';
+import {
+  CREATE_PLATFORMS,
+  CREATE_STRUCTURES,
+  CSS_FRAMEWORKS_SUPPORTED,
+  CSS_FRAMEWORKS_PLANNED,
+} from '../constants.js';
 import { allPlugins } from './plugins/index.js';
 
 const VALID_PLATFORMS = CREATE_PLATFORMS;
 const VALID_STRUCTURES = CREATE_STRUCTURES;
 const VALID_PLUGINS = allPlugins.map((p) => p.name);
 
-const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app'];
+const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css'];
 const BOOL_FLAGS = ['yes', 'help', 'dry-run'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
@@ -62,6 +67,17 @@ export const parseArgs = (argv) => {
     }
     if (name === 'structure' && !VALID_STRUCTURES.includes(value)) {
       throw new Error(`--structure 는 ${VALID_STRUCTURES.join('/')} 중 하나여야 함 (받은 값: ${value})`);
+    }
+    if (name === 'css' && !CSS_FRAMEWORKS_SUPPORTED.includes(value)) {
+      // planned 값은 '곧 옵니다' 신호로 분기 — 사용자 의도가 더 명확히 전달.
+      if (CSS_FRAMEWORKS_PLANNED.includes(value)) {
+        throw new Error(
+          `--css='${value}' 는 곧 지원 예정. 현재는 ${CSS_FRAMEWORKS_SUPPORTED.join(', ')} 만 가능.`,
+        );
+      }
+      throw new Error(
+        `--css 는 ${CSS_FRAMEWORKS_SUPPORTED.join('/')} 중 하나여야 함 (받은 값: ${value})`,
+      );
     }
     flags[name] = value;
   }

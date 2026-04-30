@@ -1,6 +1,6 @@
 {
   "platform": "react",
-  "style": "default",
+  "cssFramework": "plain",
   "theme": {
     "base": "neutral",
     "radius": "md",

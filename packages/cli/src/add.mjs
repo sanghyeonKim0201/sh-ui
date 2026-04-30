@@ -149,11 +149,8 @@ async function addTokens(config, cwd, diffMode, summary, conflictResolver) {
   if (!destRel) throw new Error("paths.tokens 가 설정에 없습니다.");
   const dest = resolve(cwd, destRel);
 
-  const { buildTokensCss, buildTokensDart } = await loadTokensBuilder();
-  const content =
-    config.platform === "react"
-      ? await buildTokensCss(config)
-      : await buildTokensDart(config);
+  const { buildTokens } = await loadTokensBuilder();
+  const content = await buildTokens(config);
 
   const result = await writeOrDiff({ dest, content, cwd, diffMode, summary, conflictResolver });
   if (!diffMode && result !== "unchanged") {
@@ -161,6 +158,31 @@ async function addTokens(config, cwd, diffMode, summary, conflictResolver) {
     const suffix = result === "kept" ? " (kept)" : "";
     console.log(`${prefix} tokens → ${relative(cwd, dest)}${suffix}`);
   }
+}
+
+/**
+ * registry 엔트리의 frameworks 필드와 현재 cssFramework 가 호환되는지.
+ * 필드가 없으면 "모든 프레임워크에 적용" — 기본 케이스.
+ */
+function frameworkMatches(entry, cssFramework) {
+  if (!entry.frameworks) return true;
+  return entry.frameworks.includes(cssFramework);
+}
+
+/**
+ * cssFramework="tailwind" 인데 컴포넌트에 tailwind 전용 변종 파일이 없으면
+ * plain 으로 fallback. plain CSS 컴포넌트도 @theme inline 브리지 덕분에
+ * Tailwind v4 프로젝트에서 그대로 동작하므로 깨지지 않음.
+ *
+ * 점진적 rollout 전략 — 모든 컴포넌트가 한 번에 tailwind 변종을 갖출 필요 없이
+ * 가능한 것부터 utility-class 변종을 제공하고, 나머지는 plain 으로 자연 처리.
+ */
+function effectiveFramework(entry, cssFramework) {
+  if (cssFramework !== "tailwind") return cssFramework;
+  const hasTailwindVariant = (entry.files ?? []).some(
+    (f) => f.frameworks && f.frameworks.includes("tailwind"),
+  );
+  return hasTailwindVariant ? "tailwind" : "plain";
 }
 
 async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver) {
@@ -175,11 +197,30 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
     );
   }
 
+  const requestedFw = config.cssFramework ?? "plain";
+  const cssFramework = effectiveFramework(entry, requestedFw);
+
+  // 사용자가 tailwind 를 골랐는데 이 컴포넌트는 plain 으로 fallback 된 경우 한 줄 알림.
+  // 동작에 문제는 없지만 일관성에 대한 기대를 정확히 셋업하기 위함.
+  if (requestedFw === "tailwind" && cssFramework === "plain" && !diffMode) {
+    console.log(
+      `ℹ ${name} — Tailwind 변종 미제공, plain 변종으로 설치 (Tailwind v4 환경에서 그대로 동작)`,
+    );
+  }
+
+  if (!frameworkMatches(entry, cssFramework)) {
+    console.log(
+      `↷ ${name} skipped — cssFramework=${cssFramework} 미지원 (지원: ${entry.frameworks.join(", ")})`,
+    );
+    return;
+  }
+
   for (const dep of entry.registryDependencies ?? []) {
     await addOne(dep, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver);
   }
 
   for (const file of entry.files) {
+    if (!frameworkMatches(file, cssFramework)) continue;
     const src = resolve(registryRoot, file.src);
     const dest = resolve(cwd, resolveDest(file.dest, config));
     const content = await readFile(src, "utf8");
@@ -192,7 +233,14 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   }
 
   for (const dep of entry.dependencies ?? []) {
-    pendingDeps.add(dep);
+    // dep 은 string ("react-hook-form") 또는 object ({name, frameworks?: string[]}).
+    // 후자는 cssFramework 에 따라 의존성을 분기 (예: cva 는 tailwind 변종에만 필요).
+    if (typeof dep === "string") {
+      pendingDeps.add(dep);
+    } else if (dep && typeof dep === "object" && dep.name) {
+      if (dep.frameworks && !dep.frameworks.includes(cssFramework)) continue;
+      pendingDeps.add(dep.name);
+    }
   }
 }
 
