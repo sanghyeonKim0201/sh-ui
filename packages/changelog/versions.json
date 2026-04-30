@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.45.2",
+      "date": "2026-04-30",
+      "title": "추가 하드코딩 제거 — release URL · MCP 패키지명 동적 파생",
+      "type": "patch",
+      "highlights": [
+        "**`scripts/release.mjs` 의 GitHub URL 동적화** — `cli/package.json` 의 `repository.url` 에서 base URL 추출 (`.git` suffix + `git+` prefix 정리) 후 `${base}/releases/tag/v${ver}` 빌드. owner/repo 이름이 바뀌면 cli/package.json 한 곳만 갱신하면 따라옴.",
+        "**MCP 서버의 cli 패키지명 동적 읽기** — `mcp-init.mjs` 의 `SH_UI_ENTRY.args` 와 `mcp.mjs` 의 `SERVER_INSTRUCTIONS`/tool description 안 `npx <cli> create ...` 예시가 모두 `package.json` 의 `name` 에서 동적 보간. cli 가 rename 되어도 자동 동기화.",
+        "기능 변경 0 — drift 위험만 추가 제거. v0.45.1 의 mcp.mjs version 동적 읽기 + `pnpm release` 에 이은 후속 정리."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.45.2"
+    },
+    {
       "version": "0.45.1",
       "date": "2026-04-30",
       "title": "릴리즈 자동화 — `pnpm release` 명령 + mcp.mjs 동적 버전",

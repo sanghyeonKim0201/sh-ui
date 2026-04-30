@@ -126,6 +126,16 @@ async function main() {
   const cliPkg = JSON.parse(await readFile(CLI_PKG_PATH, "utf8"));
   const currentVersion = cliPkg.version;
 
+  // repository.url 에서 base URL 추출 — owner/repo 이름이 바뀌어도 cli/package.json
+  // 한 곳만 갱신하면 따라옴. "git+https://github.com/foo/bar.git" 같은 prefix/suffix 정리.
+  const repoUrlRaw = cliPkg.repository?.url ?? "";
+  const repoBase = repoUrlRaw.replace(/^git\+/, "").replace(/\.git$/, "");
+  if (!repoBase.startsWith("http")) {
+    throw new Error(
+      `cli/package.json 의 repository.url 이 https 형식이 아닙니다: ${repoUrlRaw}`,
+    );
+  }
+
   // target = "patch" | "minor" | "major" | exact (X.Y.Z)
   let nextVersion;
   if (target === "patch" || target === "minor" || target === "major") {
@@ -167,7 +177,7 @@ async function main() {
       "TODO: 사용자 관점 한 줄 요약",
       "TODO: 두 번째 highlight (3-4 줄 권장)",
     ],
-    url: `https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v${nextVersion}`,
+    url: `${repoBase}/releases/tag/v${nextVersion}`,
   };
 
   // 중복 검사
