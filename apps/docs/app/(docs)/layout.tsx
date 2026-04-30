@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { AppSidebar } from "@/components/app-sidebar";
+import { SearchDialog } from "@/components/search-dialog";
 import { TocSlot } from "@/components/toc-slot";
 import {
   SidebarInset,
@@ -22,23 +23,16 @@ export default async function DocsLayout({ children }: { children: ReactNode }) 
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
       <SidebarInset>
-        <header
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.625rem 1rem",
-            borderBottom: "1px solid var(--border)",
-            position: "sticky",
-            top: 0,
-            background: "var(--background)",
-            zIndex: 10,
-          }}
-        >
+        <header className="docs-header">
           <SidebarTrigger />
+          <div className="docs-header__search">
+            <SearchDialog />
+          </div>
         </header>
-        {children}
-        <TocSlot />
+        <div className="docs-main">
+          {children}
+          <TocSlot />
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
