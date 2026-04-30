@@ -150,9 +150,21 @@ const SERVER_INSTRUCTIONS = `sh-ui — Base UI 위에 빌드된 React/Flutter �
 - \`sh_ui_get_changelog\` — 최근 변경 내역
 `;
 
+/**
+ * 하드코딩 제거 — packages/cli/package.json 의 version 을 시작 시점에 읽어 그대로 사용.
+ * mcp.mjs 가 src/ 에 있고 package.json 은 그 상위 (../package.json) 라 상대 URL 로 해석.
+ * 출고 모드 (data/ 번들) 에서도 동일 경로 (src/mcp.mjs ↔ package.json) 라 그대로 동작.
+ */
+async function readPackageVersion() {
+  const pkgUrl = new URL("../package.json", import.meta.url);
+  const pkg = JSON.parse(await readFile(pkgUrl, "utf8"));
+  return pkg.version;
+}
+
 export async function startMcpServer() {
+  const version = await readPackageVersion();
   const server = new McpServer(
-    { name: "sh-ui", version: "0.45.0" }, // sh-ui-cli 와 동기화
+    { name: "sh-ui", version },
     {
       capabilities: { tools: {} },
       instructions: SERVER_INSTRUCTIONS,
