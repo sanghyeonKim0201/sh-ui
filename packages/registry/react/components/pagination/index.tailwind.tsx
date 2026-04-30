@@ -1,16 +1,14 @@
 import * as React from "react";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export const Pagination = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
   function Pagination({ className, ...props }, ref) {
     return (
       <nav
         ref={ref}
         aria-label="Pagination"
-        className={cx("flex justify-center text-[length:var(--text-sm)] text-foreground", className)}
+        className={cn("flex justify-center text-[length:var(--text-sm)] text-foreground", className)}
         {...props}
       />
     );
@@ -22,7 +20,7 @@ export const PaginationContent = React.forwardRef<HTMLUListElement, React.HTMLAt
     return (
       <ul
         ref={ref}
-        className={cx("flex flex-wrap items-center gap-1 m-0 p-0 list-none", className)}
+        className={cn("flex flex-wrap items-center gap-1 m-0 p-0 list-none", className)}
         {...props}
       />
     );
@@ -31,7 +29,7 @@ export const PaginationContent = React.forwardRef<HTMLUListElement, React.HTMLAt
 
 export const PaginationItem = React.forwardRef<HTMLLIElement, React.LiHTMLAttributes<HTMLLIElement>>(
   function PaginationItem({ className, ...props }, ref) {
-    return <li ref={ref} className={cx("inline-flex items-center", className)} {...props} />;
+    return <li ref={ref} className={cn("inline-flex items-center", className)} {...props} />;
   },
 );
 
@@ -51,7 +49,7 @@ export const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLink
         aria-current={isActive ? "page" : undefined}
         data-active={isActive ? "" : undefined}
         data-size={size}
-        className={cx(linkBase, className)}
+        className={cn(linkBase, className)}
         {...props}
       />
     );
@@ -61,7 +59,7 @@ export const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLink
 export const PaginationPrevious = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
   function PaginationPrevious({ className, children, ...props }, ref) {
     return (
-      <PaginationLink ref={ref} aria-label="이전 페이지" className={cx("px-2.5", className)} {...props}>
+      <PaginationLink ref={ref} aria-label="이전 페이지" className={cn("px-2.5", className)} {...props}>
         <ChevronLeftIcon />
         {children ?? <span>이전</span>}
       </PaginationLink>
@@ -72,7 +70,7 @@ export const PaginationPrevious = React.forwardRef<HTMLAnchorElement, Pagination
 export const PaginationNext = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
   function PaginationNext({ className, children, ...props }, ref) {
     return (
-      <PaginationLink ref={ref} aria-label="다음 페이지" className={cx("px-2.5", className)} {...props}>
+      <PaginationLink ref={ref} aria-label="다음 페이지" className={cn("px-2.5", className)} {...props}>
         {children ?? <span>다음</span>}
         <ChevronRightIcon />
       </PaginationLink>
@@ -87,7 +85,7 @@ export const PaginationEllipsis = React.forwardRef<HTMLSpanElement, React.HTMLAt
         ref={ref}
         role="presentation"
         aria-hidden="true"
-        className={cx("inline-flex items-center justify-center w-9 h-9 text-foreground-muted", className)}
+        className={cn("inline-flex items-center justify-center w-9 h-9 text-foreground-muted", className)}
         {...props}
       >
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>

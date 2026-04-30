@@ -2,10 +2,8 @@
 
 import * as React from "react";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
@@ -109,7 +107,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         <div
           ref={ref}
           {...rest}
-          className={cx(
+          className={cn(
             "relative w-full py-[var(--space-2)] select-none",
             disabled && "opacity-[var(--opacity-disabled)] pointer-events-none",
             className,
@@ -171,7 +169,7 @@ export const SliderTrack = React.forwardRef<HTMLDivElement, React.HTMLAttributes
     return (
       <div
         ref={mergedRef}
-        className={cx(
+        className={cn(
           "relative w-full h-1.5 bg-background-muted rounded-full cursor-pointer touch-none",
           className,
         )}
@@ -196,7 +194,7 @@ export const SliderRange = React.forwardRef<HTMLDivElement, React.HTMLAttributes
     return (
       <div
         ref={ref}
-        className={cx(
+        className={cn(
           "absolute top-0 left-0 h-full bg-primary rounded-full pointer-events-none",
           className,
         )}
@@ -243,7 +241,7 @@ export const SliderThumb = React.forwardRef<
       aria-valuenow={value}
       aria-disabled={disabled || undefined}
       onKeyDown={onKeyDown}
-      className={cx(
+      className={cn(
         "absolute top-1/2 w-4 h-4 -ml-2 -translate-y-1/2 bg-background border-2 border-primary rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.1)] cursor-grab transition-transform duration-[80ms] active:cursor-grabbing active:scale-110 active:-translate-y-1/2 focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5 [@media(hover:none)_and_(pointer:coarse)]:-ml-2.5",
         className,
       )}

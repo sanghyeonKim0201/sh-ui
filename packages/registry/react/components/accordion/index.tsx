@@ -2,10 +2,8 @@ import * as React from "react";
 import { Accordion as BaseAccordion } from "@base-ui/react/accordion";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
 export type AccordionSize = "sm" | "md";
@@ -26,7 +24,7 @@ export const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
   ({ className, size = "md", ...props }, ref) => (
     <BaseAccordion.Root
       ref={ref}
-      className={cx("sh-ui-accordion", className)}
+      className={cn("sh-ui-accordion", className)}
       data-size={size}
       {...props}
     />
@@ -40,7 +38,7 @@ export const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseAccordion.Item
     ref={ref}
-    className={cx("sh-ui-accordion__item", className)}
+    className={cn("sh-ui-accordion__item", className)}
     {...props}
   />
 ));
@@ -59,7 +57,7 @@ export const AccordionTrigger = React.forwardRef<
   <BaseAccordion.Header className="sh-ui-accordion__header">
     <BaseAccordion.Trigger
       ref={ref}
-      className={cx("sh-ui-accordion__trigger", className)}
+      className={cn("sh-ui-accordion__trigger", className)}
       {...props}
     >
       <span className="sh-ui-accordion__trigger-label">{children}</span>
@@ -90,7 +88,7 @@ export const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseAccordion.Panel
     ref={ref}
-    className={cx("sh-ui-accordion__panel", className)}
+    className={cn("sh-ui-accordion__panel", className)}
     {...props}
   >
     <div className="sh-ui-accordion__content">{children}</div>

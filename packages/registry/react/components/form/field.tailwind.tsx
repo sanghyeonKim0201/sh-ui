@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@SH_UI_UTILS@";
 import { FormContext, FieldContext, SectionContext, StepContext, DisabledContext, useFormField } from "./context";
 import type { FieldValidate, ValidateOn } from "./types";
 import { scopedPath } from "./utils";
@@ -127,7 +128,7 @@ export function FormControl({ children, valueAs = "value", render }: FormControl
   const store = React.useContext(FormContext)!;
   const field = useFormField(ctx.path);
 
-  const describedBy = [ctx.descId, field.hasError ? ctx.errorId : null].filter(Boolean).join(" ") || undefined;
+  const describedBy = cn(ctx.descId, field.hasError ? ctx.errorId : null) || undefined;
 
   const ctrl: ControlProps = {
     id: ctx.id, name: ctx.path,

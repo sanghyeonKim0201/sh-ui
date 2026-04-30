@@ -1,16 +1,14 @@
 import * as React from "react";
 
+import { cn } from "@SH_UI_UTILS@";
 type DivProps = React.HTMLAttributes<HTMLDivElement>;
 
-function mergeClass(base: string, extra?: string) {
-  return extra ? `${base} ${extra}` : base;
-}
 
 export const Card = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass(
+      className={cn(
         "flex flex-col gap-[var(--space-6)] py-[var(--space-6)] bg-background text-foreground border border-border rounded-[var(--radius)] max-sm:gap-[var(--space-4)] max-sm:py-[var(--space-4)]",
         className,
       )}
@@ -25,7 +23,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, DivProps>(
     <div
       ref={ref}
       data-slot="card-header"
-      className={mergeClass(
+      className={cn(
         "grid grid-cols-1 auto-rows-auto gap-y-1.5 px-[var(--space-6)] has-[[data-slot=card-action]]:grid-cols-[1fr_auto] max-sm:px-[var(--space-4)]",
         className,
       )}
@@ -39,7 +37,7 @@ export const CardTitle = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass(
+      className={cn(
         "text-[length:var(--text-base)] font-semibold leading-tight tracking-tight",
         className,
       )}
@@ -53,7 +51,7 @@ export const CardDescription = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass(
+      className={cn(
         "text-[length:var(--text-sm)] leading-normal text-foreground-muted",
         className,
       )}
@@ -72,7 +70,7 @@ export const CardAction = React.forwardRef<HTMLDivElement, DivProps>(
     <div
       ref={ref}
       data-slot="card-action"
-      className={mergeClass(
+      className={cn(
         "col-start-2 row-span-2 self-start justify-self-end",
         className,
       )}
@@ -86,7 +84,7 @@ export const CardContent = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass(
+      className={cn(
         "px-[var(--space-6)] text-[length:var(--text-sm)] leading-relaxed max-sm:px-[var(--space-4)]",
         className,
       )}
@@ -100,7 +98,7 @@ export const CardFooter = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass(
+      className={cn(
         "px-[var(--space-6)] flex items-center gap-[var(--space-2)] max-sm:px-[var(--space-4)] max-sm:flex-wrap",
         className,
       )}

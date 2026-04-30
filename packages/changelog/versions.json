@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.45.3",
+      "date": "2026-04-30",
+      "title": "공유 `cn` 유틸 + CSS 프레임워크 가이드 docs",
+      "type": "patch",
+      "highlights": [
+        "**공유 `cn` 유틸** — 컴포넌트 74 곳에 흩어져 있던 로컬 `cx`/`mergeClass` 함수 제거. 모두 `lib/utils.ts` 의 `cn` 으로 통일. plain 변종은 zero-dep custom 구현, tailwind 변종은 `clsx + tailwind-merge` 로 utility 충돌 머지(예: `cn(\"bg-primary\", \"bg-red-500\")` → `\"bg-red-500\"`). registry.json 에 `utils` 엔트리 신설, styled 컴포넌트 43 개가 `registryDependencies: [\"utils\"]` 로 자동 의존 — `add button` 시 `utils` 도 함께 카피.",
+        "**`@SH_UI_UTILS@` placeholder 치환** — 컴포넌트가 `import { cn } from \"@SH_UI_UTILS@\"` 로 import 하면 CLI 가 add 시점에 `aliases.utils` 값(예: `@/lib/utils`)으로 치환. cn 유틸 import 경로가 사용자 프로젝트 alias 와 자동 맞아떨어짐. `aliases.utils` 미설정 시 친절 에러로 안내.",
+        "**CSS 프레임워크 docs 페이지 추가** — `apps/docs/(docs)/css-framework/page.tsx` 신설. 변종 시스템 큰 그림 (현재 plain/tailwind + 계획 중 css-modules/vanilla-extract) + 모드별 차이·전환·fallback 설명. 사이드바 nav 에 \"CSS 프레임워크\" 링크 추가, cli 페이지에서 cross-link.",
+        "**ui-app-template config 보강** — 누락됐던 `aliases.utils` 추가. 신규 init 도 동일하게 채워짐."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.45.3"
+    },
+    {
       "version": "0.45.2",
       "date": "2026-04-30",
       "title": "추가 하드코딩 제거 — release URL · MCP 패키지명 동적 파생",

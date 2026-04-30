@@ -2,11 +2,9 @@ import * as React from "react";
 import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 export type AvatarSize = "sm" | "md" | "lg" | "xl";
 
@@ -35,7 +33,7 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
     return (
       <BaseAvatar.Root
         ref={ref}
-        className={cx("sh-ui-avatar", `sh-ui-avatar--${size}`, className)}
+        className={cn("sh-ui-avatar", `sh-ui-avatar--${size}`, className)}
         {...props}
       />
     );
@@ -52,7 +50,7 @@ export const AvatarImage = React.forwardRef<
   return (
     <BaseAvatar.Image
       ref={ref}
-      className={cx("sh-ui-avatar__image", className)}
+      className={cn("sh-ui-avatar__image", className)}
       {...props}
     />
   );
@@ -68,7 +66,7 @@ export const AvatarFallback = React.forwardRef<
   return (
     <BaseAvatar.Fallback
       ref={ref}
-      className={cx("sh-ui-avatar__fallback", className)}
+      className={cn("sh-ui-avatar__fallback", className)}
       {...props}
     />
   );

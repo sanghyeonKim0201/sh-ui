@@ -84,6 +84,29 @@ function resolveDest(template, config) {
   });
 }
 
+/**
+ * registry source 안의 placeholder 를 사용자 config 값으로 치환.
+ * 현재 지원: `@SH_UI_UTILS@` → `aliases.utils` (예: `@/src/shared/lib/utils`).
+ *
+ * registry 컴포넌트는 cn 유틸을 `import { cn } from "@SH_UI_UTILS@"` 로 import 한다 —
+ * CLI 가 add 시점에 사용자 프로젝트의 alias 로 치환해 TS module resolution 이 동작.
+ *
+ * aliases.utils 가 미설정인데 placeholder 가 등장하면 친절 에러로 안내. 사용자가 매 컴포넌트
+ * 추가 후 import 깨진 것을 발견하기 전에 시점에 잡는다.
+ */
+function substitutePlaceholders(content, config, srcRel) {
+  const PLACEHOLDER = "@SH_UI_UTILS@";
+  if (!content.includes(PLACEHOLDER)) return content;
+  const alias = config.aliases?.utils;
+  if (!alias) {
+    throw new Error(
+      `${srcRel} 가 cn 유틸을 import 합니다. sh-ui.config.json 에 aliases.utils 를 설정하세요.\n` +
+        `  예: "aliases": { "utils": "@/src/lib/utils" }`,
+    );
+  }
+  return content.replaceAll(PLACEHOLDER, alias);
+}
+
 async function ensureDir(filePath) {
   await mkdir(dirname(filePath), { recursive: true });
 }
@@ -223,7 +246,8 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
     if (!frameworkMatches(file, cssFramework)) continue;
     const src = resolve(registryRoot, file.src);
     const dest = resolve(cwd, resolveDest(file.dest, config));
-    const content = await readFile(src, "utf8");
+    const raw = await readFile(src, "utf8");
+    const content = substitutePlaceholders(raw, config, file.src);
     const result = await writeOrDiff({ dest, content, cwd, diffMode, summary, conflictResolver });
     if (!diffMode && result !== "unchanged") {
       const prefix = result === "kept" ? "↷" : "✓";

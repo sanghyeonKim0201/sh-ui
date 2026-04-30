@@ -1,4 +1,5 @@
 import * as React from "react";
+import { cn } from "@SH_UI_UTILS@";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const buttonVariants = cva(
@@ -62,7 +63,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", className, ...props }, ref) => (
     <button
       ref={ref}
-      className={[buttonVariants({ variant, size }), className].filter(Boolean).join(" ")}
+      className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     />
   ),

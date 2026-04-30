@@ -1,10 +1,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export type SpinnerSize = "sm" | "md" | "lg";
 
 export interface SpinnerProps
@@ -29,7 +27,7 @@ export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
         role="status"
         aria-live="polite"
         aria-label={ariaLabel}
-        className={cx("sh-ui-spinner", `sh-ui-spinner--${size}`, className)}
+        className={cn("sh-ui-spinner", `sh-ui-spinner--${size}`, className)}
         {...props}
       >
         <span className="sh-ui-spinner__ring" aria-hidden />

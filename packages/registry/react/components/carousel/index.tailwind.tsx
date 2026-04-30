@@ -2,10 +2,8 @@
 
 import * as React from "react";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 type Orientation = "horizontal" | "vertical";
 
 interface CarouselContextValue {
@@ -144,7 +142,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       <CarouselContext.Provider value={value}>
         <div
           ref={ref}
-          className={cx("relative w-full", className)}
+          className={cn("relative w-full", className)}
           data-orientation={orientation}
           role="region"
           aria-roledescription="carousel"
@@ -171,7 +169,7 @@ export const CarouselContent = React.forwardRef<HTMLDivElement, React.HTMLAttrib
     return (
       <div
         ref={mergedRef}
-        className={cx(
+        className={cn(
           "flex gap-[var(--space-4)] overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] overscroll-x-contain [&::-webkit-scrollbar]:hidden motion-reduce:scroll-auto",
           orientation === "vertical" && "flex-col overflow-x-hidden overflow-y-auto snap-y snap-mandatory h-80",
           className,
@@ -193,7 +191,7 @@ export const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttribute
         ref={ref}
         role="group"
         aria-roledescription="slide"
-        className={cx(
+        className={cn(
           "flex-[0_0_100%] min-w-0 snap-start snap-always",
           orientation === "vertical" && "basis-auto",
           className,
@@ -218,7 +216,7 @@ export const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.Button
         ref={ref}
         type="button"
         aria-label="이전"
-        className={cx(
+        className={cn(
           navClasses,
           orientation === "horizontal" ? "-left-4" : "-top-4 left-1/2",
           className,
@@ -248,7 +246,7 @@ export const CarouselNext = React.forwardRef<HTMLButtonElement, React.ButtonHTML
         ref={ref}
         type="button"
         aria-label="다음"
-        className={cx(
+        className={cn(
           navClasses,
           orientation === "horizontal" ? "-right-4" : "-bottom-4 left-1/2 [top:auto]",
           className,
@@ -282,7 +280,7 @@ export const CarouselIndicators = React.forwardRef<HTMLDivElement, CarouselIndic
         ref={ref}
         role="tablist"
         aria-label="슬라이드 선택"
-        className={cx(
+        className={cn(
           "flex justify-center items-center gap-[var(--space-2)] mt-[var(--space-3)]",
           orientation === "vertical" && "absolute top-1/2 right-2 mt-0 flex-col -translate-y-1/2",
           className,

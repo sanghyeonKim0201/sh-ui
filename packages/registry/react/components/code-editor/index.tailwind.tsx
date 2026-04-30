@@ -10,6 +10,7 @@ import { css as cssLang } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { markdown } from "@codemirror/lang-markdown";
 
+import { cn } from "@SH_UI_UTILS@";
 export type CodeEditorLanguage =
   | "text" | "javascript" | "typescript" | "jsx" | "tsx"
   | "json" | "css" | "html" | "markdown";
@@ -30,9 +31,6 @@ export interface CodeEditorProps {
   "aria-labelledby"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 function languageExtension(language: CodeEditorLanguage): Extension {
   switch (language) {
@@ -136,7 +134,7 @@ export function CodeEditor({
   return (
     <div
       ref={hostRef}
-      className={cx(
+      className={cn(
         "sh-ui-code-editor relative border border-border rounded-[var(--radius)] bg-background text-[0.8125rem] leading-relaxed overflow-hidden transition-[border-color] duration-[var(--duration-fast)] focus-within:border-foreground focus-within:outline-[length:var(--border-width-strong)] focus-within:outline-foreground focus-within:outline-offset-2 data-[readonly]:bg-background-subtle motion-reduce:transition-none",
         className,
       )}

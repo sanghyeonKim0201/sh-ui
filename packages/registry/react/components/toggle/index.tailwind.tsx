@@ -5,10 +5,8 @@ import { Toggle as BaseToggle } from "@base-ui/react/toggle";
 import { ToggleGroup as BaseToggleGroup } from "@base-ui/react/toggle-group";
 import { cva, type VariantProps } from "class-variance-authority";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 const toggleVariants = cva(
   "inline-flex items-center justify-center gap-1.5 border border-transparent rounded-[var(--radius)] font-medium leading-none cursor-pointer text-foreground-muted bg-transparent transition-[background-color,color,border-color] duration-[var(--duration-fast)] select-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none data-[pressed]:bg-background-muted data-[pressed]:text-foreground motion-reduce:transition-none",
   {
@@ -45,7 +43,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
   ({ className, variant = "ghost", size = "md", ...props }, ref) => (
     <BaseToggle
       ref={ref}
-      className={cx(toggleVariants({ variant, size }), className)}
+      className={cn(toggleVariants({ variant, size }), className)}
       {...props}
     />
   ),
@@ -78,7 +76,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
     <ToggleGroupContext.Provider value={{ variant, size }}>
       <BaseToggleGroup
         ref={ref}
-        className={cx(
+        className={cn(
           "inline-flex items-center gap-[var(--space-1)] data-[orientation=vertical]:flex-col",
           className,
         )}
@@ -102,7 +100,7 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
     return (
       <BaseToggle
         ref={ref}
-        className={cx(toggleVariants({ variant, size }), className)}
+        className={cn(toggleVariants({ variant, size }), className)}
         {...props}
       />
     );

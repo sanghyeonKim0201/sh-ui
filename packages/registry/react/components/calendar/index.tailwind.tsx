@@ -3,10 +3,8 @@
 import * as React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 const DEFAULT_WEEKDAYS_KO = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
 const isSameDay = (a: Date, b: Date) =>
@@ -287,7 +285,7 @@ export function Calendar(props: CalendarProps) {
 
   return (
     <div
-      className={cx("inline-flex gap-[var(--space-4)] select-none", numberOfMonths > 1 && "flex-wrap", className)}
+      className={cn("inline-flex gap-[var(--space-4)] select-none", numberOfMonths > 1 && "flex-wrap", className)}
       aria-label={ariaLabel}
     >
       {children
@@ -316,7 +314,7 @@ export function Calendar(props: CalendarProps) {
 export interface CalendarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 export const CalendarHeader = React.forwardRef<HTMLDivElement, CalendarHeaderProps>(
   function CalendarHeader({ className, ...props }, ref) {
-    return <div ref={ref} className={cx("flex items-center justify-between gap-[var(--space-1)] mb-[var(--space-2)]", className)} {...props} />;
+    return <div ref={ref} className={cn("flex items-center justify-between gap-[var(--space-1)] mb-[var(--space-2)]", className)} {...props} />;
   },
 );
 
@@ -324,7 +322,7 @@ const navButtonClasses =
   "inline-flex items-center justify-center w-7 h-7 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground-muted cursor-pointer shrink-0 transition-[background-color,color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted hover:not-disabled:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none";
 
 function CalendarNavPlaceholder() {
-  return <span className={cx(navButtonClasses, "invisible pointer-events-none")} aria-hidden />;
+  return <span className={cn(navButtonClasses, "invisible pointer-events-none")} aria-hidden />;
 }
 
 export interface CalendarNavButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
@@ -344,7 +342,7 @@ function makeNavButton(
         <button
           ref={ref}
           type="button"
-          className={cx(navButtonClasses, className)}
+          className={cn(navButtonClasses, className)}
           aria-label={ariaLabel ?? defaultLabel}
           onClick={(e) => { resolveHandler(ctx)(); onClick?.(e); }}
           {...props}
@@ -377,7 +375,7 @@ export function CalendarYearSelect({ className, formatYear = (y) => `${y}년` }:
   const items = ctx.yearOptions.includes(year) ? ctx.yearOptions : [...ctx.yearOptions, year].sort((a, b) => a - b);
   return (
     <Select value={String(year)} onValueChange={(v) => ctx.setYearForVisible(Number(v))}>
-      <SelectTrigger className={cx(calendarSelectTriggerClasses, className)} aria-label="연도">
+      <SelectTrigger className={cn(calendarSelectTriggerClasses, className)} aria-label="연도">
         <span>{formatYear(year)}</span>
       </SelectTrigger>
       <SelectContent>
@@ -397,7 +395,7 @@ export function CalendarMonthSelect({ className, formatMonth = (m) => `${m + 1}�
   const month = ctx.visibleMonth.getMonth();
   return (
     <Select value={String(month)} onValueChange={(v) => ctx.setMonthForVisible(Number(v))}>
-      <SelectTrigger className={cx(calendarSelectTriggerClasses, className)} aria-label="월">
+      <SelectTrigger className={cn(calendarSelectTriggerClasses, className)} aria-label="월">
         <span>{formatMonth(month)}</span>
       </SelectTrigger>
       <SelectContent>
@@ -420,7 +418,7 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
     const ariaLabel = ctx.ariaLabel ?? monthLabel;
 
     return (
-      <div ref={ref} className={cx("", className)} {...rest}>
+      <div ref={ref} className={cn("", className)} {...rest}>
         <div className="grid grid-cols-7 mb-[var(--space-1)]" role="row">
           {ctx.weekdayLabels.map((label) => (
             <span key={label} className="flex items-center justify-center h-8 text-[length:var(--text-xs)] font-medium text-foreground-muted" role="columnheader" aria-label={label}>
@@ -450,10 +448,10 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
               isStart && isEnd ? "rounded-[calc(var(--radius)-2px)]" : "";
 
             return (
-              <div key={i} className={cx("flex items-center justify-center w-full h-[2.375rem] min-w-0", cellRangeBg, cellRangeRadius)}>
+              <div key={i} className={cn("flex items-center justify-center w-full h-[2.375rem] min-w-0", cellRangeBg, cellRangeRadius)}>
                 <button
                   type="button"
-                  className={cx(
+                  className={cn(
                     "flex items-center justify-center w-9 h-9 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground text-[0.8125rem] font-[inherit] cursor-pointer transition-[background-color,color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-30 disabled:cursor-not-allowed motion-reduce:transition-none",
                     !current && "text-[var(--foreground-subtle,var(--foreground-muted))] opacity-40",
                     isToday && "font-bold underline underline-offset-[0.125rem]",

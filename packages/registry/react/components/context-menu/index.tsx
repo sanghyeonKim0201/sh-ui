@@ -2,11 +2,9 @@ import * as React from "react";
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /* ───────── Root ───────── */
 
@@ -29,7 +27,7 @@ export const ContextMenuTrigger = React.forwardRef<
   return (
     <BaseContextMenu.Trigger
       ref={ref}
-      className={cx("sh-ui-cm__trigger", className)}
+      className={cn("sh-ui-cm__trigger", className)}
       {...props}
     />
   );
@@ -60,7 +58,7 @@ export const ContextMenuContent = React.forwardRef<
       <BaseContextMenu.Positioner className="sh-ui-cm__positioner">
         <BaseContextMenu.Popup
           ref={ref}
-          className={cx("sh-ui-cm__content", className)}
+          className={cn("sh-ui-cm__content", className)}
           {...props}
         >
           {children}
@@ -80,7 +78,7 @@ export const ContextMenuItem = React.forwardRef<
   return (
     <BaseContextMenu.Item
       ref={ref}
-      className={cx("sh-ui-cm__item", className)}
+      className={cn("sh-ui-cm__item", className)}
       {...props}
     />
   );
@@ -98,7 +96,7 @@ export const ContextMenuCheckboxItem = React.forwardRef<
   return (
     <BaseContextMenu.CheckboxItem
       ref={ref}
-      className={cx("sh-ui-cm__item", "sh-ui-cm__item--check", className)}
+      className={cn("sh-ui-cm__item", "sh-ui-cm__item--check", className)}
       {...props}
     >
       <span className="sh-ui-cm__item-indicator" aria-hidden>
@@ -124,7 +122,7 @@ export const ContextMenuRadioItem = React.forwardRef<
   return (
     <BaseContextMenu.RadioItem
       ref={ref}
-      className={cx("sh-ui-cm__item", "sh-ui-cm__item--check", className)}
+      className={cn("sh-ui-cm__item", "sh-ui-cm__item--check", className)}
       {...props}
     >
       <span className="sh-ui-cm__item-indicator" aria-hidden>
@@ -147,7 +145,7 @@ export const ContextMenuGroup = React.forwardRef<
   return (
     <BaseContextMenu.Group
       ref={ref}
-      className={cx("sh-ui-cm__group", className)}
+      className={cn("sh-ui-cm__group", className)}
       {...props}
     />
   );
@@ -163,7 +161,7 @@ export const ContextMenuLabel = React.forwardRef<
   return (
     <BaseContextMenu.GroupLabel
       ref={ref}
-      className={cx("sh-ui-cm__label", className)}
+      className={cn("sh-ui-cm__label", className)}
       {...props}
     />
   );
@@ -179,7 +177,7 @@ export const ContextMenuSeparator = React.forwardRef<
       ref={ref}
       role="separator"
       aria-orientation="horizontal"
-      className={cx("sh-ui-cm__separator", className)}
+      className={cn("sh-ui-cm__separator", className)}
       {...props}
     />
   );
@@ -200,7 +198,7 @@ export const ContextMenuSubTrigger = React.forwardRef<
   return (
     <BaseContextMenu.SubmenuTrigger
       ref={ref}
-      className={cx("sh-ui-cm__item", "sh-ui-cm__sub-trigger", className)}
+      className={cn("sh-ui-cm__item", "sh-ui-cm__sub-trigger", className)}
       {...props}
     >
       <span className="sh-ui-cm__item-text">{children}</span>

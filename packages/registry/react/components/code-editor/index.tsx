@@ -11,6 +11,7 @@ import { html } from "@codemirror/lang-html";
 import { markdown } from "@codemirror/lang-markdown";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 export type CodeEditorLanguage =
   | "text"
   | "javascript"
@@ -59,9 +60,6 @@ export interface CodeEditorProps {
   "aria-labelledby"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 function languageExtension(language: CodeEditorLanguage): Extension {
   switch (language) {
@@ -219,7 +217,7 @@ export function CodeEditor({
   return (
     <div
       ref={hostRef}
-      className={cx("sh-ui-code-editor", className)}
+      className={cn("sh-ui-code-editor", className)}
       data-readonly={readOnly || undefined}
       style={
         {

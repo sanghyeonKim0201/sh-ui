@@ -1,10 +1,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 /* ───────── Breadcrumb (nav) ─────────
  * 시맨틱: <nav aria-label="Breadcrumb"><ol>...</ol></nav>.
  */
@@ -21,7 +19,7 @@ export const Breadcrumb = React.forwardRef<
     <nav
       ref={ref}
       aria-label="Breadcrumb"
-      className={cx("sh-ui-breadcrumb", className)}
+      className={cn("sh-ui-breadcrumb", className)}
       {...props}
     />
   );
@@ -37,7 +35,7 @@ export const BreadcrumbList = React.forwardRef<
   return (
     <ol
       ref={ref}
-      className={cx("sh-ui-breadcrumb__list", className)}
+      className={cn("sh-ui-breadcrumb__list", className)}
       {...props}
     />
   );
@@ -53,7 +51,7 @@ export const BreadcrumbItem = React.forwardRef<
   return (
     <li
       ref={ref}
-      className={cx("sh-ui-breadcrumb__item", className)}
+      className={cn("sh-ui-breadcrumb__item", className)}
       {...props}
     />
   );
@@ -69,7 +67,7 @@ export const BreadcrumbLink = React.forwardRef<
   return (
     <a
       ref={ref}
-      className={cx("sh-ui-breadcrumb__link", className)}
+      className={cn("sh-ui-breadcrumb__link", className)}
       {...props}
     />
   );
@@ -88,7 +86,7 @@ export const BreadcrumbPage = React.forwardRef<
       role="link"
       aria-current="page"
       aria-disabled="true"
-      className={cx("sh-ui-breadcrumb__page", className)}
+      className={cn("sh-ui-breadcrumb__page", className)}
       {...props}
     />
   );
@@ -106,7 +104,7 @@ export const BreadcrumbSeparator = React.forwardRef<
       ref={ref}
       role="presentation"
       aria-hidden="true"
-      className={cx("sh-ui-breadcrumb__separator", className)}
+      className={cn("sh-ui-breadcrumb__separator", className)}
       {...props}
     >
       {children ?? <ChevronRightIcon />}
@@ -126,7 +124,7 @@ export const BreadcrumbEllipsis = React.forwardRef<
       ref={ref}
       role="presentation"
       aria-hidden="true"
-      className={cx("sh-ui-breadcrumb__ellipsis", className)}
+      className={cn("sh-ui-breadcrumb__ellipsis", className)}
       {...props}
     >
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>

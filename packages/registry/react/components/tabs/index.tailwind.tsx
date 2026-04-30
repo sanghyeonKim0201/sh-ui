@@ -3,10 +3,8 @@
 import * as React from "react";
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
 export type TabsVariant = "underline" | "pill" | "plain";
@@ -26,7 +24,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
       <BaseTabs.Root
         ref={ref}
         data-variant={variant}
-        className={cx("flex flex-col gap-[var(--space-3)] w-full data-[orientation=vertical]:flex-row", className)}
+        className={cn("flex flex-col gap-[var(--space-3)] w-full data-[orientation=vertical]:flex-row", className)}
         {...props}
       />
     </TabsContext.Provider>
@@ -46,7 +44,7 @@ export const TabsList = React.forwardRef<
     <BaseTabs.List
       ref={ref}
       data-variant={variant}
-      className={cx(
+      className={cn(
         "relative inline-flex items-center gap-[var(--space-1)] w-fit",
         listVariantClasses,
         className,
@@ -66,7 +64,7 @@ export const TabsTrigger = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseTabs.Tab
     ref={ref}
-    className={cx(
+    className={cn(
       "relative z-[1] inline-flex items-center justify-center gap-1.5 py-[var(--space-2)] px-[var(--space-3)] bg-transparent text-foreground-muted border-0 text-[length:var(--text-sm)] font-medium leading-none cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] select-none whitespace-nowrap hover:not-disabled:not-data-[selected]:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[selected]:text-foreground disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed",
       triggerVariantClasses,
       className,
@@ -85,7 +83,7 @@ export const TabsIndicator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseTabs.Indicator
     ref={ref}
-    className={cx(
+    className={cn(
       "absolute z-0 pointer-events-none transition-[top,left,width,height] duration-[180ms] data-[activation-direction=none]:transition-none top-[var(--active-tab-top)] left-[var(--active-tab-left)] w-[var(--active-tab-width)] h-[var(--active-tab-height)]",
       indicatorVariantClasses,
       className,
@@ -101,7 +99,7 @@ export const TabsContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseTabs.Panel
     ref={ref}
-    className={cx(
+    className={cn(
       "outline-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 focus-visible:rounded-[var(--radius)]",
       className,
     )}

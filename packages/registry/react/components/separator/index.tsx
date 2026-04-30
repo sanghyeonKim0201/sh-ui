@@ -1,10 +1,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export type SeparatorOrientation = "horizontal" | "vertical";
 
 export interface SeparatorProps
@@ -35,7 +33,7 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProps>(
         aria-orientation={decorative ? undefined : orientation}
         aria-hidden={decorative || undefined}
         data-orientation={orientation}
-        className={cx(
+        className={cn(
           "sh-ui-separator",
           `sh-ui-separator--${orientation}`,
           className,

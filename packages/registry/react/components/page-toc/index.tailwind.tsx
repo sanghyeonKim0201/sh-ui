@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { cn } from "@SH_UI_UTILS@";
 export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 export interface PageTOCProps {
@@ -120,7 +121,7 @@ export function PageTOC({
 
   return (
     <nav
-      className={cx(
+      className={cn(
         "fixed top-20 right-6 w-56 max-h-[calc(100vh-7rem)] overflow-y-auto pl-4 pr-2 py-3 border-l border-border text-[0.8125rem] z-[5] max-[80rem]:hidden",
         className,
       )}
@@ -135,7 +136,7 @@ export function PageTOC({
             <a
               href={`#${item.id}`}
               onClick={(e) => handleClick(e, item.id)}
-              className={cx(linkBase, linkClassesForLevel(item.level))}
+              className={cn(linkBase, linkClassesForLevel(item.level))}
               data-active={activeId === item.id ? "true" : undefined}
               aria-current={activeId === item.id ? "true" : undefined}
             >

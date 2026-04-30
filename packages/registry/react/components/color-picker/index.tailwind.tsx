@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { cn } from "@SH_UI_UTILS@";
 interface HSV { h: number; s: number; v: number; }
 interface HSVA extends HSV { a: number; }
 
@@ -136,7 +137,7 @@ export function ColorPicker({
 
   return (
     <ColorPickerContext.Provider value={ctx}>
-      <div className={["flex flex-col gap-2.5 w-full select-none", className].filter(Boolean).join(" ")} {...rest}>
+      <div className={cn("flex flex-col gap-2.5 w-full select-none", className)} {...rest}>
         {children ?? (<><ColorPickerSaturation /><ColorPickerHue /><ColorPickerHex /></>)}
       </div>
     </ColorPickerContext.Provider>
@@ -157,7 +158,7 @@ export function ColorPickerSaturation({ className, style, ...rest }: ColorPicker
     <div
       ref={drag.ref}
       onPointerDown={drag.onPointerDown}
-      className={["relative w-full aspect-[4/3] rounded-[var(--radius)] cursor-crosshair overflow-hidden touch-none", className].filter(Boolean).join(" ")}
+      className={cn("relative w-full aspect-[4/3] rounded-[var(--radius)] cursor-crosshair overflow-hidden touch-none", className)}
       style={{ background: pureHueHex, ...style }}
       role="slider"
       aria-label="채도/명도"
@@ -187,7 +188,7 @@ export function ColorPickerHue({ className, ...rest }: ColorPickerHueProps) {
     <div
       ref={drag.ref}
       onPointerDown={drag.onPointerDown}
-      className={["relative w-full h-3.5 rounded-full cursor-pointer touch-none bg-[linear-gradient(to_right,#f00_0%,#ff0_16.66%,#0f0_33.33%,#0ff_50%,#00f_66.66%,#f0f_83.33%,#f00_100%)]", className].filter(Boolean).join(" ")}
+      className={cn("relative w-full h-3.5 rounded-full cursor-pointer touch-none bg-[linear-gradient(to_right,#f00_0%,#ff0_16.66%,#0f0_33.33%,#0ff_50%,#00f_66.66%,#f0f_83.33%,#f00_100%)]", className)}
       role="slider"
       aria-label="색조"
       aria-valuemin={0} aria-valuemax={360} aria-valuenow={Math.round(hsva.h)}
@@ -215,7 +216,7 @@ export function ColorPickerAlpha({ className, style, ...rest }: ColorPickerAlpha
     <div
       ref={drag.ref}
       onPointerDown={drag.onPointerDown}
-      className={["relative w-full h-3.5 rounded-full cursor-pointer touch-none overflow-hidden bg-white bg-[length:8px_8px] bg-[position:0_0,0_4px,4px_-4px,-4px_0] [background-image:linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)]", className].filter(Boolean).join(" ")}
+      className={cn("relative w-full h-3.5 rounded-full cursor-pointer touch-none overflow-hidden bg-white bg-[length:8px_8px] bg-[position:0_0,0_4px,4px_-4px,-4px_0] [background-image:linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)]", className)}
       role="slider"
       aria-label="투명도"
       aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(hsva.a * 100)}
@@ -248,7 +249,7 @@ export function ColorPickerHex({ className, showSwatch = true, ...rest }: ColorP
 
   return (
     <div
-      className={["flex items-center gap-[var(--space-2)]", className].filter(Boolean).join(" ")}
+      className={cn("flex items-center gap-[var(--space-2)]", className)}
       {...rest}
     >
       {showSwatch && (
@@ -285,7 +286,7 @@ export function ColorPickerSwatches({ className, colors, ...rest }: ColorPickerS
     <div
       role="group"
       aria-label="미리 준비된 색상"
-      className={["flex flex-wrap gap-1.5", className].filter(Boolean).join(" ")}
+      className={cn("flex flex-wrap gap-1.5", className)}
       {...rest}
     >
       {colors.map((c) => {

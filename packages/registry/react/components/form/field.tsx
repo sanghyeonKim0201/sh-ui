@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@SH_UI_UTILS@";
 import {
   FormContext,
   FieldContext,
@@ -195,9 +196,7 @@ export function FormControl({
   const field = useFormField(ctx.path);
 
   const describedBy =
-    [ctx.descId, field.hasError ? ctx.errorId : null]
-      .filter(Boolean)
-      .join(" ") || undefined;
+    cn(ctx.descId, field.hasError ? ctx.errorId : null) || undefined;
 
   const ctrl: ControlProps = {
     id: ctx.id,

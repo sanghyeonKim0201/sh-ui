@@ -3,6 +3,7 @@
 import * as React from "react";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
   /** input 우측에 부착할 보조 노드(아이콘·단위·버튼 등). 더 많은 슬롯이 필요하면 InputGroup 사용. */
   suffix?: React.ReactNode;
@@ -10,9 +11,6 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   prefix?: React.ReactNode;
 }
 
-function cx(...args: (string | undefined | null | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /* ───────── InputGroup + InputAdornment (compound) ─────────
  * <InputGroup>
@@ -87,7 +85,7 @@ export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(
       <InputGroupContext.Provider value={{ inGroup: true }}>
         <div
           ref={mergedRef}
-          className={cx("sh-ui-input-group", className)}
+          className={cn("sh-ui-input-group", className)}
           data-disabled={disabled || undefined}
           aria-invalid={ariaInvalid}
           onClick={handleClick}
@@ -123,7 +121,7 @@ export const InputAdornment = React.forwardRef<
   return (
     <span
       ref={ref}
-      className={cx("sh-ui-input-group__adornment", className)}
+      className={cn("sh-ui-input-group__adornment", className)}
       data-interactive={interactive || undefined}
       {...props}
     />
@@ -143,7 +141,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         type={type}
-        className={cx(
+        className={cn(
           "sh-ui-input",
           !!prefix && "sh-ui-input--with-prefix",
           !!suffix && "sh-ui-input--with-suffix",

@@ -2,10 +2,8 @@ import { codeToHtml } from "shiki";
 import { CodePanelCopyButton } from "./copy";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export interface CodePanelProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** 하이라이팅할 코드 문자열. children을 제공하지 않을 때 필수. */
@@ -56,7 +54,7 @@ export async function CodePanel({
   children,
   ...rest
 }: CodePanelProps) {
-  const classes = cx("sh-ui-code", className);
+  const classes = cn("sh-ui-code", className);
 
   if (children !== undefined) {
     return (
@@ -104,7 +102,7 @@ export function CodePanelHeader({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cx("sh-ui-code__header", className)} {...props}>
+    <div className={cn("sh-ui-code__header", className)} {...props}>
       {children}
     </div>
   );
@@ -119,7 +117,7 @@ export function CodePanelFilename({
   ...props
 }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <span className={cx("sh-ui-code__filename", className)} {...props}>
+    <span className={cn("sh-ui-code__filename", className)} {...props}>
       {children}
     </span>
   );
@@ -182,7 +180,7 @@ export async function CodePanelBody({
 
   return (
     <div
-      className={cx("sh-ui-code__body", className)}
+      className={cn("sh-ui-code__body", className)}
       data-line-numbers={showLineNumbers || undefined}
       dangerouslySetInnerHTML={{ __html: html }}
       {...rest}

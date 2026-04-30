@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { cn } from "@SH_UI_UTILS@";
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
   /** input 우측에 부착할 보조 노드(아이콘·단위·버튼 등). 더 많은 슬롯이 필요하면 InputGroup 사용. */
   suffix?: React.ReactNode;
@@ -9,9 +10,6 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   prefix?: React.ReactNode;
 }
 
-function cx(...args: (string | undefined | null | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /* ───────── Base utility 묶음 (반복 줄이기) ───────── */
 
@@ -69,7 +67,7 @@ export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(
       <InputGroupContext.Provider value={{ inGroup: true }}>
         <div
           ref={mergedRef}
-          className={cx(baseGroupClasses, className)}
+          className={cn(baseGroupClasses, className)}
           data-disabled={disabled || undefined}
           aria-invalid={ariaInvalid}
           onClick={handleClick}
@@ -91,7 +89,7 @@ export const InputAdornment = React.forwardRef<HTMLSpanElement, InputAdornmentPr
   ({ className, interactive, ...props }, ref) => (
     <span
       ref={ref}
-      className={cx(
+      className={cn(
         "inline-flex items-center justify-center flex-none text-foreground-muted px-[var(--space-1)] data-[interactive]:p-0",
         className,
       )}
@@ -112,7 +110,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         type={type}
-        className={cx(
+        className={cn(
           baseInputClasses,
           inGroupOverrides,
           !!prefix && "pl-[var(--space-10)]",

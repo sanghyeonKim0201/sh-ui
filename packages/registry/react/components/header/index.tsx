@@ -4,10 +4,8 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -264,7 +262,7 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
     <HeaderContext.Provider value={ctx}>
       <header
         ref={setRefs}
-        className={cx("sh-ui-header", `sh-ui-header--${variant}`, className)}
+        className={cn("sh-ui-header", `sh-ui-header--${variant}`, className)}
         data-drawer-open={open ? "" : undefined}
         data-sticky-hide={stickyHide ? "" : undefined}
         data-hidden={hidden ? "" : undefined}
@@ -282,21 +280,21 @@ export const HeaderBrand = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(function HeaderBrand({ className, ...props }, ref) {
-  return <div ref={ref} className={cx("sh-ui-header__brand", className)} {...props} />;
+  return <div ref={ref} className={cn("sh-ui-header__brand", className)} {...props} />;
 });
 
 export const HeaderLogo = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
 >(function HeaderLogo({ className, ...props }, ref) {
-  return <span ref={ref} className={cx("sh-ui-header__logo", className)} {...props} />;
+  return <span ref={ref} className={cn("sh-ui-header__logo", className)} {...props} />;
 });
 
 export const HeaderTitle = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
 >(function HeaderTitle({ className, ...props }, ref) {
-  return <span ref={ref} className={cx("sh-ui-header__title", className)} {...props} />;
+  return <span ref={ref} className={cn("sh-ui-header__title", className)} {...props} />;
 });
 
 /* ───────── Trigger ─────────
@@ -322,7 +320,7 @@ export const HeaderTrigger = React.forwardRef<
     <button
       ref={setRefs}
       type="button"
-      className={cx("sh-ui-header__trigger", className)}
+      className={cn("sh-ui-header__trigger", className)}
       aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
       aria-expanded={open}
       data-open={open ? "" : undefined}
@@ -399,7 +397,7 @@ export const HeaderNav = React.forwardRef<HTMLElement, HeaderNavProps>(
     return (
       <NavMatchContext.Provider value={navMatch}>
         <NavLocationContext.Provider value="inline">
-          <nav ref={ref} className={cx("sh-ui-header__nav", className)} {...props}>
+          <nav ref={ref} className={cn("sh-ui-header__nav", className)} {...props}>
             {children}
           </nav>
         </NavLocationContext.Provider>
@@ -457,7 +455,7 @@ export const HeaderItem = React.forwardRef<
     <a
       ref={ref}
       href={href}
-      className={cx("sh-ui-header__item", className)}
+      className={cn("sh-ui-header__item", className)}
       data-active={computedActive ? "" : undefined}
       aria-current={computedActive ? "page" : undefined}
       onClick={(e) => {
@@ -478,7 +476,7 @@ export const HeaderActions = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(function HeaderActions({ className, ...props }, ref) {
   return (
-    <div ref={ref} className={cx("sh-ui-header__actions", className)} {...props} />
+    <div ref={ref} className={cn("sh-ui-header__actions", className)} {...props} />
   );
 });
 
@@ -493,7 +491,7 @@ export const HeaderDesktopOnly = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(function HeaderDesktopOnly({ className, ...props }, ref) {
   return (
-    <div ref={ref} className={cx("sh-ui-header__desktop-only", className)} {...props} />
+    <div ref={ref} className={cn("sh-ui-header__desktop-only", className)} {...props} />
   );
 });
 
@@ -503,7 +501,7 @@ export const HeaderMobileOnly = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(function HeaderMobileOnly({ className, ...props }, ref) {
   return (
-    <div ref={ref} className={cx("sh-ui-header__mobile-only", className)} {...props} />
+    <div ref={ref} className={cn("sh-ui-header__mobile-only", className)} {...props} />
   );
 });
 
@@ -524,7 +522,7 @@ export const HeaderNavGroup = React.forwardRef<HTMLDivElement, HeaderNavGroupPro
       return (
         <div
           ref={ref}
-          className={cx("sh-ui-header__group sh-ui-header__group--inline", className)}
+          className={cn("sh-ui-header__group sh-ui-header__group--inline", className)}
           {...props}
         >
           {children}
@@ -534,7 +532,7 @@ export const HeaderNavGroup = React.forwardRef<HTMLDivElement, HeaderNavGroupPro
     return (
       <div
         ref={ref}
-        className={cx("sh-ui-header__group sh-ui-header__group--drawer", className)}
+        className={cn("sh-ui-header__group sh-ui-header__group--drawer", className)}
         role="group"
         aria-label={typeof label === "string" ? label : undefined}
         {...props}
@@ -626,7 +624,7 @@ export function HeaderMenu({
     <MenuContext.Provider value={ctx}>
       <div
         ref={containerRef}
-        className={cx(
+        className={cn(
           "sh-ui-header__menu",
           `sh-ui-header__menu--${location}`,
           open && "is-open",
@@ -665,7 +663,7 @@ export const HeaderMenuTrigger = React.forwardRef<
       aria-expanded={open}
       aria-controls={contentId}
       data-open={open ? "" : undefined}
-      className={cx("sh-ui-header__menu-trigger", className)}
+      className={cn("sh-ui-header__menu-trigger", className)}
       onClick={(e) => {
         setOpen(!open);
         onClick?.(e);
@@ -704,7 +702,7 @@ export const HeaderMenuContent = React.forwardRef<
         aria-labelledby={triggerId}
         data-open={open ? "" : undefined}
         hidden={!open}
-        className={cx("sh-ui-header__menu-content", className)}
+        className={cn("sh-ui-header__menu-content", className)}
         style={style}
         {...props}
       >
@@ -754,7 +752,7 @@ export const HeaderMenuContent = React.forwardRef<
       role="menu"
       aria-labelledby={triggerId}
       data-open=""
-      className={cx("sh-ui-header__menu-content sh-ui-header__menu-content--portal", className)}
+      className={cn("sh-ui-header__menu-content sh-ui-header__menu-content--portal", className)}
       style={{
         position: "absolute",
         top: pos.top,

@@ -1,11 +1,9 @@
 import * as React from "react";
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 const itemBase =
   "relative flex items-center gap-[var(--space-2)] py-2 px-3 rounded-[calc(var(--radius)-2px)] cursor-pointer outline-none select-none transition-colors duration-[80ms] data-[highlighted]:bg-background-muted hover:bg-background-muted data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:pointer-events-none motion-reduce:transition-none";
@@ -19,7 +17,7 @@ export const ContextMenuTrigger = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseContextMenu.Trigger>>
 >(function ContextMenuTrigger({ className, ...props }, ref) {
-  return <BaseContextMenu.Trigger ref={ref} className={cx("contents", className)} {...props} />;
+  return <BaseContextMenu.Trigger ref={ref} className={cn("contents", className)} {...props} />;
 });
 
 export interface ContextMenuContentProps
@@ -32,7 +30,7 @@ export const ContextMenuContent = React.forwardRef<HTMLDivElement, ContextMenuCo
     return (
       <BaseContextMenu.Portal container={container}>
         <BaseContextMenu.Positioner className="outline-none z-[var(--z-dropdown)]">
-          <BaseContextMenu.Popup ref={ref} className={cx(contentClasses, className)} {...props}>
+          <BaseContextMenu.Popup ref={ref} className={cn(contentClasses, className)} {...props}>
             {children}
           </BaseContextMenu.Popup>
         </BaseContextMenu.Positioner>
@@ -45,7 +43,7 @@ export const ContextMenuItem = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseContextMenu.Item>>
 >(function ContextMenuItem({ className, ...props }, ref) {
-  return <BaseContextMenu.Item ref={ref} className={cx(itemBase, className)} {...props} />;
+  return <BaseContextMenu.Item ref={ref} className={cn(itemBase, className)} {...props} />;
 });
 
 export const ContextMenuCheckboxItem = React.forwardRef<
@@ -53,7 +51,7 @@ export const ContextMenuCheckboxItem = React.forwardRef<
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseContextMenu.CheckboxItem>>
 >(function ContextMenuCheckboxItem({ className, children, ...props }, ref) {
   return (
-    <BaseContextMenu.CheckboxItem ref={ref} className={cx(itemBase, itemCheck, className)} {...props}>
+    <BaseContextMenu.CheckboxItem ref={ref} className={cn(itemBase, itemCheck, className)} {...props}>
       <span className="absolute left-2 inline-flex items-center justify-center w-4 h-4 text-foreground" aria-hidden>
         <BaseContextMenu.CheckboxItemIndicator>
           <CheckIcon />
@@ -71,7 +69,7 @@ export const ContextMenuRadioItem = React.forwardRef<
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseContextMenu.RadioItem>>
 >(function ContextMenuRadioItem({ className, children, ...props }, ref) {
   return (
-    <BaseContextMenu.RadioItem ref={ref} className={cx(itemBase, itemCheck, className)} {...props}>
+    <BaseContextMenu.RadioItem ref={ref} className={cn(itemBase, itemCheck, className)} {...props}>
       <span className="absolute left-2 inline-flex items-center justify-center w-4 h-4 text-foreground" aria-hidden>
         <BaseContextMenu.RadioItemIndicator>
           <DotIcon />
@@ -86,7 +84,7 @@ export const ContextMenuGroup = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseContextMenu.Group>>
 >(function ContextMenuGroup({ className, ...props }, ref) {
-  return <BaseContextMenu.Group ref={ref} className={cx("p-0", className)} {...props} />;
+  return <BaseContextMenu.Group ref={ref} className={cn("p-0", className)} {...props} />;
 });
 
 export const ContextMenuLabel = React.forwardRef<
@@ -96,7 +94,7 @@ export const ContextMenuLabel = React.forwardRef<
   return (
     <BaseContextMenu.GroupLabel
       ref={ref}
-      className={cx(
+      className={cn(
         "py-[var(--space-2)] px-[var(--space-2)] pb-[var(--space-1)] text-[length:var(--text-xs)] font-semibold text-foreground-muted uppercase tracking-[0.04em]",
         className,
       )}
@@ -112,7 +110,7 @@ export const ContextMenuSeparator = React.forwardRef<HTMLDivElement, React.HTMLA
         ref={ref}
         role="separator"
         aria-orientation="horizontal"
-        className={cx("h-px bg-border my-[var(--space-1)]", className)}
+        className={cn("h-px bg-border my-[var(--space-1)]", className)}
         {...props}
       />
     );
@@ -128,7 +126,7 @@ export const ContextMenuSubTrigger = React.forwardRef<
   return (
     <BaseContextMenu.SubmenuTrigger
       ref={ref}
-      className={cx(itemBase, "data-[popup-open]:bg-background-muted", className)}
+      className={cn(itemBase, "data-[popup-open]:bg-background-muted", className)}
       {...props}
     >
       <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{children}</span>

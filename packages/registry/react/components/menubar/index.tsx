@@ -2,11 +2,9 @@ import * as React from "react";
 import { Menubar as BaseMenubar } from "@base-ui/react/menubar";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 상단 앱 메뉴바(파일/편집/보기 등). 내부에 DropdownMenu를 나란히 배치하여
@@ -27,7 +25,7 @@ export const Menubar = React.forwardRef<
   return (
     <BaseMenubar
       ref={ref}
-      className={cx("sh-ui-menubar", className)}
+      className={cn("sh-ui-menubar", className)}
       {...props}
     />
   );

@@ -1,9 +1,7 @@
 import * as React from "react";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export type SeparatorOrientation = "horizontal" | "vertical";
 
 export interface SeparatorProps
@@ -33,7 +31,7 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProps>(
         aria-orientation={decorative ? undefined : orientation}
         aria-hidden={decorative || undefined}
         data-orientation={orientation}
-        className={cx("bg-border shrink-0", sizing, className)}
+        className={cn("bg-border shrink-0", sizing, className)}
         {...props}
       />
     );

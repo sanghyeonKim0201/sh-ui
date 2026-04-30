@@ -3,10 +3,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 type Orientation = "horizontal" | "vertical";
 
 interface CarouselContextValue {
@@ -259,7 +257,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       <CarouselContext.Provider value={value}>
         <div
           ref={ref}
-          className={cx("sh-ui-carousel", className)}
+          className={cn("sh-ui-carousel", className)}
           data-orientation={orientation}
           role="region"
           aria-roledescription="carousel"
@@ -292,7 +290,7 @@ export const CarouselContent = React.forwardRef<
   return (
     <div
       ref={mergedRef}
-      className={cx("sh-ui-carousel__content", className)}
+      className={cn("sh-ui-carousel__content", className)}
       data-orientation={orientation}
       {...props}
     />
@@ -313,7 +311,7 @@ export const CarouselItem = React.forwardRef<
       ref={ref}
       role="group"
       aria-roledescription="slide"
-      className={cx("sh-ui-carousel__item", className)}
+      className={cn("sh-ui-carousel__item", className)}
       data-orientation={orientation}
       {...props}
     />
@@ -332,7 +330,7 @@ export const CarouselPrevious = React.forwardRef<
       ref={ref}
       type="button"
       aria-label="이전"
-      className={cx("sh-ui-carousel__nav", "sh-ui-carousel__nav--prev", className)}
+      className={cn("sh-ui-carousel__nav", "sh-ui-carousel__nav--prev", className)}
       data-orientation={orientation}
       disabled={disabled || atStart || count === 0}
       onClick={(e) => {
@@ -368,7 +366,7 @@ export const CarouselNext = React.forwardRef<
       ref={ref}
       type="button"
       aria-label="다음"
-      className={cx("sh-ui-carousel__nav", "sh-ui-carousel__nav--next", className)}
+      className={cn("sh-ui-carousel__nav", "sh-ui-carousel__nav--next", className)}
       data-orientation={orientation}
       disabled={disabled || atEnd || count === 0}
       onClick={(e) => {
@@ -410,7 +408,7 @@ export const CarouselIndicators = React.forwardRef<
       ref={ref}
       role="tablist"
       aria-label="슬라이드 선택"
-      className={cx("sh-ui-carousel__indicators", className)}
+      className={cn("sh-ui-carousel__indicators", className)}
       data-orientation={orientation}
       {...props}
     >

@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import { CodeEditor } from "../code-editor";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 export interface MarkdownEditorProps {
   /**
    * Controlled — 현재 마크다운. 명시 시 외부 상태가 진실원천.
@@ -42,9 +43,6 @@ export interface MarkdownEditorProps {
   "aria-label"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 마크다운 에디터 — CodeEditor(소스) + react-markdown(라이브 프리뷰)의 합성.
@@ -79,7 +77,7 @@ export function MarkdownEditor({
 
   return (
     <div
-      className={cx(
+      className={cn(
         "sh-ui-md-editor",
         preview && `sh-ui-md-editor--${previewPosition}`,
         !preview && "sh-ui-md-editor--no-preview",

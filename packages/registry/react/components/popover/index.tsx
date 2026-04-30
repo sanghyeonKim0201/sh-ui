@@ -2,11 +2,9 @@ import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 트리거 요소에 떠다니는 가벼운 패널을 띄우는 비모달 컨테이너. 포커스를 가두지 않으므로
@@ -72,7 +70,7 @@ export const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentPro
         >
           <BasePopover.Popup
             ref={ref}
-            className={cx("sh-ui-popover__content", className)}
+            className={cn("sh-ui-popover__content", className)}
             {...props}
           >
             {showArrow && (
@@ -94,7 +92,7 @@ export const PopoverTitle = React.forwardRef<
   return (
     <BasePopover.Title
       ref={ref}
-      className={cx("sh-ui-popover__title", className)}
+      className={cn("sh-ui-popover__title", className)}
       {...props}
     />
   );
@@ -108,7 +106,7 @@ export const PopoverDescription = React.forwardRef<
   return (
     <BasePopover.Description
       ref={ref}
-      className={cx("sh-ui-popover__description", className)}
+      className={cn("sh-ui-popover__description", className)}
       {...props}
     />
   );

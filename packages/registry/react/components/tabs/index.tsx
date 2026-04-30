@@ -4,10 +4,8 @@ import * as React from "react";
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
 export type TabsVariant = "underline" | "pill" | "plain";
@@ -41,7 +39,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
       <BaseTabs.Root
         ref={ref}
         data-variant={variant}
-        className={cx("sh-ui-tabs", className)}
+        className={cn("sh-ui-tabs", className)}
         {...props}
       />
     </TabsContext.Provider>
@@ -54,7 +52,7 @@ export const TabsList = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseTabs.List>>
 >(({ className, ...props }, ref) => (
-  <BaseTabs.List ref={ref} className={cx("sh-ui-tabs__list", className)} {...props} />
+  <BaseTabs.List ref={ref} className={cn("sh-ui-tabs__list", className)} {...props} />
 ));
 TabsList.displayName = "TabsList";
 
@@ -63,7 +61,7 @@ export const TabsTrigger = React.forwardRef<
   HTMLButtonElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseTabs.Tab>>
 >(({ className, ...props }, ref) => (
-  <BaseTabs.Tab ref={ref} className={cx("sh-ui-tabs__trigger", className)} {...props} />
+  <BaseTabs.Tab ref={ref} className={cn("sh-ui-tabs__trigger", className)} {...props} />
 ));
 TabsTrigger.displayName = "TabsTrigger";
 
@@ -74,7 +72,7 @@ export const TabsIndicator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseTabs.Indicator
     ref={ref}
-    className={cx("sh-ui-tabs__indicator", className)}
+    className={cn("sh-ui-tabs__indicator", className)}
     {...props}
   />
 ));
@@ -85,7 +83,7 @@ export const TabsContent = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseTabs.Panel>>
 >(({ className, ...props }, ref) => (
-  <BaseTabs.Panel ref={ref} className={cx("sh-ui-tabs__content", className)} {...props} />
+  <BaseTabs.Panel ref={ref} className={cn("sh-ui-tabs__content", className)} {...props} />
 ));
 TabsContent.displayName = "TabsContent";
 

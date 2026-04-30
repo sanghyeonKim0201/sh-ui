@@ -1,10 +1,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export type BadgeVariant =
   | "primary"
   | "secondary"
@@ -29,7 +27,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     return (
       <span
         ref={ref}
-        className={cx(
+        className={cn(
           "sh-ui-badge",
           `sh-ui-badge--${variant}`,
           `sh-ui-badge--${size}`,

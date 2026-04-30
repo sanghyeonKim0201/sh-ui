@@ -1,10 +1,8 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 const spinnerVariants = cva(
   "inline-flex items-center justify-center align-middle text-current",
   {
@@ -39,12 +37,12 @@ export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
         role="status"
         aria-live="polite"
         aria-label={ariaLabel}
-        className={cx(spinnerVariants({ size }), className)}
+        className={cn(spinnerVariants({ size }), className)}
         {...props}
       >
         <span
           aria-hidden
-          className={cx(
+          className={cn(
             "inline-block w-full h-full rounded-full border-current border-t-transparent opacity-80 animate-[sh-ui-spinner-rotate_0.8s_linear_infinite] motion-reduce:[animation-duration:3s]",
             ringBorder,
           )}

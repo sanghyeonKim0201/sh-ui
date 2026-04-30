@@ -3,11 +3,9 @@
 import * as React from "react";
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 const itemBase =
   "relative flex items-center gap-[var(--space-2)] py-2 px-3 rounded-[calc(var(--radius)-2px)] cursor-pointer outline-none select-none transition-colors duration-[80ms] data-[highlighted]:bg-background-muted hover:bg-background-muted data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:pointer-events-none motion-reduce:transition-none";
@@ -22,7 +20,7 @@ export const DropdownMenuTrigger = React.forwardRef<
   return (
     <BaseMenu.Trigger
       ref={ref}
-      className={cx(
+      className={cn(
         "font-[inherit] cursor-pointer focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2",
         className,
       )}
@@ -54,7 +52,7 @@ export const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenu
         >
           <BaseMenu.Popup
             ref={ref}
-            className={cx(
+            className={cn(
               "min-w-40 max-h-[min(24rem,var(--available-height,24rem))] overflow-y-auto p-[var(--space-1)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.05)] text-[length:var(--text-sm)] origin-[var(--transform-origin)] animate-[sh-ui-dm-in_140ms_ease-out] data-[ending-style]:animate-[sh-ui-dm-out_100ms_ease-in_forwards] outline-none motion-reduce:animate-none motion-reduce:data-[ending-style]:animate-none",
               className,
             )}
@@ -72,7 +70,7 @@ export const DropdownMenuItem = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Item>>
 >(function DropdownMenuItem({ className, ...props }, ref) {
-  return <BaseMenu.Item ref={ref} className={cx(itemBase, className)} {...props} />;
+  return <BaseMenu.Item ref={ref} className={cn(itemBase, className)} {...props} />;
 });
 
 export interface DropdownMenuCheckboxItemProps
@@ -83,7 +81,7 @@ export const DropdownMenuCheckboxItem = React.forwardRef<
   DropdownMenuCheckboxItemProps
 >(function DropdownMenuCheckboxItem({ className, children, ...props }, ref) {
   return (
-    <BaseMenu.CheckboxItem ref={ref} className={cx(itemBase, itemCheck, className)} {...props}>
+    <BaseMenu.CheckboxItem ref={ref} className={cn(itemBase, itemCheck, className)} {...props}>
       <span className="absolute left-2 inline-flex items-center justify-center w-4 h-4 text-foreground" aria-hidden>
         <BaseMenu.CheckboxItemIndicator>
           <CheckIcon />
@@ -104,7 +102,7 @@ export const DropdownMenuRadioItem = React.forwardRef<
   DropdownMenuRadioItemProps
 >(function DropdownMenuRadioItem({ className, children, ...props }, ref) {
   return (
-    <BaseMenu.RadioItem ref={ref} className={cx(itemBase, itemCheck, className)} {...props}>
+    <BaseMenu.RadioItem ref={ref} className={cn(itemBase, itemCheck, className)} {...props}>
       <span className="absolute left-2 inline-flex items-center justify-center w-4 h-4 text-foreground" aria-hidden>
         <BaseMenu.RadioItemIndicator>
           <DotIcon />
@@ -119,7 +117,7 @@ export const DropdownMenuGroup = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Group>>
 >(function DropdownMenuGroup({ className, ...props }, ref) {
-  return <BaseMenu.Group ref={ref} className={cx("p-0", className)} {...props} />;
+  return <BaseMenu.Group ref={ref} className={cn("p-0", className)} {...props} />;
 });
 
 export const DropdownMenuLabel = React.forwardRef<
@@ -129,7 +127,7 @@ export const DropdownMenuLabel = React.forwardRef<
   return (
     <BaseMenu.GroupLabel
       ref={ref}
-      className={cx(
+      className={cn(
         "py-[var(--space-2)] px-[var(--space-2)] pb-[var(--space-1)] text-[length:var(--text-xs)] font-semibold text-foreground-muted uppercase tracking-[0.04em]",
         className,
       )}
@@ -145,7 +143,7 @@ export const DropdownMenuSeparator = React.forwardRef<HTMLDivElement, React.HTML
         ref={ref}
         role="separator"
         aria-orientation="horizontal"
-        className={cx("h-px bg-border my-[var(--space-1)]", className)}
+        className={cn("h-px bg-border my-[var(--space-1)]", className)}
         {...props}
       />
     );
@@ -161,7 +159,7 @@ export const DropdownMenuSubTrigger = React.forwardRef<
   return (
     <BaseMenu.SubmenuTrigger
       ref={ref}
-      className={cx(itemBase, "data-[popup-open]:bg-background-muted", className)}
+      className={cn(itemBase, "data-[popup-open]:bg-background-muted", className)}
       {...props}
     >
       <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{children}</span>

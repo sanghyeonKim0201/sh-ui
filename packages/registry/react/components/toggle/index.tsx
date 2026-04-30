@@ -5,10 +5,8 @@ import { Toggle as BaseToggle } from "@base-ui/react/toggle";
 import { ToggleGroup as BaseToggleGroup } from "@base-ui/react/toggle-group";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 /* ───────────── Toggle ───────────── */
 
 export type ToggleVariant = "outline" | "ghost";
@@ -43,7 +41,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
   ({ className, variant = "ghost", size = "md", ...props }, ref) => (
     <BaseToggle
       ref={ref}
-      className={cx(
+      className={cn(
         "sh-ui-toggle",
         `sh-ui-toggle--${variant}`,
         `sh-ui-toggle--${size}`,
@@ -95,7 +93,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
     <ToggleGroupContext.Provider value={{ variant, size }}>
       <BaseToggleGroup
         ref={ref}
-        className={cx("sh-ui-toggle-group", className)}
+        className={cn("sh-ui-toggle-group", className)}
         {...props}
       />
     </ToggleGroupContext.Provider>
@@ -119,7 +117,7 @@ export const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupIt
     return (
       <BaseToggle
         ref={ref}
-        className={cx(
+        className={cn(
           "sh-ui-toggle",
           `sh-ui-toggle--${variant}`,
           `sh-ui-toggle--${size}`,

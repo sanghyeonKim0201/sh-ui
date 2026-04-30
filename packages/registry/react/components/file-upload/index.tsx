@@ -3,10 +3,8 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | false | undefined)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -200,7 +198,7 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
 
     return (
       <FileUploadContext.Provider value={ctx}>
-        <div className={cx("sh-ui-file-upload", className)} style={style}>
+        <div className={cn("sh-ui-file-upload", className)} style={style}>
           {/* 공유 네이티브 input. Trigger/Dropzone 모두 이를 통해 파일 선택을 연다. */}
           <input
             ref={inputRef}
@@ -283,7 +281,7 @@ export const FileUploadDropzone = React.forwardRef<
       tabIndex={disabled ? -1 : 0}
       aria-disabled={disabled || undefined}
       data-dragging={dragging || undefined}
-      className={cx(
+      className={cn(
         "sh-ui-file-upload__dropzone",
         dragging && "sh-ui-file-upload__dropzone--drag",
         disabled && "sh-ui-file-upload__dropzone--disabled",
@@ -332,7 +330,7 @@ export const FileUploadTrigger = React.forwardRef<
       ref={ref}
       type={type ?? "button"}
       disabled={disabled || rest.disabled}
-      className={cx("sh-ui-file-upload__trigger", className)}
+      className={cn("sh-ui-file-upload__trigger", className)}
       onClick={(e) => {
         // Dropzone 내부에 있을 때 상위 onClick이 중복 트리거되지 않도록 버블 차단
         e.stopPropagation();
@@ -391,7 +389,7 @@ export const FileUploadList = React.forwardRef<
   return (
     <ul
       ref={ref}
-      className={cx("sh-ui-file-upload__list", className)}
+      className={cn("sh-ui-file-upload__list", className)}
       {...rest}
     >
       {content}
@@ -418,7 +416,7 @@ export const FileUploadItem = React.forwardRef<
   return (
     <li
       ref={ref}
-      className={cx("sh-ui-file-upload__item", className)}
+      className={cn("sh-ui-file-upload__item", className)}
       {...rest}
     >
       {children ?? (

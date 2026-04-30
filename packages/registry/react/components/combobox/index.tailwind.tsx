@@ -3,11 +3,9 @@
 import * as React from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 export const Combobox = BaseCombobox.Root;
 export const ComboboxIcon = BaseCombobox.Icon;
@@ -24,7 +22,7 @@ export const ComboboxInput = React.forwardRef<
   return (
     <BaseCombobox.Input
       ref={ref}
-      className={cx(
+      className={cn(
         "inline-flex w-full min-w-40 h-[var(--control-md)] px-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] text-[length:var(--text-sm)] leading-none outline-none transition-[border-color] duration-[var(--duration-fast)] placeholder:text-foreground-subtle hover:not-disabled:border-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none",
         className,
       )}
@@ -49,7 +47,7 @@ export const ComboboxContent = React.forwardRef<
       >
         <BaseCombobox.Popup
           ref={ref}
-          className={cx(
+          className={cn(
             "max-h-[min(20rem,var(--available-height))] overflow-y-auto p-[var(--space-1)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[0_8px_24px_rgba(0,0,0,0.08)] outline-none origin-[var(--transform-origin)] transition-[opacity,transform] duration-[140ms] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-[0.97] data-[ending-style]:opacity-0 data-[ending-style]:scale-[0.97]",
             className,
           )}
@@ -71,7 +69,7 @@ export const ComboboxItem = React.forwardRef<
   return (
     <BaseCombobox.Item
       ref={ref}
-      className={cx(
+      className={cn(
         "flex items-center gap-[var(--space-2)] py-1.5 px-3 text-[length:var(--text-sm)] leading-snug rounded-[calc(var(--radius)-2px)] cursor-pointer select-none outline-none data-[highlighted]:bg-background-muted hover:bg-background-muted data-[selected]:text-foreground data-[selected]:font-medium data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:pointer-events-none",
         className,
       )}
@@ -92,7 +90,7 @@ export const ComboboxEmpty = React.forwardRef<
   return (
     <BaseCombobox.Empty
       ref={ref}
-      className={cx(
+      className={cn(
         "py-[var(--space-3)] px-[var(--space-2)] text-center text-[0.8125rem] text-foreground-muted",
         className,
       )}
@@ -108,7 +106,7 @@ export const ComboboxGroupLabel = React.forwardRef<
   return (
     <BaseCombobox.GroupLabel
       ref={ref}
-      className={cx(
+      className={cn(
         "py-1.5 px-[var(--space-2)] pb-[var(--space-1)] text-[length:var(--text-xs)] font-semibold text-foreground-muted uppercase tracking-[0.04em]",
         className,
       )}
@@ -124,7 +122,7 @@ export const ComboboxChip = React.forwardRef<
   return (
     <BaseCombobox.Chip
       ref={ref}
-      className={cx(
+      className={cn(
         "inline-flex items-center gap-[var(--space-1)] py-0.5 pr-1.5 pl-[var(--space-2)] mr-[var(--space-1)] text-[length:var(--text-xs)] leading-5 bg-background-muted rounded-[calc(var(--radius)-2px)] whitespace-nowrap",
         className,
       )}
@@ -140,7 +138,7 @@ export const ComboboxChipRemove = React.forwardRef<
   return (
     <BaseCombobox.ChipRemove
       ref={ref}
-      className={cx(
+      className={cn(
         "inline-flex items-center justify-center w-4 h-4 p-0 border-0 rounded-full bg-transparent text-foreground-muted text-[length:var(--text-sm)] leading-none cursor-pointer transition-[background-color,color] duration-[var(--duration-fast)] hover:bg-background hover:text-foreground motion-reduce:transition-none",
         className,
       )}

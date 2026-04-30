@@ -2,11 +2,9 @@ import * as React from "react";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import "./styles.css";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /** 여러 Tooltip이 공통 delay를 공유하도록 묶는다. 앱 루트에 한 번 두는 것을 권장. */
 export const TooltipProvider = BaseTooltip.Provider;
@@ -71,7 +69,7 @@ export const TooltipContent = React.forwardRef<
       >
         <BaseTooltip.Popup
           ref={ref}
-          className={cx("sh-ui-tooltip__content", className)}
+          className={cn("sh-ui-tooltip__content", className)}
           {...props}
         >
           {showArrow && (

@@ -3,17 +3,15 @@
 import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export const Select = BaseSelect.Root;
 
 export function SelectValue({ placeholder, className, ...props }: { placeholder?: string; className?: string } & Omit<
   React.ComponentPropsWithoutRef<typeof BaseSelect.Value>, "children"
 >) {
   return (
-    <BaseSelect.Value className={cx("flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap", className)} {...props}>
+    <BaseSelect.Value className={cn("flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap", className)} {...props}>
       {(value) =>
         value !== null && value !== undefined && value !== "" ? (
           (value as React.ReactNode)
@@ -31,7 +29,7 @@ export const SelectTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Trigger
     ref={ref}
-    className={cx(
+    className={cn(
       "inline-flex items-center justify-between gap-[var(--space-2)] min-w-40 h-[var(--control-md)] px-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] text-[length:var(--text-sm)] leading-none cursor-pointer transition-[border-color,background-color] duration-[var(--duration-fast)] select-none hover:not-disabled:border-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[popup-open]:border-border-strong disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none",
       className,
     )}
@@ -61,7 +59,7 @@ export const SelectContent = React.forwardRef<
     <BaseSelect.Positioner className="outline-none z-[var(--z-dropdown)]" sideOffset={4} align="start">
       <BaseSelect.Popup
         ref={ref}
-        className={cx(
+        className={cn(
           "min-w-[var(--anchor-width,10rem)] max-h-[min(24rem,var(--available-height,24rem))] overflow-y-auto p-[var(--space-1)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.05)] text-[length:var(--text-sm)] origin-[var(--transform-origin)] animate-[sh-ui-select-in_140ms_ease-out] data-[ending-style]:animate-[sh-ui-select-out_100ms_ease-in_forwards] motion-reduce:animate-none motion-reduce:data-[ending-style]:animate-none",
           className,
         )}
@@ -82,7 +80,7 @@ export const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseSelect.GroupLabel
     ref={ref}
-    className={cx(
+    className={cn(
       "py-[var(--space-2)] px-[var(--space-2)] pb-[var(--space-1)] text-[length:var(--text-xs)] font-semibold text-foreground-muted uppercase tracking-[0.04em]",
       className,
     )}
@@ -97,7 +95,7 @@ export const SelectItem = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <BaseSelect.Item
     ref={ref}
-    className={cx(
+    className={cn(
       "flex items-center gap-[var(--space-2)] py-2 px-3 rounded-[calc(var(--radius)-2px)] cursor-pointer outline-none select-none transition-colors duration-[80ms] data-[highlighted]:bg-background-muted hover:bg-background-muted data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:pointer-events-none",
       className,
     )}
@@ -122,7 +120,7 @@ export const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <BaseSelect.Separator
     ref={ref}
-    className={cx("h-px bg-border my-[var(--space-1)]", className)}
+    className={cn("h-px bg-border my-[var(--space-1)]", className)}
     {...props}
   />
 ));
@@ -178,7 +176,7 @@ export function MultiSelectValue({
 } & Omit<React.ComponentPropsWithoutRef<typeof BaseSelect.Value>, "children" | "render">) {
   const { remove, clear } = useMultiSelect();
   return (
-    <BaseSelect.Value className={cx("flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap", className)} {...props}>
+    <BaseSelect.Value className={cn("flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap", className)} {...props}>
       {(value) => {
         const arr = Array.isArray(value) ? (value as string[]) : [];
         if (arr.length === 0) return <span className="text-foreground-subtle">{placeholder}</span>;

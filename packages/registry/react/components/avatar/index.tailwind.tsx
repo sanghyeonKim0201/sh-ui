@@ -2,11 +2,9 @@ import * as React from "react";
 import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import { cva, type VariantProps } from "class-variance-authority";
 
+import { cn } from "@SH_UI_UTILS@";
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 const avatarVariants = cva(
   "relative inline-flex items-center justify-center shrink-0 align-middle overflow-hidden rounded-full bg-background-muted text-foreground-muted font-medium select-none",
@@ -37,7 +35,7 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
     return (
       <BaseAvatar.Root
         ref={ref}
-        className={cx(avatarVariants({ size }), className)}
+        className={cn(avatarVariants({ size }), className)}
         {...props}
       />
     );
@@ -51,7 +49,7 @@ export const AvatarImage = React.forwardRef<
   return (
     <BaseAvatar.Image
       ref={ref}
-      className={cx("w-full h-full object-cover block", className)}
+      className={cn("w-full h-full object-cover block", className)}
       {...props}
     />
   );
@@ -64,7 +62,7 @@ export const AvatarFallback = React.forwardRef<
   return (
     <BaseAvatar.Fallback
       ref={ref}
-      className={cx(
+      className={cn(
         "inline-flex items-center justify-center w-full h-full uppercase tracking-[0.02em]",
         className,
       )}

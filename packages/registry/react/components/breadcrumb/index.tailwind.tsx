@@ -1,9 +1,7 @@
 import * as React from "react";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 export const Breadcrumb = React.forwardRef<
   HTMLElement,
   React.HTMLAttributes<HTMLElement>
@@ -12,7 +10,7 @@ export const Breadcrumb = React.forwardRef<
     <nav
       ref={ref}
       aria-label="Breadcrumb"
-      className={cx("text-[length:var(--text-sm)] text-foreground-muted", className)}
+      className={cn("text-[length:var(--text-sm)] text-foreground-muted", className)}
       {...props}
     />
   );
@@ -25,7 +23,7 @@ export const BreadcrumbList = React.forwardRef<
   return (
     <ol
       ref={ref}
-      className={cx(
+      className={cn(
         "flex items-center flex-wrap gap-1.5 m-0 p-0 list-none",
         className,
       )}
@@ -41,7 +39,7 @@ export const BreadcrumbItem = React.forwardRef<
   return (
     <li
       ref={ref}
-      className={cx("inline-flex items-center gap-1.5 min-w-0", className)}
+      className={cn("inline-flex items-center gap-1.5 min-w-0", className)}
       {...props}
     />
   );
@@ -54,7 +52,7 @@ export const BreadcrumbLink = React.forwardRef<
   return (
     <a
       ref={ref}
-      className={cx(
+      className={cn(
         "text-foreground-muted no-underline rounded-[calc(var(--radius)-2px)] px-0.5 transition-colors duration-[var(--duration-fast)] hover:text-foreground hover:underline hover:underline-offset-[3px] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none",
         className,
       )}
@@ -73,7 +71,7 @@ export const BreadcrumbPage = React.forwardRef<
       role="link"
       aria-current="page"
       aria-disabled="true"
-      className={cx(
+      className={cn(
         "text-foreground font-medium overflow-hidden text-ellipsis whitespace-nowrap",
         className,
       )}
@@ -91,7 +89,7 @@ export const BreadcrumbSeparator = React.forwardRef<
       ref={ref}
       role="presentation"
       aria-hidden="true"
-      className={cx(
+      className={cn(
         "inline-flex items-center text-foreground-muted opacity-60",
         className,
       )}
@@ -111,7 +109,7 @@ export const BreadcrumbEllipsis = React.forwardRef<
       ref={ref}
       role="presentation"
       aria-hidden="true"
-      className={cx(
+      className={cn(
         "inline-flex items-center w-6 h-6 justify-center text-foreground-muted",
         className,
       )}

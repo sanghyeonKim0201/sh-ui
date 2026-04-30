@@ -2,10 +2,8 @@
 
 import * as React from "react";
 
-function cx(...args: (string | false | undefined)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -100,7 +98,7 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
 
     return (
       <FileUploadContext.Provider value={ctx}>
-        <div className={cx("flex flex-col gap-[var(--space-3)]", className)} style={style}>
+        <div className={cn("flex flex-col gap-[var(--space-3)]", className)} style={style}>
           <input
             ref={inputRef}
             id={id}
@@ -154,7 +152,7 @@ export const FileUploadDropzone = React.forwardRef<HTMLDivElement, FileUploadDro
         tabIndex={disabled ? -1 : 0}
         aria-disabled={disabled || undefined}
         data-dragging={dragging || undefined}
-        className={cx(
+        className={cn(
           "relative flex flex-col items-center justify-center gap-[var(--space-2)] py-[var(--space-8)] px-[var(--space-6)] min-h-40 bg-background-subtle text-foreground-muted border-[1.5px] border-dashed border-border rounded-[var(--radius)] cursor-pointer text-center transition-[border-color,background-color,color] duration-[var(--duration-fast)] hover:border-border-strong hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 focus-visible:border-foreground motion-reduce:transition-none",
           dragging && "border-foreground bg-background-muted text-foreground",
           disabled && "opacity-[var(--opacity-disabled)] cursor-not-allowed pointer-events-none",
@@ -190,7 +188,7 @@ export const FileUploadTrigger = React.forwardRef<HTMLButtonElement, FileUploadT
         ref={ref}
         type={type ?? "button"}
         disabled={disabled || rest.disabled}
-        className={cx(
+        className={cn(
           "inline-flex items-center justify-center gap-[var(--space-2)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground bg-background border border-border rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color,border-color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted hover:not-disabled:border-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed",
           className,
         )}
@@ -220,7 +218,7 @@ export const FileUploadList = React.forwardRef<HTMLUListElement, FileUploadListP
       : (children ?? files.map((f, i) => <FileUploadItem key={`${f.name}-${i}`} file={f} index={i} />));
 
     return (
-      <ul ref={ref} className={cx("list-none m-0 p-0 flex flex-col gap-1.5", className)} {...rest}>
+      <ul ref={ref} className={cn("list-none m-0 p-0 flex flex-col gap-1.5", className)} {...rest}>
         {content}
       </ul>
     );
@@ -239,7 +237,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
     return (
       <li
         ref={ref}
-        className={cx(
+        className={cn(
           "flex items-center gap-2.5 py-[var(--space-2)] px-[var(--space-3)] bg-background border border-border rounded-[calc(var(--radius)-2px)] text-[length:var(--text-sm)] text-foreground [&>svg]:text-foreground-muted [&>svg]:shrink-0",
           className,
         )}

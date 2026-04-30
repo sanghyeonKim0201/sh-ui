@@ -1,9 +1,7 @@
 import * as React from "react";
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
+import { cn } from "@SH_UI_UTILS@";
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
@@ -32,14 +30,14 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         aria-valuemax={isDeterminate ? max : undefined}
         aria-valuenow={isDeterminate ? value : undefined}
         data-state={isDeterminate ? "determinate" : "indeterminate"}
-        className={cx(
+        className={cn(
           "relative w-full h-2 overflow-hidden bg-background-muted rounded-full",
           className,
         )}
         {...props}
       >
         <div
-          className={cx(
+          className={cn(
             "h-full bg-primary rounded-full transition-[width] duration-[var(--duration-base)] ease-out motion-reduce:transition-none",
             !isDeterminate &&
               "w-2/5 animate-[sh-ui-progress-slide_1.2s_ease-in-out_infinite] motion-reduce:animate-none motion-reduce:translate-x-3/4",

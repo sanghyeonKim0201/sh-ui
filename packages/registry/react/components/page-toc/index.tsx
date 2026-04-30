@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@SH_UI_UTILS@";
 import "./styles.css";
 
 export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -52,8 +53,6 @@ interface TocItem {
   level: HeadingLevel;
 }
 
-const cx = (...args: (string | undefined | false | null)[]) =>
-  args.filter(Boolean).join(" ");
 
 /**
  * 페이지 내 자동 목차 (On this page).
@@ -151,7 +150,7 @@ export function PageTOC({
 
   return (
     <nav
-      className={cx("sh-ui-page-toc", className)}
+      className={cn("sh-ui-page-toc", className)}
       aria-label={typeof label === "string" ? label : "목차"}
     >
       <div className="sh-ui-page-toc__label">{label}</div>
