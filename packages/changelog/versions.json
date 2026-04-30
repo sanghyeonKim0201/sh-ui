@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.42.1",
+      "date": "2026-04-30",
+      "title": "Calendar range 셀 연결 + 검색 다이얼로그 픽스",
+      "type": "patch",
+      "highlights": [
+        "**Calendar range 시각 픽스** — `mode=\"range\"` 에서 시작/종료 사이 셀이 끊김 없는 한 줄의 띠로 이어지도록 수정. 이전엔 그리드 칼럼(1fr) 안에 가운데 정렬된 2.25rem 버튼에 배경을 직접 칠해 칼럼 사이마다 흰 틈이 보였던 이슈",
+        "각 날짜 셀을 wrapper `<div class=\"sh-ui-calendar__cell\">` 로 감싸고 in-range / range-start / range-end 배경을 cell 에 적용 — 칼럼을 100% 채우므로 인접 셀이 자연스럽게 맞닿고, 진한 pill (selected) 은 그대로 버튼에 올라감",
+        "docs 사이트: 헤더 검색 다이얼로그 버그 픽스 + 디자인 다듬기"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.42.1"
+    },
+    {
       "version": "0.42.0",
       "date": "2026-04-30",
       "title": "Calendar 컴포넌트 + DatePicker 내부 리팩터링",
