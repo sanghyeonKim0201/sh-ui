@@ -162,12 +162,25 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user`}
             description: "base64 테마 코드 → 토큰 객체. 기존 테마의 일부만 수정해 다시 인코딩하고 싶을 때(decode → 수정 → encode) 사용. (v0.55.0+)",
           },
           {
+            prop: "sh_ui_rename_app",
+            type: "(oldName, newName, cwd?, dryRun?, skipInstall?)",
+            description: "monorepo 의 앱 이름 일괄 변경 — 두 디렉토리(apps/<old>/, packages/ui/ui-apps/ui-<old>/) 이동 + import/path 패턴 치환 + lockfile 재생성. dryRun 으로 변경 매트릭스 미리보기. false-positive 방지를 위해 컨텍스트 묶인 패턴만 매치 (bare 단어 X). (v0.57.0+)",
+          },
+          {
             prop: "sh_ui_get_changelog",
             type: "(limit?)",
             description: "sh-ui 변경 내역 반환. 최신이 맨 앞.",
           },
         ]}
       />
+
+      <h3>모노레포 앱 이름 변경</h3>
+      <p>
+        스캐폴드 시 default <code>apps/web</code> 으로 만들어졌는데 나중에 <code>apps/dashboard</code> 같이 바꾸고 싶을 때, 손으로 6~10 군데 (디렉토리, package.json name, tsconfig paths, Dockerfile WORKDIR, next.config transpilePackages, sh-ui.config aliases, README, .github/workflows, 루트 package.json scripts) 갈아엎지 않도록 <code>sh_ui_rename_app</code> 한 번에 처리. AI 에게 <em>&quot;apps/web 을 dashboard 로 바꿔줘&quot;</em> 같이 말하면 된다. <code>dryRun: true</code> 로 변경 매트릭스 미리보기 후 사용자 확인 권장.
+      </p>
+      <p>
+        false-positive 방지를 위해 bare 단어 (<code>web</code>) 는 절대 치환하지 않고, 컨텍스트(<code>/</code>, <code>&quot;</code>, <code>&apos;</code>, 백틱, 공백, 개행) 로 묶인 패턴만 매치. <code>core-web-vitals</code> (ESLint plugin) 나 <code>safari-web-extension</code> (Sentry 필터) 같은 생태계 상수는 보존된다.
+      </p>
 
       <h3>테마 round-trip — 사용자가 손본 톤 영구 보관</h3>
       <p>
