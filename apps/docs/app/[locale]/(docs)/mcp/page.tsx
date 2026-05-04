@@ -95,7 +95,7 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user`}
       />
 
       <p className="muted">
-        등록 후 IDE 를 재시작하면 AI 가 sh-ui 툴을 인식한다. <code>npx -y</code> 가 처음 호출 시 <code>sh-ui-cli</code> 를 자동으로 받아오므로 별도 설치 불필요.
+        등록 후 IDE 를 재시작하면 AI 가 sh-ui 툴을 인식한다. <code>npx -y</code> 가 처음 호출 시 <code>sh-ui-cli</code> 를 자동으로 받아오므로 별도 설치 불필요. 이후에도 매 세션마다 npm 레지스트리에서 최신 버전을 확인하므로 <strong>업데이트도 자동</strong> — 새 sh-ui 버전이 publish 되면 사용자가 손댈 것 없이 다음 세션부터 적용된다.
       </p>
 
       <h2>동작 흐름</h2>
@@ -122,9 +122,14 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user`}
             description: "platform/base/radius/mode enum + 한글 설명 반환. 자연어 의도를 enum 으로 매핑할 때 첫 호출.",
           },
           {
+            prop: "sh_ui_create_project",
+            type: "(name, platform, structure?, plugins?, theme?, cssFramework?, cwd?, force?)",
+            description: "빈 폴더에 Next.js/Flutter 프로젝트 스캐폴드 — FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 빈 폴더에서 시작할 땐 sh_ui_init 보다 이게 우선.",
+          },
+          {
             prop: "sh_ui_init",
             type: "(platform?, base?, radius?, mode?, cwd?, force?)",
-            description: "sh-ui.config.json 생성. 누락 값은 기본값 사용.",
+            description: "이미 있는 프로젝트에 sh-ui 만 얹을 때 — sh-ui.config.json 생성. 누락 값은 기본값 사용.",
           },
           {
             prop: "sh_ui_list_components",
@@ -138,7 +143,7 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user`}
           },
           {
             prop: "sh_ui_add_component",
-            type: "(names[], cwd?, skipInstall?)",
+            type: "(names[], cwd?, skipInstall?, overwrite?)",
             description: "컴포넌트 설치. 외부 npm 패키지 deps 도 자동 설치(pnpm/npm/yarn/bun 자동 감지). 특수값 'tokens' 는 토큰 파일 생성.",
           },
           {
@@ -147,12 +152,30 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user`}
             description: "설치된 컴포넌트 파일 삭제. 사용자가 수정한 파일은 기본 보호 (force 로 덮어쓰기).",
           },
           {
+            prop: "sh_ui_encode_theme",
+            type: "(light, dark, radius)",
+            description: "사용자가 손본 토큰 객체 → base64. 산출물을 sh_ui_create_project 의 theme 인자에 넣으면 다음 스캐폴드까지 톤이 보존된다. 옵셔널 색 토큰(success/warning/info × -foreground) 도 같이 넣을 수 있음. (v0.55.0+)",
+          },
+          {
+            prop: "sh_ui_decode_theme",
+            type: "(theme)",
+            description: "base64 테마 코드 → 토큰 객체. 기존 테마의 일부만 수정해 다시 인코딩하고 싶을 때(decode → 수정 → encode) 사용. (v0.55.0+)",
+          },
+          {
             prop: "sh_ui_get_changelog",
             type: "(limit?)",
             description: "sh-ui 변경 내역 반환. 최신이 맨 앞.",
           },
         ]}
       />
+
+      <h3>테마 round-trip — 사용자가 손본 톤 영구 보관</h3>
+      <p>
+        스캐폴드 결과 톤이 마음에 안 든다면 <code>tokens.css</code> 의 <code>:root</code> / <code>.dark</code> 블록 색만 직접 손본 뒤, AI 에게 <em>&quot;이 톤 base64 로 저장해줘&quot;</em> 라고 말하면 된다. AI 가 <code>sh_ui_encode_theme</code> 으로 인코딩한 결과를 다음 <code>sh_ui_create_project</code> 호출의 <code>theme</code> 인자에 넘겨 영구 보관 — 같은 프로젝트를 재생성해도 톤이 그대로 살아난다.
+      </p>
+      <p>
+        프리셋(<code>neutral</code>/<code>slate</code>/...) 이름과 base64 둘 다 <code>theme</code> 인자에 넣을 수 있고, 길이로 자동 판별. 옵셔널 색 토큰(<code>success</code>/<code>warning</code>/<code>info</code> + <code>-foreground</code>)도 같이 인코딩되며, light/dark 둘 다 정의된 경우에만 CSS 로 emit (한쪽만 있으면 컴포넌트가 fallback 으로 깨질 수 있어 안전 가드).
+      </p>
 
       <h2>예시 — 빈 폴더에서 시작</h2>
 
@@ -198,6 +221,11 @@ button 과 dialog 컴포넌트 추가해줘`}
       />
 
       <h2>FAQ</h2>
+
+      <h3>새 버전이 나오면 어떻게 업데이트하나?</h3>
+      <p>
+        <code>npx -y sh-ui-cli</code> 로 등록했다면 <strong>아무것도 안 해도 된다</strong>. 매 세션마다 npm 레지스트리에서 최신 버전을 받아 실행하므로, sh-ui 가 새 버전을 publish 하면 다음 IDE 세션부터 자동 반영. 글로벌 설치(<code>npm i -g sh-ui-cli</code>) 로 등록한 경우만 <code>npm update -g sh-ui-cli</code> 를 사용자가 직접 돌려야 한다.
+      </p>
 
       <h3>MCP 등록 안 하고 일반 CLI 만 써도 되나?</h3>
       <p>

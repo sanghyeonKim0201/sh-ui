@@ -134,3 +134,46 @@ describe('decodeTheme — 옵셔널 카테고리 (Phase 2)', () => {
     expect(() => decodeTheme(toBase64(t))).toThrow(/spacing 가 객체가 아님/);
   });
 });
+
+describe('decodeTheme — 옵셔널 색 토큰 (success/warning/info)', () => {
+  const toBase64 = (obj) => Buffer.from(JSON.stringify(obj), 'utf-8').toString('base64');
+
+  it('success/warning/info 가 light/dark 둘 다에 있으면 통과', () => {
+    const t = {
+      ...validTheme,
+      light: {
+        ...validTheme.light,
+        success: '#16A34A', 'success-foreground': '#FFFFFF',
+        warning: '#D97706', 'warning-foreground': '#FFFFFF',
+        info: '#0EA5E9', 'info-foreground': '#FFFFFF',
+      },
+      dark: {
+        ...validTheme.dark,
+        success: '#22C55E', 'success-foreground': '#052E16',
+        warning: '#F59E0B', 'warning-foreground': '#1F1300',
+        info: '#38BDF8', 'info-foreground': '#082F49',
+      },
+    };
+    expect(decodeTheme(toBase64(t))).toEqual(t);
+  });
+
+  it('옵셔널 색 토큰 한쪽 모드만 있어도 통과 (inject 단계에서 양쪽 정렬)', () => {
+    const t = {
+      ...validTheme,
+      light: { ...validTheme.light, success: '#16A34A' },
+    };
+    expect(decodeTheme(toBase64(t))).toEqual(t);
+  });
+
+  it('옵셔널 색 토큰이 hex 포맷 아니면 에러', () => {
+    const t = {
+      ...validTheme,
+      light: { ...validTheme.light, success: 'green' },
+    };
+    expect(() => decodeTheme(toBase64(t))).toThrow(/light\.success 가 hex 포맷이 아님/);
+  });
+
+  it('옵셔널 색 토큰 누락은 OK — 기본 동작 유지', () => {
+    expect(decodeTheme(toBase64(validTheme))).toEqual(validTheme);
+  });
+});
