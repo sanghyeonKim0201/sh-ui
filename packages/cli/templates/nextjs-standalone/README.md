@@ -8,7 +8,7 @@
 - **React 19**
 - **TypeScript 5.9**
 - **Tailwind CSS 4** + **sh-ui** (neutral, radius=md, light-dark)
-- **@base-ui-components/react** (sh-ui가 의존하는 언스타일드 primitive)
+- **@base-ui/react** (sh-ui가 의존하는 언스타일드 primitive)
 - **TanStack React Query** + **Axios** (데이터 페칭)
 - **Zustand** (상태 관리)
 - **next-themes** (다크 모드)

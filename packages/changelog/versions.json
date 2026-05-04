@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.56.2",
+      "date": "2026-05-04",
+      "title": "fix — 템플릿 globals.css `@theme inline` 누락 + base-ui 패키지명 통일",
+      "type": "patch",
+      "highlights": [
+        "**`globals.css` 에 `@theme inline` 매핑 블록 추가** — `nextjs-standalone` / `ui-app-template` 둘 다. 기존엔 주석에 \"tokens.css 가 자동 emit\" 이라고 적혀 있었지만 실제론 emit 되지 않아, 사용자 프로젝트에서 `bg-primary` / `text-foreground` 같은 Tailwind v4 utility 가 토큰을 못 찾던 문제. 옵셔널 색(success/warning/info × -foreground) 도 함께 매핑.",
+        "**템플릿 의존성 `@base-ui-components/react` → `@base-ui/react@^1.4.1`** — registry 컴포넌트는 `import ... from \"@base-ui/react/...\"` 인데 템플릿은 옛 패키지명(`@base-ui-components/react@latest`) 을 박아두고 있어 install 직후 컴포넌트가 module not found 로 깨지던 문제. CLI add 시 자동 설치되는 패키지와도 정렬."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.56.2"
+    },
+    {
       "version": "0.56.1",
       "date": "2026-05-04",
       "title": "fix — 테마 토글이 새로고침 후 초기화 + v0.54.0 템플릿/빌더 완성",

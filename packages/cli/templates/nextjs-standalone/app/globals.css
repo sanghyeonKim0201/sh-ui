@@ -3,7 +3,37 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Tailwind v4 @theme inline 블록은 tokens.css 가 자동으로 emit. */
+/* Tailwind v4 — 토큰 CSS 변수를 utility 클래스로 노출.
+ * `bg-primary` / `text-foreground` 같은 클래스가 토큰을 따라가도록 매핑.
+ * 옵셔널 색(success/warning/info)은 토큰에 없으면 변수가 undefined 라 browsers 가 단순 무시 — 안전.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-background-subtle: var(--background-subtle);
+  --color-background-muted: var(--background-muted);
+  --color-background-inverse: var(--background-inverse);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-foreground-inverse: var(--foreground-inverse);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+}
 
 @layer base {
   body {
