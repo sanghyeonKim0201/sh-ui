@@ -1,0 +1,42 @@
+name: Showcase Visual
+
+on:
+  pull_request:
+    branches: [live, dev]
+    paths:
+      - "apps/showcase/**"
+      - "packages/registry/flutter/**"
+      - ".github/workflows/showcase-visual.yml"
+  push:
+    branches: [dev, live]
+    paths:
+      - "apps/showcase/**"
+      - "packages/registry/flutter/**"
+      - ".github/workflows/showcase-visual.yml"
+
+jobs:
+  golden:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: apps/showcase
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: pub get
+        run: flutter pub get
+
+      - name: Golden tests
+        run: flutter test test/golden_test.dart
+
+      - name: Upload failures (실패 시)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: showcase-golden-failures
+          path: apps/showcase/test/failures/
+          retention-days: 14

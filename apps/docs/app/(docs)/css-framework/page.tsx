@@ -306,6 +306,19 @@ $ pnpm --filter @sh-ui/docs visual
       <p className="muted">
         기준 스냅샷은 macOS 환경 기준 — CI 는 macos-latest 러너에서 동일 환경으로 비교. 다른 OS 에서 작업할 때는 별도로 스냅샷 갱신이 필요할 수 있다.
       </p>
+      <p>
+        Flutter 쪽 (apps/showcase) 도 비슷한 패턴 — Flutter 내장 <code>matchesGoldenFile</code> 매처로 위젯 골든 이미지 비교. 별도 워크플로우 (<code>showcase-visual.yml</code>) 가 macOS 러너에서 검증.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# Flutter 위젯 변경 후
+$ cd apps/showcase
+$ flutter test --update-goldens test/golden_test.dart
+
+# 검증
+$ flutter test test/golden_test.dart`}
+      />
 
       <h2 id="switching">이미 만든 프로젝트에서 모드 변경</h2>
       <p>
