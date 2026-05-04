@@ -79,9 +79,9 @@ describe('parseArgs', () => {
     expect(r.flags.css).toBe('css-modules');
   });
 
-  it('--css vanilla-extract → "곧 지원 예정" 친절 에러', () => {
-    expect(() => parseArgs(['node', 'create.js', '--css', 'vanilla-extract']))
-      .toThrow(/곧 지원 예정/);
+  it('--css vanilla-extract → flags.css = "vanilla-extract" (SUPPORTED 승격)', () => {
+    const r = parseArgs(['node', 'create.js', '--css', 'vanilla-extract']);
+    expect(r.flags.css).toBe('vanilla-extract');
   });
 
   it('--css garbage → 일반 enum 에러', () => {

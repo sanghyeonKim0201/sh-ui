@@ -65,14 +65,14 @@ export default function CssFrameworkPage() {
           },
           {
             prop: "vanilla-extract",
-            type: "파일럿 (PLANNED)",
+            type: "지원",
             description:
-              "TS 안에서 타입 안전하게 CSS 작성. button/card/input 3 개에 변종이 있으며, 사용자가 sh-ui.config.json 을 직접 손대면 지금도 동작 (CLI/UI 노출은 SUPPORTED 승격 후). 빌드 플러그인 셋업이 필요 — 자세한 건 아래 vanilla-extract 섹션 참고.",
+              "TS 안에서 타입 안전하게 CSS 작성 (.css.ts). 빌드 타임에 정적 CSS 로 컴파일 — 런타임 비용 0. 모든 styled 컴포넌트(43 개) 가 이 변종을 갖춤. 사용자 프로젝트의 bundler 에 빌드 플러그인 등록 필요.",
           },
         ]}
       />
       <p className="muted">
-        타입 시그니처: <code>cssFramework: {SUPPORTED_TYPE}</code> (현재 지원 값). PLANNED 값은 CLI/MCP 가 인식하지만 거부하면서 안내한다.
+        타입 시그니처: <code>cssFramework: {SUPPORTED_TYPE}</code>. 시스템은 새 변종을 추가하기 쉽게 설계되어 있어 — 새 옵션이 PLANNED 로 등록되면 CLI/MCP/UI 가 인식하고 친절 에러로 안내한다.
       </p>
 
       <h2 id="plain">plain — CSS custom properties</h2>
@@ -211,13 +211,11 @@ export const Button = ({ variant = "primary", ...props }) => (
         <strong>적합한 경우</strong>: 이미 CSS Modules 컨벤션을 쓰는 프로젝트 / 클래스 이름 충돌 없이 컴포넌트별 스타일 격리를 원할 때 / Tailwind 의존을 피하고 싶을 때.
       </p>
 
-      <h2 id="vanilla-extract">vanilla-extract — 타입 안전 CSS-in-TS (파일럿)</h2>
+      <h2 id="vanilla-extract">vanilla-extract — 타입 안전 CSS-in-TS</h2>
       <p>
         CSS 룰을 TypeScript 객체로 작성한다 — 변수 참조는 import, hover/focus 등 의사 클래스는{" "}
         <code>selectors</code> 키로 표현. <code>.css.ts</code> 파일이 빌드 타임에 정적 CSS 로 컴파일되므로 런타임 비용 0.
-        현재 button/card/input 3 개에 변종이 있고 (PLANNED — 전수 롤아웃 후 SUPPORTED 승격), 사용자가{" "}
-        <code>sh-ui.config.json</code> 의 <code>cssFramework</code> 를 직접{" "}
-        <code>&quot;vanilla-extract&quot;</code> 로 지정하면 지금도 동작.
+        모든 styled 컴포넌트(43 개)가 이 변종을 갖추며, 동적 키 (<code>byKey</code> lookup) 도 지원.
       </p>
       <CodeTabs
         items={[
@@ -283,7 +281,7 @@ export default defineConfig({ plugins: [vanillaExtractPlugin()] });`,
         <strong>적합한 경우</strong>: TS 안에서 CSS 를 타입 안전하게 다루고 싶을 때 / CSS-in-JS 의 런타임 비용 없이 정적 CSS 결과물이 필요할 때 / IDE 의 자동완성·리팩토링을 CSS 에도 적용하고 싶을 때.
       </p>
 
-      <h2 id="planned">새 변종 추가하기</h2>
+      <h2 id="extend">새 변종 추가하기</h2>
       <p className="muted">
         외부 컨트리뷰터: <code>packages/registry/react/components/&lt;name&gt;/index.&lt;framework&gt;.tsx</code>{" "}
         패턴으로 새 변종을 추가하고 <code>registry.json</code> 의 <code>frameworks: [...]</code> 배열에 등록하면 자동으로 인식됨.

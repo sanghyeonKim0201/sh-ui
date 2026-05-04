@@ -327,7 +327,7 @@ export function CreateProjectDialog({
                     color: "var(--foreground-muted)",
                   }}
                 >
-                  변종 미제공 컴포넌트는 add 시 plain 으로 자동 fallback. 모든 styled 컴포넌트는 plain · tailwind · css-modules 변종을 보유.
+                  변종 미제공 컴포넌트는 add 시 plain 으로 자동 fallback. 모든 styled 컴포넌트는 plain · tailwind · css-modules · vanilla-extract 4 변종을 보유.
                 </div>
               </div>
               <div role="group" aria-labelledby="plugins-label">

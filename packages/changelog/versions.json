@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.50.0",
+      "date": "2026-05-04",
+      "title": "vanilla-extract 전수 롤아웃 + SUPPORTED 승격",
+      "type": "minor",
+      "highlights": [
+        "**vanilla-extract 전수 롤아웃** — v0.49.0 의 button/card/input 파일럿에 이어 나머지 40 개 styled 컴포넌트에 `index.vanilla-extract.tsx` + `styles.css.ts` 추가. 총 43/43 styled 컴포넌트가 plain · tailwind · css-modules · vanilla-extract 4 변종을 모두 갖춤. CSS Modules `.module.css` 를 vanilla-extract `style/styleVariants/keyframes` API 로 자동 변환하는 스크립트로 일괄 처리.",
+        "**SUPPORTED 승격** — `CSS_FRAMEWORKS_SUPPORTED` 에 vanilla-extract 추가. CSS_FRAMEWORKS_PLANNED 는 빈 배열 (시스템은 새 변종 추가에 열려 있음). CLI 의 `--cssFramework vanilla-extract`, init 인터랙티브 메뉴, CreateProjectDialog 토글 모두 활성화.",
+        "**동적 키 lookup** — 컴포넌트 tsx 의 `styles[\\`badge--${variant}\\`]` 같은 동적 패턴을 처리하기 위해 `byKey: Record<string, string>` 을 css.ts 가 export. 정적 export 만 허용하는 vanilla-extract 의 한계를 우회.",
+        "**docs + UI 갱신** — css-framework 가이드의 vanilla-extract 섹션을 SUPPORTED 로 갱신, PLANNED 안내문 일반화, VariantSource 컴포넌트가 4 번째 탭(vanilla-extract) 자동 노출.",
+        "원래 사용자 의도였던 \"취향대로 CSS 라이브러리 선택\" 이 plain · tailwind · css-modules · vanilla-extract 4 가지 SUPPORTED 변종으로 fully 달성됨. 시스템은 frameworks 분기 + fallback + 동적 emitter 등 미래 변종 추가에도 열려 있음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.50.0"
+    },
+    {
       "version": "0.49.0",
       "date": "2026-05-04",
       "title": "vanilla-extract 변종 파일럿 — button/card/input",
