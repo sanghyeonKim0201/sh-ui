@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.52.1",
+      "date": "2026-05-04",
+      "title": "zod v4 호환 + MCP describe 텍스트 최신화",
+      "type": "patch",
+      "highlights": [
+        "**zod 3 → 4 호환** — `packages/cli/src/create/plugins/pluginSchema.js` 의 `z.function().args().returns()` 패턴이 zod v4 에서 제거됨. 함수 시그니처는 런타임에 의미 있게 검증할 수 없으므로 `z.custom((val) => typeof val === 'function')` 으로 단순화. 사용자 영향 없음 — plugin manifest 의 `wrapExport` 가 함수인지만 확인하던 동작 그대로.",
+        "**MCP describe 텍스트 최신화** — `mcp.mjs` 의 `cssFramework` 옵션 안내가 `(향후 tailwind 등 추가 예정)` 으로 outdated 였음. 4 변종 모두 SUPPORTED 된 현재 상태로 갱신 — 각 옵션별 한 줄 설명 (plain/tailwind/css-modules/vanilla-extract) + fallback 안내."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.1"
+    },
+    {
       "version": "0.52.0",
       "date": "2026-05-04",
       "title": "Flutter 위젯 golden 시각 회귀 테스트",

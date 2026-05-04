@@ -23,10 +23,12 @@ const filePath = z
       "Use 'middleware.ts' instead of 'src/middleware.ts'.",
   });
 
+// zod 4 에서 z.function 의 .args/.returns 체이닝 API 가 제거됨.
+// 함수 시그니처는 런타임에 의미 있게 검증할 수 없으므로 custom 으로 type 만 확인.
 const wrapperFn = z
-  .function()
-  .args(z.string())
-  .returns(z.string())
+  .custom((val) => typeof val === "function", {
+    message: "wrapExport must be a function (expr: string) => string",
+  })
   .optional();
 
 export const PluginSchema = z.object({
