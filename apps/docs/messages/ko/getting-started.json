@@ -1,0 +1,55 @@
+{
+  "title": "시작하기",
+  "subtitle": "기존 프로젝트에 sh-ui을 도입하는 3단계. React와 Flutter 공통 흐름.",
+  "intro": "<strong>새 Next.js 프로젝트부터 시작한다면</strong> <createLink>프로젝트 생성</createLink> 페이지에서 <code>npx sh-ui-cli create</code> 로 FSD 구조 + sh-ui 설정 + 플러그인(Sentry, next-intl)이 미리 구성된 템플릿을 쓸 수 있다. 이 페이지는 기존 프로젝트에 수동으로 도입하는 흐름.",
+  "step1": {
+    "heading": "1. 설정 파일 생성",
+    "lead": "프로젝트 루트에서:",
+    "after": "대화형 프롬프트로 <code>platform</code>(react/flutter), <code>base</code>(neutral/zinc/slate), <code>radius</code>, <code>mode</code>를 선택하면 <code>sh-ui.config.json</code>이 만들어진다."
+  },
+  "step2": {
+    "heading": "2. 토큰 + 기본 리셋 설치",
+    "after": "설정 값으로 치환된 토큰 파일이 생성된다. React는 CSS 변수(<code>tokens.css</code>)와 <code>base.css</code>, Flutter는 Dart 상수(<code>sh_ui_tokens.dart</code>).",
+    "note": "<strong>base.css</strong>는 box-sizing·overflow·min-width 등 모바일에서 자주 발생하는 레이아웃 사고(자식 min-content가 뷰포트를 밀어 가로 스크롤이 생기는 현상 등)를 미연에 방지한다. tokens.css 바로 뒤에 import."
+  },
+  "step3": {
+    "heading": "3. 컴포넌트 설치",
+    "after": "컴포넌트 소스가 <code>paths.components</code>로 복사된다. 이 시점부터 <strong>그 코드는 당신의 것</strong>이다 — 자유롭게 수정 가능."
+  },
+  "platformHeading": "플랫폼별 설정",
+  "react": {
+    "heading": "React",
+    "globalImport": "전역 CSS에서 <code>tokens.css</code>를 임포트하면 <code>--background</code>, <code>--primary</code>, <code>--space-*</code>, <code>--text-*</code> 등 모든 토큰이 전역에 노출된다.",
+    "darkModeHeading": "다크 모드",
+    "darkMode": "<code>mode: \"light-dark\"</code>로 설정하면 기본(light)은 <code>:root</code>에, 다크는 <code>.dark</code> 클래스에 정의된다. <code>&lt;html className=\"dark\"&gt;</code> 토글만으로 전환된다."
+  },
+  "flutter": {
+    "heading": "Flutter",
+    "materialAppHeading": "MaterialApp 등록",
+    "materialApp": "<code>ShUiTheme</code>를 <code>ThemeData.extensions</code>에 끼워 넣으면 모든 하위 위젯에서 <code>Theme.of(context).extension&lt;ShUiTheme&gt;()</code>로 토큰에 접근할 수 있다.",
+    "tokensInWidgetHeading": "위젯에서 토큰 사용",
+    "tokensInWidget": "<code>shUi</code> 한 줄로 꺼내 쓰는 게 관례.",
+    "tabs": {
+      "basic": "기본",
+      "animated": "애니메이션",
+      "disabled": "비활성"
+    },
+    "darkToggleHeading": "다크 모드 토글",
+    "darkToggle": "<code>themeMode: ThemeMode.light / .dark / .system</code>으로 전환. 각 분기에 <code>ShUiTheme.light</code>와 <code>ShUiTheme.dark</code>를 사용한다.",
+    "safeAreaHeading": "SafeArea — 노치·홈 인디케이터 대응",
+    "safeArea": "iPhone의 노치 / Dynamic Island, Android의 gesture indicator 등 시스템 UI 영역에 콘텐츠가 걸치지 않도록 <strong>화면 템플릿 수준에서 처리</strong>한다. <code>Scaffold</code> + <code>AppBar</code> 조합은 상단 상태바를 자동으로 흡수하지만, 전체 화면 배경을 직접 그리거나 <code>AppBar</code>가 없을 때는 <code>SafeArea</code>로 감싼다.",
+    "safeAreaTabs": {
+      "scaffold": "표준 (Scaffold)",
+      "edgeToEdge": "전체 배경",
+      "measure": "직접 측정"
+    },
+    "responsiveHeading": "반응형 — 태블릿 / 폴드",
+    "responsive": "<code>shUi.breakpoint.sm/md/lg/xl</code> 토큰을 <code>MediaQuery</code> 또는 <code>LayoutBuilder</code>와 조합하면 화면 폭에 따라 레이아웃을 분기할 수 있다. sh-ui의 <code>ShUiSidebar.mode: auto</code>가 동일 패턴을 내부적으로 사용한다."
+  },
+  "next": {
+    "heading": "다음 단계",
+    "tokens": "<tokensLink>토큰</tokensLink> — 전체 토큰 목록과 값",
+    "create": "<createLink>프로젝트 생성</createLink> — 토큰 직접 편집 + 그 디자인으로 새 프로젝트 스캐폴드",
+    "components": "<componentsLink>컴포넌트</componentsLink> — 설치 및 사용법"
+  }
+}

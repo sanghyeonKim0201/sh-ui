@@ -1,0 +1,23 @@
+{
+  "groupLabel": "Docs",
+  "links": {
+    "gettingStarted": "시작하기",
+    "create": "프로젝트 생성",
+    "cli": "CLI",
+    "mcp": "MCP (AI)",
+    "cssFramework": "CSS 프레임워크",
+    "tokens": "토큰",
+    "theming": "테마 커스터마이징",
+    "guidelines": "가이드라인",
+    "recipes": "레시피",
+    "examples": "실전 예제",
+    "changelog": "변경 내역",
+    "plugins": "플러그인",
+    "components": "Components"
+  },
+  "localeSwitcher": {
+    "label": "언어",
+    "ko": "한국어",
+    "en": "English"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "triggerLabel": "Open search",
+  "triggerPlaceholder": "Search docs…",
+  "dialogTitle": "Search docs",
+  "inputPlaceholder": "Search components, props, guides…",
+  "inputAriaLabel": "Search query",
+  "empty": "No results",
+  "homeCategory": "Home",
+  "categories": {
+    "components": "Components",
+    "recipes": "Recipes",
+    "plugins": "Plugins",
+    "examples": "Examples",
+    "gettingStarted": "Getting started",
+    "cli": "CLI",
+    "mcp": "MCP",
+    "tokens": "Tokens",
+    "theming": "Theming",
+    "guidelines": "Guidelines",
+    "changelog": "Changelog",
+    "create": "Create project"
+  },
+  "hints": {
+    "navigate": "Navigate",
+    "open": "Open",
+    "close": "Close"
+  }
+}

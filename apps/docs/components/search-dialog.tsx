@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import MiniSearch, { type SearchResult } from "minisearch";
 import { SearchIcon } from "lucide-react";
 import {
@@ -28,26 +29,21 @@ type Hit = SearchResult & {
 const MAX_RESULTS = 12;
 const SNIPPET_LEN = 110;
 
-const CATEGORY_LABELS: Record<string, string> = {
-  components: "Components",
-  recipes: "Recipes",
-  plugins: "Plugins",
-  examples: "Examples",
-  "getting-started": "시작하기",
-  cli: "CLI",
-  mcp: "MCP",
-  tokens: "토큰",
-  theming: "테마",
-  guidelines: "가이드라인",
-  changelog: "변경 내역",
-  create: "프로젝트 생성",
+// URL 의 첫 세그먼트 → search.json 의 categories 키.
+const CATEGORY_KEYS: Record<string, string> = {
+  components: "components",
+  recipes: "recipes",
+  plugins: "plugins",
+  examples: "examples",
+  "getting-started": "gettingStarted",
+  cli: "cli",
+  mcp: "mcp",
+  tokens: "tokens",
+  theming: "theming",
+  guidelines: "guidelines",
+  changelog: "changelog",
+  create: "create",
 };
-
-function categoryLabel(url: string) {
-  const segs = url.split("/").filter(Boolean);
-  if (!segs.length) return "Home";
-  return CATEGORY_LABELS[segs[0]] ?? segs[0];
-}
 
 function isMac() {
   if (typeof navigator === "undefined") return false;
@@ -78,6 +74,16 @@ function highlight(text: string, query: string) {
 
 export function SearchDialog() {
   const router = useRouter();
+  const t = useTranslations("search");
+  const categoryLabel = React.useCallback(
+    (url: string) => {
+      const segs = url.split("/").filter(Boolean);
+      if (!segs.length) return t("homeCategory");
+      const key = CATEGORY_KEYS[segs[0]];
+      return key ? t(`categories.${key}`) : segs[0];
+    },
+    [t],
+  );
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [hits, setHits] = React.useState<Hit[]>([]);
@@ -205,31 +211,31 @@ export function SearchDialog() {
         type="button"
         className="sh-ui-search-trigger"
         onClick={() => setOpen(true)}
-        aria-label="검색 열기"
+        aria-label={t("triggerLabel")}
       >
         <SearchIcon size={14} aria-hidden className="sh-ui-search-trigger__icon" />
-        <span className="sh-ui-search-trigger__label">문서 검색…</span>
+        <span className="sh-ui-search-trigger__label">{t("triggerPlaceholder")}</span>
         <kbd className="sh-ui-search-trigger__kbd">{mac ? "⌘ K" : "Ctrl K"}</kbd>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sh-ui-search-dialog">
-          <DialogTitle className="sr-only">문서 검색</DialogTitle>
+          <DialogTitle className="sr-only">{t("dialogTitle")}</DialogTitle>
           <Input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="컴포넌트, prop, 가이드 검색…"
+            placeholder={t("inputPlaceholder")}
             prefix={<SearchIcon size={16} aria-hidden />}
-            aria-label="검색어"
+            aria-label={t("inputAriaLabel")}
             aria-autocomplete="list"
             aria-controls="sh-ui-search-results"
             aria-activedescendant={hits[active] ? `sh-ui-search-result-${active}` : undefined}
           />
 
           {query.trim() && hits.length === 0 && (
-            <p className="sh-ui-search-dialog__empty">검색 결과 없음</p>
+            <p className="sh-ui-search-dialog__empty">{t("empty")}</p>
           )}
 
           {hits.length > 0 && (
@@ -297,15 +303,15 @@ export function SearchDialog() {
                 <kbd>↑</kbd>
                 <kbd>↓</kbd>
               </span>
-              <span>이동</span>
+              <span>{t("hints.navigate")}</span>
             </span>
             <span className="sh-ui-search-dialog__hint">
               <kbd>Enter</kbd>
-              <span>열기</span>
+              <span>{t("hints.open")}</span>
             </span>
             <span className="sh-ui-search-dialog__hint">
               <kbd>Esc</kbd>
-              <span>닫기</span>
+              <span>{t("hints.close")}</span>
             </span>
           </div>
         </DialogContent>

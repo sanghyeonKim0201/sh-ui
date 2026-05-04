@@ -1,0 +1,28 @@
+{
+  "triggerLabel": "검색 열기",
+  "triggerPlaceholder": "문서 검색…",
+  "dialogTitle": "문서 검색",
+  "inputPlaceholder": "컴포넌트, prop, 가이드 검색…",
+  "inputAriaLabel": "검색어",
+  "empty": "검색 결과 없음",
+  "homeCategory": "홈",
+  "categories": {
+    "components": "Components",
+    "recipes": "Recipes",
+    "plugins": "Plugins",
+    "examples": "Examples",
+    "gettingStarted": "시작하기",
+    "cli": "CLI",
+    "mcp": "MCP",
+    "tokens": "토큰",
+    "theming": "테마",
+    "guidelines": "가이드라인",
+    "changelog": "변경 내역",
+    "create": "프로젝트 생성"
+  },
+  "hints": {
+    "navigate": "이동",
+    "open": "열기",
+    "close": "닫기"
+  }
+}

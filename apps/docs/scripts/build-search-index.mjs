@@ -1,16 +1,30 @@
 #!/usr/bin/env node
-// (docs)/**/page.tsx 를 파싱해 검색 인덱스를 만든다.
+// [locale]/(docs)/**/page.tsx 를 파싱해 검색 인덱스를 만든다.
 // 출력: apps/docs/public/search-index.json — { records: SearchRecord[] }
+// 1차에서는 기본 로케일(ko) 인덱스만 빌드. 페이지가 useTranslations("ns") 를 쓰면
+// messages/ko/{ns→filename}.json 의 문자열 값을 본문에 합쳐서 검색 가능하게 한다.
 
-import { readdirSync, readFileSync, statSync, mkdirSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DOCS_ROOT = join(__dirname, "..");
-const PAGES_ROOT = join(DOCS_ROOT, "app", "(docs)");
+const PAGES_ROOT = join(DOCS_ROOT, "app", "[locale]", "(docs)");
+const MESSAGES_ROOT = join(DOCS_ROOT, "messages", "ko");
 const OUT_PATH = join(DOCS_ROOT, "public", "search-index.json");
+
+// next-intl namespace → messages/{locale}/{filename}.json
+// i18n/request.ts 의 매핑과 동기화 유지.
+const NS_TO_FILE = {
+  common: "common",
+  sidebar: "sidebar",
+  search: "search",
+  chrome: "chrome",
+  landing: "landing",
+  gettingStarted: "getting-started",
+};
 
 const HEADING_TAGS = new Set(["h1", "h2", "h3", "h4"]);
 // StringLiteral / JSX attr 중 노이즈 컷용 — 대부분 className/style/href 등
@@ -90,6 +104,44 @@ function isMeaningful(s) {
   return true;
 }
 
+// JSON 값에서 마크업 태그를 평문으로.
+function stripTags(s) {
+  return s.replace(/<\/?[A-Za-z][^>]*>/g, "");
+}
+
+// messages/ko/{file}.json 의 모든 string 값을 재귀 수집.
+const messagesCache = new Map();
+function loadMessageStrings(file) {
+  if (messagesCache.has(file)) return messagesCache.get(file);
+  const path = join(MESSAGES_ROOT, `${file}.json`);
+  if (!existsSync(path)) {
+    messagesCache.set(file, []);
+    return [];
+  }
+  const json = JSON.parse(readFileSync(path, "utf8"));
+  const out = [];
+  const walk = (v) => {
+    if (typeof v === "string") {
+      const s = stripTags(v).replace(/\s+/g, " ").trim();
+      if (s) out.push(s);
+    } else if (Array.isArray(v)) v.forEach(walk);
+    else if (v && typeof v === "object") Object.values(v).forEach(walk);
+  };
+  walk(json);
+  messagesCache.set(file, out);
+  return out;
+}
+
+// useTranslations("ns") / getTranslations({namespace: "ns"}) 호출에서 ns 추출.
+function detectNamespaces(src) {
+  const namespaces = new Set();
+  const useRe = /useTranslations\(\s*["'`]([^"'`]+)["'`]/g;
+  const getRe = /namespace:\s*["'`]([^"'`]+)["'`]/g;
+  for (const m of src.matchAll(useRe)) namespaces.add(m[1].split(".")[0]);
+  for (const m of src.matchAll(getRe)) namespaces.add(m[1].split(".")[0]);
+  return [...namespaces];
+}
+
 function extractFromFile(filePath) {
   const src = readFileSync(filePath, "utf8");
   const sf = ts.createSourceFile(filePath, src, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -159,6 +211,13 @@ function extractFromFile(filePath) {
   }
 
   walk(sf);
+
+  // useTranslations("ns") 가 있으면 messages/ko/{ns→file}.json 의 string 값들도 포함.
+  for (const ns of detectNamespaces(src)) {
+    const file = NS_TO_FILE[ns];
+    if (!file) continue;
+    bodyParts.push(...loadMessageStrings(file));
+  }
 
   const url = fileToUrl(filePath);
   if (!title) {

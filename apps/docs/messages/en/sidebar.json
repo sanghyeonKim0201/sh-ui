@@ -1,0 +1,23 @@
+{
+  "groupLabel": "Docs",
+  "links": {
+    "gettingStarted": "Getting started",
+    "create": "Create project",
+    "cli": "CLI",
+    "mcp": "MCP (AI)",
+    "cssFramework": "CSS framework",
+    "tokens": "Tokens",
+    "theming": "Theming",
+    "guidelines": "Guidelines",
+    "recipes": "Recipes",
+    "examples": "Examples",
+    "changelog": "Changelog",
+    "plugins": "Plugins",
+    "components": "Components"
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "ko": "한국어",
+    "en": "English"
+  }
+}

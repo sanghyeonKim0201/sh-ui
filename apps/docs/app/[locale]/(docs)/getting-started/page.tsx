@@ -1,45 +1,56 @@
 export const dynamic = "force-static";
 
+import { use } from "react";
+import { setRequestLocale } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/ui/code-tabs";
+import { Link } from "@/i18n/navigation";
 
-export default function GettingStarted() {
+const richTags = {
+  strong: (chunks: React.ReactNode) => <strong>{chunks}</strong>,
+  code: (chunks: React.ReactNode) => <code>{chunks}</code>,
+};
+
+export default function GettingStarted({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = use(params);
+  setRequestLocale(locale);
+
+  const t = useTranslations("gettingStarted");
+
   return (
     <main className="container">
-      <h1>시작하기</h1>
-      <p className="muted">기존 프로젝트에 sh-ui을 도입하는 3단계. React와 Flutter 공통 흐름.</p>
+      <h1>{t("title")}</h1>
+      <p className="muted">{t("subtitle")}</p>
 
       <p>
-        <strong>새 Next.js 프로젝트부터 시작한다면</strong> <a href="/create">프로젝트 생성</a> 페이지에서
-        <code> npx sh-ui-cli create</code> 로 FSD 구조 + sh-ui 설정 + 플러그인(Sentry, next-intl)이
-        미리 구성된 템플릿을 쓸 수 있다. 이 페이지는 기존 프로젝트에 수동으로 도입하는 흐름.
+        {t.rich("intro", {
+          ...richTags,
+          createLink: (chunks) => <Link href="/create">{chunks}</Link>,
+        })}
       </p>
 
-      <h2>1. 설정 파일 생성</h2>
-      <p>프로젝트 루트에서:</p>
+      <h2>{t("step1.heading")}</h2>
+      <p>{t("step1.lead")}</p>
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli init`} />
-      <p>
-        대화형 프롬프트로 <code>platform</code>(react/flutter), <code>base</code>(neutral/zinc/slate), <code>radius</code>, <code>mode</code>를 선택하면 <code>sh-ui.config.json</code>이 만들어진다.
-      </p>
+      <p>{t.rich("step1.after", richTags)}</p>
 
-      <h2>2. 토큰 + 기본 리셋 설치</h2>
+      <h2>{t("step2.heading")}</h2>
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add tokens base`} />
-      <p>
-        설정 값으로 치환된 토큰 파일이 생성된다. React는 CSS 변수(<code>tokens.css</code>)와 <code>base.css</code>, Flutter는 Dart 상수(<code>sh_ui_tokens.dart</code>).
-      </p>
-      <p className="muted">
-        <strong>base.css</strong>는 box-sizing·overflow·min-width 등 모바일에서 자주 발생하는 레이아웃 사고(자식 min-content가 뷰포트를 밀어 가로 스크롤이 생기는 현상 등)를 미연에 방지한다. tokens.css 바로 뒤에 import.
-      </p>
+      <p>{t.rich("step2.after", richTags)}</p>
+      <p className="muted">{t.rich("step2.note", richTags)}</p>
 
-      <h2>3. 컴포넌트 설치</h2>
+      <h2>{t("step3.heading")}</h2>
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add button`} />
-      <p>
-        컴포넌트 소스가 <code>paths.components</code>로 복사된다. 이 시점부터 <strong>그 코드는 당신의 것</strong>이다 — 자유롭게 수정 가능.
-      </p>
+      <p>{t.rich("step3.after", richTags)}</p>
 
-      <h2>플랫폼별 설정</h2>
+      <h2>{t("platformHeading")}</h2>
 
-      <h3>React</h3>
+      <h3>{t("react.heading")}</h3>
       <CodePanel
         language="json"
         filename="sh-ui.config.json"
@@ -52,21 +63,17 @@ export default function GettingStarted() {
   }
 }`}
       />
-      <p>
-        전역 CSS에서 <code>tokens.css</code>를 임포트하면 <code>--background</code>, <code>--primary</code>, <code>--space-*</code>, <code>--text-*</code> 등 모든 토큰이 전역에 노출된다.
-      </p>
+      <p>{t.rich("react.globalImport", richTags)}</p>
       <CodePanel
         language="css"
         code={`@import "./styles/tokens.css";
 @import "./styles/base.css";`}
       />
 
-      <h4>다크 모드</h4>
-      <p>
-        <code>mode: &quot;light-dark&quot;</code>로 설정하면 기본(light)은 <code>:root</code>에, 다크는 <code>.dark</code> 클래스에 정의된다. <code>&lt;html className=&quot;dark&quot;&gt;</code> 토글만으로 전환된다.
-      </p>
+      <h4>{t("react.darkModeHeading")}</h4>
+      <p>{t.rich("react.darkMode", richTags)}</p>
 
-      <h3>Flutter</h3>
+      <h3>{t("flutter.heading")}</h3>
       <CodePanel
         language="json"
         filename="sh-ui.config.json"
@@ -80,10 +87,8 @@ export default function GettingStarted() {
 }`}
       />
 
-      <h4>MaterialApp 등록</h4>
-      <p>
-        <code>ShUiTheme</code>를 <code>ThemeData.extensions</code>에 끼워 넣으면 모든 하위 위젯에서 <code>Theme.of(context).extension&lt;ShUiTheme&gt;()</code>로 토큰에 접근할 수 있다.
-      </p>
+      <h4>{t("flutter.materialAppHeading")}</h4>
+      <p>{t.rich("flutter.materialApp", richTags)}</p>
       <CodePanel
         language="dart"
         filename="main.dart"
@@ -121,15 +126,13 @@ class _MyAppState extends State<MyApp> {
 }`}
       />
 
-      <h4>위젯에서 토큰 사용</h4>
-      <p>
-        <code>shUi</code> 한 줄로 꺼내 쓰는 게 관례.
-      </p>
+      <h4>{t("flutter.tokensInWidgetHeading")}</h4>
+      <p>{t.rich("flutter.tokensInWidget", richTags)}</p>
       <CodeTabs
         items={[
           {
             value: "basic",
-            label: "기본",
+            label: t("flutter.tabs.basic"),
             language: "dart",
             filename: "my_widget.dart",
             code: `@override
@@ -158,7 +161,7 @@ Widget build(BuildContext context) {
           },
           {
             value: "animated",
-            label: "애니메이션",
+            label: t("flutter.tabs.animated"),
             language: "dart",
             filename: "my_widget.dart",
             code: `AnimatedContainer(
@@ -174,7 +177,7 @@ Widget build(BuildContext context) {
           },
           {
             value: "disabled",
-            label: "비활성",
+            label: t("flutter.tabs.disabled"),
             language: "dart",
             filename: "my_widget.dart",
             code: `Opacity(
@@ -188,20 +191,16 @@ Widget build(BuildContext context) {
         ]}
       />
 
-      <h4>다크 모드 토글</h4>
-      <p>
-        <code>themeMode: ThemeMode.light / .dark / .system</code>으로 전환. 각 분기에 <code>ShUiTheme.light</code>와 <code>ShUiTheme.dark</code>를 사용한다.
-      </p>
+      <h4>{t("flutter.darkToggleHeading")}</h4>
+      <p>{t.rich("flutter.darkToggle", richTags)}</p>
 
-      <h4>SafeArea — 노치·홈 인디케이터 대응</h4>
-      <p>
-        iPhone의 노치 / Dynamic Island, Android의 gesture indicator 등 시스템 UI 영역에 콘텐츠가 걸치지 않도록 <strong>화면 템플릿 수준에서 처리</strong>한다. <code>Scaffold</code> + <code>AppBar</code> 조합은 상단 상태바를 자동으로 흡수하지만, 전체 화면 배경을 직접 그리거나 <code>AppBar</code>가 없을 때는 <code>SafeArea</code>로 감싼다.
-      </p>
+      <h4>{t("flutter.safeAreaHeading")}</h4>
+      <p>{t.rich("flutter.safeArea", richTags)}</p>
       <CodeTabs
         items={[
           {
             value: "scaffold",
-            label: "표준 (Scaffold)",
+            label: t("flutter.safeAreaTabs.scaffold"),
             language: "dart",
             filename: "my_screen.dart",
             code: `// Scaffold + AppBar는 상단 시스템 영역 자동 처리.
@@ -218,7 +217,7 @@ Scaffold(
           },
           {
             value: "edge-to-edge",
-            label: "전체 배경",
+            label: t("flutter.safeAreaTabs.edgeToEdge"),
             language: "dart",
             filename: "my_screen.dart",
             code: `// 배경은 화면 끝까지, 콘텐츠는 안전 영역 안으로.
@@ -238,7 +237,7 @@ Scaffold(
           },
           {
             value: "measure",
-            label: "직접 측정",
+            label: t("flutter.safeAreaTabs.measure"),
             language: "dart",
             filename: "my_screen.dart",
             code: `// 안전 영역 수치를 직접 읽기
@@ -258,10 +257,8 @@ Container(
         ]}
       />
 
-      <h4>반응형 — 태블릿 / 폴드</h4>
-      <p>
-        <code>shUi.breakpoint.sm/md/lg/xl</code> 토큰을 <code>MediaQuery</code> 또는 <code>LayoutBuilder</code>와 조합하면 화면 폭에 따라 레이아웃을 분기할 수 있다. sh-ui의 <code>ShUiSidebar.mode: auto</code>가 동일 패턴을 내부적으로 사용한다.
-      </p>
+      <h4>{t("flutter.responsiveHeading")}</h4>
+      <p>{t.rich("flutter.responsive", richTags)}</p>
       <CodePanel
         language="dart"
         code={`LayoutBuilder(
@@ -277,11 +274,23 @@ Container(
 )`}
       />
 
-      <h2>다음 단계</h2>
+      <h2>{t("next.heading")}</h2>
       <ul>
-        <li><a href="/tokens">토큰</a> — 전체 토큰 목록과 값</li>
-        <li><a href="/create">프로젝트 생성</a> — 토큰 직접 편집 + 그 디자인으로 새 프로젝트 스캐폴드</li>
-        <li><a href="/components/button">컴포넌트</a> — 설치 및 사용법</li>
+        <li>
+          {t.rich("next.tokens", {
+            tokensLink: (chunks) => <Link href="/tokens">{chunks}</Link>,
+          })}
+        </li>
+        <li>
+          {t.rich("next.create", {
+            createLink: (chunks) => <Link href="/create">{chunks}</Link>,
+          })}
+        </li>
+        <li>
+          {t.rich("next.components", {
+            componentsLink: (chunks) => <Link href="/components/button">{chunks}</Link>,
+          })}
+        </li>
       </ul>
     </main>
   );

@@ -1,6 +1,6 @@
 {
   "name": "@sh-ui/docs",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "predev": "node scripts/build-search-index.mjs && node scripts/generate-variants.mjs",
@@ -39,6 +39,7 @@
     "lucide-react": "^1.14.0",
     "minisearch": "^7.1.2",
     "next": "^16.2.3",
+    "next-intl": "^4.11.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.75.0",
