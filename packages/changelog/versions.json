@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.56.3",
+      "date": "2026-05-04",
+      "title": "fix — monorepo 템플릿 4종 버그 (Tailwind 스캔, globals 임포트, alias, pnpm 감지)",
+      "type": "patch",
+      "highlights": [
+        "**ui-app-template `globals.css` 의 `@source` 경로 한 단 보정** — 5 ups (`../../../../../`) 가 monorepo 깊이 한 단을 빼먹어 `packages/apps/**` 를 스캔하던 문제. 6 ups 로 수정해 실제 `apps/**` 의 사용자 코드를 Tailwind 가 picking up. 결과: 사용자 프로젝트의 utility 클래스가 정상 생성.",
+        "**next-intl 플러그인이 `app/layout.tsx` 의 `globals.css` import 를 보존** — content 통째 교체 → contentFn 으로 전환해 기존 `import '@workspace/ui-{app}/globals.css'` 라인을 추출 후 새 본체에 prepend. monorepo + next-intl 조합에서 Tailwind 스타일이 통째로 사라지던 문제 해결.",
+        "**ui-app-template `aliases.utils` 를 `@workspace/ui-app-name/lib/utils` 로 변경** — 기존 `@/lib/utils` 는 monorepo 의 `apps/web` 에서 `apps/web/lib/utils` 로 잘못 해석돼 `cn` 임포트가 깨졌다. 워크스페이스 패키지 경로로 바꿔 cross-package 임포트 정상 동작. `ui-app-name` placeholder 는 스캐폴드 시 실제 앱 이름으로 치환됨.",
+        "**`detectPackageManager` 가 cwd 부터 root 방향 upward walk** — sub-package (예: `packages/ui/ui-apps/ui-web/`) 에서 호출되면 root 의 `pnpm-lock.yaml` / `pnpm-workspace.yaml` 을 찾도록. 기존엔 cwd 만 보고 npm 폴백해 `EUNSUPPORTEDPROTOCOL — workspace:` 에러로 자동 설치 실패."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.56.3"
+    },
+    {
       "version": "0.56.2",
       "date": "2026-05-04",
       "title": "fix — 템플릿 globals.css `@theme inline` 누락 + base-ui 패키지명 통일",

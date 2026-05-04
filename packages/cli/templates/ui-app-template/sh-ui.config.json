@@ -12,8 +12,8 @@
     "utils": "src/lib/utils.ts"
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components"
+    "components": "@workspace/ui-app-name/components",
+    "utils": "@workspace/ui-app-name/lib/utils",
+    "ui": "@workspace/ui-app-name/components"
   }
 }
