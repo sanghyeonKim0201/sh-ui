@@ -7,6 +7,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { VariantSource } from "@/components/variant-source";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -79,10 +80,7 @@ export default function TabsPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        React: registry의 <code>components/ui/tabs/</code> 파일을 복사하고 Base UI를 설치.
-        Flutter: <code>packages/registry/flutter/widgets/sh_ui_tabs.dart</code>를 <code>lib/widgets/</code>로 복사.
-      </p>
+      <VariantSource name="tabs" />
       <CodeTabs
         items={[
           { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui/react` },

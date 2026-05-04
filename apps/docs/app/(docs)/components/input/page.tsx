@@ -6,6 +6,7 @@ import {
   InputGroup,
   PasswordInput,
 } from "@/components/ui/input";
+import { VariantSource } from "@/components/variant-source";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -62,13 +63,7 @@ export default function InputPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 복사한다.
-      </p>
-      <ul>
-        <li>React: <code>components/ui/input/index.tsx</code>, <code>styles.css</code></li>
-        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_input.dart</code> → <code>lib/widgets/</code></li>
-      </ul>
+      <VariantSource name="input" />
 
       <h2>Usage</h2>
       <CodeTabs

@@ -18,6 +18,7 @@ import {
   CompoundYearOnlyDemo,
   CompoundNoArrowsDemo,
 } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function CalendarPage() {
   return (
@@ -54,10 +55,7 @@ export default function CalendarPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">registry에서 아래 파일을 복사한다.</p>
-      <ul>
-        <li>React: <code>components/ui/calendar/index.tsx</code>, <code>styles.css</code></li>
-      </ul>
+      <VariantSource name="calendar" />
 
       <h2>Usage</h2>
       <CodeTabs

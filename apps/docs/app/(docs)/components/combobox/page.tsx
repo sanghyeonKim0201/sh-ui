@@ -6,6 +6,7 @@ import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { ComboboxBasicDemo } from "./_demos/basic";
 import { ComboboxMultiChipsDemo } from "./_demos/multi-chips";
+import { VariantSource } from "@/components/variant-source";
 
 export default function ComboboxPage() {
   return (
@@ -71,9 +72,7 @@ ShUiCombobox<String>(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        React는 registry에서 <code>components/ui/combobox/</code>로 복사하고 Base UI를 설치한다. Flutter는 <code>packages/registry/flutter/widgets/sh_ui_combobox.dart</code>를 <code>lib/widgets/</code>로 복사한다.
-      </p>
+      <VariantSource name="combobox" />
       <CodeTabs
         items={[
           { value: "react", label: "React", language: "bash", showLineNumbers: false, code: `pnpm add @base-ui/react` },

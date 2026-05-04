@@ -4,6 +4,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { RadioBasicDemo, RadioHorizontalDemo, RadioDisabledDemo } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function RadioPage() {
   return (
@@ -91,13 +92,7 @@ ShUiRadioGroup(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/radio/</code>로 복사한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
-      </ul>
+      <VariantSource name="radio" />
 
       <h2>Usage</h2>
       <CodeTabs

@@ -1,6 +1,7 @@
 export const dynamic = "force-static";
 
 import { CodeTabs } from "@/components/ui/code-tabs";
+import { VariantSource } from "@/components/variant-source";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
@@ -97,6 +98,9 @@ npx sh-ui-cli add form-yup       # Yup 래퍼`,
           },
         ]}
       />
+
+      <h3>Manual</h3>
+      <VariantSource name="form" />
 
       {/* Mode comparison */}
       <h2>언제 무엇을 쓸까?</h2>

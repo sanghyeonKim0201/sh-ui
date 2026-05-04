@@ -4,6 +4,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Badge } from "@/components/ui/badge";
+import { VariantSource } from "@/components/variant-source";
 
 export default function BadgePage() {
   return (
@@ -66,6 +67,9 @@ ShUiBadge.text('Outline', variant: ShUiBadgeVariant.outline)`,
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="badge" />
+
 
       <h2>Examples</h2>
 

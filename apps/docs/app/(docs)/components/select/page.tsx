@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { VariantSource } from "@/components/variant-source";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -109,9 +110,7 @@ ShUiSelect<String>(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/select/</code>로 복사하고, Base UI를 설치한다.
-      </p>
+      <VariantSource name="select" />
       <CodeTabs
         items={[
           {

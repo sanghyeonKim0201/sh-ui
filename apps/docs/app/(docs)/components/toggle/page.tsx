@@ -9,6 +9,7 @@ import {
   ToggleGroupSingleDemo,
   ToggleGroupMultipleDemo,
 } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function TogglePage() {
   return (
@@ -66,14 +67,7 @@ ShUiToggle(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        React: registry의 <code>components/ui/toggle/</code> 파일을 복사.
-        Flutter: <code>packages/registry/flutter/widgets/sh_ui_toggle.dart</code>를 <code>lib/widgets/</code>로 복사.
-      </p>
-      <ul>
-        <li><code>index.tsx</code> / <code>styles.css</code> (React)</li>
-        <li><code>sh_ui_toggle.dart</code> (Flutter)</li>
-      </ul>
+      <VariantSource name="toggle" />
 
       <h2>Usage</h2>
       <CodeTabs

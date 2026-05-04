@@ -4,6 +4,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { ContextMenuBasicDemo } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function ContextMenuPage() {
   return (
@@ -82,6 +83,9 @@ export default function ContextMenuPage() {
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="context-menu" />
+
 
       <h2>구성 요소</h2>
       <SubComponents

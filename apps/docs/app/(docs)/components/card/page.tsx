@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CodeTabs } from "@/components/ui/code-tabs";
+import { VariantSource } from "@/components/variant-source";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 
@@ -119,13 +120,7 @@ export default function CardPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/card/</code>로 복사한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
-      </ul>
+      <VariantSource name="card" />
 
       <h2>Usage</h2>
       <CodeTabs

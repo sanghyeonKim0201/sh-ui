@@ -6,6 +6,7 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { ThemeBasicDemo } from "./_demos/basic";
 import { ThemeControlledDemo } from "./_demos/controlled";
+import { VariantSource } from "@/components/variant-source";
 
 export default function ThemePage() {
   return (
@@ -60,12 +61,7 @@ export function ThemeToggle() {
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add theme`} />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/theme/</code>로 복사한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-      </ul>
+      <VariantSource name="theme" />
 
       <h2>Usage</h2>
       <p className="muted">

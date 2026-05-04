@@ -6,6 +6,7 @@ import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
+import { VariantSource } from "@/components/variant-source";
 
 const variants = ["primary", "secondary", "ghost", "danger", "link"] as const;
 const sizes = ["sm", "md", "lg"] as const;
@@ -67,13 +68,7 @@ export default function ButtonPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/button/</code>로 복사한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
-      </ul>
+      <VariantSource name="button" />
 
       <h2>Usage</h2>
       <CodeTabs

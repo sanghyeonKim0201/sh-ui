@@ -3,13 +3,15 @@
   "version": "0.6.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/build-search-index.mjs",
+    "predev": "node scripts/build-search-index.mjs && node scripts/generate-variants.mjs",
     "dev": "next dev",
-    "prebuild": "pnpm --filter @sh-ui/llms gen && node scripts/build-search-index.mjs",
+    "prebuild": "pnpm --filter @sh-ui/llms gen && node scripts/build-search-index.mjs && node scripts/generate-variants.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "pretypecheck": "node scripts/generate-variants.mjs",
     "typecheck": "tsc --noEmit",
+    "generate:variants": "node scripts/generate-variants.mjs",
     "sh-ui:install": "node ../../packages/cli/bin/sh-ui.mjs add tokens button"
   },
   "dependencies": {

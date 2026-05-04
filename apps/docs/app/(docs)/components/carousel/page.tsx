@@ -8,6 +8,7 @@ import {
   CarouselNext,
   CarouselIndicators,
 } from "@/components/ui/carousel";
+import { VariantSource } from "@/components/variant-source";
 import { Card, CardContent } from "@/components/ui/card";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
@@ -139,14 +140,7 @@ export default function CarouselPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/carousel/</code>로 복사한다.{" "}
-        외부 의존성 없이 순수 React + CSS로 동작한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
-      </ul>
+      <VariantSource name="carousel" />
 
       <h2>Usage</h2>
       <CodeTabs

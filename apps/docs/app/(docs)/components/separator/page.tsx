@@ -4,6 +4,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Separator } from "@/components/ui/separator";
+import { VariantSource } from "@/components/variant-source";
 
 export default function SeparatorPage() {
   return (
@@ -53,6 +54,9 @@ export default function SeparatorPage() {
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="separator" />
+
 
       <h2>Examples</h2>
 

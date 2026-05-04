@@ -9,6 +9,7 @@ import {
   CheckboxDisabledDemo,
   CheckboxIndeterminateDemo,
 } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function CheckboxPage() {
   return (
@@ -101,13 +102,7 @@ class _TermsCheckboxState extends State<TermsCheckbox> {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/checkbox/</code>로 복사한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
-      </ul>
+      <VariantSource name="checkbox" />
 
       <h2>Usage</h2>
       <CodeTabs

@@ -13,6 +13,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbEllipsis,
 } from "@/components/ui/breadcrumb";
+import { VariantSource } from "@/components/variant-source";
 
 export default function BreadcrumbDocsPage() {
   return (
@@ -95,6 +96,9 @@ export default function BreadcrumbDocsPage() {
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="breadcrumb" />
+
 
       <h2>Examples</h2>
 

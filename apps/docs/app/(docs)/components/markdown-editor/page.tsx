@@ -6,6 +6,7 @@ import { PropsTable } from "@/components/props-table";
 import { BasicDemo } from "./_demos/basic";
 import { BottomDemo } from "./_demos/bottom";
 import { NoPreviewDemo } from "./_demos/no-preview";
+import { VariantSource } from "@/components/variant-source";
 
 export default function MarkdownEditorPage() {
   return (
@@ -40,9 +41,7 @@ export default function MarkdownEditorPage() {
       </p>
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 <code>components/ui/markdown-editor/</code>로 파일을 복사하고, 의존 패키지를 설치한다.
-      </p>
+      <VariantSource name="markdown-editor" />
       <CodePanel
         language="bash"
         showLineNumbers={false}
