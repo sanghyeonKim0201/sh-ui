@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import {
   allPlugins,
+  getArchesForPlatform,
+  DEFAULT_ARCH,
   CSS_FRAMEWORKS_SUPPORTED,
   CSS_FRAMEWORKS_PLANNED,
   CSS_FRAMEWORK_DEFAULT,
@@ -23,6 +25,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   composeCommand,
+  type Arch,
   type ComposerOptions,
   type CssFramework,
   type PackageManager,
@@ -110,6 +113,7 @@ export function CreateProjectDialog({
   const [projectName, setProjectName] = useState("my-app");
   const [platform, setPlatform] = useState<Platform>("next");
   const [structure, setStructure] = useState<Structure>("standalone");
+  const [arch, setArch] = useState<Arch>(DEFAULT_ARCH);
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
   const [packageManager, setPackageManager] = useState<PackageManager>("pnpm");
   const [cssFramework, setCssFramework] = useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
@@ -171,12 +175,13 @@ export function CreateProjectDialog({
         projectName: projectName || "my-app",
         platform,
         structure,
+        arch,
         plugins,
         packageManager,
         themeBase64,
         cssFramework,
       } satisfies ComposerOptions),
-    [projectName, platform, structure, plugins, packageManager, themeBase64, cssFramework],
+    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework],
   );
 
   const togglePlugin = (p: Plugin) => {
@@ -296,6 +301,32 @@ export function CreateProjectDialog({
                   <ToggleGroupItem value="standalone">Standalone</ToggleGroupItem>
                   <ToggleGroupItem value="monorepo">Monorepo</ToggleGroupItem>
                 </ToggleGroup>
+              </div>
+              <div>
+                <Label>아키텍처</Label>
+                <ToggleGroup
+                  value={[arch]}
+                  onValueChange={(v: any[]) => {
+                    const next = v[0] as Arch | undefined;
+                    if (next) setArch(next);
+                  }}
+                >
+                  {getArchesForPlatform("next").map((a) => (
+                    <ToggleGroupItem key={a.name} value={a.name} title={a.description}>
+                      {a.name}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <div
+                  style={{
+                    marginTop: "0.25rem",
+                    fontSize: "0.6875rem",
+                    color: "var(--foreground-muted)",
+                  }}
+                >
+                  프로젝트 모양 (폴더 구조 / import alias). 자세한 비교는{" "}
+                  <a href="/architectures">Architectures</a> 참고.
+                </div>
               </div>
               <div>
                 <Label>CSS 프레임워크</Label>
