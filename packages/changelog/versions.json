@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.52.2",
+      "date": "2026-05-04",
+      "title": "vanilla-extract rollback — 자동 변환 broken, PLANNED 로 후퇴",
+      "type": "patch",
+      "highlights": [
+        "**v0.50.0 의 vanilla-extract 자동 변환 회수** — `.module.css → .css.ts` 자동 변환 스크립트로 ship 했던 40 개 변종이 vanilla-extract 의 strict selector 규칙 (selectors 안 다른 클래스 reference 금지, `& > *` / `& .third-party` 같은 descendant 패턴 거부, mutual reference TDZ 등) 을 어겨 사용자 빌드 시 깨짐. 검증 인프라 (vitest + @vanilla-extract/vite-plugin) 도입 후 발견.",
+        "**vanilla-extract 를 SUPPORTED → PLANNED 로 되돌림** — `CSS_FRAMEWORKS_SUPPORTED` 에서 제거, `CSS_FRAMEWORKS_PLANNED` 로 이동. CLI/MCP/UI 모두 다시 \"곧 지원 예정\" 으로 안내. button/card/input 3 개 수동 작성 파일럿 변종은 그대로 유지 — `sh-ui.config.json` 을 직접 손대면 동작.",
+        "**input 파일럿 fix** — `affix > *` 규칙이 vanilla-extract selectors 키에 들어 있어 거부됐음. `globalStyle()` 로 빼서 수정. 이제 button/card/input 모두 검증 통과.",
+        "**검증 인프라 정착** — `packages/registry/react/components/_smoke/vanilla-extract.test.ts` — 모든 `styles.css.ts` 가 vanilla-extract 빌드 컨텍스트에서 정상 import 되는지 자동 검증. 향후 정식 rollout 때 회귀 가드.",
+        "사용자 영향: vanilla-extract 사용자는 거의 없을 것 (PLANNED 였다가 잠시 SUPPORTED 됐다 다시 PLANNED). plain · tailwind · css-modules 사용자에게는 변동 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.2"
+    },
+    {
       "version": "0.52.1",
       "date": "2026-05-04",
       "title": "zod v4 호환 + MCP describe 텍스트 최신화",

@@ -59,13 +59,13 @@ describe("CSS framework — config 필드", () => {
     expect(config.cssFramework).toBe("css-modules");
   });
 
-  it("init --cssFramework vanilla-extract → SUPPORTED 라 정상 채택", async () => {
-    await init({
-      cwd: tmpDir,
-      args: ["--yes", "--platform", "react", "--cssFramework", "vanilla-extract"],
-    });
-    const config = await fs.readJson(path.join(tmpDir, "sh-ui.config.json"));
-    expect(config.cssFramework).toBe("vanilla-extract");
+  it("init --cssFramework vanilla-extract → '곧 지원 예정' 친절 에러 (PLANNED, button/card/input 만 변종 있음)", async () => {
+    await expect(
+      init({
+        cwd: tmpDir,
+        args: ["--yes", "--platform", "react", "--cssFramework", "vanilla-extract"],
+      }),
+    ).rejects.toThrow(/곧 지원 예정/);
   });
 
   it("init --cssFramework garbage → 일반 enum 에러", async () => {

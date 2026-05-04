@@ -76,7 +76,6 @@ const INIT_DESCRIPTIONS = {
     plain: "플레인 CSS — CSS custom properties + 일반 .css 파일 (모든 컴포넌트 지원)",
     tailwind: "Tailwind v4 utility class — class-variance-authority 기반",
     "css-modules": "CSS Modules — .module.css + styles.X 참조, 빌드 타임 hash 격리",
-    "vanilla-extract": "vanilla-extract — TS 안에서 CSS 작성 (.css.ts), 빌드 타임 정적 컴파일 (bundler 플러그인 셋업 필요)",
   },
 };
 

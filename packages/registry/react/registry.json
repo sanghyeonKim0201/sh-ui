@@ -243,30 +243,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/numeric-input/index.vanilla-extract.tsx",
-          "dest": "{components}/numeric-input/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/numeric-input/styles.css.ts",
-          "dest": "{components}/numeric-input/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -309,30 +288,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/file-upload/index.vanilla-extract.tsx",
-          "dest": "{components}/file-upload/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/file-upload/styles.css.ts",
-          "dest": "{components}/file-upload/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -435,30 +393,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/form/index.vanilla-extract.tsx",
-          "dest": "{components}/form/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/form/styles.css.ts",
-          "dest": "{components}/form/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -522,30 +459,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/code-panel/index.vanilla-extract.tsx",
-          "dest": "{components}/code-panel/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/code-panel/styles.css.ts",
-          "dest": "{components}/code-panel/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "shiki",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "shiki"
       ],
       "registryDependencies": [
         "utils"
@@ -604,30 +521,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/page-toc/index.vanilla-extract.tsx",
-          "dest": "{components}/page-toc/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/page-toc/styles.css.ts",
-          "dest": "{components}/page-toc/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -670,20 +566,6 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/code-editor/index.vanilla-extract.tsx",
-          "dest": "{components}/code-editor/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/code-editor/styles.css.ts",
-          "dest": "{components}/code-editor/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
@@ -694,13 +576,7 @@
         "@codemirror/lang-json",
         "@codemirror/lang-css",
         "@codemirror/lang-html",
-        "@codemirror/lang-markdown",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@codemirror/lang-markdown"
       ],
       "registryDependencies": [
         "utils"
@@ -744,31 +620,11 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/markdown-editor/index.vanilla-extract.tsx",
-          "dest": "{components}/markdown-editor/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/markdown-editor/styles.css.ts",
-          "dest": "{components}/markdown-editor/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
         "react-markdown",
-        "remark-gfm",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "remark-gfm"
       ],
       "registryDependencies": [
         "code-editor",
@@ -813,20 +669,6 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/rich-text-editor/index.vanilla-extract.tsx",
-          "dest": "{components}/rich-text-editor/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/rich-text-editor/styles.css.ts",
-          "dest": "{components}/rich-text-editor/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
@@ -835,13 +677,7 @@
         "@tiptap/starter-kit",
         "@tiptap/extension-placeholder",
         "@tiptap/extension-link",
-        "lucide-react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "lucide-react"
       ],
       "registryDependencies": [
         "utils"
@@ -885,30 +721,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/select/index.vanilla-extract.tsx",
-          "dest": "{components}/select/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/select/styles.css.ts",
-          "dest": "{components}/select/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -952,30 +768,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/sidebar/index.vanilla-extract.tsx",
-          "dest": "{components}/sidebar/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/sidebar/styles.css.ts",
-          "dest": "{components}/sidebar/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "lucide-react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "lucide-react"
       ],
       "registryDependencies": [
         "popover",
@@ -1020,30 +816,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/header/index.vanilla-extract.tsx",
-          "dest": "{components}/header/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/header/styles.css.ts",
-          "dest": "{components}/header/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -1182,30 +957,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/label/index.vanilla-extract.tsx",
-          "dest": "{components}/label/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/label/styles.css.ts",
-          "dest": "{components}/label/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -1248,30 +1002,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/color-picker/index.vanilla-extract.tsx",
-          "dest": "{components}/color-picker/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/color-picker/styles.css.ts",
-          "dest": "{components}/color-picker/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -1314,30 +1047,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/slider/index.vanilla-extract.tsx",
-          "dest": "{components}/slider/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/slider/styles.css.ts",
-          "dest": "{components}/slider/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -1380,30 +1092,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/tabs/index.vanilla-extract.tsx",
-          "dest": "{components}/tabs/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/tabs/styles.css.ts",
-          "dest": "{components}/tabs/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -1447,30 +1139,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/combobox/index.vanilla-extract.tsx",
-          "dest": "{components}/combobox/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/combobox/styles.css.ts",
-          "dest": "{components}/combobox/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -1514,30 +1186,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/popover/index.vanilla-extract.tsx",
-          "dest": "{components}/popover/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/popover/styles.css.ts",
-          "dest": "{components}/popover/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -1581,30 +1233,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/dialog/index.vanilla-extract.tsx",
-          "dest": "{components}/dialog/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/dialog/styles.css.ts",
-          "dest": "{components}/dialog/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -1648,30 +1280,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/dropdown-menu/index.vanilla-extract.tsx",
-          "dest": "{components}/dropdown-menu/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/dropdown-menu/styles.css.ts",
-          "dest": "{components}/dropdown-menu/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -1715,30 +1327,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/context-menu/index.vanilla-extract.tsx",
-          "dest": "{components}/context-menu/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/context-menu/styles.css.ts",
-          "dest": "{components}/context-menu/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -1782,30 +1374,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/menubar/index.vanilla-extract.tsx",
-          "dest": "{components}/menubar/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/menubar/styles.css.ts",
-          "dest": "{components}/menubar/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "dropdown-menu",
@@ -1850,30 +1422,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/tooltip/index.vanilla-extract.tsx",
-          "dest": "{components}/tooltip/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/tooltip/styles.css.ts",
-          "dest": "{components}/tooltip/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -1917,30 +1469,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/breadcrumb/index.vanilla-extract.tsx",
-          "dest": "{components}/breadcrumb/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/breadcrumb/styles.css.ts",
-          "dest": "{components}/breadcrumb/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -1983,30 +1514,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/pagination/index.vanilla-extract.tsx",
-          "dest": "{components}/pagination/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/pagination/styles.css.ts",
-          "dest": "{components}/pagination/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -2049,20 +1559,6 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/avatar/index.vanilla-extract.tsx",
-          "dest": "{components}/avatar/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/avatar/styles.css.ts",
-          "dest": "{components}/avatar/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
@@ -2071,12 +1567,6 @@
           "name": "class-variance-authority",
           "frameworks": [
             "tailwind"
-          ]
-        },
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
           ]
         }
       ],
@@ -2122,20 +1612,6 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/badge/index.vanilla-extract.tsx",
-          "dest": "{components}/badge/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/badge/styles.css.ts",
-          "dest": "{components}/badge/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
@@ -2143,12 +1619,6 @@
           "name": "class-variance-authority",
           "frameworks": [
             "tailwind"
-          ]
-        },
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
           ]
         }
       ],
@@ -2194,30 +1664,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/progress/index.vanilla-extract.tsx",
-          "dest": "{components}/progress/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/progress/styles.css.ts",
-          "dest": "{components}/progress/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -2260,20 +1709,6 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/spinner/index.vanilla-extract.tsx",
-          "dest": "{components}/spinner/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/spinner/styles.css.ts",
-          "dest": "{components}/spinner/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
@@ -2281,12 +1716,6 @@
           "name": "class-variance-authority",
           "frameworks": [
             "tailwind"
-          ]
-        },
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
           ]
         }
       ],
@@ -2332,30 +1761,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/separator/index.vanilla-extract.tsx",
-          "dest": "{components}/separator/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/separator/styles.css.ts",
-          "dest": "{components}/separator/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -2410,30 +1818,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/checkbox/index.vanilla-extract.tsx",
-          "dest": "{components}/checkbox/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/checkbox/styles.css.ts",
-          "dest": "{components}/checkbox/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -2477,30 +1865,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/radio/index.vanilla-extract.tsx",
-          "dest": "{components}/radio/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/radio/styles.css.ts",
-          "dest": "{components}/radio/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -2544,20 +1912,6 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/switch/index.vanilla-extract.tsx",
-          "dest": "{components}/switch/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/switch/styles.css.ts",
-          "dest": "{components}/switch/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
@@ -2566,12 +1920,6 @@
           "name": "class-variance-authority",
           "frameworks": [
             "tailwind"
-          ]
-        },
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
           ]
         }
       ],
@@ -2617,20 +1965,6 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/toggle/index.vanilla-extract.tsx",
-          "dest": "{components}/toggle/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/toggle/styles.css.ts",
-          "dest": "{components}/toggle/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
@@ -2639,12 +1973,6 @@
           "name": "class-variance-authority",
           "frameworks": [
             "tailwind"
-          ]
-        },
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
           ]
         }
       ],
@@ -2690,30 +2018,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/textarea/index.vanilla-extract.tsx",
-          "dest": "{components}/textarea/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/textarea/styles.css.ts",
-          "dest": "{components}/textarea/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -2756,30 +2063,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/toast/index.vanilla-extract.tsx",
-          "dest": "{components}/toast/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/toast/styles.css.ts",
-          "dest": "{components}/toast/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -2822,30 +2108,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/calendar/index.vanilla-extract.tsx",
-          "dest": "{components}/calendar/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/calendar/styles.css.ts",
-          "dest": "{components}/calendar/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "select",
         "utils"
@@ -2889,30 +2154,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/date-picker/index.vanilla-extract.tsx",
-          "dest": "{components}/date-picker/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/date-picker/styles.css.ts",
-          "dest": "{components}/date-picker/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "calendar",
@@ -2957,30 +2202,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/skeleton/index.vanilla-extract.tsx",
-          "dest": "{components}/skeleton/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/skeleton/styles.css.ts",
-          "dest": "{components}/skeleton/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
@@ -3023,30 +2247,10 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/accordion/index.vanilla-extract.tsx",
-          "dest": "{components}/accordion/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/accordion/styles.css.ts",
-          "dest": "{components}/accordion/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
       "dependencies": [
-        "@base-ui/react",
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
+        "@base-ui/react"
       ],
       "registryDependencies": [
         "utils"
@@ -3090,30 +2294,9 @@
           "frameworks": [
             "css-modules"
           ]
-        },
-        {
-          "src": "components/carousel/index.vanilla-extract.tsx",
-          "dest": "{components}/carousel/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        },
-        {
-          "src": "components/carousel/styles.css.ts",
-          "dest": "{components}/carousel/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
         }
       ],
-      "dependencies": [
-        {
-          "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
-        }
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "utils"
       ]
