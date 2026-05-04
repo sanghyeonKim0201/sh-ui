@@ -40,25 +40,43 @@ export const nextIntlPlugin = {
     { type: 'move', from: 'app/page.tsx', to: 'app/[locale]/page.tsx' },
     { type: 'move', from: 'app/error.tsx', to: 'app/[locale]/error.tsx' },
     {
-      // 기본 nextjs-app 템플릿의 app/layout.tsx 는 globals.css 를 side-effect import 한다 —
-      // next-intl 도입 시 layout 본체는 [locale]/layout.tsx 로 옮기지만, CSS import 는 root
-      // layout 에 살아 있어야 사용자 프로젝트의 Tailwind 스타일이 동작한다. content 통째 교체
-      // 대신 contentFn 으로 side-effect import (`import 'x';` 형태, binding 없음) 만 추출해
-      // 새 본체 앞에 prepend. 이름 있는 import (예: `import { RootLayout } from ...`) 는 새 본체와
-      // 식별자 충돌 가능성이 있어 제외.
+      // Next 16 부터 root layout (app/layout.tsx) 은 반드시 <html>/<body> 를 가져야 한다.
+      // next-intl 적용 시에는 [locale] 가 root 역할을 맡으므로, 기본 app/layout.tsx 를 그대로
+      // [locale]/layout.tsx 로 이동시켜 globals.css side-effect import 를 보존한 뒤,
+      // body 만 locale-aware 버전으로 교체한다. 결과적으로 app/layout.tsx 는 존재하지 않게 되고
+      // [locale]/layout.tsx 가 Next 의 root layout 으로 인식된다.
+      type: 'move',
+      from: 'app/layout.tsx',
+      to: 'app/[locale]/layout.tsx',
+    },
+    {
+      // 위에서 옮겨진 [locale]/layout.tsx 는 비-locale 버전 — body 를 locale-aware 로 갈아끼운다.
+      // side-effect import (`import 'x';` 형태, binding 없음) 만 보존하고 나머지는 통째 교체.
+      // 이름 있는 import (예: `import { RootLayout } from ...`) 는 새 본체와 식별자 충돌 가능성이
+      // 있어 제외.
       type: 'replace',
-      path: 'app/layout.tsx',
+      path: 'app/[locale]/layout.tsx',
       contentFn: (existing) => {
         const sideEffectImports = existing
           .split('\n')
           .filter((line) => /^\s*import\s+['"][^'"]+['"];?\s*$/.test(line))
           .join('\n');
-        const body = `export default async function RootLayout({
+        const body = `import type { Metadata } from 'next';
+import { RootLayout } from '@/src/app/layouts/RootLayout';
+
+export const metadata: Metadata = {
+  title: 'My App',
+  description: 'My App Description',
+};
+
+export default function Layout({
   children,
-}: {
+  params,
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  return children;
+  params: Promise<{ locale: string }>;
+}>) {
+  return <RootLayout params={params}>{children}</RootLayout>;
 }
 `;
         return sideEffectImports ? `${sideEffectImports}\n\n${body}` : body;
@@ -194,24 +212,7 @@ export const { Link, redirect, usePathname, useRouter, getPathname } =
 }
 `,
 
-    'app/[locale]/layout.tsx': `import type { Metadata } from 'next';
-import { RootLayout } from '@/src/app/layouts/RootLayout';
-
-export const metadata: Metadata = {
-  title: 'My App',
-  description: 'My App Description',
-};
-
-export default function Layout({
-  children,
-  params,
-}: Readonly<{
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}>) {
-  return <RootLayout params={params}>{children}</RootLayout>;
-}
-`,
+    // app/[locale]/layout.tsx 는 transforms 에서 생성된다 (위 move + replace 참고)
 
     'proxy.ts': `import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from '@/src/shared/config/i18n/routing';

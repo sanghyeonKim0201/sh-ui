@@ -12,7 +12,8 @@
         "**MCP 툴 `sh_ui_rename_app`** — IDE-내 AI 가 \"apps/web 을 dashboard 로 바꿔줘\" 류 요청 받으면 자동 호출. `dryRun: true` 로 변경 매트릭스 미리보기 후 실행 권장. instructions 블록에도 가이드 추가.",
         "**옵션** — `--dry-run` (변경 매트릭스만 출력) / `--yes` (대화형 확인 생략) / `--skip-install` (마지막 `pnpm install` 생략).",
         "**false-positive 방지** — bare 단어(예: `web`)는 절대 치환하지 않음. 컨텍스트(슬래시, 따옴표, 백틱, 공백, 개행) 로 묶인 패턴만 매치 — `core-web-vitals` (ESLint) / `safari-web-extension` (Sentry) 같은 생태계 상수는 보존.",
-        "**lockfile 자동 재생성** — 마지막 단계에서 `pnpm install` 실행해 workspace 링크 갱신. 실패해도 friendly 안내 메시지로 사용자가 수동 실행 가능."
+        "**lockfile 자동 재생성** — 마지막 단계에서 `pnpm install` 실행해 workspace 링크 갱신. 실패해도 friendly 안내 메시지로 사용자가 수동 실행 가능.",
+        "**fix — Next 16 호환: `app/layout.tsx` html/body 누락 에러 해소** — next-intl 플러그인이 `app/layout.tsx` 를 패스스루(`return children`) 로 남기던 방식이 Next 16 의 \"Missing <html> and <body> tags in the root layout\" 런타임 에러를 일으키던 문제 수정. 이제 `app/layout.tsx` 를 통째로 `app/[locale]/layout.tsx` 로 이동(globals.css side-effect import 보존)하고 본체만 locale-aware 버전으로 교체 — `app/layout.tsx` 가 사라지면서 `[locale]/layout.tsx` 가 Next 의 root layout 으로 인식되고 그 안의 `RootLayout` (html/body 보유) 이 정상 적용. smoke matrix 에 회귀 가드 추가."
       ],
       "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.57.0"
     },
