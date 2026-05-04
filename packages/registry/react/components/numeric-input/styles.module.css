@@ -1,0 +1,56 @@
+/* NumericInput — 컴팩트 monospace 숫자 입력. 슬라이더 동반·토큰 편집기 같은
+   좁은 영역용. 일반 폼 입력은 Input / NumberInput 사용. */
+
+.numeric-input {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  min-width: 3rem;
+  justify-content: flex-end;
+}
+
+.numeric-input__input {
+  width: 2.5rem;
+  padding: 2px 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-xs);
+  line-height: 1.2;
+  text-align: right;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 4px);
+  background: transparent;
+  color: var(--foreground);
+  appearance: textfield;
+  -moz-appearance: textfield;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+/* WebKit 의 스피너 버튼 숨김 — 컴팩트 영역에 노이즈. 키보드 step 은 유지됨. */
+.numeric-input__input::-webkit-inner-spin-button,
+.numeric-input__input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.numeric-input__input:hover:not(:disabled):not(:focus) {
+  border-color: var(--border);
+}
+
+.numeric-input__input:focus,
+.numeric-input__input:focus-visible {
+  outline: none;
+  border-color: var(--foreground);
+  background: var(--background);
+}
+
+.numeric-input__input:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-disabled);
+}
+
+.numeric-input__unit {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-xs);
+  color: var(--foreground-muted);
+}

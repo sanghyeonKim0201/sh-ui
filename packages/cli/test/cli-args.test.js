@@ -74,8 +74,13 @@ describe('parseArgs', () => {
     expect(r.flags.css).toBe('tailwind');
   });
 
-  it('--css css-modules → "곧 지원 예정" 친절 에러', () => {
-    expect(() => parseArgs(['node', 'create.js', '--css', 'css-modules']))
+  it('--css css-modules → flags.css = "css-modules" (SUPPORTED 승격)', () => {
+    const r = parseArgs(['node', 'create.js', '--css', 'css-modules']);
+    expect(r.flags.css).toBe('css-modules');
+  });
+
+  it('--css vanilla-extract → "곧 지원 예정" 친절 에러', () => {
+    expect(() => parseArgs(['node', 'create.js', '--css', 'vanilla-extract']))
       .toThrow(/곧 지원 예정/);
   });
 

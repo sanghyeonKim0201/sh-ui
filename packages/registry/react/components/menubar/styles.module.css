@@ -1,0 +1,45 @@
+.menubar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Menubar 안의 DropdownMenuTrigger는 메뉴바 항목 스타일로 재지정.
+   dropdown-menu가 함께 설치되어 있어야 한다(registryDependencies).
+   사용자가 render로 자체 엘리먼트를 넘겨 덮어쓸 수 있다. */
+.menubar .dm__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  height: var(--control-md);
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground);
+  font-size: var(--text-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.menubar .dm__trigger:hover,
+.menubar .dm__trigger[data-popup-open] {
+  background: var(--background-muted);
+}
+
+.menubar .dm__trigger:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: -1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menubar .dm__trigger {
+    transition: none;
+  }
+}

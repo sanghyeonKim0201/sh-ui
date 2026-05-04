@@ -1,0 +1,111 @@
+.accordion {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.accordion__item {
+  border-bottom: 1px solid var(--border);
+}
+
+.accordion__item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.accordion__header {
+  margin: 0;
+  font: inherit;
+}
+
+.accordion__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4) var(--space-1);
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  font-size: 0.9375rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* hover는 enabled 일 때만. background tint — 다른 hover 효과를 원하면 className/style 로 override. */
+.accordion__trigger:not([disabled]):not([data-disabled]):hover {
+  background: var(--background-muted);
+}
+
+.accordion__trigger:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.accordion__trigger[disabled],
+.accordion__trigger[data-disabled] {
+  cursor: not-allowed;
+  color: var(--foreground-muted);
+}
+
+.accordion__trigger-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.accordion__chevron {
+  flex-shrink: 0;
+  color: var(--foreground-muted);
+  transition: transform 180ms var(--ease-standard);
+}
+
+.accordion__trigger[data-panel-open] .accordion__chevron {
+  transform: rotate(180deg);
+}
+
+/* 패널: Base UI가 --accordion-panel-height CSS 변수를 제공. grid trick으로 열림/닫힘 전환. */
+.accordion__panel {
+  overflow: hidden;
+  height: var(--accordion-panel-height);
+  transition: height var(--duration-slow) var(--ease-standard);
+}
+
+.accordion__panel[data-starting-style],
+.accordion__panel[data-ending-style] {
+  height: 0;
+}
+
+.accordion__content {
+  padding: 0 var(--space-1) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--foreground-muted);
+}
+
+/* size="sm" — 좁은 사이드바·다중 섹션에 적합한 컴팩트 변형. */
+.accordion[data-size="sm"] .accordion__trigger {
+  padding: var(--space-2) var(--space-1);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}
+.accordion[data-size="sm"] .accordion__chevron {
+  width: 12px;
+  height: 12px;
+}
+.accordion[data-size="sm"] .accordion__content {
+  padding: 0 var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion__panel,
+  .accordion__chevron {
+    transition: none;
+  }
+}

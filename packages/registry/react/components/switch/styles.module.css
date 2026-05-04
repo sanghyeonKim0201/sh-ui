@@ -1,0 +1,83 @@
+/* ───────────── Switch ───────────── */
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  border-radius: 999px;
+  background: var(--background-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0.125rem;
+  transition: background-color 150ms;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* sizes */
+.switch--sm {
+  width: 2rem;
+  height: 1.125rem;
+}
+
+.switch--md {
+  width: 2.5rem;
+  height: 1.375rem;
+}
+
+.switch:hover:not([data-disabled]) {
+  background: var(--border-strong);
+}
+
+.switch:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.switch[data-checked] {
+  background: var(--primary);
+}
+
+.switch[data-checked]:hover:not([data-disabled]) {
+  background: var(--primary-hover);
+}
+
+.switch[data-disabled] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* ───────────── Thumb ───────────── */
+
+.switch__thumb {
+  display: block;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  transition: transform 150ms ease-out;
+}
+
+.switch--sm .switch__thumb {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.switch--md .switch__thumb {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.switch--sm[data-checked] .switch__thumb {
+  transform: translateX(0.875rem);
+}
+
+.switch--md[data-checked] .switch__thumb {
+  transform: translateX(1.125rem);
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .switch__thumb {
+    transition-duration: 0.01ms !important;
+  }
+}
