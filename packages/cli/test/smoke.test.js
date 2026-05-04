@@ -119,6 +119,26 @@ describe('sh-ui create smoke tests', () => {
     // next-intl transforms: app/page.tsx → app/[locale]/page.tsx
     expect(await fs.pathExists(path.join(projectDir, 'app', 'page.tsx'))).toBe(false);
     expect(await fs.pathExists(path.join(projectDir, 'app', '[locale]', 'page.tsx'))).toBe(true);
+
+    // Next 16 호환: app/layout.tsx 는 사라지고 [locale]/layout.tsx 가 root 역할.
+    // - app/layout.tsx 가 패스스루로 남으면 Next 16 이 "Missing <html>/<body>" 에러를 던진다.
+    // - globals.css side-effect import 는 새 root([locale]/layout.tsx) 로 이전돼 있어야 Tailwind 가 동작.
+    expect(await fs.pathExists(path.join(projectDir, 'app', 'layout.tsx'))).toBe(false);
+    const localeLayout = await fs.readFile(
+      path.join(projectDir, 'app', '[locale]', 'layout.tsx'),
+      'utf-8',
+    );
+    expect(localeLayout).toMatch(/import\s+['"][^'"]*globals\.css['"];?/);
+    expect(localeLayout).toContain('RootLayout');
+    expect(localeLayout).toContain('params');
+
+    // RootLayout 본체는 html/body 를 가진다 (Next 16 root layout 요건)
+    const rootLayout = await fs.readFile(
+      path.join(projectDir, 'src', 'app', 'layouts', 'RootLayout.tsx'),
+      'utf-8',
+    );
+    expect(rootLayout).toContain('<html');
+    expect(rootLayout).toContain('<body>');
   });
   it('scenario 4 — addApp in monorepo', async () => {
     // minimal monorepo fixture: pnpm-workspace.yaml 만 필요
