@@ -1,6 +1,6 @@
 {
   "name": "sh-ui-cli",
-  "version": "0.52.0",
+  "version": "0.52.1",
   "description": "sh-ui CLI — 프로젝트 스캐폴드(create) + 컴포넌트 추가(add/list/remove) + IDE-내 AI용 MCP 서버",
   "license": "MIT",
   "repository": {
@@ -28,7 +28,7 @@
     "@inquirer/prompts": "^7.0.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "fs-extra": "^11.2.0",
-    "zod": "^3.25.0"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "vitest": "^3.2.4"
