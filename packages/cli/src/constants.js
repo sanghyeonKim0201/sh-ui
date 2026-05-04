@@ -27,10 +27,11 @@ export const THEME_MODES = ['light-dark', 'light', 'dark'];
 // - plain: CSS custom properties + 일반 .css 파일 (모든 컴포넌트 변종 보유)
 // - tailwind: utility class TSX 변종 (모든 styled 컴포넌트 변종 보유)
 // - css-modules: 모듈 단위 .module.css + styles.X 참조 (모든 styled 컴포넌트 변종 보유)
-export const CSS_FRAMEWORKS_SUPPORTED = ['plain', 'tailwind', 'css-modules'];
+// - vanilla-extract: TS 안에서 CSS 작성 (.css.ts), 빌드 타임 정적 컴파일 (모든 styled 컴포넌트 변종 보유)
+export const CSS_FRAMEWORKS_SUPPORTED = ['plain', 'tailwind', 'css-modules', 'vanilla-extract'];
 
-// 향후 추가 예정. 사용자가 이 값을 주면 친절 에러로 안내.
-export const CSS_FRAMEWORKS_PLANNED = ['vanilla-extract'];
+// 향후 추가 예정. 비어 있어도 enum 으로 유지 (시스템이 새 변종에 열려 있다는 의미).
+export const CSS_FRAMEWORKS_PLANNED = [];
 
 // 알려진 전체 — 검증 시 supported 와 planned 둘 다 인지하기 위함.
 export const CSS_FRAMEWORKS_ALL = [

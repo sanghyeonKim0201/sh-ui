@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.47.0 (2026-05-04) — CSS Modules 전수 롤아웃 — SUPPORTED 승격
+**최신 버전**: v0.49.0 (2026-05-04) — vanilla-extract 변종 파일럿 — button/card/input
 
 ## React — Components
 
@@ -31,7 +31,7 @@
 - Type: component
 - Summary: 기본 버튼 — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).
 - Install: `npx sh-ui-cli add button`
-- npm/pub deps: [object Object]
+- npm/pub deps: [object Object], [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/button`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/button
@@ -41,6 +41,7 @@
 - Type: component
 - Summary: 카드 컨테이너 — compound (Card.Header / Card.Body / Card.Footer / Card.Title / Card.Description).
 - Install: `npx sh-ui-cli add card`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/card`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/card
@@ -50,6 +51,7 @@
 - Type: component
 - Summary: 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PasswordInput / PhoneInput / BusinessNumberInput 변형 포함.
 - Install: `npx sh-ui-cli add input`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/input`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/input
@@ -59,6 +61,7 @@
 - Type: component
 - Summary: 슬라이더 동반·토큰 편집기용 컴팩트 숫자 입력 — onChange 즉시 min/max clamp, focus select-all, 단위(px/ms/%/° 등) suffix. 일반 폼 입력은 NumberInput 권장.
 - Install: `npx sh-ui-cli add numeric-input`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/numeric-input`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/numeric-input
@@ -68,6 +71,7 @@
 - Type: component
 - Summary: 파일 업로드 — 드롭존, 다중 파일, 진행률.
 - Install: `npx sh-ui-cli add file-upload`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/file-upload`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/file-upload
@@ -76,6 +80,7 @@
 
 - Type: component
 - Install: `npx sh-ui-cli add form`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/form`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/form
@@ -93,7 +98,7 @@
 - Type: component
 - Summary: Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.
 - Install: `npx sh-ui-cli add code-panel`
-- npm/pub deps: shiki
+- npm/pub deps: shiki, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/code-panel`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/code-panel
@@ -112,6 +117,7 @@
 - Type: component
 - Summary: 페이지 자동 목차 — 헤딩 스캔 · slugify · IntersectionObserver active 추적 · smooth scroll. routeKey 로 라우트 변경 자동 재스캔, levels/excludeSelector 커스터마이즈.
 - Install: `npx sh-ui-cli add page-toc`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/page-toc`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/page-toc
@@ -121,7 +127,7 @@
 - Type: component
 - Summary: CodeMirror 6 기반 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.
 - Install: `npx sh-ui-cli add code-editor`
-- npm/pub deps: codemirror, @codemirror/state, @codemirror/view, @codemirror/lang-javascript, @codemirror/lang-json, @codemirror/lang-css, @codemirror/lang-html, @codemirror/lang-markdown
+- npm/pub deps: codemirror, @codemirror/state, @codemirror/view, @codemirror/lang-javascript, @codemirror/lang-json, @codemirror/lang-css, @codemirror/lang-html, @codemirror/lang-markdown, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/code-editor`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/code-editor
@@ -131,7 +137,7 @@
 - Type: component
 - Summary: 마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.
 - Install: `npx sh-ui-cli add markdown-editor`
-- npm/pub deps: react-markdown, remark-gfm
+- npm/pub deps: react-markdown, remark-gfm, [object Object]
 - Registry deps: code-editor, utils (자동 설치됨)
 - Import: `@/components/ui/markdown-editor`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/markdown-editor
@@ -141,7 +147,7 @@
 - Type: component
 - Summary: Tiptap 3 기반 WYSIWYG 에디터 — HTML 입출력, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.
 - Install: `npx sh-ui-cli add rich-text-editor`
-- npm/pub deps: @tiptap/react, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-placeholder, @tiptap/extension-link, lucide-react
+- npm/pub deps: @tiptap/react, @tiptap/pm, @tiptap/starter-kit, @tiptap/extension-placeholder, @tiptap/extension-link, lucide-react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/rich-text-editor`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/rich-text-editor
@@ -151,7 +157,7 @@
 - Type: component
 - Summary: 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
 - Install: `npx sh-ui-cli add select`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/select`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/select
@@ -161,7 +167,7 @@
 - Type: component
 - Summary: 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
 - Install: `npx sh-ui-cli add sidebar`
-- npm/pub deps: lucide-react
+- npm/pub deps: lucide-react, [object Object]
 - Registry deps: popover, utils (자동 설치됨)
 - Import: `@/components/ui/sidebar`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/sidebar
@@ -171,6 +177,7 @@
 - Type: component
 - Summary: 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderNav value(controlled) / defaultValue+onValueChange(uncontrolled) 로 자식 HeaderItem active 자동 매칭 (aria-current 자동, match 커스터마이즈). HeaderMenu(서브메뉴, 데스크탑 portal dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨) · HeaderDesktopOnly/HeaderMobileOnly(가시성 토글, drawer 이동 없음). variant(solid/transparent/blur) · stickyHide(prefers-reduced-motion 존중, 컨테이너 스크롤 자동 감지) 정식 지원. backdrop-filter @supports 폴백.
 - Install: `npx sh-ui-cli add header`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/header`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/header
@@ -180,6 +187,7 @@
 - Type: component
 - Summary: 폼 레이블 — htmlFor로 입력과 연결.
 - Install: `npx sh-ui-cli add label`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/label`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/label
@@ -189,6 +197,7 @@
 - Type: component
 - Summary: 색상 선택 — hex/rgb, 프리셋 팔레트.
 - Install: `npx sh-ui-cli add color-picker`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/color-picker`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/color-picker
@@ -198,6 +207,7 @@
 - Type: component
 - Summary: 수평 슬라이더 — 단일/범위 값, step.
 - Install: `npx sh-ui-cli add slider`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/slider`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/slider
@@ -207,7 +217,7 @@
 - Type: component
 - Summary: 탭 — compound (Tabs.List / Tabs.Trigger / Tabs.Content) (Base UI).
 - Install: `npx sh-ui-cli add tabs`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/tabs`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/tabs
@@ -217,7 +227,7 @@
 - Type: component
 - Summary: 검색 가능 셀렉트 — 자동 필터링, 키보드 내비 (Base UI).
 - Install: `npx sh-ui-cli add combobox`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/combobox`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/combobox
@@ -227,7 +237,7 @@
 - Type: component
 - Summary: floating 팝오버 — 트리거 기준 위치 (Base UI).
 - Install: `npx sh-ui-cli add popover`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/popover`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/popover
@@ -237,7 +247,7 @@
 - Type: component
 - Summary: 모달 다이얼로그 — compound (Dialog.Trigger / Dialog.Content / Dialog.Title / Dialog.Description) + 포커스 트랩 (Base UI).
 - Install: `npx sh-ui-cli add dialog`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/dialog`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/dialog
@@ -247,7 +257,7 @@
 - Type: component
 - Summary: 드롭다운 메뉴 — compound, sub-menu 지원 (Base UI).
 - Install: `npx sh-ui-cli add dropdown-menu`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/dropdown-menu`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/dropdown-menu
@@ -257,7 +267,7 @@
 - Type: component
 - Summary: 우클릭 컨텍스트 메뉴 — DropdownMenu와 같은 구조 (Base UI).
 - Install: `npx sh-ui-cli add context-menu`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/context-menu`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/context-menu
@@ -267,7 +277,7 @@
 - Type: component
 - Summary: 수평 메뉴바 — dropdown-menu 위에 구성 (Base UI).
 - Install: `npx sh-ui-cli add menubar`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: dropdown-menu, utils (자동 설치됨)
 - Import: `@/components/ui/menubar`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/menubar
@@ -277,7 +287,7 @@
 - Type: component
 - Summary: 짧은 힌트 — hover/focus 표시, delay/closeDelay (Base UI).
 - Install: `npx sh-ui-cli add tooltip`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/tooltip`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/tooltip
@@ -287,6 +297,7 @@
 - Type: component
 - Summary: 경로 내비게이션 — compound (Breadcrumb.List/Item/Link/Page/Separator/Ellipsis). aria-current 자동.
 - Install: `npx sh-ui-cli add breadcrumb`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/breadcrumb`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/breadcrumb
@@ -296,6 +307,7 @@
 - Type: component
 - Summary: 페이지 단위 내비게이션 — compound (PaginationContent/Item/Link/Previous/Next/Ellipsis). getPaginationRange 유틸 동봉. aria-current 자동.
 - Install: `npx sh-ui-cli add pagination`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/pagination`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/pagination
@@ -305,7 +317,7 @@
 - Type: component
 - Summary: 프로필 아바타 — 이미지 fallback → initials (Base UI).
 - Install: `npx sh-ui-cli add avatar`
-- npm/pub deps: @base-ui/react, [object Object]
+- npm/pub deps: @base-ui/react, [object Object], [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/avatar`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/avatar
@@ -315,7 +327,7 @@
 - Type: component
 - Summary: 상태 뱃지 — variant, size.
 - Install: `npx sh-ui-cli add badge`
-- npm/pub deps: [object Object]
+- npm/pub deps: [object Object], [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/badge`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/badge
@@ -325,6 +337,7 @@
 - Type: component
 - Summary: 선형 진행률 — value 0~100, indeterminate.
 - Install: `npx sh-ui-cli add progress`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/progress`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/progress
@@ -334,7 +347,7 @@
 - Type: component
 - Summary: 로딩 스피너 — size.
 - Install: `npx sh-ui-cli add spinner`
-- npm/pub deps: [object Object]
+- npm/pub deps: [object Object], [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/spinner`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/spinner
@@ -344,6 +357,7 @@
 - Type: component
 - Summary: 구분선 — orientation(horizontal/vertical).
 - Install: `npx sh-ui-cli add separator`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/separator`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/separator
@@ -361,7 +375,7 @@
 - Type: component
 - Summary: 체크박스 — indeterminate 지원 (Base UI).
 - Install: `npx sh-ui-cli add checkbox`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/checkbox`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/checkbox
@@ -371,7 +385,7 @@
 - Type: component
 - Summary: 라디오 그룹 — RadioGroup + RadioGroupItem (Base UI).
 - Install: `npx sh-ui-cli add radio`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/radio`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/radio
@@ -381,7 +395,7 @@
 - Type: component
 - Summary: 토글 스위치 — controlled/uncontrolled 모두 지원 (Base UI).
 - Install: `npx sh-ui-cli add switch`
-- npm/pub deps: @base-ui/react, [object Object]
+- npm/pub deps: @base-ui/react, [object Object], [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/switch`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/switch
@@ -391,7 +405,7 @@
 - Type: component
 - Summary: 단일 토글 / 토글 그룹 — pressed 상태 (Base UI).
 - Install: `npx sh-ui-cli add toggle`
-- npm/pub deps: @base-ui/react, [object Object]
+- npm/pub deps: @base-ui/react, [object Object], [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/toggle`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/toggle
@@ -401,6 +415,7 @@
 - Type: component
 - Summary: 여러 행 텍스트 입력 — rows, autoResize.
 - Install: `npx sh-ui-cli add textarea`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/textarea`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/textarea
@@ -410,6 +425,7 @@
 - Type: component
 - Summary: 임시 알림 — useToast 훅 + ToastProvider. aria-live 자동.
 - Install: `npx sh-ui-cli add toast`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/toast`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/toast
@@ -418,6 +434,7 @@
 
 - Type: component
 - Install: `npx sh-ui-cli add calendar`
+- npm/pub deps: [object Object]
 - Registry deps: select, utils (자동 설치됨)
 - Import: `@/components/ui/calendar`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/calendar
@@ -427,7 +444,7 @@
 - Type: component
 - Summary: 날짜 선택 — 캘린더 팝업 (Base UI).
 - Install: `npx sh-ui-cli add date-picker`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: calendar, utils (자동 설치됨)
 - Import: `@/components/ui/date-picker`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/date-picker
@@ -437,6 +454,7 @@
 - Type: component
 - Summary: 스켈레톤 로딩 플레이스홀더.
 - Install: `npx sh-ui-cli add skeleton`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/skeleton`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/skeleton
@@ -446,7 +464,7 @@
 - Type: component
 - Summary: 펼침/접힘 아코디언 — single/multiple (Base UI).
 - Install: `npx sh-ui-cli add accordion`
-- npm/pub deps: @base-ui/react
+- npm/pub deps: @base-ui/react, [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/accordion`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/accordion
@@ -456,6 +474,7 @@
 - Type: component
 - Summary: 슬라이드 캐러셀 — Embla 기반, autoplay/autoscroll.
 - Install: `npx sh-ui-cli add carousel`
+- npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/carousel`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/carousel
@@ -879,6 +898,19 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.49.0 — vanilla-extract 변종 파일럿 — button/card/input (2026-05-04)
+- **vanilla-extract 변종 파일럿** — button/card/input 에 `index.vanilla-extract.tsx` + `styles.css.ts` 추가. CSS 룰을 TypeScript 객체로 작성하고 빌드 타임에 정적 CSS 로 컴파일 — 런타임 비용 0. 사용자가 `sh-ui.config.json` 의 `cssFramework` 를 `"vanilla-extract"` 로 직접 두면 동작 (파일럿 단계라 PLANNED 유지, 전수 롤아웃 후 SUPPORTED 승격 예정).
+- **peer-versions + 의존성 분기** — `@vanilla-extract/css` (^1.16.0) 가 vanilla-extract 변종에만 install 큐에 들어가도록 registry.json 의 dependencies 분기 추가. plain/tailwind/css-modules 사용자에게는 영향 없음.
+- **tokens emitter + utils.cn 공유** — vanilla-extract 도 `:root` CSS custom property 를 그대로 참조 (`backgroundColor: "var(--primary)"`) 하므로 tokens.css 를 plain 과 그대로 공유. utils.cn.ts 도 같이 매칭되어 추가 cn 변종 불필요.
+- **docs 페이지 보강** — css-framework 가이드에 vanilla-extract 섹션 추가 (CSS-in-TS 사용 예시 + Next.js/Vite 빌드 플러그인 셋업 안내). VariantSource 컴포넌트도 vanilla-extract 탭을 자동 노출.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.49.0
+
+### v0.48.0 — 컴포넌트 페이지에 변종 별 소스 탭 추가 (2026-05-04)
+- **컴포넌트 페이지의 Manual 섹션 = 변종 별 소스 탭** — 기존엔 "index.tsx, styles.css 를 복사한다" 한 줄 안내 + 파일명 리스트뿐이었던 자리에 plain · tailwind · css-modules 3 변종 소스를 탭으로 직접 표시. 사용자가 cssFramework 별로 어떤 코드가 들어오는지 페이지에서 바로 비교 가능.
+- **`<VariantSource name="..." />` 공용 컴포넌트** — registry 변종 소스를 빌드 타임에 한 번 읽어 정적 모듈로 emit (`apps/docs/lib/variants.generated.ts`). 이후 컴포넌트는 fs 의존 없이 client component 페이지 (pagination, page-toc 등) 에서도 그대로 사용. registry 컴포넌트가 바뀌면 `pnpm generate:variants` (build/dev/typecheck 전 자동 호출) 가 다시 emit.
+- **45 개 컴포넌트 페이지 일괄 패치** — 33 개는 기존 Manual 섹션을 `<VariantSource>` 로 교체, 12 개는 신규 Manual 섹션 추가. 비-styled 컴포넌트(theme, code-tabs 등)도 보유한 변종만 자동으로 표시 — 변종이 없으면 탭 자체 생략.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.48.0
+
 ### v0.47.0 — CSS Modules 전수 롤아웃 — SUPPORTED 승격 (2026-05-04)
 - **css-modules 전 styled 컴포넌트 변종 보유** — v0.46.0 의 button/card/input 파일럿에 이어 나머지 40 개 styled 컴포넌트(accordion, avatar, badge, calendar, carousel, checkbox, color-picker, combobox, context-menu, date-picker, dialog, dropdown-menu, file-upload, form, header, label, menubar, popover, progress, radio, select, sidebar, skeleton, slider, spinner, switch, tabs, textarea, toast, toggle, tooltip 외) 에 `index.module.tsx` + `styles.module.css` 추가. 총 43/43 styled 컴포넌트가 plain · tailwind · css-modules 3 변종을 모두 갖춤.
 - **css-modules SUPPORTED 승격** — `CSS_FRAMEWORKS_SUPPORTED` 에 추가, `CSS_FRAMEWORKS_PLANNED` 에서 제거. CLI 의 `--cssFramework css-modules` 와 init 인터랙티브 메뉴에서 정상 선택 가능. CreateProjectDialog 의 토글에서도 활성화됨 (vanilla-extract 만 disabled).
@@ -899,18 +931,6 @@
 - **CSS 프레임워크 docs 페이지 추가** — `apps/docs/(docs)/css-framework/page.tsx` 신설. 변종 시스템 큰 그림 (현재 plain/tailwind + 계획 중 css-modules/vanilla-extract) + 모드별 차이·전환·fallback 설명. 사이드바 nav 에 "CSS 프레임워크" 링크 추가, cli 페이지에서 cross-link.
 - **ui-app-template config 보강** — 누락됐던 `aliases.utils` 추가. 신규 init 도 동일하게 채워짐.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.45.3
-
-### v0.45.2 — 추가 하드코딩 제거 — release URL · MCP 패키지명 동적 파생 (2026-04-30)
-- **`scripts/release.mjs` 의 GitHub URL 동적화** — `cli/package.json` 의 `repository.url` 에서 base URL 추출 (`.git` suffix + `git+` prefix 정리) 후 `${base}/releases/tag/v${ver}` 빌드. owner/repo 이름이 바뀌면 cli/package.json 한 곳만 갱신하면 따라옴.
-- **MCP 서버의 cli 패키지명 동적 읽기** — `mcp-init.mjs` 의 `SH_UI_ENTRY.args` 와 `mcp.mjs` 의 `SERVER_INSTRUCTIONS`/tool description 안 `npx <cli> create ...` 예시가 모두 `package.json` 의 `name` 에서 동적 보간. cli 가 rename 되어도 자동 동기화.
-- 기능 변경 0 — drift 위험만 추가 제거. v0.45.1 의 mcp.mjs version 동적 읽기 + `pnpm release` 에 이은 후속 정리.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.45.2
-
-### v0.45.1 — 릴리즈 자동화 — `pnpm release` 명령 + mcp.mjs 동적 버전 (2026-04-30)
-- **`pnpm release <patch|minor|major|X.Y.Z>` 명령 신설** — packages/cli/package.json 의 version 갱신 + packages/changelog/versions.json 에 placeholder 엔트리 prepend 를 한 번에 처리. 매 릴리즈 6단계 수작업 → highlights 채우기 + git/PR/merge/tag 6 명령으로 단순화. 거꾸로 가는 버전·중복 엔트리·잘못된 형식 인자는 모두 거부.
-- **MCP 서버 버전 동적 읽기** — `packages/cli/src/mcp.mjs` 가 시작 시점에 package.json 의 version 을 읽도록 변경. 하드코딩된 `version: "X.Y.Z"` 문자열 제거 — 매 릴리즈마다 손으로 갱신할 필요 영구 사라짐 (실제로 v0.45.0 출고 시 거의 빠뜨릴 뻔한 drift 위험을 잡은 변경).
-- 기능 변경 0 — 릴리즈 워크플로 신뢰성만 향상.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.45.1
 
 ## Resources
 

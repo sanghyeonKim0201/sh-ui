@@ -13,10 +13,11 @@ export type ThemeMode = 'light-dark' | 'light' | 'dark';
 /** 현재 실제로 동작하는 CSS 프레임워크.
  * - plain: 모든 컴포넌트가 plain 변종 보유.
  * - tailwind: 모든 styled 컴포넌트가 utility-class 변종 보유.
- * - css-modules: 모든 styled 컴포넌트가 .module.css 변종 보유. */
-export type CssFrameworkSupported = 'plain' | 'tailwind' | 'css-modules';
+ * - css-modules: 모든 styled 컴포넌트가 .module.css 변종 보유.
+ * - vanilla-extract: 모든 styled 컴포넌트가 .css.ts 변종 보유. */
+export type CssFrameworkSupported = 'plain' | 'tailwind' | 'css-modules' | 'vanilla-extract';
 /** 향후 추가 예정 — UI 에서 "곧 지원" 으로 노출되지만 CLI 는 거부. */
-export type CssFrameworkPlanned = 'vanilla-extract';
+export type CssFrameworkPlanned = never;
 /** 알려진 전체 (validation 메시지용). */
 export type CssFramework = CssFrameworkSupported | CssFrameworkPlanned;
 
