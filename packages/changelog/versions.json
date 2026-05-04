@@ -3,6 +3,23 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.0",
+      "date": "2026-05-05",
+      "title": "아키텍처 (arch) 1급 시민 도입 + flat 추가",
+      "type": "minor",
+      "highlights": [
+        "**`--arch` CLI 플래그 + MCP `arch` 파라미터 신설** — 프로젝트의 *모양* (폴더 구조, import alias 컨벤션, tsconfig paths) 을 1급 개념으로 분리. 플러그인과 직교하는 별도 축 — 사용자는 arch 한 개 + 플러그인 N 개를 동시에 선택. 미지정 시 기본 `fsd` (v0.57 까지의 동작과 동일).",
+        "**아키텍처 디스크립터 모델** — `src/create/architectures/{fsd,flat}.js` 가 8개 논리 키 (`layouts`, `providers`, `api`, `config`, `hooks`, `utils`, `ui`, `test`) 의 fs 경로 / import alias / tsconfig paths 를 선언. 플러그인은 하드코딩된 `src/shared/api/...` 대신 `arch.paths.api` / `arch.aliases.api` 를 조회해 산출물 emit — 한 번 작성된 플러그인이 모든 arch 에서 동작.",
+        "**`flat` 아키텍처 추가** — 슬라이스 (entities/features/widgets/views) 없는 vanilla Next 관용 구조 (`lib/api`, `lib/utils`, `components/layouts`, `components/providers`, `components/common`). 토이 프로젝트, 데모, 일회성 도구처럼 FSD 6 레이어가 과한 경우용. tsconfig paths 는 카테고리별 scoped (`@/lib/*`, `@/components/*`, `@/app/*`) — FSD 의 catch-all `@/*` 와 의도적으로 다른 컨벤션.",
+        "**플러그인 3개 (sentry/next-intl/auth-jwt) 모두 arch-aware 로 리팩토링** — files / transforms / preExport / providerImports 가 `(arch) => ...` 함수형으로 전환. 회귀 가드: FSD 디스크립터 값이 v0.57 까지의 하드코딩과 1:1 일치하므로 FSD 사용자 입장 변화 0.",
+        "**Cross-platform 대비** — 디스크립터에 `platforms: ['next' | 'flutter']` 필드 박힘. 현재 fsd/flat 둘 다 next 만 지원하지만, 향후 `flutter-clean` / `flutter-bloc` 같은 Flutter arch 추가 시 generator/CLI 수정 0 — 디스크립터만 추가하면 됨.",
+        "**베이스 템플릿 재구조화** — `templates/nextjs-app` / `templates/nextjs-standalone` 이 arch-neutral 베이스 + `_arch/{fsd,flat}/` 오버레이로 분리. generator 가 base 카피 후 선택된 arch 의 오버레이를 머지. 새 arch 추가 절차는 `packages/cli/ARCHITECTURE.md` 에 문서화.",
+        "**docs 사이드바에 Architectures 그룹 신설** — `/architectures` 허브 + `/architectures/fsd` + `/architectures/flat` 페이지. arch 선택 가이드 + 폴더 구조 시각화 + FSD ↔ flat 마이그레이션 절차.",
+        "**스모크 매트릭스 9개 시나리오 추가** — flat × {none, sentry, next-intl, auth-jwt, all 3} + flat monorepo 1개 + FSD 회귀 가드 2개. 핵심 검증: flat 에 src/ 부재, 어떤 .ts/.tsx 파일에도 `@/src/...` import 누수 없음, 플러그인 산출물이 arch-correct 경로로 떨어짐."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.0"
+    },
+    {
       "version": "0.57.0",
       "date": "2026-05-04",
       "title": "rename-app — monorepo 앱 이름 일괄 변경 명령어 + MCP 툴",

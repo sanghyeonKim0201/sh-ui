@@ -12,7 +12,13 @@ const TEMPLATES_DIR = path.join(__dirname, '..', 'templates');
  */
 const TOKEN_FILES = [
   {
-    path: 'nextjs-standalone/src/shared/styles/tokens.css',
+    // FSD overlay — Layer 3 부터 _arch/fsd/ 아래로 이동.
+    path: 'nextjs-standalone/_arch/fsd/src/shared/styles/tokens.css',
+    commentPair: ['/*', '*/'],
+  },
+  {
+    // flat overlay — Layer 3 신규.
+    path: 'nextjs-standalone/_arch/flat/lib/styles/tokens.css',
     commentPair: ['/*', '*/'],
   },
   {

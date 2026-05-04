@@ -31,6 +31,13 @@ const wrapperFn = z
   })
   .optional();
 
+// arch-aware 필드. 정적 값 OR `(arch) => 정적 값` 함수 모두 허용.
+// 플러그인이 arch 디스크립터의 paths/aliases 를 조회해 자기 산출물의 fs 경로/import
+// alias 를 결정할 때 사용. Layer 2 이전엔 모든 플러그인이 정적, Layer 2 이후엔 함수형.
+const archAwareFn = z.custom((val) => typeof val === "function");
+const archAwareRecord = z.union([z.record(filePath, z.string()), archAwareFn]);
+const archAwareArray = z.union([z.array(z.any()), archAwareFn]);
+
 export const PluginSchema = z.object({
   name: z.string().regex(/^[a-z][a-z0-9-]*$/, {
     message: 'Plugin name must be lowercase kebab-case (e.g., "auth-jwt")',
@@ -43,26 +50,35 @@ export const PluginSchema = z.object({
   devDependencies: z.record(z.string(), z.string()).optional(),
 
   imports: z.array(z.string()).optional(),
+  // preExport 은 arch-aware (next.config.ts 의 export 직전 emit 되는 라인들 —
+  // 예: next-intl 의 `createNextIntlPlugin('./src/shared/config/i18n/request.ts')` 같이
+  // arch.paths.config 가 박혀야 하는 경로 포함).
+  preExport: z.union([z.array(z.string()), archAwareFn]).optional(),
   wrapExport: wrapperFn,
 
   envVars: z.array(z.string()).optional(),
   turboEnvVars: z.array(z.string()).optional(),
 
-  providerImports: z.array(z.string()).optional(),
+  // providerImports/providerWrappers/files/transforms 는 arch-aware —
+  // 정적 값 또는 (arch) => 정적 값 함수 형태 둘 다 허용.
+  providerImports: z.union([z.array(z.string()), archAwareFn]).optional(),
   providerWrappers: z
-    .array(
-      z.union([
-        z.object({ open: z.string(), close: z.string() }),
-        z.string(),
-      ]),
-    )
+    .union([
+      z.array(
+        z.union([
+          z.object({ open: z.string(), close: z.string() }),
+          z.string(),
+        ]),
+      ),
+      archAwareFn,
+    ])
     .optional(),
 
-  files: z.record(filePath, z.string()).optional(),
+  files: archAwareRecord.optional(),
 
   // 향후 확장 — moves, transforms, etc 는 nextIntl.js 에서 사용하므로 허용
-  moves: z.array(z.any()).optional(),
-  transforms: z.array(z.any()).optional(),
+  moves: archAwareArray.optional(),
+  transforms: archAwareArray.optional(),
 });
 
 /**

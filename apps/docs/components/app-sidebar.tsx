@@ -1,12 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { allPlugins } from "sh-ui-cli/api";
+import { allPlugins, allArchitectures } from "sh-ui-cli/api";
 import {
   BookOpenIcon,
   BoxesIcon,
   BrushIcon,
   FolderPlusIcon,
+  FolderTreeIcon,
   HistoryIcon,
   LayersIcon,
   LayoutTemplateIcon,
@@ -58,6 +59,12 @@ const topLinks: TopLink[] = [
 const plugins: { title: string; href: string }[] = allPlugins.map((p) => ({
   title: p.name,
   href: `/plugins/${p.name}`,
+}));
+
+// arch 목록도 동일 패턴. v0.58 부터 1급 시민.
+const architectures: { title: string; href: string }[] = allArchitectures.map((a) => ({
+  title: a.name,
+  href: `/architectures/${a.name}`,
 }));
 
 const components: { title: string; href: string }[] = [
@@ -114,6 +121,7 @@ export function AppSidebar() {
   const tCommon = useTranslations("common");
   const componentsActive = pathname.startsWith("/components/");
   const pluginsActive = pathname.startsWith("/plugins/");
+  const architecturesActive = pathname.startsWith("/architectures/") || pathname === "/architectures";
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
@@ -144,6 +152,35 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
+              <SidebarMenuItem>
+                <SidebarCollapsible defaultOpen={architecturesActive}>
+                  <SidebarCollapsibleTrigger>
+                    <FolderTreeIcon />
+                    <span>{tSidebar("links.architectures")}</span>
+                  </SidebarCollapsibleTrigger>
+                  <SidebarCollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/architectures"}>
+                          <Link href="/architectures">
+                            <span>{tCommon("viewAll")}</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      {architectures.map((a) => (
+                        <SidebarMenuSubItem key={a.href}>
+                          <SidebarMenuSubButton asChild isActive={isActive(a.href)}>
+                            <Link href={a.href}>
+                              <span>{a.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </SidebarCollapsibleContent>
+                </SidebarCollapsible>
+              </SidebarMenuItem>
 
               <SidebarMenuItem>
                 <SidebarCollapsible defaultOpen={pluginsActive}>

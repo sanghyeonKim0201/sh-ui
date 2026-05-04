@@ -88,4 +88,26 @@ describe('parseArgs', () => {
     expect(() => parseArgs(['node', 'create.js', '--css', 'garbage']))
       .toThrow(/--css/);
   });
+
+  // ─── arch ───
+
+  it('--arch fsd → flags.arch = "fsd"', () => {
+    const r = parseArgs(['node', 'create.js', '--arch', 'fsd']);
+    expect(r.flags.arch).toBe('fsd');
+  });
+
+  it('--arch flat → flags.arch = "flat"', () => {
+    const r = parseArgs(['node', 'create.js', '--arch', 'flat']);
+    expect(r.flags.arch).toBe('flat');
+  });
+
+  it('--arch 미지정 시 flags.arch undefined (generator 가 default fsd 적용)', () => {
+    const r = parseArgs(['node', 'create.js', '--platform', 'next']);
+    expect(r.flags.arch).toBeUndefined();
+  });
+
+  it('--arch 알 수 없는 값 → 친절한 에러', () => {
+    expect(() => parseArgs(['node', 'create.js', '--arch', 'clean']))
+      .toThrow(/--arch/);
+  });
 });

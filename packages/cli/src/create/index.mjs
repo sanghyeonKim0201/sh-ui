@@ -3,11 +3,15 @@
 import { parseArgs } from './cli-args.js';
 import { createProject, addApp, addComponent } from './generator.js';
 import { allPlugins } from './plugins/index.js';
+import { allArchitectures, getArchesForPlatform } from './architectures/index.js';
 import { CREATE_PLATFORMS, CREATE_STRUCTURES, CSS_FRAMEWORKS_SUPPORTED } from '../constants.js';
 import { THEME_PRESET_NAMES } from './theme/presets.js';
 
 const PLUGIN_NAMES = allPlugins.map((p) => p.name);
 const PLUGINS_LIST = PLUGIN_NAMES.join(', ');
+const ARCH_NAMES = allArchitectures.map((a) => a.name);
+const ARCHES_LIST = ARCH_NAMES.join('|');
+const NEXT_ARCHES = getArchesForPlatform('next').map((a) => a.name).join(', ');
 const THEME_PRESETS_LIST = THEME_PRESET_NAMES.join('|');
 
 export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next.js / Flutter)
@@ -20,6 +24,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 옵션:
   --platform <${CREATE_PLATFORMS.join('|')}>          타겟 플랫폼
   --structure <${CREATE_STRUCTURES.join('|')}>  Next.js 프로젝트 구조 (next 일 때)
+  --arch <${ARCHES_LIST}>                  프로젝트 아키텍처 — 폴더 구조/import alias 컨벤션. next 에서 사용 가능: ${NEXT_ARCHES}. 기본 fsd
   --plugins <a,b>                    플러그인 (${PLUGINS_LIST}). 미지정/"" → 없음
   --theme <preset|base64>            프리셋 이름(${THEME_PRESETS_LIST}) 또는 playground base64. 선택
   --css <${CSS_FRAMEWORKS_SUPPORTED.join('|')}>                        CSS 프레임워크 (현재 plain만 지원, 향후 tailwind 등 추가 예정)
@@ -33,6 +38,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 예 (비대화형 / 에이전트 / CI):
   sh-ui create my-app --platform next --structure standalone --yes
   sh-ui create my-app --platform next --structure monorepo --plugins ${PLUGIN_NAMES.slice(0, 3).join(',')} --yes
+  sh-ui create my-app --platform next --structure standalone --arch flat --yes
   sh-ui create my-app --platform next --structure standalone --theme rose --yes
   sh-ui create my-app --platform flutter --yes
 
@@ -70,6 +76,7 @@ export async function runCreate(rest) {
       platform: flags.platform,
       structure: flags.structure,
       plugins: flags.plugins,
+      arch: flags.arch,
       theme: flags.theme,
       css: flags.css,
       yes: flags.yes,
