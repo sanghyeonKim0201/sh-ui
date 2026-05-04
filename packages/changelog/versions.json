@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.47.0",
+      "date": "2026-05-04",
+      "title": "CSS Modules 전수 롤아웃 — SUPPORTED 승격",
+      "type": "minor",
+      "highlights": [
+        "**css-modules 전 styled 컴포넌트 변종 보유** — v0.46.0 의 button/card/input 파일럿에 이어 나머지 40 개 styled 컴포넌트(accordion, avatar, badge, calendar, carousel, checkbox, color-picker, combobox, context-menu, date-picker, dialog, dropdown-menu, file-upload, form, header, label, menubar, popover, progress, radio, select, sidebar, skeleton, slider, spinner, switch, tabs, textarea, toast, toggle, tooltip 외) 에 `index.module.tsx` + `styles.module.css` 추가. 총 43/43 styled 컴포넌트가 plain · tailwind · css-modules 3 변종을 모두 갖춤.",
+        "**css-modules SUPPORTED 승격** — `CSS_FRAMEWORKS_SUPPORTED` 에 추가, `CSS_FRAMEWORKS_PLANNED` 에서 제거. CLI 의 `--cssFramework css-modules` 와 init 인터랙티브 메뉴에서 정상 선택 가능. CreateProjectDialog 의 토글에서도 활성화됨 (vanilla-extract 만 disabled).",
+        "**docs 페이지 업데이트** — `apps/docs/(docs)/css-framework/page.tsx` 에 css-modules 섹션 추가 (.module.css + styles.X 사용 예시·적합한 경우·내부 동작). PLANNED 섹션은 vanilla-extract 만 남김. fallback 메시지·registry.json 예시도 css-modules 분기 포함하도록 갱신.",
+        "**Fallback 메시지 일반화** — 기존 `Tailwind 변종 미제공, plain 변종으로 설치 (Tailwind v4 환경에서 그대로 동작)` → `<framework> 변종 미제공, plain 변종으로 설치 (어떤 환경에서도 그대로 동작)`. 이전 마이너 (v0.46.0) 에서 `effectiveFramework` 일반화한 효과가 사용자 안내 문구에까지 반영."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.47.0"
+    },
+    {
       "version": "0.46.0",
       "date": "2026-05-04",
       "title": "CSS Modules 변종 파일럿 — button/card/input",

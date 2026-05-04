@@ -1,0 +1,124 @@
+.code {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background-subtle);
+  overflow: hidden;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin: var(--space-4) 0;
+}
+@media (max-width: 640px) {
+  .code { font-size: var(--text-xs); }
+}
+
+/* 헤더 (filename 있을 때) */
+.code__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--background-muted);
+  font-size: var(--text-xs);
+  color: var(--foreground-muted);
+}
+.code__filename {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--foreground);
+}
+
+/* 헤더 없을 때 우상단에 떠있는 복사 버튼 */
+.code__copy-floating {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+}
+.code:hover .code__copy-floating,
+.code:focus-within .code__copy-floating {
+  opacity: 1;
+}
+
+/* 복사 버튼 */
+.code__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: var(--space-1) var(--space-2);
+  background: var(--background);
+  color: var(--foreground-muted);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  font-size: var(--text-xs);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--duration-fast), border-color var(--duration-fast), background-color var(--duration-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.code__copy:hover {
+  color: var(--foreground);
+  border-color: var(--border-strong);
+}
+.code__copy:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+.code__copy-label {
+  font-size: var(--text-xs);
+}
+
+/* 코드 본문 — shiki 출력(<pre class="shiki">...) */
+.code__body {
+  overflow-x: auto;
+}
+.code__body pre {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  background: transparent !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: inherit;
+  line-height: inherit;
+  border: none;
+  border-radius: 0;
+}
+.code__body code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  display: block;
+}
+
+/* shiki dual theme — 기본은 light, .dark 스코프에선 dark.
+   span에는 color만 주고 background-color는 절대 강제하지 않는다.
+   (강제하면 --shiki-*-bg 변수가 상속돼 라인마다 띠가 생긴다.) */
+.code__body .shiki,
+.code__body .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: transparent !important;
+}
+.dark .code__body .shiki,
+.dark .code__body .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: transparent !important;
+}
+
+/* 라인 번호 */
+.code__body[data-line-numbers] pre code {
+  counter-reset: step;
+  counter-increment: step 0;
+}
+.code__body[data-line-numbers] pre code .line::before {
+  content: counter(step);
+  counter-increment: step;
+  display: inline-block;
+  width: 1.75rem;
+  margin-right: var(--space-4);
+  text-align: right;
+  color: var(--foreground-muted);
+  opacity: 0.7;
+  user-select: none;
+}

@@ -1,0 +1,76 @@
+.code-editor {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  overflow: hidden;
+  transition: border-color var(--duration-fast);
+}
+.code-editor:focus-within {
+  border-color: var(--foreground);
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+.code-editor[data-readonly] {
+  background: var(--background-subtle);
+}
+
+.code-editor .cm-editor {
+  background: transparent;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.code-editor .cm-editor.cm-focused {
+  outline: none;
+}
+.code-editor .cm-scroller {
+  font-family: inherit;
+  min-height: var(--sh-ui-code-editor-min-height, 7.5rem);
+  max-height: var(--sh-ui-code-editor-max-height, 25rem);
+}
+.code-editor .cm-content {
+  caret-color: var(--foreground);
+  color: var(--foreground);
+  padding: var(--space-3) 0;
+}
+.code-editor .cm-line {
+  padding: 0 var(--space-3);
+}
+.code-editor .cm-gutters {
+  background: var(--background-subtle);
+  color: var(--foreground-muted);
+  border-right: 1px solid var(--border);
+}
+.code-editor .cm-activeLineGutter,
+.code-editor .cm-activeLine {
+  background: var(--background-muted);
+}
+.code-editor .cm-cursor,
+.code-editor .cm-dropCursor {
+  border-left-color: var(--foreground);
+}
+.code-editor .cm-selectionBackground,
+.code-editor .cm-editor .cm-selectionBackground,
+.code-editor .cm-editor.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground,
+.code-editor ::selection {
+  background: var(--background-muted) !important;
+}
+.code-editor .cm-placeholder {
+  color: var(--foreground-muted);
+}
+.code-editor .cm-tooltip {
+  background: var(--background);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  border-radius: calc(var(--radius) - 2px);
+}
+.code-editor .cm-tooltip-autocomplete > ul > li[aria-selected] {
+  background: var(--background-muted);
+  color: var(--foreground);
+}
+.code-editor .cm-matchingBracket,
+.code-editor .cm-nonmatchingBracket {
+  background: var(--background-muted);
+  color: var(--foreground);
+}

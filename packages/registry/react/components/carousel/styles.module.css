@@ -1,0 +1,155 @@
+.carousel {
+  position: relative;
+  width: 100%;
+}
+
+.carousel__content {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-inline: contain;
+}
+
+.carousel__content::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel__content[data-orientation="vertical"] {
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  height: 20rem;
+}
+
+.carousel__item {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.carousel__item[data-orientation="vertical"] {
+  flex-basis: auto;
+}
+
+/* 네비게이션 버튼 — 기본은 플로팅 원형. 원하면 className으로 덮어쓰기. */
+.carousel__nav {
+  position: absolute;
+  top: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transform: translateY(-50%);
+  z-index: 1;
+  transition:
+    opacity var(--duration-fast) ease,
+    background var(--duration-fast) ease;
+}
+
+.carousel__nav:hover:not(:disabled) {
+  background: var(--background-muted);
+}
+
+.carousel__nav:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.carousel__nav:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.carousel__nav--prev {
+  left: -1rem;
+}
+
+.carousel__nav--next {
+  right: -1rem;
+}
+
+.carousel__nav[data-orientation="vertical"] {
+  top: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.carousel__nav--prev[data-orientation="vertical"] {
+  top: -1rem;
+  left: 50%;
+}
+
+.carousel__nav--next[data-orientation="vertical"] {
+  bottom: -1rem;
+  top: auto;
+  left: 50%;
+}
+
+/* 인디케이터 */
+.carousel__indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.carousel__indicators[data-orientation="vertical"] {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  margin-top: 0;
+  flex-direction: column;
+  transform: translateY(-50%);
+}
+
+.carousel__indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  background: var(--border);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) ease,
+    transform var(--duration-fast) ease;
+}
+
+.carousel__indicator:hover {
+  background: var(--border-strong);
+}
+
+.carousel__indicator[data-active] {
+  background: var(--foreground);
+  transform: scale(1.2);
+}
+
+.carousel__indicator:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel__content {
+    scroll-behavior: auto;
+  }
+  .carousel__nav,
+  .carousel__indicator {
+    transition: none;
+  }
+}

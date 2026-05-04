@@ -50,11 +50,20 @@ describe("CSS framework — config 필드", () => {
     expect(config.cssFramework).toBe("tailwind");
   });
 
-  it("init --cssFramework css-modules → '곧 지원 예정' 친절 에러", async () => {
+  it("init --cssFramework css-modules → SUPPORTED 라 정상 채택", async () => {
+    await init({
+      cwd: tmpDir,
+      args: ["--yes", "--platform", "react", "--cssFramework", "css-modules"],
+    });
+    const config = await fs.readJson(path.join(tmpDir, "sh-ui.config.json"));
+    expect(config.cssFramework).toBe("css-modules");
+  });
+
+  it("init --cssFramework vanilla-extract → '곧 지원 예정' 친절 에러", async () => {
     await expect(
       init({
         cwd: tmpDir,
-        args: ["--yes", "--platform", "react", "--cssFramework", "css-modules"],
+        args: ["--yes", "--platform", "react", "--cssFramework", "vanilla-extract"],
       }),
     ).rejects.toThrow(/곧 지원 예정/);
   });

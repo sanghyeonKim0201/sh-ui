@@ -59,8 +59,9 @@ export default function CssFrameworkPage() {
           },
           {
             prop: "css-modules",
-            type: "계획 중",
-            description: `${PLANNED_LIST.includes("css-modules") ? "" : "(현재 옵션 아님)"} 향후 추가 예정. 현재 시도하면 "곧 지원 예정" 친절 에러.`,
+            type: "지원",
+            description:
+              ".module.css 모듈 + styles.X 참조. 클래스 이름이 빌드 타임에 hash 되어 자동 격리됨. 모든 styled 컴포넌트(43 개) 가 이 변종을 갖춤.",
           },
           {
             prop: "vanilla-extract",
@@ -171,15 +172,53 @@ export const Button = ({ variant, size, className, ...props }) => (
         <code>className</code> 만 보고 스타일을 파악하고 싶을 때.
       </p>
 
-      <h2 id="planned">계획 중 — css-modules · vanilla-extract</h2>
+      <h2 id="css-modules">css-modules — .module.css + styles.X</h2>
+      <p>
+        클래스 이름이 빌드 타임에 자동 hash 되어 다른 컴포넌트와 충돌하지 않게 격리된다. Next.js·Vite·Remix·CRA 모두 zero-config 로 동작 — 별도 플러그인 없이{" "}
+        <code>*.module.css</code> 확장자만 알면 된다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "tsx",
+            label: "index.tsx",
+            language: "tsx",
+            filename: "components/ui/button/index.tsx",
+            code: `import styles from "./styles.module.css";
+export const Button = ({ variant = "primary", ...props }) => (
+  <button className={\`\${styles.button} \${styles[variant]}\`} {...props} />
+);`,
+          },
+          {
+            value: "css",
+            label: "styles.module.css",
+            language: "css",
+            filename: "components/ui/button/styles.module.css",
+            code: `.button {
+  border-radius: var(--radius);
+  font-weight: var(--weight-medium);
+  transition: background-color var(--duration-fast);
+}
+.primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}`,
+          },
+        ]}
+      />
+      <p>
+        <strong>적합한 경우</strong>: 이미 CSS Modules 컨벤션을 쓰는 프로젝트 / 클래스 이름 충돌 없이 컴포넌트별 스타일 격리를 원할 때 / Tailwind 의존을 피하고 싶을 때.
+      </p>
+
+      <h2 id="planned">계획 중 — vanilla-extract</h2>
       <p>
         같은 변종 시스템을 따라 추후 추가 예정. CLI 가 미리 인식하므로 시도하면 친절한 안내 에러:
       </p>
       <CodePanel
         language="bash"
         showLineNumbers={false}
-        code={`$ sh-ui-cli init --cssFramework css-modules
-✗ --cssFramework='css-modules'는 곧 지원 예정입니다. 현재는 plain, tailwind 만 가능합니다.`}
+        code={`$ sh-ui-cli init --cssFramework vanilla-extract
+✗ --cssFramework='vanilla-extract'는 곧 지원 예정입니다. 현재는 plain, tailwind, css-modules 만 가능합니다.`}
       />
       <p className="muted">
         외부 컨트리뷰터: <code>packages/registry/react/components/&lt;name&gt;/index.&lt;framework&gt;.tsx</code>{" "}
@@ -190,7 +229,7 @@ export const Button = ({ variant, size, className, ...props }) => (
       <p>
         <code>sh-ui.config.json</code> 의 <code>cssFramework</code> 값을 바꾼 뒤, 사용 중인 컴포넌트를 다시{" "}
         <code>add</code> 하면 새 모드로 덮어쓴다 (사용자 수정 보존 옵션은{" "}
-        <code>--keep</code>/<code>--overwrite</code>). plain ↔ tailwind 전환 시 추가로:
+        <code>--keep</code>/<code>--overwrite</code>). 모드 전환 시 추가로:
       </p>
       <CodePanel
         language="bash"
@@ -210,18 +249,18 @@ $ npx sh-ui-cli add button card dialog --overwrite
 
       <h2 id="fallback">Fallback 동작</h2>
       <p>
-        <code>cssFramework: tailwind</code> 인데 어떤 컴포넌트가 아직 tailwind 변종을 안 갖췄으면, CLI 가 자동으로 plain 변종을 설치하고 한 줄 알림을 출력한다.
-        plain CSS 도 <code>@theme inline</code> 브리지 덕에 Tailwind 환경에서 그대로 동작하므로 깨지지 않는다.
+        선택한 변종이 컴포넌트에 없으면 CLI 가 자동으로 plain 변종을 설치하고 한 줄 알림을 출력한다.
+        plain CSS 는 <code>:root</code> 토큰만 의존하므로 어떤 환경(Tailwind v4·CSS Modules·vanilla CSS) 에서도 그대로 동작 — 깨지지 않는다.
       </p>
       <CodePanel
         language="bash"
         showLineNumbers={false}
         code={`$ npx sh-ui-cli add some-new-component
-ℹ some-new-component — Tailwind 변종 미제공, plain 변종으로 설치 (Tailwind v4 환경에서 그대로 동작)
+ℹ some-new-component — css-modules 변종 미제공, plain 변종으로 설치 (어떤 환경에서도 그대로 동작)
 ✓ some-new-component → src/components/ui/some-new-component/index.tsx`}
       />
       <p className="muted">
-        v0.45.0 기준 모든 styled 컴포넌트(43 개) 가 tailwind 변종을 갖춰 실제 fallback 은 거의 발생하지 않음. 새 컴포넌트가 추가되거나 css-modules/vanilla-extract 가 도입되면 같은 메커니즘으로 처리.
+        v0.47.0 기준 모든 styled 컴포넌트(43 개) 가 plain · tailwind · css-modules 3 변종을 갖춰 실제 fallback 은 거의 발생하지 않음. 새 컴포넌트가 추가되거나 vanilla-extract 가 도입되면 같은 메커니즘으로 처리.
       </p>
 
       <h2 id="how-it-works">내부 동작 (선택)</h2>
@@ -234,9 +273,11 @@ $ npx sh-ui-cli add button card dialog --overwrite
         code={`{
   "button": {
     "files": [
-      { "src": "components/button/index.tsx",          "dest": "{components}/button/index.tsx", "frameworks": ["plain"] },
-      { "src": "components/button/styles.css",         "dest": "{components}/button/styles.css", "frameworks": ["plain"] },
-      { "src": "components/button/index.tailwind.tsx", "dest": "{components}/button/index.tsx", "frameworks": ["tailwind"] }
+      { "src": "components/button/index.tsx",            "dest": "{components}/button/index.tsx",          "frameworks": ["plain"] },
+      { "src": "components/button/styles.css",           "dest": "{components}/button/styles.css",         "frameworks": ["plain"] },
+      { "src": "components/button/index.tailwind.tsx",   "dest": "{components}/button/index.tsx",          "frameworks": ["tailwind"] },
+      { "src": "components/button/index.module.tsx",     "dest": "{components}/button/index.tsx",          "frameworks": ["css-modules"] },
+      { "src": "components/button/styles.module.css",    "dest": "{components}/button/styles.module.css",  "frameworks": ["css-modules"] }
     ],
     "dependencies": [
       { "name": "class-variance-authority", "frameworks": ["tailwind"] }

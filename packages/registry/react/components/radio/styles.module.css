@@ -1,0 +1,80 @@
+/* ───────────── Radio ───────────── */
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--background);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color var(--duration-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.radio:hover:not([data-disabled]) {
+  border-color: var(--foreground);
+}
+
+.radio:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.radio[data-checked] {
+  border-color: var(--primary);
+}
+
+.radio[data-disabled] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* 모바일/터치: 최소 탭 영역 */
+@media (hover: none) and (pointer: coarse) {
+  .radio {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* ───────────── Indicator (내부 원) ───────────── */
+
+.radio__indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--primary);
+  transform: scale(0);
+  transition: transform var(--duration-fast) ease-out;
+}
+
+.radio[data-checked] .radio__indicator {
+  transform: scale(1);
+}
+
+/* ───────────── RadioGroup ───────────── */
+
+.radio-group {
+  display: flex;
+  gap: 0.625rem;
+}
+
+.radio-group[data-orientation="vertical"] {
+  flex-direction: column;
+}
+
+.radio-group[data-orientation="horizontal"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radio,
+  .radio__indicator {
+    transition: none;
+  }
+}
