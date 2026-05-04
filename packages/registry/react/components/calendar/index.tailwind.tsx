@@ -5,7 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
 
 
 import { cn } from "@SH_UI_UTILS@";
-const DEFAULT_WEEKDAYS_KO = ["일", "월", "화", "수", "목", "금", "토"] as const;
+
+/** 미지정 시의 기본 로케일. 기존 동작(한국어) 보존. */
+export const DEFAULT_LOCALE = "ko-KR";
 
 const isSameDay = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -14,7 +16,53 @@ const startOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1);
 const addMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, 1);
 const formatIsoDate = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-const defaultMonthLabel = (year: number, month: number) => `${year}년 ${month + 1}월`;
+
+function deriveWeekdayLabels(locale: string): string[] {
+  const fmt = new Intl.DateTimeFormat(locale, { weekday: "short" });
+  return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2017, 0, 1 + i)));
+}
+function deriveMonthLabel(locale: string) {
+  const fmt = new Intl.DateTimeFormat(locale, { year: "numeric", month: "long" });
+  return (year: number, month: number) => fmt.format(new Date(year, month, 1));
+}
+function deriveYearLabel(locale: string) {
+  const fmt = new Intl.DateTimeFormat(locale, { year: "numeric" });
+  return (y: number) => fmt.format(new Date(y, 0, 1));
+}
+function deriveMonthSelectLabel(locale: string) {
+  const fmt = new Intl.DateTimeFormat(locale, { month: "long" });
+  return (m: number) => fmt.format(new Date(2017, m, 1));
+}
+
+export interface CalendarMessages {
+  prevYear?: string;
+  nextYear?: string;
+  prevMonth?: string;
+  nextMonth?: string;
+  yearSelectLabel?: string;
+  monthSelectLabel?: string;
+}
+
+const MESSAGES_KO: Required<CalendarMessages> = {
+  prevYear: "이전 해",
+  nextYear: "다음 해",
+  prevMonth: "이전 달",
+  nextMonth: "다음 달",
+  yearSelectLabel: "연도",
+  monthSelectLabel: "월",
+};
+const MESSAGES_EN: Required<CalendarMessages> = {
+  prevYear: "Previous year",
+  nextYear: "Next year",
+  prevMonth: "Previous month",
+  nextMonth: "Next month",
+  yearSelectLabel: "Year",
+  monthSelectLabel: "Month",
+};
+function defaultMessagesFor(locale: string): Required<CalendarMessages> {
+  const lang = locale.toLowerCase().split(/[-_]/)[0];
+  return lang === "ko" ? MESSAGES_KO : MESSAGES_EN;
+}
 
 function getDaysGrid(year: number, month: number, weekStartsOn: 0 | 1) {
   const first = new Date(year, month, 1);
@@ -49,6 +97,10 @@ interface CalendarCommonProps {
   weekStartsOn?: 0 | 1;
   weekdayLabels?: readonly string[];
   formatMonthLabel?: (year: number, month: number) => string;
+  /** BCP47 로케일. @default "ko-KR" */
+  locale?: string;
+  /** Nav/select aria-label override. */
+  messages?: CalendarMessages;
   fromYear?: number; toYear?: number;
   className?: string;
   "aria-label"?: string;
@@ -92,6 +144,9 @@ interface CalendarContextValue {
   weekdayLabels: string[];
   showOutsideDays: boolean;
   formatMonthLabel: (year: number, month: number) => string;
+  defaultFormatYear: (y: number) => string;
+  defaultFormatMonth: (m: number) => string;
+  messages: Required<CalendarMessages>;
   ariaLabel?: string;
   isSelected: (date: Date) => boolean;
   isInRange: (date: Date) => { inRange: boolean; isStart: boolean; isEnd: boolean };
@@ -117,7 +172,9 @@ export function Calendar(props: CalendarProps) {
     numberOfMonths: numberOfMonthsProp = 1,
     min, max, disabled, showOutsideDays = true, weekStartsOn = 0,
     weekdayLabels: weekdayLabelsProp,
-    formatMonthLabel = defaultMonthLabel,
+    formatMonthLabel: formatMonthLabelProp,
+    locale = DEFAULT_LOCALE,
+    messages: messagesProp,
     fromYear, toYear, className, "aria-label": ariaLabel, children,
   } = props as CalendarCommonProps & { mode?: CalendarMode };
 
@@ -163,10 +220,21 @@ export function Calendar(props: CalendarProps) {
     return new Date();
   });
 
+  const localeWeekdays = React.useMemo(() => deriveWeekdayLabels(locale), [locale]);
+  const localeMonthLabel = React.useMemo(() => deriveMonthLabel(locale), [locale]);
+  const localeYearLabel = React.useMemo(() => deriveYearLabel(locale), [locale]);
+  const localeMonthSelectLabel = React.useMemo(() => deriveMonthSelectLabel(locale), [locale]);
+  const resolvedMessages = React.useMemo<Required<CalendarMessages>>(
+    () => ({ ...defaultMessagesFor(locale), ...messagesProp }),
+    [locale, messagesProp],
+  );
+
   const weekdayLabels = React.useMemo(() => {
-    const base = weekdayLabelsProp ?? DEFAULT_WEEKDAYS_KO;
+    const base = weekdayLabelsProp ?? localeWeekdays;
     return rotateWeekdays(base, weekStartsOn);
-  }, [weekdayLabelsProp, weekStartsOn]);
+  }, [weekdayLabelsProp, localeWeekdays, weekStartsOn]);
+
+  const formatMonthLabel = formatMonthLabelProp ?? localeMonthLabel;
 
   const nowYear = new Date().getFullYear();
   const resolvedFromYear = fromYear ?? min?.getFullYear() ?? nowYear - 10;
@@ -275,7 +343,11 @@ export function Calendar(props: CalendarProps) {
     nextMonth: () => setMonth(addMonths(currentMonth, 1)),
     prevYear: () => setMonth(addMonths(currentMonth, -12)),
     nextYear: () => setMonth(addMonths(currentMonth, 12)),
-    weekStartsOn, weekdayLabels, showOutsideDays, formatMonthLabel, ariaLabel,
+    weekStartsOn, weekdayLabels, showOutsideDays, formatMonthLabel,
+    defaultFormatYear: localeYearLabel,
+    defaultFormatMonth: localeMonthSelectLabel,
+    messages: resolvedMessages,
+    ariaLabel,
     isSelected: isDateSelected, isInRange: getRangeState, isDisabled: isDateDisabled,
     handleSelect,
     setHoverDate: mode === "range" ? setHoverDate : () => {},
@@ -332,7 +404,7 @@ export interface CalendarNavButtonProps extends Omit<React.ButtonHTMLAttributes<
 function makeNavButton(
   displayName: string,
   defaultIcon: React.ReactNode,
-  defaultLabel: string,
+  resolveDefaultLabel: (ctx: CalendarContextValue) => string,
   resolveHandler: (ctx: CalendarContextValue) => () => void,
 ) {
   const Component = React.forwardRef<HTMLButtonElement, CalendarNavButtonProps>(
@@ -343,7 +415,7 @@ function makeNavButton(
           ref={ref}
           type="button"
           className={cn(navButtonClasses, className)}
-          aria-label={ariaLabel ?? defaultLabel}
+          aria-label={ariaLabel ?? resolveDefaultLabel(ctx)}
           onClick={(e) => { resolveHandler(ctx)(); onClick?.(e); }}
           {...props}
         >
@@ -356,10 +428,10 @@ function makeNavButton(
   return Component;
 }
 
-export const CalendarPrevYearButton = makeNavButton("CalendarPrevYearButton", <ChevronDoubleLeftIcon />, "이전 해", (ctx) => ctx.prevYear);
-export const CalendarNextYearButton = makeNavButton("CalendarNextYearButton", <ChevronDoubleRightIcon />, "다음 해", (ctx) => ctx.nextYear);
-export const CalendarPrevMonthButton = makeNavButton("CalendarPrevMonthButton", <ChevronLeftIcon />, "이전 달", (ctx) => ctx.prevMonth);
-export const CalendarNextMonthButton = makeNavButton("CalendarNextMonthButton", <ChevronRightIcon />, "다음 달", (ctx) => ctx.nextMonth);
+export const CalendarPrevYearButton = makeNavButton("CalendarPrevYearButton", <ChevronDoubleLeftIcon />, (ctx) => ctx.messages.prevYear, (ctx) => ctx.prevYear);
+export const CalendarNextYearButton = makeNavButton("CalendarNextYearButton", <ChevronDoubleRightIcon />, (ctx) => ctx.messages.nextYear, (ctx) => ctx.nextYear);
+export const CalendarPrevMonthButton = makeNavButton("CalendarPrevMonthButton", <ChevronLeftIcon />, (ctx) => ctx.messages.prevMonth, (ctx) => ctx.prevMonth);
+export const CalendarNextMonthButton = makeNavButton("CalendarNextMonthButton", <ChevronRightIcon />, (ctx) => ctx.messages.nextMonth, (ctx) => ctx.nextMonth);
 
 const calendarSelectTriggerClasses =
   "min-w-0 h-7 gap-[var(--space-1)] px-[var(--space-2)] bg-transparent border-transparent font-semibold text-[length:var(--text-sm)] text-foreground hover:not-disabled:bg-background-muted hover:not-disabled:border-transparent data-[popup-open]:bg-background-muted data-[popup-open]:border-transparent";
@@ -369,17 +441,18 @@ export interface CalendarYearSelectProps {
   formatYear?: (year: number) => string;
 }
 
-export function CalendarYearSelect({ className, formatYear = (y) => `${y}년` }: CalendarYearSelectProps) {
+export function CalendarYearSelect({ className, formatYear }: CalendarYearSelectProps) {
   const ctx = useCalendarContext("CalendarYearSelect");
+  const resolvedFormat = formatYear ?? ctx.defaultFormatYear;
   const year = ctx.visibleMonth.getFullYear();
   const items = ctx.yearOptions.includes(year) ? ctx.yearOptions : [...ctx.yearOptions, year].sort((a, b) => a - b);
   return (
     <Select value={String(year)} onValueChange={(v) => ctx.setYearForVisible(Number(v))}>
-      <SelectTrigger className={cn(calendarSelectTriggerClasses, className)} aria-label="연도">
-        <span>{formatYear(year)}</span>
+      <SelectTrigger className={cn(calendarSelectTriggerClasses, className)} aria-label={ctx.messages.yearSelectLabel}>
+        <span>{resolvedFormat(year)}</span>
       </SelectTrigger>
       <SelectContent>
-        {items.map((y) => <SelectItem key={y} value={String(y)}>{formatYear(y)}</SelectItem>)}
+        {items.map((y) => <SelectItem key={y} value={String(y)}>{resolvedFormat(y)}</SelectItem>)}
       </SelectContent>
     </Select>
   );
@@ -390,16 +463,17 @@ export interface CalendarMonthSelectProps {
   formatMonth?: (month: number) => string;
 }
 
-export function CalendarMonthSelect({ className, formatMonth = (m) => `${m + 1}월` }: CalendarMonthSelectProps) {
+export function CalendarMonthSelect({ className, formatMonth }: CalendarMonthSelectProps) {
   const ctx = useCalendarContext("CalendarMonthSelect");
+  const resolvedFormat = formatMonth ?? ctx.defaultFormatMonth;
   const month = ctx.visibleMonth.getMonth();
   return (
     <Select value={String(month)} onValueChange={(v) => ctx.setMonthForVisible(Number(v))}>
-      <SelectTrigger className={cn(calendarSelectTriggerClasses, className)} aria-label="월">
-        <span>{formatMonth(month)}</span>
+      <SelectTrigger className={cn(calendarSelectTriggerClasses, className)} aria-label={ctx.messages.monthSelectLabel}>
+        <span>{resolvedFormat(month)}</span>
       </SelectTrigger>
       <SelectContent>
-        {Array.from({ length: 12 }, (_, m) => <SelectItem key={m} value={String(m)}>{formatMonth(m)}</SelectItem>)}
+        {Array.from({ length: 12 }, (_, m) => <SelectItem key={m} value={String(m)}>{resolvedFormat(m)}</SelectItem>)}
       </SelectContent>
     </Select>
   );

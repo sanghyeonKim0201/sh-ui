@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { Calendar, type DateRange } from "../calendar";
+import { Calendar, DEFAULT_LOCALE, type CalendarMessages, type DateRange } from "../calendar";
 import styles from "./styles.module.css";
 
 import { cn } from "@SH_UI_UTILS@";
@@ -16,6 +16,15 @@ const formatDefault = (d: Date) =>
 
 const startOfMonth = (d: Date) =>
   new Date(d.getFullYear(), d.getMonth(), 1);
+
+function defaultDatePlaceholder(locale: string): string {
+  const lang = locale.toLowerCase().split(/[-_]/)[0];
+  return lang === "ko" ? "날짜 선택" : "Select date";
+}
+function defaultRangePlaceholder(locale: string): string {
+  const lang = locale.toLowerCase().split(/[-_]/)[0];
+  return lang === "ko" ? "시작일 ~ 종료일" : "Start date – end date";
+}
 
 /* ───────── Icons ───────── */
 
@@ -39,6 +48,8 @@ interface DatePickerContextValue {
   setFocusedDate: (date: Date) => void;
   formatDate: (date: Date) => string;
   placeholder: string;
+  locale: string;
+  messages?: CalendarMessages;
   min?: Date;
   max?: Date;
   disabled?: boolean;
@@ -76,10 +87,13 @@ export interface DatePickerProps {
   /** 선택 가능 최대 날짜 (포함). 이후 날짜는 비활성. */
   max?: Date;
   /**
-   * 미선택 상태의 트리거 텍스트.
-   * @default "날짜 선택"
+   * 미선택 상태의 트리거 텍스트. 미지정 시 `locale` 기반 기본값.
    */
   placeholder?: string;
+  /** BCP47 로케일. 내부 Calendar 와 placeholder 에 모두 적용. @default "ko-KR" */
+  locale?: string;
+  /** 내부 Calendar 의 nav/select aria-label override. */
+  messages?: CalendarMessages;
   /** 비활성. 트리거 클릭·키보드 모두 차단. */
   disabled?: boolean;
   /** 읽기 전용. 트리거 표시는 유지하되 popover가 열리지 않는다. */
@@ -119,7 +133,9 @@ export function DatePicker({
   formatDate = formatDefault,
   min,
   max,
-  placeholder = "날짜 선택",
+  placeholder,
+  locale = DEFAULT_LOCALE,
+  messages,
   disabled,
   readOnly,
   "aria-invalid": ariaInvalid,
@@ -128,6 +144,7 @@ export function DatePicker({
   container,
   children,
 }: DatePickerProps) {
+  const resolvedPlaceholder = placeholder ?? defaultDatePlaceholder(locale);
   const isControlled = value !== undefined;
   const [internal, setInternal] = React.useState<Date | undefined>(defaultValue);
   const selected = isControlled ? value : internal;
@@ -160,7 +177,9 @@ export function DatePicker({
       focusedDate,
       setFocusedDate,
       formatDate,
-      placeholder,
+      placeholder: resolvedPlaceholder,
+      locale,
+      messages,
       min,
       max,
       disabled,
@@ -174,7 +193,9 @@ export function DatePicker({
       open,
       focusedDate,
       formatDate,
-      placeholder,
+      resolvedPlaceholder,
+      locale,
+      messages,
       min,
       max,
       disabled,
@@ -355,6 +376,8 @@ export function DatePickerCalendar() {
       onMonthChange={ctx.setFocusedDate}
       min={ctx.min}
       max={ctx.max}
+      locale={ctx.locale}
+      messages={ctx.messages}
     />
   );
 }
@@ -407,10 +430,13 @@ export interface DateRangePickerProps {
   /** 선택 가능 최대 날짜. */
   max?: Date;
   /**
-   * 미선택 상태의 트리거 텍스트.
-   * @default "시작일 ~ 종료일"
+   * 미선택 상태의 트리거 텍스트. 미지정 시 `locale` 기반 기본값.
    */
   placeholder?: string;
+  /** BCP47 로케일. @default "ko-KR" */
+  locale?: string;
+  /** 내부 Calendar 의 nav/select aria-label override. */
+  messages?: CalendarMessages;
   /** 비활성. */
   disabled?: boolean;
   /** 읽기 전용. popover가 열리지 않는다. */
@@ -438,7 +464,9 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       formatDate = formatDefault,
       min,
       max,
-      placeholder = "시작일 ~ 종료일",
+      placeholder,
+      locale = DEFAULT_LOCALE,
+      messages,
       disabled,
       readOnly,
       "aria-invalid": ariaInvalid,
@@ -447,6 +475,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
     },
     ref,
   ) {
+    const resolvedPlaceholder = placeholder ?? defaultRangePlaceholder(locale);
     const isControlled = value !== undefined;
     const [internal, setInternal] = React.useState<DateRange | undefined>(defaultValue);
     const selected = isControlled ? value : internal;
@@ -485,7 +514,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
           }}
         >
           <span className={cn(styles["date-picker__value"], !displayText && styles["date-picker__placeholder"])}>
-            {displayText ?? placeholder}
+            {displayText ?? resolvedPlaceholder}
           </span>
           <span className={styles["date-picker__icon"]} aria-hidden>
             <CalendarIcon />
@@ -509,6 +538,8 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
                   onMonthChange={setCalendarMonth}
                   min={min}
                   max={max}
+                  locale={locale}
+                  messages={messages}
                 />
               </BasePopover.Popup>
             </BasePopover.Positioner>

@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.53.0",
+      "date": "2026-05-04",
+      "title": "Calendar/DatePicker i18n — locale + messages prop",
+      "type": "minor",
+      "highlights": [
+        "**Calendar `locale` prop 추가** — BCP47 로케일(예: `\"en-US\"`, `\"ja-JP\"`) 한 줄로 요일·월 헤더·연도/월 dropdown 라벨이 모두 `Intl.DateTimeFormat` 으로 자동 생성. 한국어만 지원되던 기존 동작에서 다국어 지원으로 확장. 기본값은 `\"ko-KR\"` 유지 — 기존 사용자 영향 없음.",
+        "**`messages` prop 으로 aria-label override** — Nav 버튼(`이전 해`/`다음 달` 등) 과 select aria-label(`연도`/`월`) 을 `CalendarMessages` 객체로 한 번에 교체. ko/en 은 내장 기본값 제공, 그 외 언어는 직접 문자열 전달.",
+        "**DatePicker / DateRangePicker 도 `locale` 전파** — 내부 Calendar 에 자동 전달되고 placeholder(`날짜 선택`/`Select date` / `시작일 ~ 종료일`/`Start date – end date`) 도 locale 기반 자동 결정. `placeholder` 를 직접 넘기면 그게 우선.",
+        "**개별 포맷터 prop 은 그대로 유효** — `weekdayLabels`/`formatMonthLabel`/`CalendarYearSelect.formatYear` 등 기존 세밀 override 는 locale 보다 우선. 마이그레이션 불필요.",
+        "**새 export** — `Calendar` 모듈에서 `DEFAULT_LOCALE` 상수와 `CalendarMessages` 타입을 추가로 노출."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.53.0"
+    },
+    {
       "version": "0.52.3",
       "date": "2026-05-04",
       "title": "시각 회귀 커버리지 확장 + Flutter showcase 누락 위젯 보강",

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { Calendar, type DateRange } from "../calendar";
+import { Calendar, DEFAULT_LOCALE, type CalendarMessages, type DateRange } from "../calendar";
 
 import { cn } from "@SH_UI_UTILS@";
 export type { DateRange };
@@ -11,6 +11,15 @@ export type { DateRange };
 const formatDefault = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const startOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1);
+
+function defaultDatePlaceholder(locale: string): string {
+  const lang = locale.toLowerCase().split(/[-_]/)[0];
+  return lang === "ko" ? "날짜 선택" : "Select date";
+}
+function defaultRangePlaceholder(locale: string): string {
+  const lang = locale.toLowerCase().split(/[-_]/)[0];
+  return lang === "ko" ? "시작일 ~ 종료일" : "Start date – end date";
+}
 
 const triggerClasses =
   "inline-flex items-center justify-between w-full h-[var(--control-md)] px-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] font-[inherit] text-[length:var(--text-sm)] leading-none cursor-pointer transition-[border-color,box-shadow] duration-[var(--duration-fast)] hover:not-disabled:border-border-strong focus-visible:outline-none focus-visible:border-foreground focus-visible:shadow-[0_0_0_1px_var(--foreground)] disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed disabled:bg-background-subtle aria-[invalid=true]:border-danger aria-[invalid=true]:focus-visible:shadow-[0_0_0_1px_var(--danger)] [@media(hover:none)_and_(pointer:coarse)]:h-11 [@media(hover:none)_and_(pointer:coarse)]:text-[length:var(--text-base)]";
@@ -36,6 +45,8 @@ interface DatePickerContextValue {
   setFocusedDate: (date: Date) => void;
   formatDate: (date: Date) => string;
   placeholder: string;
+  locale: string;
+  messages?: CalendarMessages;
   min?: Date; max?: Date; disabled?: boolean; readOnly?: boolean;
   ariaInvalid?: boolean | "true";
   closeOnSelect: boolean;
@@ -54,7 +65,8 @@ export interface DatePickerProps {
   onValueChange?: (date: Date | undefined) => void;
   formatDate?: (date: Date) => string;
   min?: Date; max?: Date;
-  placeholder?: string; disabled?: boolean; readOnly?: boolean;
+  placeholder?: string; locale?: string; messages?: CalendarMessages;
+  disabled?: boolean; readOnly?: boolean;
   "aria-invalid"?: boolean | "true";
   className?: string; closeOnSelect?: boolean;
   container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
@@ -63,9 +75,10 @@ export interface DatePickerProps {
 
 export function DatePicker({
   value, defaultValue, onValueChange, formatDate = formatDefault,
-  min, max, placeholder = "날짜 선택", disabled, readOnly,
+  min, max, placeholder, locale = DEFAULT_LOCALE, messages, disabled, readOnly,
   "aria-invalid": ariaInvalid, className, closeOnSelect = true, container, children,
 }: DatePickerProps) {
+  const resolvedPlaceholder = placeholder ?? defaultDatePlaceholder(locale);
   const isControlled = value !== undefined;
   const [internal, setInternal] = React.useState<Date | undefined>(defaultValue);
   const selected = isControlled ? value : internal;
@@ -84,9 +97,10 @@ export function DatePicker({
   const ctx = React.useMemo<DatePickerContextValue>(
     () => ({
       selected, setSelected, open, setOpen, focusedDate, setFocusedDate,
-      formatDate, placeholder, min, max, disabled, readOnly, ariaInvalid, closeOnSelect,
+      formatDate, placeholder: resolvedPlaceholder, locale, messages,
+      min, max, disabled, readOnly, ariaInvalid, closeOnSelect,
     }),
-    [selected, setSelected, open, focusedDate, formatDate, placeholder, min, max, disabled, readOnly, ariaInvalid, closeOnSelect],
+    [selected, setSelected, open, focusedDate, formatDate, resolvedPlaceholder, locale, messages, min, max, disabled, readOnly, ariaInvalid, closeOnSelect],
   );
 
   return (
@@ -187,6 +201,8 @@ export function DatePickerCalendar() {
       onMonthChange={ctx.setFocusedDate}
       min={ctx.min}
       max={ctx.max}
+      locale={ctx.locale}
+      messages={ctx.messages}
     />
   );
 }
@@ -221,7 +237,8 @@ export interface DateRangePickerProps {
   onValueChange?: (range: DateRange | undefined) => void;
   formatDate?: (date: Date) => string;
   min?: Date; max?: Date;
-  placeholder?: string; disabled?: boolean; readOnly?: boolean;
+  placeholder?: string; locale?: string; messages?: CalendarMessages;
+  disabled?: boolean; readOnly?: boolean;
   "aria-invalid"?: boolean | "true";
   className?: string;
   container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
@@ -230,9 +247,10 @@ export interface DateRangePickerProps {
 export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePickerProps>(
   function DateRangePicker(
     { value, defaultValue, onValueChange, formatDate = formatDefault, min, max,
-      placeholder = "시작일 ~ 종료일", disabled, readOnly, "aria-invalid": ariaInvalid, className, container },
+      placeholder, locale = DEFAULT_LOCALE, messages, disabled, readOnly, "aria-invalid": ariaInvalid, className, container },
     ref,
   ) {
+    const resolvedPlaceholder = placeholder ?? defaultRangePlaceholder(locale);
     const isControlled = value !== undefined;
     const [internal, setInternal] = React.useState<DateRange | undefined>(defaultValue);
     const selected = isControlled ? value : internal;
@@ -262,7 +280,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
           onClick={(e) => { if (readOnly) e.preventDefault(); }}
         >
           <span className={cn("overflow-hidden text-ellipsis whitespace-nowrap", !displayText && "text-foreground-subtle")}>
-            {displayText ?? placeholder}
+            {displayText ?? resolvedPlaceholder}
           </span>
           <span className="shrink-0 inline-flex text-foreground-muted ml-[var(--space-2)]" aria-hidden>
             <CalendarIcon />
@@ -281,6 +299,8 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
                   onMonthChange={setCalendarMonth}
                   min={min}
                   max={max}
+                  locale={locale}
+                  messages={messages}
                 />
               </BasePopover.Popup>
             </BasePopover.Positioner>
