@@ -268,16 +268,28 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   }
 }
 
-/** lockfile 존재로 패키지 매니저 감지. 없으면 npm. */
+/**
+ * lockfile 존재로 패키지 매니저 감지. cwd 부터 root 방향으로 한 단씩 올라가며 탐색 —
+ * monorepo 안의 sub-package(예: packages/ui/ui-apps/ui-web/) 에서 호출돼도 root 의
+ * pnpm-lock.yaml 을 찾도록. 못 찾으면 npm.
+ */
 function detectPackageManager(cwd) {
-  if (existsSync(resolve(cwd, "pnpm-lock.yaml"))) return "pnpm";
-  if (
-    existsSync(resolve(cwd, "bun.lockb")) ||
-    existsSync(resolve(cwd, "bun.lock"))
-  ) {
-    return "bun";
+  let dir = resolve(cwd);
+  while (true) {
+    if (existsSync(resolve(dir, "pnpm-lock.yaml"))) return "pnpm";
+    if (existsSync(resolve(dir, "pnpm-workspace.yaml"))) return "pnpm";
+    if (
+      existsSync(resolve(dir, "bun.lockb")) ||
+      existsSync(resolve(dir, "bun.lock"))
+    ) {
+      return "bun";
+    }
+    if (existsSync(resolve(dir, "yarn.lock"))) return "yarn";
+    if (existsSync(resolve(dir, "package-lock.json"))) return "npm";
+    const parent = dirname(dir);
+    if (parent === dir) break; // 루트 도달
+    dir = parent;
   }
-  if (existsSync(resolve(cwd, "yarn.lock"))) return "yarn";
   return "npm";
 }
 
