@@ -578,6 +578,9 @@ const tokenEmitters = {
     // 그대로 참조하면 되므로 tokens.css 를 공유. .module.css 안에서도
     // var(--primary) 같은 글로벌 변수는 정상 참조됨.
     "css-modules": buildTokensCss,
+    // vanilla-extract 도 마찬가지 — .css.ts 안에서 'var(--primary)' 처럼
+    // 문자열로 CSS var 를 참조할 수 있어 tokens.css 그대로 공유.
+    "vanilla-extract": buildTokensCss,
   },
   flutter: {
     plain: buildTokensDart,
