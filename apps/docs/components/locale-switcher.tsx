@@ -43,7 +43,7 @@ export function LocaleSwitcher() {
         {routing.locales.map((l) => (
           <DropdownMenuItem
             key={l}
-            onSelect={() => onSelect(l)}
+            onClick={() => onSelect(l)}
             data-active={l === locale}
           >
             {t(l)}
