@@ -288,6 +288,25 @@ export default defineConfig({ plugins: [vanillaExtractPlugin()] });`,
         토큰 emitter 가 다른 형식이면 <code>packages/tokens/build.mjs</code> 의 <code>tokenEmitters</code> 디스패처에 등록.
       </p>
 
+      <h2 id="visual">시각 회귀 테스트</h2>
+      <p>
+        sh-ui 코어 자체에 Playwright 기반 시각 회귀 테스트가 들어있다. 컴포넌트 페이지의 Preview 영역을 캡쳐해 기준 스냅샷과 비교 — 의도하지 않은 시각 변경을 PR 에서 잡는다.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# 컴포넌트 변경 후 스냅샷이 달라졌으면 갱신
+$ pnpm --filter @sh-ui/docs visual:update
+
+# CI 와 동일한 비교 (변경 검출 시 fail)
+$ pnpm --filter @sh-ui/docs visual
+
+# 새 컴포넌트 추가는 apps/docs/tests/visual/components.spec.ts 의 COMPONENTS 배열에 슬러그만 추가`}
+      />
+      <p className="muted">
+        기준 스냅샷은 macOS 환경 기준 — CI 는 macos-latest 러너에서 동일 환경으로 비교. 다른 OS 에서 작업할 때는 별도로 스냅샷 갱신이 필요할 수 있다.
+      </p>
+
       <h2 id="switching">이미 만든 프로젝트에서 모드 변경</h2>
       <p>
         <code>sh-ui.config.json</code> 의 <code>cssFramework</code> 값을 바꾼 뒤, 사용 중인 컴포넌트를 다시{" "}

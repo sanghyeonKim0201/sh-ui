@@ -12,6 +12,8 @@
     "pretypecheck": "node scripts/generate-variants.mjs",
     "typecheck": "tsc --noEmit",
     "generate:variants": "node scripts/generate-variants.mjs",
+    "visual": "playwright test",
+    "visual:update": "playwright test --update-snapshots",
     "sh-ui:install": "node ../../packages/cli/bin/sh-ui.mjs add tokens button"
   },
   "dependencies": {
@@ -48,6 +50,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

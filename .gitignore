@@ -21,3 +21,7 @@ build
 # CLI 출고 직전 prepublish 가 모노레포 데이터를 복사해 두는 디렉토리.
 # 소스 오브 트루스는 packages/{registry,tokens,llms,changelog} 그대로.
 packages/cli/data/
+
+# Playwright 시각 회귀 — 결과/리포트만 ignore, 기준 스냅샷(*.png) 은 commit
+apps/docs/playwright-report/
+apps/docs/test-results/

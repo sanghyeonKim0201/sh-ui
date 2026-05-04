@@ -1,0 +1,39 @@
+name: Visual Regression
+
+on:
+  pull_request:
+    branches: [live, dev]
+  push:
+    branches: [dev, live]
+
+jobs:
+  visual:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 10.33.0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @sh-ui/docs exec playwright install chromium
+
+      - name: Visual tests
+        run: pnpm --filter @sh-ui/docs visual
+
+      - name: Upload diff artifacts (실패 시)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/docs/playwright-report/
+          retention-days: 14
