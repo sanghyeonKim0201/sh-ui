@@ -15,17 +15,21 @@ const usage = `사용법:
                                    특수값: tokens → 설정 기반 토큰 파일 생성
   sh-ui list                       현재 설치된 컴포넌트 목록 표시
   sh-ui remove <component...>      설치된 컴포넌트 파일 삭제
+  sh-ui rename-app <old> <new>     monorepo 의 앱 이름 일괄 변경
+                                   (apps/<old>/, packages/ui/ui-apps/ui-<old>/
+                                   디렉토리 + 모든 import/path 패턴)
   sh-ui mcp                        MCP 서버(stdio) 시작 — IDE-내 AI용
   sh-ui mcp init --client <name>   IDE MCP 설정 파일에 sh-ui 엔트리 자동 추가
                                    (claude-code | cursor | claude-desktop)
   옵션:
-    --skip-install                 (add) 외부 패키지 자동 설치 생략
+    --skip-install                 (add, rename-app) 외부 패키지 자동 설치 생략
     --diff                         (add) 파일을 쓰지 않고 변경 내역만 출력
     --force                        (add) 기존 파일을 모두 덮어쓰기 (prompt 없음)
                                    (remove) 사용자가 수정한 파일도 삭제
     --keep                         (add) 기존 파일을 모두 유지 (prompt 없음)
     --all                          (list) 설치되지 않은 컴포넌트까지 표시
-    --dry-run                      (remove) 삭제 대상만 출력하고 실행 안 함
+    --dry-run                      (remove, rename-app) 변경 대상만 출력하고 실행 안 함
+    --yes                          (rename-app) 대화형 확인 생략
 `;
 
 try {
@@ -72,6 +76,21 @@ try {
         const { startMcpServer } = await import("../src/mcp.mjs");
         await startMcpServer();
       }
+      break;
+    }
+    case "rename-app": {
+      const yes = rest.includes("--yes");
+      const dryRun = rest.includes("--dry-run");
+      const skipInstall = rest.includes("--skip-install");
+      const positional = rest.filter((a) => !a.startsWith("--"));
+      if (positional.length < 2) {
+        console.error("에러: rename-app 은 <old> <new> 두 인자가 필요합니다.\n");
+        console.error(usage);
+        process.exit(1);
+      }
+      const [oldName, newName] = positional;
+      const { renameApp } = await import("../src/rename-app.mjs");
+      await renameApp({ cwd: process.cwd(), oldName, newName, yes, dryRun, skipInstall });
       break;
     }
     case "remove":

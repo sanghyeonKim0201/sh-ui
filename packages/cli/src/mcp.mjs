@@ -15,6 +15,7 @@
 //   sh_ui_get_changelog    - 변경 내역(versions.json) 반환
 //   sh_ui_encode_theme     - 토큰 객체 → base64 (사용자가 손본 톤을 영구 보관)
 //   sh_ui_decode_theme     - base64 → 토큰 객체 (기존 테마 일부만 수정 후 재인코딩)
+//   sh_ui_rename_app       - monorepo 의 앱 이름 일괄 변경 (디렉토리 + import/path)
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -27,6 +28,7 @@ import { init } from "./init.mjs";
 import { add } from "./add.mjs";
 import { list } from "./list.mjs";
 import { remove } from "./remove.mjs";
+import { renameApp } from "./rename-app.mjs";
 import { createProject } from "./create/generator.js";
 import {
   getRegistryRoot,
@@ -170,6 +172,10 @@ function buildServerInstructions(cliName) {
 - \`sh_ui_get_component\` — props/소스 확인 (코드 작성 전)
 - \`sh_ui_add_component\` / \`sh_ui_remove_component\` — 설치/삭제
 - \`sh_ui_get_changelog\` — 최근 변경 내역
+
+## 앱 이름 변경 (monorepo)
+
+사용자가 "apps/web 을 apps/dashboard 로 바꿔줘" 같이 모노레포 앱 이름 변경을 요청하면 \`sh_ui_rename_app\` 사용 — 손으로 6~10 군데 (디렉토리, package.json name, tsconfig paths, Dockerfile WORKDIR, next.config transpilePackages, sh-ui.config aliases, README, .github/workflows) 갈아엎지 않도록 자동화. \`dryRun: true\` 로 먼저 변경 매트릭스 보여주고 사용자 확인 후 실행 권장.
 
 ## 테마 커스터마이징 (스캐폴드 결과 톤이 마음에 안 들 때)
 
@@ -521,6 +527,40 @@ export async function startMcpServer() {
           content: [{ type: "text", text: e.message }],
         };
       }
+    },
+  );
+
+  // 모노레포 앱 이름 일괄 변경 — 디렉토리 이동 + import/path 패턴 치환 + lockfile 재생성.
+  // dryRun=true 면 변경 매트릭스만 반환해 AI 가 사용자에게 미리보기 가능.
+  server.registerTool(
+    "sh_ui_rename_app",
+    {
+      description:
+        "monorepo 의 앱 이름 일괄 변경 — apps/<old>/, packages/ui/ui-apps/ui-<old>/ 두 디렉토리 이동 + " +
+        "@workspace/ui-<old> / apps/<old> / --filter <old> / --app <old> / cd apps/<old> 패턴 치환 + " +
+        "사용자 코드, package.json name, tsconfig paths, Dockerfile WORKDIR, sh-ui.config.json aliases, README, .github/workflows 모두 자동 갱신. " +
+        "monorepo 전용 (pnpm-workspace.yaml 필수). dryRun 으로 변경 매트릭스 미리보기 가능. " +
+        "false-positive 방지를 위해 bare 단어(예: 'web')는 절대 치환하지 않고 컨텍스트(슬래시·공백·따옴표) 로 묶인 패턴만 처리.",
+      inputSchema: {
+        oldName: z.string().min(1).describe("현재 앱 이름 (예: 'web'). apps/<old>/ 가 존재해야 함."),
+        newName: z.string().min(1).describe("새 앱 이름 (예: 'dashboard'). 영숫자 + 하이픈만 허용."),
+        cwd: z.string().optional().describe("monorepo 루트 디렉토리. 기본 process.cwd()"),
+        dryRun: z.boolean().optional().describe("변경 매트릭스만 반환, 실제 파일 변경 X. 기본 false"),
+        skipInstall: z.boolean().optional().describe("마지막 pnpm install 생략. 기본 false"),
+      },
+    },
+    async (input) => {
+      const result = await captureConsole(() =>
+        renameApp({
+          cwd: resolveCwd(input),
+          oldName: input.oldName,
+          newName: input.newName,
+          yes: true, // MCP 컨텍스트는 비대화형 — 호출자(AI) 가 사용자 확인을 이미 받았다고 가정
+          dryRun: input.dryRun === true,
+          skipInstall: input.skipInstall === true,
+        }),
+      );
+      return textResult(result || "✓ rename-app 완료");
     },
   );
 

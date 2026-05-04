@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.57.0",
+      "date": "2026-05-04",
+      "title": "rename-app — monorepo 앱 이름 일괄 변경 명령어 + MCP 툴",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui rename-app <old> <new>`** — monorepo 의 앱 이름을 한 번에 변경. `apps/<old>/`, `packages/ui/ui-apps/ui-<old>/` 두 디렉토리 이동 + `@workspace/ui-<old>` / `apps/<old>` / `--filter <old>` / `--app <old>` 같은 컨텍스트 묶인 패턴만 치환. 사용자 코드, package.json name, tsconfig paths, Dockerfile WORKDIR, next.config transpilePackages, sh-ui.config aliases, README, `.github/workflows/*.yml`, 루트 package.json scripts 까지 자동 갱신.",
+        "**MCP 툴 `sh_ui_rename_app`** — IDE-내 AI 가 \"apps/web 을 dashboard 로 바꿔줘\" 류 요청 받으면 자동 호출. `dryRun: true` 로 변경 매트릭스 미리보기 후 실행 권장. instructions 블록에도 가이드 추가.",
+        "**옵션** — `--dry-run` (변경 매트릭스만 출력) / `--yes` (대화형 확인 생략) / `--skip-install` (마지막 `pnpm install` 생략).",
+        "**false-positive 방지** — bare 단어(예: `web`)는 절대 치환하지 않음. 컨텍스트(슬래시, 따옴표, 백틱, 공백, 개행) 로 묶인 패턴만 매치 — `core-web-vitals` (ESLint) / `safari-web-extension` (Sentry) 같은 생태계 상수는 보존.",
+        "**lockfile 자동 재생성** — 마지막 단계에서 `pnpm install` 실행해 workspace 링크 갱신. 실패해도 friendly 안내 메시지로 사용자가 수동 실행 가능."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.57.0"
+    },
+    {
       "version": "0.56.4",
       "date": "2026-05-04",
       "title": "fix — v0.56.3 next-intl 후속: import 보존 범위를 side-effect 만으로",
