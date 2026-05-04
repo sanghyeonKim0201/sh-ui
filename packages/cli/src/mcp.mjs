@@ -6,11 +6,15 @@
 //
 // 노출 툴:
 //   sh_ui_describe_init    - init 4개 축(platform/base/radius/mode) enum + 한글 설명
+//   sh_ui_create_project   - 빈 폴더에 Next.js/Flutter 프로젝트 스캐폴드
 //   sh_ui_init             - sh-ui.config.json 생성 (비대화형)
 //   sh_ui_list_components  - 플랫폼 전체 컴포넌트 + 요약
 //   sh_ui_get_component    - 단일 컴포넌트의 메타·소스·deps
 //   sh_ui_add_component    - 컴포넌트 설치 (외부 패키지 자동 설치 포함)
 //   sh_ui_remove_component - 컴포넌트 삭제
+//   sh_ui_get_changelog    - 변경 내역(versions.json) 반환
+//   sh_ui_encode_theme     - 토큰 객체 → base64 (사용자가 손본 톤을 영구 보관)
+//   sh_ui_decode_theme     - base64 → 토큰 객체 (기존 테마 일부만 수정 후 재인코딩)
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -40,6 +44,8 @@ import {
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
 import { THEME_PRESET_NAMES } from "./create/theme/presets.js";
+import { decodeTheme } from "./create/theme/decode.js";
+import { encodeTheme } from "./create/theme/encode.js";
 
 const PLATFORMS = INIT_PLATFORMS;
 const BASES = THEME_BASES;
@@ -164,6 +170,18 @@ function buildServerInstructions(cliName) {
 - \`sh_ui_get_component\` — props/소스 확인 (코드 작성 전)
 - \`sh_ui_add_component\` / \`sh_ui_remove_component\` — 설치/삭제
 - \`sh_ui_get_changelog\` — 최근 변경 내역
+
+## 테마 커스터마이징 (스캐폴드 결과 톤이 마음에 안 들 때)
+
+스캐폴드 후 사용자가 "눈 아프다" / "Linear 톤으로" 같이 톤 조정을 요청하면, **\`tokens.css\` 직접 편집** + **편집 결과를 base64 로 백업** 두 단계를 같이 한다 — 그래야 다음에 같은 프로젝트를 재생성해도 톤이 보존된다.
+
+1. \`tokens.css\` 의 \`:root\` / \`.dark\` 블록 색만 손봄 (마커는 건드리지 않음).
+2. \`sh_ui_encode_theme\` 으로 \`{ light, dark, radius }\` 객체를 base64 로 인코딩.
+   - 옵셔널 색 토큰(\`success\`/\`warning\`/\`info\` + \`-foreground\`)도 같이 넣을 수 있음.
+3. 그 base64 를 사용자에게 보여주고 (또는 메모리에 저장), **다음 \`sh_ui_create_project\` 호출 시 \`theme\` 인자에 그대로** 넣어 영구 보관.
+4. 기존 base64 를 일부만 고치고 싶으면 \`sh_ui_decode_theme\` → 객체 수정 → \`sh_ui_encode_theme\` round-trip.
+
+> 프리셋(\`neutral\`/\`slate\`/...) 이름과 base64 둘 다 \`theme\` 인자에 넣을 수 있다 — 길이로 자동 판별.
 `;
 }
 
@@ -204,7 +222,7 @@ export async function startMcpServer() {
         plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
           .describe(`Next.js 플러그인 (${PLUGIN_NAMES.join(', ')}). 미지정시 빈 배열`),
         theme: z.string().optional()
-          .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 playground 에서 생성한 base64 (선택)`),
+          .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 base64 테마 코드. 사용자가 톤을 직접 손본 결과를 영구 보관하려면 sh_ui_encode_theme 으로 base64 를 만들어 여기에 넘긴다.`),
         cssFramework: z.enum(CSS_FRAMEWORKS).optional()
           .describe(`CSS 프레임워크. 기본 plain. 현재 ${CSS_FRAMEWORKS.join('/')} 지원 — 변종 미보유 컴포넌트는 add 시 plain 으로 자동 fallback`),
         cwd: z.string().optional()
@@ -429,6 +447,80 @@ export async function startMcpServer() {
         }),
       );
       return textResult(text || "✓ remove 완료");
+    },
+  );
+
+  // 테마 round-trip — 사용자가 손본 토큰을 다음 스캐폴드까지 보존.
+  // 입력 hex 토큰은 z.object 로 명시 — 누락/오타가 즉시 잡히고 클라이언트(IDE-내 AI)가 schema 만 봐도
+  // 어떤 키가 필요한지 자동으로 알 수 있다. round-trip 검증은 encodeTheme 내부의 decodeTheme 호출에 위임.
+  const HEX = z.string().regex(/^#[0-9A-Fa-f]{6}$/, "hex 컬러 (#RRGGBB)");
+  const tokenMapSchema = z
+    .object({
+      background: HEX, "background-subtle": HEX, "background-muted": HEX, "background-inverse": HEX,
+      foreground: HEX, "foreground-muted": HEX, "foreground-subtle": HEX, "foreground-inverse": HEX,
+      border: HEX, "border-strong": HEX,
+      primary: HEX, "primary-foreground": HEX, "primary-hover": HEX,
+      danger: HEX, "danger-foreground": HEX,
+      success: HEX.optional(), "success-foreground": HEX.optional(),
+      warning: HEX.optional(), "warning-foreground": HEX.optional(),
+      info: HEX.optional(), "info-foreground": HEX.optional(),
+    })
+    .describe("15개 필수 색 토큰 + 옵셔널 6개(success/warning/info × -foreground). 각 값은 #RRGGBB hex");
+
+  server.registerTool(
+    "sh_ui_encode_theme",
+    {
+      description:
+        "사용자가 손본 색 토큰을 sh-ui base64 테마 코드로 인코딩. " +
+        "산출물을 sh_ui_create_project 의 theme 인자에 그대로 넣으면 다음 스캐폴드에서 톤이 보존된다. " +
+        "스캐폴드 후 tokens.css 를 직접 편집한 케이스에서 그 결과를 영구 보관할 때 사용.",
+      inputSchema: {
+        light: tokenMapSchema.describe("라이트 모드 토큰"),
+        dark: tokenMapSchema.describe("다크 모드 토큰"),
+        radius: z.number().min(0).max(1.5)
+          .describe("기본 radius (rem 단위, 0~1.5). 일반 권장값 0.5~0.75"),
+      },
+    },
+    async (input) => {
+      try {
+        const b64 = encodeTheme({
+          light: input.light,
+          dark: input.dark,
+          radius: input.radius,
+        });
+        return jsonResult({
+          theme: b64,
+          length: b64.length,
+          hint: "sh_ui_create_project 의 theme 인자에 위 문자열을 그대로 넣으면 됩니다.",
+        });
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: e.message }],
+        };
+      }
+    },
+  );
+
+  server.registerTool(
+    "sh_ui_decode_theme",
+    {
+      description:
+        "sh-ui base64 테마 코드를 토큰 객체로 복원. " +
+        "기존 base64 테마의 일부만 수정해 다시 인코딩하고 싶을 때 사용 (decode → 수정 → encode).",
+      inputSchema: {
+        theme: z.string().describe("sh-ui base64 테마 코드"),
+      },
+    },
+    async (input) => {
+      try {
+        return jsonResult(decodeTheme(input.theme));
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: e.message }],
+        };
+      }
     },
   );
 

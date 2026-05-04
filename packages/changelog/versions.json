@@ -3,6 +3,33 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.55.0",
+      "date": "2026-05-04",
+      "title": "MCP — 테마 round-trip + 옵셔널 상태 컬러",
+      "type": "minor",
+      "highlights": [
+        "**`sh_ui_encode_theme` MCP 툴 신규** — 사용자가 손본 토큰 객체(`{ light, dark, radius }`)를 base64 로 인코딩. 산출물을 `sh_ui_create_project` 의 `theme` 인자에 그대로 넘기면 다음 스캐폴드에서 톤이 그대로 보존된다. round-trip 검증 내장 — 잘못된 입력은 즉시 거부.",
+        "**`sh_ui_decode_theme` MCP 툴 신규** — base64 테마 코드를 객체로 복원. 기존 테마 일부만 고치고 싶을 때 decode → 수정 → encode 양방향 흐름.",
+        "**옵셔널 색 토큰 — `success`/`warning`/`info` + `-foreground`** — base64 스키마에 6개 옵셔널 키 추가. 누락 OK(기존 base64 호환), 들어 있으면 hex 검증. `inject` 는 light/dark 둘 다 정의된 경우에만 CSS 로 emit (한쪽만 있으면 안전 가드로 skip).",
+        "**MCP `instructions` + `sh_ui_create_project` description 보강** — \"테마 커스터마이징 round-trip\" 흐름을 새 세션에서도 AI 가 자연스럽게 떠올릴 수 있게 명시.",
+        "**docs MCP 페이지 동기화** — 노출 툴 표에 `sh_ui_create_project`/`sh_ui_encode_theme`/`sh_ui_decode_theme` 3개 추가 + 테마 round-trip 섹션."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.55.0"
+    },
+    {
+      "version": "0.54.0",
+      "date": "2026-05-04",
+      "title": "다크/라이트 자동 전환 — 시스템 설정 기본 반영",
+      "type": "minor",
+      "highlights": [
+        "**`prefers-color-scheme` 미디어쿼리 기본 emit** — `mode: \"light-dark\"` 토큰 출력에 `@media (prefers-color-scheme: dark) { :root:not(.light):not(.dark) { ... } }` 블록을 자동 추가. 사용자가 토글 컴포넌트를 따로 깔지 않아도 OS 다크모드면 다크, 라이트모드면 라이트로 자동 전환됨.",
+        "**`.light` 클래스 명시 override 지원** — 기존 `.dark` 클래스에 더해 `.light` 도 미디어쿼리를 이긴다. 시스템이 다크여도 사용자가 라이트를 명시 선택하면 의도대로 라이트 유지.",
+        "**Theme 컴포넌트 동기 업데이트** — `setTheme(\"light\")` 가 `<html>` 에 `.light` 클래스를 명시 부여하도록 변경. 토글 사용 시 시스템 설정과 충돌 없이 동작.",
+        "**템플릿 + docs 자동 적용** — `nextjs-standalone` / `ui-app-template` / docs 사이트의 `tokens.css` 가 새 패턴으로 갱신. 기존 컴포넌트 코드 변경 불필요."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.54.0"
+    },
+    {
       "version": "0.53.0",
       "date": "2026-05-04",
       "title": "Calendar/DatePicker i18n — locale + messages prop",

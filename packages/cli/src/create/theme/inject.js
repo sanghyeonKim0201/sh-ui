@@ -1,4 +1,4 @@
-import { TOKEN_KEYS } from './decode.js';
+import { TOKEN_KEYS, OPTIONAL_TOKEN_KEYS } from './decode.js';
 
 /**
  * 파일 내용에서 sh-ui:<section>-start / -end 마커 사이 내용을 교체.
@@ -30,11 +30,27 @@ export const replaceSection = (content, section, commentOpen, commentClose, repl
 const cssColorLine = (key, value) => `  --${key}: ${value};`;
 
 export const buildCssColorsBlock = (theme) => {
-  const lightLines = TOKEN_KEYS.map((k) => cssColorLine(k, theme.light[k])).join('\n');
-  const darkLines = TOKEN_KEYS.map((k) => cssColorLine(k, theme.dark[k])).join('\n');
+  // 옵셔널 색 토큰 — light/dark 둘 다에 정의되어 있을 때만 emit. 한쪽만 있으면 누락된 쪽은 fallback 으로
+  // 디자인이 깨질 수 있어서 양쪽 정의가 일치할 때만 안전하게 내보낸다.
+  const optionalKeys = OPTIONAL_TOKEN_KEYS.filter(
+    (k) => k in theme.light && k in theme.dark,
+  );
+  const allKeys = [...TOKEN_KEYS, ...optionalKeys];
+
+  const lightLines = allKeys.map((k) => cssColorLine(k, theme.light[k])).join('\n');
+  const darkLines = allKeys.map((k) => cssColorLine(k, theme.dark[k])).join('\n');
+  // 미디어쿼리 안의 다크 라인은 한 단계 더 들여쓰기 (`:root:not(...)` 안쪽).
+  const darkLinesIndented = allKeys
+    .map((k) => `  ${cssColorLine(k, theme.dark[k])}`)
+    .join('\n');
   return [
     ':root {',
     lightLines,
+    '}',
+    '@media (prefers-color-scheme: dark) {',
+    '  :root:not(.light):not(.dark) {',
+    darkLinesIndented,
+    '  }',
     '}',
     '.dark {',
     darkLines,

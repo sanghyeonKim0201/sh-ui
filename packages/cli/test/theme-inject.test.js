@@ -89,6 +89,28 @@ describe('buildCssColorsBlock', () => {
     expect(css).toContain('.dark {');
     expect(css).toContain('--background: #000000;');
   });
+
+  it('옵셔널 색 토큰이 light/dark 둘 다에 있으면 emit', () => {
+    const themed = {
+      ...theme,
+      light: { ...theme.light, success: '#16A34A', warning: '#D97706', info: '#0EA5E9' },
+      dark: { ...theme.dark, success: '#22C55E', warning: '#F59E0B', info: '#38BDF8' },
+    };
+    const css = buildCssColorsBlock(themed);
+    expect(css).toContain('--success: #16A34A;');
+    expect(css).toContain('--success: #22C55E;');
+    expect(css).toContain('--warning: #D97706;');
+    expect(css).toContain('--info: #38BDF8;');
+  });
+
+  it('옵셔널 색 토큰이 한쪽 모드만 있으면 emit 안 함 (양쪽 동기화 안전 가드)', () => {
+    const onlyLight = {
+      ...theme,
+      light: { ...theme.light, success: '#16A34A' },
+    };
+    const css = buildCssColorsBlock(onlyLight);
+    expect(css).not.toContain('--success');
+  });
 });
 
 describe('buildCssRadiusBlock', () => {

@@ -8,6 +8,15 @@ const TOKEN_KEYS = [
   'danger', 'danger-foreground',
 ];
 
+// 옵셔널 색 토큰 — 누락 OK. 입력에 들어 있으면 hex 검증 + inject 시 CSS 변수로 emit.
+// 사용자가 success/warning/info 상태 컬러를 커스텀하고 싶을 때 사용.
+// Dart 측 ShUiColorTokens 는 아직 미반영(웹 한정).
+const OPTIONAL_TOKEN_KEYS = [
+  'success', 'success-foreground',
+  'warning', 'warning-foreground',
+  'info', 'info-foreground',
+];
+
 /**
  * 옵셔널 카테고리 검증 — 모두 Record<string, number>.
  * 카테고리 누락은 OK (스캐폴드 시 해당 블록은 디폴트 유지). 형식만 위배되면 에러.
@@ -95,6 +104,16 @@ const validateTokenMap = (name, map) => {
       );
     }
   }
+  // 옵셔널 키는 들어 있을 때만 hex 검증.
+  for (const key of OPTIONAL_TOKEN_KEYS) {
+    if (!(key in map)) continue;
+    const value = map[key];
+    if (typeof value !== 'string' || !HEX_REGEX.test(value)) {
+      throw new Error(
+        `theme 디코드 실패: ${name}.${key} 가 hex 포맷이 아님 (받은 값: ${JSON.stringify(value)})`,
+      );
+    }
+  }
 };
 
 export const decodeTheme = (b64) => {
@@ -166,4 +185,4 @@ export const resolveTheme = (input) => {
   return decodeTheme(input);
 };
 
-export { TOKEN_KEYS, THEME_PRESET_NAMES };
+export { TOKEN_KEYS, OPTIONAL_TOKEN_KEYS, THEME_PRESET_NAMES };
