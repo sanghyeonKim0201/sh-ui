@@ -574,6 +574,10 @@ const tokenEmitters = {
     // 동일. 향후 Tailwind v3 theme.config.ts 를 별도 emit 하고 싶으면
     // 여기에 다른 함수를 등록.
     tailwind: buildTokensCss,
+    // CSS Modules 변종도 토큰은 평문 CSS custom properties — :root 변수를
+    // 그대로 참조하면 되므로 tokens.css 를 공유. .module.css 안에서도
+    // var(--primary) 같은 글로벌 변수는 정상 참조됨.
+    "css-modules": buildTokensCss,
   },
   flutter: {
     plain: buildTokensDart,

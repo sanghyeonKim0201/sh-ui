@@ -1,0 +1,92 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast), border-color var(--duration-fast),
+    transform 80ms ease-out, filter 80ms;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:disabled {
+  opacity: var(--opacity-disabled);
+  pointer-events: none;
+}
+
+.button:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+  filter: brightness(0.92);
+  transition-duration: 40ms;
+}
+
+/* sizes */
+.sm { height: var(--control-sm); padding: 0 var(--space-3); font-size: var(--text-sm); }
+.md { height: var(--control-md); padding: 0 var(--space-4); font-size: var(--text-sm); }
+.lg { height: var(--control-lg); padding: 0 var(--space-5); font-size: var(--text-base); }
+
+/* 모바일/터치 디바이스: 최소 탭 영역 보장 */
+@media (hover: none) and (pointer: coarse) {
+  .sm { height: 2.25rem; }
+  .md { height: 2.75rem; }
+}
+
+/* variants */
+.primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.primary:hover { background-color: var(--primary-hover); }
+
+.secondary {
+  background-color: var(--background-muted);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.secondary:hover { background-color: var(--background-subtle); }
+
+.ghost {
+  background-color: transparent;
+  color: var(--foreground);
+}
+.ghost:hover { background-color: var(--background-muted); }
+
+.danger {
+  background-color: var(--danger);
+  color: var(--danger-foreground);
+}
+
+.link {
+  background-color: transparent;
+  color: var(--foreground);
+  border-color: transparent;
+  height: auto;
+  padding: 0;
+  text-underline-offset: 3px;
+}
+.link:hover { text-decoration: underline; }
+.link:active:not(:disabled) {
+  transform: none;
+  filter: none;
+  color: var(--foreground-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  .button:active:not(:disabled) {
+    transform: none;
+    filter: none;
+  }
+}

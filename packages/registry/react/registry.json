@@ -25,6 +25,20 @@
           "frameworks": [
             "tailwind"
           ]
+        },
+        {
+          "src": "components/button/index.module.tsx",
+          "dest": "{components}/button/index.tsx",
+          "frameworks": [
+            "css-modules"
+          ]
+        },
+        {
+          "src": "components/button/styles.module.css",
+          "dest": "{components}/button/styles.module.css",
+          "frameworks": [
+            "css-modules"
+          ]
         }
       ],
       "dependencies": [
@@ -63,6 +77,20 @@
           "frameworks": [
             "tailwind"
           ]
+        },
+        {
+          "src": "components/card/index.module.tsx",
+          "dest": "{components}/card/index.tsx",
+          "frameworks": [
+            "css-modules"
+          ]
+        },
+        {
+          "src": "components/card/styles.module.css",
+          "dest": "{components}/card/styles.module.css",
+          "frameworks": [
+            "css-modules"
+          ]
         }
       ],
       "dependencies": [],
@@ -93,6 +121,20 @@
           "dest": "{components}/input/index.tsx",
           "frameworks": [
             "tailwind"
+          ]
+        },
+        {
+          "src": "components/input/index.module.tsx",
+          "dest": "{components}/input/index.tsx",
+          "frameworks": [
+            "css-modules"
+          ]
+        },
+        {
+          "src": "components/input/styles.module.css",
+          "dest": "{components}/input/styles.module.css",
+          "frameworks": [
+            "css-modules"
           ]
         }
       ],
@@ -1677,7 +1719,8 @@
           "src": "lib/cn.ts",
           "dest": "{utils}",
           "frameworks": [
-            "plain"
+            "plain",
+            "css-modules"
           ]
         },
         {

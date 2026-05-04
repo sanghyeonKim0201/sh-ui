@@ -193,19 +193,19 @@ function frameworkMatches(entry, cssFramework) {
 }
 
 /**
- * cssFramework="tailwind" 인데 컴포넌트에 tailwind 전용 변종 파일이 없으면
- * plain 으로 fallback. plain CSS 컴포넌트도 @theme inline 브리지 덕분에
- * Tailwind v4 프로젝트에서 그대로 동작하므로 깨지지 않음.
+ * 컴포넌트에 요청된 cssFramework 전용 변종 파일이 없으면 plain 으로 fallback.
+ * plain CSS 컴포넌트는 :root 변수만 의존하므로 어떤 환경(Tailwind v4, CSS Modules,
+ * vanilla CSS) 에서도 그대로 동작 — 깨지지 않음.
  *
- * 점진적 rollout 전략 — 모든 컴포넌트가 한 번에 tailwind 변종을 갖출 필요 없이
- * 가능한 것부터 utility-class 변종을 제공하고, 나머지는 plain 으로 자연 처리.
+ * 점진적 rollout 전략 — 모든 컴포넌트가 한 번에 새 변종을 갖출 필요 없이
+ * 가능한 것부터 변종을 제공하고, 나머지는 plain 으로 자연 처리.
  */
 function effectiveFramework(entry, cssFramework) {
-  if (cssFramework !== "tailwind") return cssFramework;
-  const hasTailwindVariant = (entry.files ?? []).some(
-    (f) => f.frameworks && f.frameworks.includes("tailwind"),
+  if (cssFramework === "plain") return cssFramework;
+  const hasVariant = (entry.files ?? []).some(
+    (f) => f.frameworks && f.frameworks.includes(cssFramework),
   );
-  return hasTailwindVariant ? "tailwind" : "plain";
+  return hasVariant ? cssFramework : "plain";
 }
 
 async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver) {
@@ -223,11 +223,11 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   const requestedFw = config.cssFramework ?? "plain";
   const cssFramework = effectiveFramework(entry, requestedFw);
 
-  // 사용자가 tailwind 를 골랐는데 이 컴포넌트는 plain 으로 fallback 된 경우 한 줄 알림.
+  // 사용자가 plain 외 변종을 골랐는데 이 컴포넌트는 plain 으로 fallback 된 경우 한 줄 알림.
   // 동작에 문제는 없지만 일관성에 대한 기대를 정확히 셋업하기 위함.
-  if (requestedFw === "tailwind" && cssFramework === "plain" && !diffMode) {
+  if (requestedFw !== "plain" && cssFramework === "plain" && !diffMode) {
     console.log(
-      `ℹ ${name} — Tailwind 변종 미제공, plain 변종으로 설치 (Tailwind v4 환경에서 그대로 동작)`,
+      `ℹ ${name} — ${requestedFw} 변종 미제공, plain 변종으로 설치 (어떤 환경에서도 그대로 동작)`,
     );
   }
 
