@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { AppSidebar } from "@/components/app-sidebar";
+import { DarkModeToggle } from "@/components/dark-mode-toggle";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SearchDialog } from "@/components/search-dialog";
 import { TocSlot } from "@/components/toc-slot";
 import {
@@ -25,8 +27,10 @@ export default async function DocsLayout({ children }: { children: ReactNode }) 
       <SidebarInset>
         <header className="docs-header">
           <SidebarTrigger />
-          <div className="docs-header__search">
+          <div className="docs-header__actions">
             <SearchDialog />
+            <LocaleSwitcher />
+            <DarkModeToggle />
           </div>
         </header>
         <div className="docs-main">

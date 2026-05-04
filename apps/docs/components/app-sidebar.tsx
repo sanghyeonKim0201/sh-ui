@@ -18,8 +18,6 @@ import {
   WrenchIcon,
   type LucideIcon,
 } from "lucide-react";
-import { DarkModeToggle } from "@/components/dark-mode-toggle";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link, usePathname } from "@/i18n/navigation";
 import {
   Sidebar,
@@ -27,7 +25,6 @@ import {
   SidebarCollapsibleContent,
   SidebarCollapsibleTrigger,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -209,10 +206,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <LocaleSwitcher />
-        <DarkModeToggle />
-      </SidebarFooter>
     </Sidebar>
   );
 }
