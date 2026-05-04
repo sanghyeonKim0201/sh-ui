@@ -19,6 +19,25 @@
   --danger: #DC2626;
   --danger-foreground: #FFFFFF;
 }
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    --background: #0A0A0A;
+    --background-subtle: #171717;
+    --background-muted: #262626;
+    --background-inverse: #FFFFFF;
+    --foreground: #FAFAFA;
+    --foreground-muted: #A3A3A3;
+    --foreground-subtle: #737373;
+    --foreground-inverse: #0A0A0A;
+    --border: #262626;
+    --border-strong: #404040;
+    --primary: #FAFAFA;
+    --primary-foreground: #171717;
+    --primary-hover: #E5E5E5;
+    --danger: #DC2626;
+    --danger-foreground: #FFFFFF;
+  }
+}
 .dark {
   --background: #0A0A0A;
   --background-subtle: #171717;

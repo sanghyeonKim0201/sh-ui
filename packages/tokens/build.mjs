@@ -92,6 +92,26 @@ function emitCssBlock(selector, entries) {
   return `${selector} {\n${lines}\n}`;
 }
 
+/**
+ * `prefers-color-scheme: dark` 자동 적용 블록.
+ *
+ * 셀렉터를 `:root:not(.light):not(.dark)` 로 좁힌 이유 — 미디어쿼리는
+ * 명시 토글(`.light` / `.dark` 클래스)이 없을 때만 동작해야 한다. 그렇지
+ * 않으면 사용자가 라이트로 토글해도 OS 가 다크면 다시 다크로 돌아감.
+ *
+ * 적용 매트릭스:
+ *   클래스 없음 + 라이트 OS → :root (라이트) 적용
+ *   클래스 없음 + 다크 OS   → 이 블록 적용 (다크)
+ *   .light 클래스          → :root 만 적용 (강제 라이트, OS 무관)
+ *   .dark 클래스           → .dark 블록이 마지막에 와서 항상 승리 (강제 다크)
+ */
+function emitAutoDarkBlock(darkEntries) {
+  const lines = Object.entries(darkEntries)
+    .map(([p, entry]) => `    ${toCssVar(p)}: ${toCssValue(entry)};`)
+    .join("\n");
+  return `@media (prefers-color-scheme: dark) {\n  :root:not(.light):not(.dark) {\n${lines}\n  }\n}`;
+}
+
 /** 테마 독립 카테고리(light/dark 제외) 전체를 하나의 맵으로 병합 */
 function mergeThemeIndependent(tokens) {
   const out = {};
@@ -137,6 +157,7 @@ export async function buildTokensCss(config) {
     blocks.push(emitCssBlock(":root", { ...tokens.dark, ...themeIndep }));
   }
   if (mode === "light-dark") {
+    blocks.push(emitAutoDarkBlock(tokens.dark));
     blocks.push(emitCssBlock(".dark", tokens.dark));
   }
   blocks.push(buildTailwindThemeBlock(tokens.light));
