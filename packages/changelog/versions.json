@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.46.0",
+      "date": "2026-05-04",
+      "title": "CSS Modules 변종 파일럿 — button/card/input",
+      "type": "minor",
+      "highlights": [
+        "**CSS Modules 변종 파일럿** — `button`, `card`, `input` 에 `index.module.tsx` + `styles.module.css` 변종 추가. `sh-ui.config.json` 의 `cssFramework` 를 `\"css-modules\"` 로 두면 CLI 가 `import styles from \"./styles.module.css\"` 형태로 설치하고, 클래스 이름은 모듈 해시로 격리됨. 토큰은 plain/tailwind 와 동일한 `tokens.css` (`:root` CSS custom properties) 를 공유.",
+        "**Fallback 일반화** — 기존엔 tailwind 한정이던 `effectiveFramework` 가 모든 변종 공통으로 동작. `cssFramework` 에 변종이 없는 컴포넌트는 plain 으로 자동 fallback 되며 `ℹ <name> — <fw> 변종 미제공, plain 변종으로 설치` 한 줄 안내 출력. 점진적 rollout 패턴 그대로 — 컴포넌트마다 변종을 갖출 필요 없이 가능한 것부터 제공.",
+        "**`utils` 의 frameworks 분기** — `lib/cn.ts` 가 `[\"plain\", \"css-modules\"]` 로 매칭. CSS Modules 환경도 zero-dep `cn` 을 그대로 공유 (clsx/tailwind-merge 가 필요한 건 tailwind 변종뿐).",
+        "css-modules 는 여전히 `CSS_FRAMEWORKS_PLANNED` 유지 — 파일럿 3개만 변종이 있어 UI 노출은 다음 라운드에서 전체 컴포넌트 롤아웃 후 SUPPORTED 로 승격. 지금도 사용자가 직접 `sh-ui.config.json` 을 손대면 동작."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.46.0"
+    },
+    {
       "version": "0.45.3",
       "date": "2026-04-30",
       "title": "공유 `cn` 유틸 + CSS 프레임워크 가이드 docs",

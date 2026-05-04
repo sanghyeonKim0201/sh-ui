@@ -1,0 +1,200 @@
+.input {
+  display: block;
+  width: 100%;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 모바일/터치: 최소 탭 영역 + iOS 자동 줌 방지(16px) */
+@media (hover: none) and (pointer: coarse) {
+  .input {
+    height: 2.75rem;
+    font-size: var(--text-base);
+  }
+}
+
+.input::placeholder {
+  color: var(--foreground-subtle);
+}
+
+.input:hover:not(:disabled):not(:focus) {
+  border-color: var(--border-strong);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+.input:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+  background: var(--background-subtle);
+}
+
+.input:read-only {
+  background: var(--background-subtle);
+}
+
+/* 숫자 input 화살표 제거 */
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ───────── prefix / suffix ───────── */
+
+.inputWrap {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+.withPrefix { padding-left: var(--space-10); }
+.withSuffix { padding-right: var(--space-10); }
+
+.affix {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-muted);
+  pointer-events: none;
+}
+.affixPrefix { left: var(--space-3); }
+.affixSuffix { right: var(--space-1); }
+
+.affix > * { pointer-events: auto; }
+
+/* 비밀번호 토글 버튼 */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: color var(--duration-fast), background-color var(--duration-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.toggle:hover { color: var(--foreground); background: var(--background-muted); }
+.toggle:focus-visible {
+  outline: var(--border-width-strong) solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* 에러 상태 — aria-invalid="true" 기반 */
+.input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+/* ───────── InputGroup + InputAdornment ───────── */
+
+.group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--control-md);
+  padding: 0 var(--space-2);
+  gap: var(--space-2);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  cursor: text;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .group {
+    min-height: 2.75rem;
+  }
+}
+
+.group:hover:not([data-disabled]):not(:focus-within) {
+  border-color: var(--border-strong);
+}
+
+.group:focus-within {
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+.group[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+.group[aria-invalid="true"]:focus-within {
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+.group[data-disabled] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+  background: var(--background-subtle);
+}
+
+/* 그룹 내부의 Input은 자체 보더/배경/포커스 링을 모두 감춘다 */
+.input[data-in-group] {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.input[data-in-group]:focus,
+.input[data-in-group]:hover {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.input[data-in-group]:disabled {
+  background: transparent;
+}
+
+.inputWrap[data-in-group] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.adornment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--foreground-muted);
+  padding: 0 var(--space-1);
+}
+
+.adornment[data-interactive] {
+  padding: 0;
+}

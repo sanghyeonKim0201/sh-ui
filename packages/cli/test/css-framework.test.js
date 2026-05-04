@@ -102,9 +102,15 @@ describe("CSS framework — buildTokens 디스패처", () => {
     expect(tailwindCss).toBe(plainCss);
   });
 
-  it("미구현 emitter (react/css-modules) → 명확한 에러", async () => {
+  it("react/css-modules 도 plain 과 같은 tokens.css 공유", async () => {
+    const plainCss = await buildTokens({ ...baseConfig, cssFramework: "plain" });
+    const moduleCss = await buildTokens({ ...baseConfig, cssFramework: "css-modules" });
+    expect(moduleCss).toBe(plainCss);
+  });
+
+  it("미구현 emitter (react/vanilla-extract) → 명확한 에러", async () => {
     await expect(
-      buildTokens({ ...baseConfig, cssFramework: "css-modules" }),
+      buildTokens({ ...baseConfig, cssFramework: "vanilla-extract" }),
     ).rejects.toThrow(/tokens emitter 미구현/);
   });
 
@@ -202,6 +208,44 @@ describe("CSS framework — registry frameworks 분기 (button 파일럿)", () =
     expect(indexContent).not.toContain('import "./styles.css"');
     // Tailwind utility 가 들어 있음
     expect(indexContent).toMatch(/bg-primary/);
+  });
+
+  it("css-modules → index.module.tsx + styles.module.css 가 들어감", async () => {
+    await setupProject("css-modules");
+    await add({ cwd: tmpDir, names: ["button"], skipInstall: true, onConflict: "overwrite" });
+
+    const indexPath = path.join(tmpDir, "src/components/ui/button/index.tsx");
+    const moduleCssPath = path.join(tmpDir, "src/components/ui/button/styles.module.css");
+    const plainCssPath = path.join(tmpDir, "src/components/ui/button/styles.css");
+    expect(await fs.pathExists(indexPath)).toBe(true);
+    expect(await fs.pathExists(moduleCssPath)).toBe(true);
+    // css-modules 변종은 plain styles.css 가 안 들어감
+    expect(await fs.pathExists(plainCssPath)).toBe(false);
+
+    const indexContent = await fs.readFile(indexPath, "utf8");
+    expect(indexContent).toContain('import styles from "./styles.module.css"');
+    expect(indexContent).not.toContain("class-variance-authority");
+  });
+
+  it("css-modules → cva 가 install 큐에 안 들어감", async () => {
+    await setupProject("css-modules");
+
+    const logs = [];
+    const origLog = console.log;
+    console.log = (...args) => logs.push(args.map(String).join(" "));
+    try {
+      await add({
+        cwd: tmpDir,
+        names: ["button"],
+        skipInstall: true,
+        onConflict: "overwrite",
+      });
+    } finally {
+      console.log = origLog;
+    }
+
+    const allLogs = logs.join("\n");
+    expect(allLogs).not.toContain("class-variance-authority");
   });
 
   it("tailwind → dependencies 분기로 cva 가 install 큐에 들어감", async () => {
