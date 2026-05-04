@@ -3,7 +3,10 @@ type TokenKey =
   | "foreground" | "foreground-muted" | "foreground-subtle" | "foreground-inverse"
   | "border" | "border-strong"
   | "primary" | "primary-foreground" | "primary-hover"
-  | "danger" | "danger-foreground";
+  | "danger" | "danger-foreground"
+  | "success" | "success-foreground"
+  | "warning" | "warning-foreground"
+  | "info" | "info-foreground";
 
 type Mode = "light" | "dark";
 

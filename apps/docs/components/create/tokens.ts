@@ -6,9 +6,9 @@
  * 아무것도 안 만지면 미리보기와 실제 스캐폴드가 동일).
  *
  * 스캐폴드 threading:
- *   v0.36.0 시점 — 색 12개(legacy) + radius 만 CLI 로 흐른다 (decode.js 참고).
- *   확장 색 3개 / 기타 카테고리 / gradient 는 플레이그라운드 미리보기 전용.
- *   Phase 2 에서 카테고리별로 CLI 로 승격 예정.
+ *   v0.55.0 — base64 스키마에 success/warning/info × -foreground 옵셔널 키 6개 추가.
+ *   playground 는 항상 디폴트로 emit 하므로 base64 에 포함되어 흐른다 (CLI 측은 옵셔널이라 누락도 허용).
+ *   기타 카테고리 / gradient 는 카테고리별로 CLI 로 승격 (이미 진행).
  */
 
 export type TokenKey =
@@ -26,7 +26,13 @@ export type TokenKey =
   | "primary-foreground"
   | "primary-hover"
   | "danger"
-  | "danger-foreground";
+  | "danger-foreground"
+  | "success"
+  | "success-foreground"
+  | "warning"
+  | "warning-foreground"
+  | "info"
+  | "info-foreground";
 
 export type Mode = "light" | "dark";
 
@@ -46,6 +52,13 @@ export const lightDefaults: Record<TokenKey, string> = {
   "primary-hover": "#262626",
   danger: "#DC2626",
   "danger-foreground": "#FFFFFF",
+  // Badge 컴포넌트 fallback 값과 동일 — 디폴트 그대로 두면 시각적 변화 없음.
+  success: "#16A34A",
+  "success-foreground": "#FFFFFF",
+  warning: "#D97706",
+  "warning-foreground": "#FFFFFF",
+  info: "#0EA5E9",
+  "info-foreground": "#FFFFFF",
 };
 
 export const darkDefaults: Record<TokenKey, string> = {
@@ -64,6 +77,13 @@ export const darkDefaults: Record<TokenKey, string> = {
   "primary-hover": "#E5E5E5",
   danger: "#DC2626",
   "danger-foreground": "#FFFFFF",
+  // 다크에서는 한 단계 밝은 채도 — 어두운 배경 위에서도 식별 보장.
+  success: "#22C55E",
+  "success-foreground": "#052E16",
+  warning: "#F59E0B",
+  "warning-foreground": "#1F1300",
+  info: "#38BDF8",
+  "info-foreground": "#082F49",
 };
 
 /** 쉬운/고급 모드 모두에서 보이는 색 그룹 (간단 모드는 primary 만 노출, 고급은 전부) */
@@ -73,6 +93,9 @@ export const TOKEN_GROUPS: { label: string; keys: TokenKey[] }[] = [
   { label: "Border", keys: ["border", "border-strong"] },
   { label: "Primary", keys: ["primary", "primary-foreground", "primary-hover"] },
   { label: "Danger", keys: ["danger", "danger-foreground"] },
+  { label: "Success", keys: ["success", "success-foreground"] },
+  { label: "Warning", keys: ["warning", "warning-foreground"] },
+  { label: "Info", keys: ["info", "info-foreground"] },
 ];
 
 export const DEFAULT_RADIUS = 0.5;
