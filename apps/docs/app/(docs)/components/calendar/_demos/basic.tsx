@@ -98,6 +98,32 @@ export function NoOutsideDaysDemo() {
   return <Calendar showOutsideDays={false} />;
 }
 
+export function LocaleEnDemo() {
+  return <Calendar locale="en-US" />;
+}
+
+export function LocaleJaDemo() {
+  return <Calendar locale="ja-JP" />;
+}
+
+export function LocaleFrWithMessagesDemo() {
+  // 프랑스어 라벨은 Intl 가 자동으로 만들어주지만, aria-label 은 messages 로 직접.
+  return (
+    <Calendar
+      locale="fr-FR"
+      weekStartsOn={1}
+      messages={{
+        prevYear: "Année précédente",
+        nextYear: "Année suivante",
+        prevMonth: "Mois précédent",
+        nextMonth: "Mois suivant",
+        yearSelectLabel: "Année",
+        monthSelectLabel: "Mois",
+      }}
+    />
+  );
+}
+
 export function CompoundMonthOnlyDemo() {
   // 년 단위 화살표 없이 월 화살표 + 두 개 dropdown 만 노출.
   return (

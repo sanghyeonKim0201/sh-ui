@@ -13,6 +13,8 @@ import {
   RangeBasicDemo,
   RangeControlledDemo,
   RangeWithLabelDemo,
+  LocaleEnDemo,
+  RangeLocaleJaDemo,
   CompoundDemo,
   CustomTriggerDemo,
 } from "./_demos/basic";
@@ -424,6 +426,47 @@ ShUiDateRangePicker(
         />
       </Preview>
 
+      <h2>다국어 (i18n)</h2>
+      <p className="muted">
+        <code>locale</code> prop 한 줄로 placeholder 와 내부 캘린더 라벨이 모두 해당 언어로 전환된다. ko/en 외 언어는
+        nav/select aria-label 이 fallback 영어 — <code>messages</code> 로 직접 override 가능. 자세한 내용은{" "}
+        <code>Calendar</code> 페이지 참조.
+      </p>
+
+      <h3>English (en-US)</h3>
+      <Preview>
+        <Preview.Demo>
+          <LocaleEnDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<DatePicker locale="en-US" />`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>日本語 (ja-JP) — DateRangePicker</h3>
+      <Preview>
+        <Preview.Demo>
+          <RangeLocaleJaDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<DateRangePicker locale="ja-JP" />`,
+            },
+          ]}
+        />
+      </Preview>
+
       <h2>구성 요소</h2>
       <SubComponents
         rows={[
@@ -449,7 +492,9 @@ ShUiDateRangePicker(
           { prop: "formatDate", type: "(date: Date) => string", default: "YYYY-MM-DD", description: "트리거에 표시할 날짜 포맷 함수." },
           { prop: "min", type: "Date", description: "선택 가능 최소 날짜." },
           { prop: "max", type: "Date", description: "선택 가능 최대 날짜." },
-          { prop: "placeholder", type: "string", default: `"날짜 선택"`, description: "날짜 미선택 시 플레이스홀더." },
+          { prop: "placeholder", type: "string", default: "locale 기반 자동", description: "날짜 미선택 시 플레이스홀더. 미지정 시 locale 에서 파생 (ko: \"날짜 선택\", 그 외: \"Select date\")." },
+          { prop: "locale", type: "string", default: `"ko-KR"`, description: "BCP47 로케일. 내부 Calendar 와 placeholder 기본값에 모두 적용." },
+          { prop: "messages", type: "CalendarMessages", description: "내부 Calendar 의 nav/select aria-label override." },
           { prop: "disabled", type: "boolean" },
           { prop: "readOnly", type: "boolean" },
           { prop: "aria-invalid", type: `boolean | "true"`, description: "에러 상태. 보더가 --danger로 전환." },
@@ -468,7 +513,9 @@ ShUiDateRangePicker(
           { prop: "formatDate", type: "(date: Date) => string", default: "YYYY-MM-DD", description: "트리거에 표시할 날짜 포맷 함수." },
           { prop: "min", type: "Date", description: "선택 가능 최소 날짜." },
           { prop: "max", type: "Date", description: "선택 가능 최대 날짜." },
-          { prop: "placeholder", type: "string", default: `"시작일 ~ 종료일"`, description: "범위 미선택 시 플레이스홀더." },
+          { prop: "placeholder", type: "string", default: "locale 기반 자동", description: "범위 미선택 시 플레이스홀더. 미지정 시 locale 에서 파생 (ko: \"시작일 ~ 종료일\", 그 외: \"Start date – end date\")." },
+          { prop: "locale", type: "string", default: `"ko-KR"`, description: "BCP47 로케일. 내부 Calendar 와 placeholder 기본값에 모두 적용." },
+          { prop: "messages", type: "CalendarMessages", description: "내부 Calendar 의 nav/select aria-label override." },
           { prop: "disabled", type: "boolean" },
           { prop: "readOnly", type: "boolean" },
           { prop: "aria-invalid", type: `boolean | "true"`, description: "에러 상태." },
