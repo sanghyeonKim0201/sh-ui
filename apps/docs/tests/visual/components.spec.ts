@@ -55,7 +55,7 @@ const COMPONENTS = [
 
 for (const name of COMPONENTS) {
   test(`/components/${name} preview snapshot`, async ({ page }) => {
-    await page.goto(`/components/${name}`);
+    await page.goto(`/ko/components/${name}`);
     // 첫 Preview 데모 — preview-demo 클래스 또는 data-testid 가 없으므로
     // h2 직전의 첫 .preview 영역으로 셀렉트. sh-ui-preview__demo 클래스 사용.
     const demo = page.locator(".sh-ui-preview__demo").first();
