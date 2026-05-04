@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.56.0",
+      "date": "2026-05-04",
+      "title": "playground — Success / Warning / Info 색 그룹",
+      "type": "minor",
+      "highlights": [
+        "**playground `/create` 에 Success / Warning / Info 색 슬롯 추가** — 고급 모드에서 `success` / `success-foreground` / `warning` / `warning-foreground` / `info` / `info-foreground` 6개를 직접 잡을 수 있다. light/dark 각각 별도 디폴트(라이트는 Tailwind green-600/amber-600/sky-500, 다크는 한 단계 밝은 채도) 제공.",
+        "**Badge 컴포넌트 fallback 과 동일한 디폴트** — `var(--success, #16a34a)` 같은 기존 컴포넌트 fallback 값을 디폴트로 사용해, 사용자가 색을 안 만져도 시각적 변화가 0. 기존 base64/스캐폴드 결과와 호환 유지.",
+        "**v0.55.0 base64 옵셔널 키와 자동 연결** — playground 가 export 하는 base64 에 자동으로 새 6개 키가 포함되며, `sh_ui_create_project` 의 `theme` 인자로 그대로 흘러가 `tokens.css` 에 emit. v0.55.0 의 옵셔널 색 토큰 스키마와 끝에서 끝까지 정렬.",
+        "**localStorage v1 호환** — 기존 저장된 토큰은 새 키만 디폴트로 채워진 상태로 로드. 마이그레이션 없이 호환."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.56.0"
+    },
+    {
       "version": "0.55.0",
       "date": "2026-05-04",
       "title": "MCP — 테마 round-trip + 옵셔널 상태 컬러",
