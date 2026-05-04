@@ -3,6 +3,16 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.56.4",
+      "date": "2026-05-04",
+      "title": "fix — v0.56.3 next-intl 후속: import 보존 범위를 side-effect 만으로",
+      "type": "patch",
+      "highlights": [
+        "**`RootLayout` 식별자 충돌 해소** — v0.56.3 에서 next-intl 플러그인의 `app/layout.tsx` contentFn 이 기존 모든 import 라인을 보존하다 보니, 원본의 `import { RootLayout } from '@/src/app/layouts/RootLayout'` 까지 남고 새 본체의 `export default async function RootLayout` 와 식별자 충돌. 결과: smoke matrix 가 `TS2440 Import declaration conflicts with local declaration of 'RootLayout'` 로 실패해 v0.56.3 은 npm 미배포 상태. side-effect import (예: `import 'x';`, binding 없음) 만 추출하도록 정규식을 좁혀 globals.css 만 보존."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.56.4"
+    },
+    {
       "version": "0.56.3",
       "date": "2026-05-04",
       "title": "fix — monorepo 템플릿 4종 버그 (Tailwind 스캔, globals 임포트, alias, pnpm 감지)",

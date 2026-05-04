@@ -40,16 +40,18 @@ export const nextIntlPlugin = {
     { type: 'move', from: 'app/page.tsx', to: 'app/[locale]/page.tsx' },
     { type: 'move', from: 'app/error.tsx', to: 'app/[locale]/error.tsx' },
     {
-      // 기본 nextjs-app 템플릿의 app/layout.tsx 는 globals.css 를 import 한다 — next-intl
-      // 도입 시 layout 본체는 [locale]/layout.tsx 로 옮기지만 root layout 의 import 는 보존해야
-      // 사용자 프로젝트의 Tailwind 스타일이 살아남는다. content 통째 교체 대신 contentFn 으로
-      // 기존 import 라인만 추출해 새 본체 앞에 prepend.
+      // 기본 nextjs-app 템플릿의 app/layout.tsx 는 globals.css 를 side-effect import 한다 —
+      // next-intl 도입 시 layout 본체는 [locale]/layout.tsx 로 옮기지만, CSS import 는 root
+      // layout 에 살아 있어야 사용자 프로젝트의 Tailwind 스타일이 동작한다. content 통째 교체
+      // 대신 contentFn 으로 side-effect import (`import 'x';` 형태, binding 없음) 만 추출해
+      // 새 본체 앞에 prepend. 이름 있는 import (예: `import { RootLayout } from ...`) 는 새 본체와
+      // 식별자 충돌 가능성이 있어 제외.
       type: 'replace',
       path: 'app/layout.tsx',
       contentFn: (existing) => {
-        const importLines = existing
+        const sideEffectImports = existing
           .split('\n')
-          .filter((line) => /^\s*import\s+.+$/.test(line))
+          .filter((line) => /^\s*import\s+['"][^'"]+['"];?\s*$/.test(line))
           .join('\n');
         const body = `export default async function RootLayout({
   children,
@@ -59,7 +61,7 @@ export const nextIntlPlugin = {
   return children;
 }
 `;
-        return importLines ? `${importLines}\n\n${body}` : body;
+        return sideEffectImports ? `${sideEffectImports}\n\n${body}` : body;
       },
     },
     {
