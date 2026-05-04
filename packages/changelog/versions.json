@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.51.0",
+      "date": "2026-05-04",
+      "title": "Playwright 기반 시각 회귀 테스트 도입",
+      "type": "minor",
+      "highlights": [
+        "**시각 회귀 테스트 인프라** — `apps/docs` 에 Playwright 셋업. 15 개 컴포넌트 페이지의 Preview 영역을 캡쳐해 기준 스냅샷과 비교, 의도하지 않은 시각 변경을 PR 에서 잡음. `pnpm --filter @sh-ui/docs visual` 로 검증, `visual:update` 로 기준 갱신.",
+        "**macOS CI 워크플로우** — `.github/workflows/visual.yml` — macos-latest 러너에서 시각 비교, 실패 시 diff 리포트를 artifact 로 업로드.",
+        "**기준 스냅샷 commit** — button/card/input/badge/checkbox/switch/radio/label/separator/spinner/skeleton/progress/avatar/tooltip/textarea 15 개 시작. 새 컴포넌트는 `tests/visual/components.spec.ts` 의 COMPONENTS 배열에 슬러그만 추가하면 됨.",
+        "**docs 가이드 추가** — css-framework 페이지에 시각 회귀 워크플로우 섹션. 사용자 영향 없음 (npm 패키지엔 변동 없는 인프라 변경)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.51.0"
+    },
+    {
       "version": "0.50.0",
       "date": "2026-05-04",
       "title": "vanilla-extract 전수 롤아웃 + SUPPORTED 승격",
