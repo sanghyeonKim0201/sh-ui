@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.49.0",
+      "date": "2026-05-04",
+      "title": "vanilla-extract 변종 파일럿 — button/card/input",
+      "type": "minor",
+      "highlights": [
+        "**vanilla-extract 변종 파일럿** — button/card/input 에 `index.vanilla-extract.tsx` + `styles.css.ts` 추가. CSS 룰을 TypeScript 객체로 작성하고 빌드 타임에 정적 CSS 로 컴파일 — 런타임 비용 0. 사용자가 `sh-ui.config.json` 의 `cssFramework` 를 `\"vanilla-extract\"` 로 직접 두면 동작 (파일럿 단계라 PLANNED 유지, 전수 롤아웃 후 SUPPORTED 승격 예정).",
+        "**peer-versions + 의존성 분기** — `@vanilla-extract/css` (^1.16.0) 가 vanilla-extract 변종에만 install 큐에 들어가도록 registry.json 의 dependencies 분기 추가. plain/tailwind/css-modules 사용자에게는 영향 없음.",
+        "**tokens emitter + utils.cn 공유** — vanilla-extract 도 `:root` CSS custom property 를 그대로 참조 (`backgroundColor: \"var(--primary)\"`) 하므로 tokens.css 를 plain 과 그대로 공유. utils.cn.ts 도 같이 매칭되어 추가 cn 변종 불필요.",
+        "**docs 페이지 보강** — css-framework 가이드에 vanilla-extract 섹션 추가 (CSS-in-TS 사용 예시 + Next.js/Vite 빌드 플러그인 셋업 안내). VariantSource 컴포넌트도 vanilla-extract 탭을 자동 노출."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.49.0"
+    },
+    {
       "version": "0.48.0",
       "date": "2026-05-04",
       "title": "컴포넌트 페이지에 변종 별 소스 탭 추가",

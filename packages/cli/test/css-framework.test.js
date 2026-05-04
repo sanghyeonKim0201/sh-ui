@@ -117,9 +117,15 @@ describe("CSS framework — buildTokens 디스패처", () => {
     expect(moduleCss).toBe(plainCss);
   });
 
-  it("미구현 emitter (react/vanilla-extract) → 명확한 에러", async () => {
+  it("react/vanilla-extract 도 plain 과 같은 tokens.css 공유", async () => {
+    const plainCss = await buildTokens({ ...baseConfig, cssFramework: "plain" });
+    const veCss = await buildTokens({ ...baseConfig, cssFramework: "vanilla-extract" });
+    expect(veCss).toBe(plainCss);
+  });
+
+  it("미구현 emitter (react/unknown-fw) → 명확한 에러", async () => {
     await expect(
-      buildTokens({ ...baseConfig, cssFramework: "vanilla-extract" }),
+      buildTokens({ ...baseConfig, cssFramework: "unknown-fw" }),
     ).rejects.toThrow(/tokens emitter 미구현/);
   });
 
@@ -234,6 +240,45 @@ describe("CSS framework — registry frameworks 분기 (button 파일럿)", () =
     const indexContent = await fs.readFile(indexPath, "utf8");
     expect(indexContent).toContain('import styles from "./styles.module.css"');
     expect(indexContent).not.toContain("class-variance-authority");
+  });
+
+  it("vanilla-extract → index.vanilla-extract.tsx + styles.css.ts 가 들어감", async () => {
+    await setupProject("vanilla-extract");
+    await add({ cwd: tmpDir, names: ["button"], skipInstall: true, onConflict: "overwrite" });
+
+    const indexPath = path.join(tmpDir, "src/components/ui/button/index.tsx");
+    const veCssPath = path.join(tmpDir, "src/components/ui/button/styles.css.ts");
+    const plainCssPath = path.join(tmpDir, "src/components/ui/button/styles.css");
+    expect(await fs.pathExists(indexPath)).toBe(true);
+    expect(await fs.pathExists(veCssPath)).toBe(true);
+    // vanilla-extract 변종은 plain styles.css 가 안 들어감
+    expect(await fs.pathExists(plainCssPath)).toBe(false);
+
+    const indexContent = await fs.readFile(indexPath, "utf8");
+    expect(indexContent).toContain('from "./styles.css"');
+    expect(indexContent).not.toContain("class-variance-authority");
+  });
+
+  it("vanilla-extract → @vanilla-extract/css 가 install 큐에 들어감, cva 안 들어감", async () => {
+    await setupProject("vanilla-extract");
+
+    const logs = [];
+    const origLog = console.log;
+    console.log = (...args) => logs.push(args.map(String).join(" "));
+    try {
+      await add({
+        cwd: tmpDir,
+        names: ["button"],
+        skipInstall: true,
+        onConflict: "overwrite",
+      });
+    } finally {
+      console.log = origLog;
+    }
+
+    const allLogs = logs.join("\n");
+    expect(allLogs).toContain("@vanilla-extract/css");
+    expect(allLogs).not.toContain("class-variance-authority");
   });
 
   it("css-modules → cva 가 install 큐에 안 들어감", async () => {

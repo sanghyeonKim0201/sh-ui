@@ -12,9 +12,10 @@ const LABEL: Record<FrameworkKey, string> = {
   plain: "plain",
   tailwind: "tailwind",
   "css-modules": "css-modules",
+  "vanilla-extract": "vanilla-extract",
 };
 
-const ORDER: FrameworkKey[] = ["plain", "tailwind", "css-modules"];
+const ORDER: FrameworkKey[] = ["plain", "tailwind", "css-modules", "vanilla-extract"];
 
 export interface VariantSourceProps {
   /** registry 컴포넌트 디렉토리 이름 (예: "button"). */

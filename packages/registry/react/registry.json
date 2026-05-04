@@ -39,6 +39,20 @@
           "frameworks": [
             "css-modules"
           ]
+        },
+        {
+          "src": "components/button/index.vanilla-extract.tsx",
+          "dest": "{components}/button/index.tsx",
+          "frameworks": [
+            "vanilla-extract"
+          ]
+        },
+        {
+          "src": "components/button/styles.css.ts",
+          "dest": "{components}/button/styles.css.ts",
+          "frameworks": [
+            "vanilla-extract"
+          ]
         }
       ],
       "dependencies": [
@@ -46,6 +60,12 @@
           "name": "class-variance-authority",
           "frameworks": [
             "tailwind"
+          ]
+        },
+        {
+          "name": "@vanilla-extract/css",
+          "frameworks": [
+            "vanilla-extract"
           ]
         }
       ],
@@ -91,9 +111,30 @@
           "frameworks": [
             "css-modules"
           ]
+        },
+        {
+          "src": "components/card/index.vanilla-extract.tsx",
+          "dest": "{components}/card/index.tsx",
+          "frameworks": [
+            "vanilla-extract"
+          ]
+        },
+        {
+          "src": "components/card/styles.css.ts",
+          "dest": "{components}/card/styles.css.ts",
+          "frameworks": [
+            "vanilla-extract"
+          ]
         }
       ],
-      "dependencies": [],
+      "dependencies": [
+        {
+          "name": "@vanilla-extract/css",
+          "frameworks": [
+            "vanilla-extract"
+          ]
+        }
+      ],
       "registryDependencies": [
         "utils"
       ]
@@ -136,9 +177,30 @@
           "frameworks": [
             "css-modules"
           ]
+        },
+        {
+          "src": "components/input/index.vanilla-extract.tsx",
+          "dest": "{components}/input/index.tsx",
+          "frameworks": [
+            "vanilla-extract"
+          ]
+        },
+        {
+          "src": "components/input/styles.css.ts",
+          "dest": "{components}/input/styles.css.ts",
+          "frameworks": [
+            "vanilla-extract"
+          ]
         }
       ],
-      "dependencies": [],
+      "dependencies": [
+        {
+          "name": "@vanilla-extract/css",
+          "frameworks": [
+            "vanilla-extract"
+          ]
+        }
+      ],
       "registryDependencies": [
         "utils"
       ]
@@ -2280,7 +2342,8 @@
           "dest": "{utils}",
           "frameworks": [
             "plain",
-            "css-modules"
+            "css-modules",
+            "vanilla-extract"
           ]
         },
         {

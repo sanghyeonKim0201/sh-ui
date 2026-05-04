@@ -65,8 +65,9 @@ export default function CssFrameworkPage() {
           },
           {
             prop: "vanilla-extract",
-            type: "계획 중",
-            description: `${PLANNED_LIST.includes("vanilla-extract") ? "" : "(현재 옵션 아님)"} 향후 추가 예정. 현재 시도하면 "곧 지원 예정" 친절 에러.`,
+            type: "파일럿 (PLANNED)",
+            description:
+              "TS 안에서 타입 안전하게 CSS 작성. button/card/input 3 개에 변종이 있으며, 사용자가 sh-ui.config.json 을 직접 손대면 지금도 동작 (CLI/UI 노출은 SUPPORTED 승격 후). 빌드 플러그인 셋업이 필요 — 자세한 건 아래 vanilla-extract 섹션 참고.",
           },
         ]}
       />
@@ -210,19 +211,83 @@ export const Button = ({ variant = "primary", ...props }) => (
         <strong>적합한 경우</strong>: 이미 CSS Modules 컨벤션을 쓰는 프로젝트 / 클래스 이름 충돌 없이 컴포넌트별 스타일 격리를 원할 때 / Tailwind 의존을 피하고 싶을 때.
       </p>
 
-      <h2 id="planned">계획 중 — vanilla-extract</h2>
+      <h2 id="vanilla-extract">vanilla-extract — 타입 안전 CSS-in-TS (파일럿)</h2>
       <p>
-        같은 변종 시스템을 따라 추후 추가 예정. CLI 가 미리 인식하므로 시도하면 친절한 안내 에러:
+        CSS 룰을 TypeScript 객체로 작성한다 — 변수 참조는 import, hover/focus 등 의사 클래스는{" "}
+        <code>selectors</code> 키로 표현. <code>.css.ts</code> 파일이 빌드 타임에 정적 CSS 로 컴파일되므로 런타임 비용 0.
+        현재 button/card/input 3 개에 변종이 있고 (PLANNED — 전수 롤아웃 후 SUPPORTED 승격), 사용자가{" "}
+        <code>sh-ui.config.json</code> 의 <code>cssFramework</code> 를 직접{" "}
+        <code>&quot;vanilla-extract&quot;</code> 로 지정하면 지금도 동작.
       </p>
-      <CodePanel
-        language="bash"
-        showLineNumbers={false}
-        code={`$ sh-ui-cli init --cssFramework vanilla-extract
-✗ --cssFramework='vanilla-extract'는 곧 지원 예정입니다. 현재는 plain, tailwind, css-modules 만 가능합니다.`}
+      <CodeTabs
+        items={[
+          {
+            value: "tsx",
+            label: "index.tsx",
+            language: "tsx",
+            filename: "components/ui/button/index.tsx",
+            code: `import { button, sizes, variants } from "./styles.css";
+export const Button = ({ variant = "primary", size = "md", ...props }) => (
+  <button className={\`\${button} \${sizes[size]} \${variants[variant]}\`} {...props} />
+);`,
+          },
+          {
+            value: "css",
+            label: "styles.css.ts",
+            language: "tsx",
+            filename: "components/ui/button/styles.css.ts",
+            code: `import { style, styleVariants } from "@vanilla-extract/css";
+
+export const button = style({
+  borderRadius: "var(--radius)",
+  fontWeight: "var(--weight-medium)",
+  transition: "background-color var(--duration-fast)",
+});
+
+export const variants = styleVariants({
+  primary: {
+    backgroundColor: "var(--primary)",
+    color: "var(--primary-foreground)",
+  },
+  // ...
+});`,
+          },
+        ]}
       />
+      <p>
+        <strong>빌드 플러그인 셋업이 필요</strong> — vanilla-extract 는 <code>.css.ts</code> 를 빌드 타임에 정적 CSS 로 변환하므로 사용자 프로젝트의 bundler 에 플러그인을 등록해야 한다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "next",
+            label: "Next.js",
+            language: "ts",
+            filename: "next.config.ts",
+            code: `import { createVanillaExtractPlugin } from "@vanilla-extract/next-plugin";
+const withVanillaExtract = createVanillaExtractPlugin();
+export default withVanillaExtract({});`,
+          },
+          {
+            value: "vite",
+            label: "Vite",
+            language: "ts",
+            filename: "vite.config.ts",
+            code: `import { defineConfig } from "vite";
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+export default defineConfig({ plugins: [vanillaExtractPlugin()] });`,
+          },
+        ]}
+      />
+      <p>
+        <strong>적합한 경우</strong>: TS 안에서 CSS 를 타입 안전하게 다루고 싶을 때 / CSS-in-JS 의 런타임 비용 없이 정적 CSS 결과물이 필요할 때 / IDE 의 자동완성·리팩토링을 CSS 에도 적용하고 싶을 때.
+      </p>
+
+      <h2 id="planned">새 변종 추가하기</h2>
       <p className="muted">
         외부 컨트리뷰터: <code>packages/registry/react/components/&lt;name&gt;/index.&lt;framework&gt;.tsx</code>{" "}
         패턴으로 새 변종을 추가하고 <code>registry.json</code> 의 <code>frameworks: [...]</code> 배열에 등록하면 자동으로 인식됨.
+        토큰 emitter 가 다른 형식이면 <code>packages/tokens/build.mjs</code> 의 <code>tokenEmitters</code> 디스패처에 등록.
       </p>
 
       <h2 id="switching">이미 만든 프로젝트에서 모드 변경</h2>
