@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import changelog from "../../../../../packages/changelog/versions.json";
+import changelog from "../../../../../../packages/changelog/versions.json";
 import "./styles.css";
 
 interface VersionEntry {

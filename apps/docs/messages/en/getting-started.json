@@ -1,0 +1,55 @@
+{
+  "title": "Getting started",
+  "subtitle": "Three steps to add sh-ui to an existing project. The flow is the same for React and Flutter.",
+  "intro": "<strong>Starting from a brand-new Next.js project?</strong> The <createLink>create project</createLink> page lets you run <code>npx sh-ui-cli create</code> with a template that ships FSD structure, sh-ui config, and plugins (Sentry, next-intl) pre-wired. This page covers the manual flow for an existing project.",
+  "step1": {
+    "heading": "1. Create a config file",
+    "lead": "From your project root:",
+    "after": "An interactive prompt picks <code>platform</code> (react/flutter), <code>base</code> (neutral/zinc/slate), <code>radius</code>, and <code>mode</code>, then writes <code>sh-ui.config.json</code>."
+  },
+  "step2": {
+    "heading": "2. Install tokens + base reset",
+    "after": "Token files are generated with your config values baked in. React gets CSS variables (<code>tokens.css</code>) and <code>base.css</code>; Flutter gets Dart constants (<code>sh_ui_tokens.dart</code>).",
+    "note": "<strong>base.css</strong> sets box-sizing, overflow, min-width and other safeguards that prevent common mobile layout accidents (e.g. a child's min-content pushing the viewport and creating horizontal scroll). Import it right after tokens.css."
+  },
+  "step3": {
+    "heading": "3. Install components",
+    "after": "The component source is copied into <code>paths.components</code>. From that point on, <strong>the code is yours</strong> — modify it freely."
+  },
+  "platformHeading": "Platform-specific setup",
+  "react": {
+    "heading": "React",
+    "globalImport": "Importing <code>tokens.css</code> in your global CSS exposes every token globally — <code>--background</code>, <code>--primary</code>, <code>--space-*</code>, <code>--text-*</code>, and the rest.",
+    "darkModeHeading": "Dark mode",
+    "darkMode": "Setting <code>mode: \"light-dark\"</code> defines the light defaults on <code>:root</code> and the dark variants under the <code>.dark</code> class. Switching is just toggling <code>&lt;html className=\"dark\"&gt;</code>."
+  },
+  "flutter": {
+    "heading": "Flutter",
+    "materialAppHeading": "Register on MaterialApp",
+    "materialApp": "Plugging <code>ShUiTheme</code> into <code>ThemeData.extensions</code> lets every descendant widget reach tokens via <code>Theme.of(context).extension&lt;ShUiTheme&gt;()</code>.",
+    "tokensInWidgetHeading": "Using tokens in widgets",
+    "tokensInWidget": "The convention is to pull <code>shUi</code> out in one line.",
+    "tabs": {
+      "basic": "Basic",
+      "animated": "Animated",
+      "disabled": "Disabled"
+    },
+    "darkToggleHeading": "Dark mode toggle",
+    "darkToggle": "Toggle via <code>themeMode: ThemeMode.light / .dark / .system</code>. Each branch uses <code>ShUiTheme.light</code> or <code>ShUiTheme.dark</code> respectively.",
+    "safeAreaHeading": "SafeArea — notch & home indicator",
+    "safeArea": "Keep content out of system UI zones — iPhone notch / Dynamic Island, Android gesture indicator, etc. — by <strong>handling it at the screen-template level</strong>. <code>Scaffold</code> + <code>AppBar</code> absorbs the top status bar automatically, but when you draw a full-screen background or skip <code>AppBar</code>, wrap with <code>SafeArea</code>.",
+    "safeAreaTabs": {
+      "scaffold": "Standard (Scaffold)",
+      "edgeToEdge": "Full background",
+      "measure": "Manual measurement"
+    },
+    "responsiveHeading": "Responsive — tablet / fold",
+    "responsive": "Combine <code>shUi.breakpoint.sm/md/lg/xl</code> tokens with <code>MediaQuery</code> or <code>LayoutBuilder</code> to branch layouts by viewport width. sh-ui's <code>ShUiSidebar.mode: auto</code> uses the same pattern internally."
+  },
+  "next": {
+    "heading": "Next steps",
+    "tokens": "<tokensLink>Tokens</tokensLink> — full token catalog with values",
+    "create": "<createLink>Create project</createLink> — edit tokens directly and scaffold a new project with that design",
+    "components": "<componentsLink>Components</componentsLink> — installation and usage"
+  }
+}

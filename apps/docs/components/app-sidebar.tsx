@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { allPlugins } from "sh-ui-cli/api";
 import {
   BookOpenIcon,
@@ -20,6 +19,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { DarkModeToggle } from "@/components/dark-mode-toggle";
+import { LocaleSwitcher } from "@/components/locale-switcher";
+import { Link, usePathname } from "@/i18n/navigation";
 import {
   Sidebar,
   SidebarCollapsible,
@@ -40,18 +41,20 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 
-const topLinks: { title: string; href: string; icon: LucideIcon }[] = [
-  { title: "시작하기", href: "/getting-started", icon: RocketIcon },
-  { title: "프로젝트 생성", href: "/create", icon: FolderPlusIcon },
-  { title: "CLI", href: "/cli", icon: TerminalIcon },
-  { title: "MCP (AI)", href: "/mcp", icon: PlugIcon },
-  { title: "CSS 프레임워크", href: "/css-framework", icon: LayersIcon },
-  { title: "토큰", href: "/tokens", icon: PaletteIcon },
-  { title: "테마 커스터마이징", href: "/theming", icon: BrushIcon },
-  { title: "가이드라인", href: "/guidelines", icon: BookOpenIcon },
-  { title: "레시피", href: "/recipes", icon: WrenchIcon },
-  { title: "실전 예제", href: "/examples", icon: LayoutTemplateIcon },
-  { title: "변경 내역", href: "/changelog", icon: HistoryIcon },
+type TopLink = { key: string; href: string; icon: LucideIcon };
+
+const topLinks: TopLink[] = [
+  { key: "gettingStarted", href: "/getting-started", icon: RocketIcon },
+  { key: "create", href: "/create", icon: FolderPlusIcon },
+  { key: "cli", href: "/cli", icon: TerminalIcon },
+  { key: "mcp", href: "/mcp", icon: PlugIcon },
+  { key: "cssFramework", href: "/css-framework", icon: LayersIcon },
+  { key: "tokens", href: "/tokens", icon: PaletteIcon },
+  { key: "theming", href: "/theming", icon: BrushIcon },
+  { key: "guidelines", href: "/guidelines", icon: BookOpenIcon },
+  { key: "recipes", href: "/recipes", icon: WrenchIcon },
+  { key: "examples", href: "/examples", icon: LayoutTemplateIcon },
+  { key: "changelog", href: "/changelog", icon: HistoryIcon },
 ];
 
 // 플러그인 목록은 sh-ui-cli/api 의 allPlugins 에서 derive — 단일 진실.
@@ -110,6 +113,8 @@ const components: { title: string; href: string }[] = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const tSidebar = useTranslations("sidebar");
+  const tCommon = useTranslations("common");
   const componentsActive = pathname.startsWith("/components/");
   const pluginsActive = pathname.startsWith("/plugins/");
 
@@ -129,7 +134,7 @@ export function AppSidebar() {
       <SidebarSeparator />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Docs</SidebarGroupLabel>
+          <SidebarGroupLabel>{tSidebar("groupLabel")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {topLinks.map((item) => (
@@ -137,7 +142,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild isActive={isActive(item.href)}>
                     <Link href={item.href}>
                       <item.icon />
-                      <span>{item.title}</span>
+                      <span>{tSidebar(`links.${item.key}`)}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -147,14 +152,14 @@ export function AppSidebar() {
                 <SidebarCollapsible defaultOpen={pluginsActive}>
                   <SidebarCollapsibleTrigger>
                     <PuzzleIcon />
-                    <span>플러그인</span>
+                    <span>{tSidebar("links.plugins")}</span>
                   </SidebarCollapsibleTrigger>
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/plugins"}>
                           <Link href="/plugins">
-                            <span>전체 보기</span>
+                            <span>{tCommon("viewAll")}</span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -176,14 +181,14 @@ export function AppSidebar() {
                 <SidebarCollapsible defaultOpen={componentsActive}>
                   <SidebarCollapsibleTrigger>
                     <BoxesIcon />
-                    <span>Components</span>
+                    <span>{tSidebar("links.components")}</span>
                   </SidebarCollapsibleTrigger>
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/components"}>
                           <Link href="/components">
-                            <span>전체 보기</span>
+                            <span>{tCommon("viewAll")}</span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -205,6 +210,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <LocaleSwitcher />
         <DarkModeToggle />
       </SidebarFooter>
     </Sidebar>

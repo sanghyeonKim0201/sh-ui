@@ -1,0 +1,18 @@
+{
+  "title": "sh-ui",
+  "tagline": "<strong>짧은 이름, 단단한 기본기</strong> — 담백하게 설계된 멀티 플랫폼 디자인 시스템. 블랙 & 화이트를 기본으로, 설정대로 벼려져 내려받는다.",
+  "ctaPrimary": "시작하기",
+  "ctaSecondary": "컴포넌트 보기",
+  "philosophyHeading": "철학",
+  "philosophy": {
+    "ownership": "<strong>코드 소유권은 사용자에게</strong> — 패키지로 묶지 않고 소스를 프로젝트로 복사한다 (shadcn 방식).",
+    "tokens": "<strong>하나의 토큰, 여러 플랫폼</strong> — 같은 semantic 토큰에서 React의 CSS 변수와 Flutter의 Dart 상수를 동시에 생성.",
+    "config": "<strong>설정으로 변환</strong> — <code>sh-ui.config.json</code>의 테마/radius가 복사 시점에 토큰 값으로 치환된다."
+  },
+  "platformsHeading": "지원 플랫폼",
+  "platforms": {
+    "react": "React (Next.js) — 현재",
+    "flutter": "Flutter — 현재",
+    "more": "추가 예정"
+  }
+}
