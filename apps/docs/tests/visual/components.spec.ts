@@ -8,22 +8,50 @@ import { test, expect } from "@playwright/test";
  * 추가하려면 COMPONENTS 배열에 슬러그만 더하면 됨.
  */
 const COMPONENTS = [
-  "button",
-  "card",
-  "input",
-  "badge",
-  "checkbox",
-  "switch",
-  "radio",
-  "label",
-  "separator",
-  "spinner",
-  "skeleton",
-  "progress",
+  "accordion",
   "avatar",
-  "tooltip",
+  "badge",
+  "breadcrumb",
+  "button",
+  "calendar",
+  "card",
+  "carousel",
+  "checkbox",
+  "code-panel",
+  "code-tabs",
+  "combobox",
+  "context-menu",
+  "date-picker",
+  "dialog",
+  "dropdown-menu",
+  "file-upload",
+  "header",
+  "input",
+  "label",
+  "menubar",
+  "numeric-input",
+  "pagination",
+  "popover",
+  "progress",
+  "radio",
+  "select",
+  "separator",
+  "sidebar",
+  "skeleton",
+  "slider",
+  "spinner",
+  "switch",
+  "tabs",
   "textarea",
+  "toggle",
+  "tooltip",
 ];
+
+// 의도적으로 제외:
+// - color-picker / code-editor / markdown-editor / rich-text-editor — 무거운 에디터/IME, 안정적 캡처 어려움
+// - toast — viewport 가 fixed 라 Preview 데모 영역 캡쳐로 잡히지 않음
+// - form / theme — non-styled 로직 컴포넌트, 시각 회귀 의미 없음
+// - page-toc — 페이지 자체에 Preview 가 없음
 
 for (const name of COMPONENTS) {
   test(`/components/${name} preview snapshot`, async ({ page }) => {

@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.52.3",
+      "date": "2026-05-04",
+      "title": "시각 회귀 커버리지 확장 + Flutter showcase 누락 위젯 보강",
+      "type": "patch",
+      "highlights": [
+        "**React 시각 회귀 확장** — 15 → 37 컴포넌트. 헤비 에디터 (color-picker, code-editor, markdown-editor, rich-text-editor) 와 fixed-position toast / non-styled form·theme / Preview 없는 page-toc 만 의도적 제외.",
+        "**Flutter 골든 확장** — 10 → 24 케이스. 위에 추가한 누락 위젯 + 다양한 variant (button-danger/ghost/disabled, checkbox-unchecked, switch-off 등) 도 commit.",
+        "**Flutter showcase 누락 위젯 추가** — registry/flutter 에는 있었지만 apps/showcase/lib/widgets 에 없던 10 개 (avatar, badge, breadcrumb, context_menu, dropdown_menu, menubar, progress, separator, spinner, tooltip) 를 복사. 페이지는 이미 존재했으므로 import 가 끊겨 있던 상태가 정상화.",
+        "**placeholder widget_test.dart 제거** — MyApp 클래스가 더 이상 존재하지 않아 깨져 있던 초기 셋업 잔재 정리. 이제 `flutter test` 가 깨끗이 그린."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.3"
+    },
+    {
       "version": "0.52.2",
       "date": "2026-05-04",
       "title": "vanilla-extract rollback — 자동 변환 broken, PLANNED 로 후퇴",

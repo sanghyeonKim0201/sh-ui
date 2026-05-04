@@ -10,15 +10,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sh_ui_showcase/foundation/sh_ui_tokens.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_avatar.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_badge.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_button.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_card.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_checkbox.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_input.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_label.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_pagination.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_progress.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_radio.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_separator.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_skeleton.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_slider.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_spinner.dart';
 import 'package:sh_ui_showcase/widgets/sh_ui_switch.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_textarea.dart';
+import 'package:sh_ui_showcase/widgets/sh_ui_toggle.dart';
 
 /// 모든 위젯을 동일한 ShUiTheme 환경 + 고정 크기로 감싸서 일관된 렌더 보장.
 Widget _frame(Widget child, {Size size = const Size(220, 80)}) {
@@ -162,6 +170,168 @@ void main() {
       await expectLater(
         find.byType(MaterialApp),
         matchesGoldenFile('goldens/label.png'),
+      );
+    });
+
+    testWidgets('button — danger', (tester) async {
+      await tester.pumpWidget(_frame(
+        ShUiButton(
+          onPressed: () {},
+          variant: ShUiButtonVariant.danger,
+          child: const Text('삭제'),
+        ),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/button-danger.png'),
+      );
+    });
+
+    testWidgets('button — ghost', (tester) async {
+      await tester.pumpWidget(_frame(
+        ShUiButton(
+          onPressed: () {},
+          variant: ShUiButtonVariant.ghost,
+          child: const Text('취소'),
+        ),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/button-ghost.png'),
+      );
+    });
+
+    testWidgets('button — disabled', (tester) async {
+      await tester.pumpWidget(_frame(
+        const ShUiButton(onPressed: null, child: Text('비활성')),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/button-disabled.png'),
+      );
+    });
+
+    testWidgets('checkbox — unchecked', (tester) async {
+      await tester.pumpWidget(_frame(
+        ShUiCheckbox(checked: false, onChanged: (_) {}),
+        size: const Size(80, 80),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/checkbox-unchecked.png'),
+      );
+    });
+
+    testWidgets('switch — off', (tester) async {
+      await tester.pumpWidget(_frame(
+        ShUiSwitch(checked: false, onChanged: (_) {}),
+        size: const Size(80, 80),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/switch-off.png'),
+      );
+    });
+
+    testWidgets('textarea', (tester) async {
+      await tester.pumpWidget(_frame(
+        ShUiTextarea(
+          controller: TextEditingController(),
+          placeholder: '내용을 입력하세요',
+        ),
+        size: const Size(280, 120),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/textarea.png'),
+      );
+    });
+
+    testWidgets('pagination', (tester) async {
+      await tester.pumpWidget(_frame(
+        ShUiPagination(page: 3, pageCount: 7, onPageChanged: (_) {}),
+        size: const Size(380, 60),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/pagination.png'),
+      );
+    });
+
+    testWidgets('toggle — pressed', (tester) async {
+      await tester.pumpWidget(_frame(
+        ShUiToggle(
+          pressed: true,
+          onPressedChange: (_) {},
+          child: const Text('Bold'),
+        ),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/toggle.png'),
+      );
+    });
+
+    testWidgets('skeleton — wide', (tester) async {
+      await tester.pumpWidget(_frame(
+        const ShUiSkeleton(width: 200, height: 24),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/skeleton-wide.png'),
+      );
+    });
+
+    testWidgets('avatar — fallback', (tester) async {
+      await tester.pumpWidget(_frame(
+        const ShUiAvatar(fallback: Text('KS')),
+        size: const Size(80, 80),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/avatar.png'),
+      );
+    });
+
+    testWidgets('badge — primary', (tester) async {
+      await tester.pumpWidget(_frame(
+        const ShUiBadge(child: Text('NEW')),
+        size: const Size(120, 60),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/badge.png'),
+      );
+    });
+
+    testWidgets('progress — 60%', (tester) async {
+      await tester.pumpWidget(_frame(
+        const ShUiProgress(value: 0.6),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/progress.png'),
+      );
+    });
+
+    testWidgets('spinner', (tester) async {
+      await tester.pumpWidget(_frame(
+        const ShUiSpinner(),
+        size: const Size(80, 80),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/spinner.png'),
+      );
+    });
+
+    testWidgets('separator', (tester) async {
+      await tester.pumpWidget(_frame(
+        const ShUiSeparator(),
+      ));
+      await expectLater(
+        find.byType(MaterialApp),
+        matchesGoldenFile('goldens/separator.png'),
       );
     });
   });
