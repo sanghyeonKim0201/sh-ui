@@ -77,10 +77,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   background: var(--background);
   z-index: 10;
 }
-.docs-header__search {
+.docs-header__actions {
   margin-left: auto;
   display: flex;
   align-items: center;
+  gap: 0.375rem;
 }
 
 /* 헤더 아래 본문 영역 — TOC 가 있는 페이지에서만 우측에 TOC 폭만큼 padding 예약.
