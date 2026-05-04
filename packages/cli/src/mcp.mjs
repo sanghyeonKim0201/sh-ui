@@ -45,6 +45,7 @@ import {
   CSS_FRAMEWORKS_SUPPORTED,
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
+import { allArchitectures } from "./create/architectures/index.js";
 import { THEME_PRESET_NAMES } from "./create/theme/presets.js";
 import { decodeTheme } from "./create/theme/decode.js";
 import { encodeTheme } from "./create/theme/encode.js";
@@ -55,6 +56,7 @@ const RADII = THEME_RADII;
 const MODES = THEME_MODES;
 const CSS_FRAMEWORKS = CSS_FRAMEWORKS_SUPPORTED;
 const PLUGIN_NAMES = allPlugins.map((p) => p.name);
+const ARCH_NAMES = allArchitectures.map((a) => a.name);
 const THEME_PRESETS_LIST = THEME_PRESET_NAMES.join(", ");
 
 const INIT_DESCRIPTIONS = {
@@ -227,6 +229,13 @@ export async function startMcpServer() {
           .describe("Next.js 구조 — platform=next 일 때 필수. standalone(단독) | monorepo(Turborepo)"),
         plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
           .describe(`Next.js 플러그인 (${PLUGIN_NAMES.join(', ')}). 미지정시 빈 배열`),
+        arch: z.enum(ARCH_NAMES).optional()
+          .describe(
+            `프로젝트 아키텍처 — 플랫폼별로 사용 가능한 값이 다름. ` +
+            `현재 next 에서 사용 가능: ${allArchitectures.filter((a) => a.platforms.includes('next')).map((a) => a.name).join(', ')} (기본 fsd). ` +
+            `flutter 는 현재 arch 디스크립터 없음 (미지정 또는 host 자체 default). ` +
+            `arch 와 플러그인은 별개 — arch 는 폴더 구조/import alias 컨벤션, 플러그인은 기능.`,
+          ),
         theme: z.string().optional()
           .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 base64 테마 코드. 사용자가 톤을 직접 손본 결과를 영구 보관하려면 sh_ui_encode_theme 으로 base64 를 만들어 여기에 넘긴다.`),
         cssFramework: z.enum(CSS_FRAMEWORKS).optional()
@@ -271,6 +280,7 @@ export async function startMcpServer() {
             platform: input.platform,
             structure: input.structure,
             plugins: input.plugins,
+            arch: input.arch,
             theme: input.theme,
             css: input.cssFramework,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회

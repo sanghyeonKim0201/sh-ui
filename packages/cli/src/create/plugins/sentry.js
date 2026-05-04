@@ -57,8 +57,12 @@ export const sentryPlugin = {
   // HTTP/proxy 인프라(http.ts, apiTypes.ts, error.ts, app/api/proxy 등)는
   // 베이스 템플릿이 소유한다. Sentry 는 베이스의 observability.ts 를
   // Sentry-aware 버전으로 덮어써서 캡처/로그를 활성화한다.
+  //
+  // arch 의존: FallbackBoundary 는 arch.paths.ui 에, observability 는 arch.paths.api 에
+  // 떨어진다. FallbackBoundary 안의 ApiError import 는 arch.aliases.api 로 fully-qualified —
+  // 상대 경로 (`../../api/error`) 는 FSD 에서만 동작하므로 alias 로 통일.
 
-  files: {
+  files: (arch) => ({
     'sentry.server.config.ts': `import * as Sentry from '@sentry/nextjs';
 
 Sentry.init({
@@ -280,7 +284,7 @@ export default function Error({
 }
 `,
 
-    'src/shared/ui/FallbackBoundary/index.tsx': `import React, {
+    [`${arch.paths.ui}/FallbackBoundary/index.tsx`]: `import React, {
   Component,
   ComponentType,
   ErrorInfo,
@@ -290,7 +294,7 @@ export default function Error({
 import * as Sentry from '@sentry/nextjs';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 
-import { ApiError } from '../../api/error';
+import { ApiError } from '${arch.aliases.api}/error';
 
 interface ErrorFallbackProps {
   error: Error | null;
@@ -386,7 +390,7 @@ export function FallbackBoundary({
     // http.ts / serverFetch.ts / proxy/route.ts 가 이 모듈을 import 하므로,
     // Sentry 플러그인이 켜지면 자동으로 캡처가 활성화된다.
 
-    'src/shared/api/observability.ts': `import * as Sentry from '@sentry/nextjs';
+    [`${arch.paths.api}/observability.ts`]: `import * as Sentry from '@sentry/nextjs';
 
 type ApiCaptureParams = {
   url: string;
@@ -439,5 +443,5 @@ export const logApiError = (prefix: string, params: ApiLogParams): void => {
   if (responseBody) console.error('- Response Body:', responseBody);
 };
 `,
-  },
+  }),
 };

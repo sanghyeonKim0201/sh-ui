@@ -1,0 +1,19 @@
+{
+  "platform": "react",
+  "cssFramework": "plain",
+  "theme": {
+    "base": "neutral",
+    "radius": "md",
+    "mode": "light-dark"
+  },
+  "paths": {
+    "tokens": "lib/styles/tokens.css",
+    "components": "components/common",
+    "utils": "lib/utils/utils.ts"
+  },
+  "aliases": {
+    "components": "@/components/common",
+    "utils": "@/lib/utils/utils",
+    "ui": "@/components/common"
+  }
+}

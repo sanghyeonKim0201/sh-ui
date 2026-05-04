@@ -1,3 +1,9 @@
+/**
+ * auth-jwt 플러그인 — Layer 2 부터 arch-aware.
+ *
+ * fs 경로 / import alias 가 arch.paths.api / arch.aliases.api 에서 파생.
+ * FSD 기준 v0.57 까지의 하드코딩과 1:1 일치 (회귀 가드는 smoke).
+ */
 export const authJwtPlugin = {
   name: 'auth-jwt',
   label: '쿠키 기반 JWT 인증 (refresh 자리표시자 포함)',
@@ -26,7 +32,7 @@ export const authJwtPlugin = {
   // refreshSession.ts 는 v1 placeholder — 백엔드 명세 확정 후 본문만 채우면
   // BFF 와 withAuthRetry 가 자동 활용한다.
 
-  files: {
+  files: (arch) => ({
     'proxy.ts': `import { NextRequest, NextResponse } from 'next/server';
 
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];
@@ -57,7 +63,7 @@ export const config = {
 };
 `,
 
-    'src/shared/api/refreshSession.ts': `type RefreshResult =
+    [`${arch.paths.api}/refreshSession.ts`]: `type RefreshResult =
   | { ok: true; accessToken: string; refreshToken: string }
   | { ok: false };
 
@@ -109,7 +115,7 @@ export async function refreshSession(
 }
 `,
 
-    'src/shared/api/withAuthRetry.ts': `import { cookies } from 'next/headers';
+    [`${arch.paths.api}/withAuthRetry.ts`]: `import { cookies } from 'next/headers';
 
 import { ApiError } from './error';
 import { refreshSession } from './refreshSession';
@@ -135,8 +141,8 @@ const COOKIE = {
  * 사용 예 (Server Action):
  *
  *   'use server';
- *   import { serverFetch } from '@/src/shared/api/serverFetch';
- *   import { withAuthRetry } from '@/src/shared/api/withAuthRetry';
+ *   import { serverFetch } from '${arch.aliases.api}/serverFetch';
+ *   import { withAuthRetry } from '${arch.aliases.api}/withAuthRetry';
  *
  *   export async function toggleFavoriteAction(id: number) {
  *     return withAuthRetry(() =>
@@ -171,8 +177,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import {
   captureApiError,
   logApiError,
-} from '@/src/shared/api/observability';
-import { refreshSession } from '@/src/shared/api/refreshSession';
+} from '${arch.aliases.api}/observability';
+import { refreshSession } from '${arch.aliases.api}/refreshSession';
 
 const API_URL = process.env.API_URL ?? 'http://localhost:8080/api';
 const ACCESS_TOKEN_COOKIE = 'accessToken';
@@ -338,5 +344,5 @@ export const DELETE = (
   ctx: { params: Promise<{ path: string[] }> },
 ) => proxyRequest(req, ctx, 'DELETE');
 `,
-  },
+  }),
 };

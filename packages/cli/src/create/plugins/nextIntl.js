@@ -1,3 +1,13 @@
+/**
+ * next-intl 플러그인 — Layer 2 부터 arch-aware.
+ *
+ * 모든 fs 경로 / import alias 가 arch 디스크립터의 논리 키에서 파생된다:
+ *   - i18n 설정 (request/routing/navigation/messages) → arch.paths.config + '/i18n'
+ *   - 내부 import (RootLayout, GlobalProvider) → arch.aliases.layouts / providers
+ *
+ * FSD 에서는 v0.57 까지의 하드코딩과 1:1 일치 (회귀 가드는 smoke 시나리오 3).
+ * flat 에서는 자동으로 lib/config/i18n + components/layouts/RootLayout 로 emit.
+ */
 export const nextIntlPlugin = {
   name: 'next-intl',
   label: 'next-intl (다국어 지원)',
@@ -15,8 +25,8 @@ export const nextIntlPlugin = {
     `import createNextIntlPlugin from 'next-intl/plugin';`,
   ],
 
-  preExport: [
-    `const withNextIntl = createNextIntlPlugin('./src/shared/config/i18n/request.ts');`,
+  preExport: (arch) => [
+    `const withNextIntl = createNextIntlPlugin('./${arch.paths.config}/i18n/request.ts');`,
   ],
 
   wrapExport(expr) {
@@ -36,7 +46,7 @@ export const nextIntlPlugin = {
 
   // ─── 라우트 구조 변환 ───
 
-  transforms: [
+  transforms: (arch) => [
     { type: 'move', from: 'app/page.tsx', to: 'app/[locale]/page.tsx' },
     { type: 'move', from: 'app/error.tsx', to: 'app/[locale]/error.tsx' },
     {
@@ -62,7 +72,7 @@ export const nextIntlPlugin = {
           .filter((line) => /^\s*import\s+['"][^'"]+['"];?\s*$/.test(line))
           .join('\n');
         const body = `import type { Metadata } from 'next';
-import { RootLayout } from '@/src/app/layouts/RootLayout';
+import { RootLayout } from '${arch.aliases.layouts}/RootLayout';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -84,11 +94,11 @@ export default function Layout({
     },
     {
       type: 'replace',
-      path: 'src/app/layouts/RootLayout.tsx',
+      path: `${arch.paths.layouts}/RootLayout.tsx`,
       content: `import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { GlobalProvider } from '@/src/app/providers';
-import { routing } from '@/src/shared/config/i18n/routing';
+import { GlobalProvider } from '${arch.aliases.providers}';
+import { routing } from '${arch.aliases.config}/i18n/routing';
 
 export async function RootLayout({
   children,
@@ -117,8 +127,8 @@ export async function RootLayout({
 
   // ─── 독립 파일 ───
 
-  files: {
-    'src/shared/config/i18n/routing.ts': `import { defineRouting } from 'next-intl/routing';
+  files: (arch) => ({
+    [`${arch.paths.config}/i18n/routing.ts`]: `import { defineRouting } from 'next-intl/routing';
 
 export const routing = defineRouting({
   locales: ['ko', 'en'],
@@ -126,7 +136,7 @@ export const routing = defineRouting({
 });
 `,
 
-    'src/shared/config/i18n/request.ts': `import { getRequestConfig } from 'next-intl/server';
+    [`${arch.paths.config}/i18n/request.ts`]: `import { getRequestConfig } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
 import { routing } from './routing';
 
@@ -143,14 +153,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
 });
 `,
 
-    'src/shared/config/i18n/navigation.ts': `import { createNavigation } from 'next-intl/navigation';
+    [`${arch.paths.config}/i18n/navigation.ts`]: `import { createNavigation } from 'next-intl/navigation';
 import { routing } from './routing';
 
 export const { Link, redirect, usePathname, useRouter, getPathname } =
   createNavigation(routing);
 `,
 
-    'src/shared/config/i18n/messages/ko.json': `{
+    [`${arch.paths.config}/i18n/messages/ko.json`]: `{
   "common": {
     "loading": "로딩 중...",
     "error": "오류가 발생했습니다",
@@ -181,7 +191,7 @@ export const { Link, redirect, usePathname, useRouter, getPathname } =
 }
 `,
 
-    'src/shared/config/i18n/messages/en.json': `{
+    [`${arch.paths.config}/i18n/messages/en.json`]: `{
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
@@ -212,10 +222,8 @@ export const { Link, redirect, usePathname, useRouter, getPathname } =
 }
 `,
 
-    // app/[locale]/layout.tsx 는 transforms 에서 생성된다 (위 move + replace 참고)
-
     'proxy.ts': `import createIntlMiddleware from 'next-intl/middleware';
-import { routing } from '@/src/shared/config/i18n/routing';
+import { routing } from '${arch.aliases.config}/i18n/routing';
 
 const intl = createIntlMiddleware(routing);
 
@@ -225,5 +233,5 @@ export const config = {
   matcher: '/((?!api|trpc|_next|_vercel|monitoring|.*\\\\..*).*)',
 };
 `,
-  },
+  }),
 };

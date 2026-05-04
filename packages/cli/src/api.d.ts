@@ -56,6 +56,40 @@ export type PluginManifest = {
 
 export const allPlugins: readonly PluginManifest[];
 
+/* ─────── 아키텍처 (arch) ─────── */
+
+/** 논리 키 셋 — 모든 arch 디스크립터가 동일하게 노출하는 카테고리. */
+export type ArchPathKey =
+  | 'layouts'
+  | 'providers'
+  | 'api'
+  | 'config'
+  | 'hooks'
+  | 'utils'
+  | 'ui'
+  | 'test';
+
+export type ArchManifest = {
+  /** kebab-case 식별자 (예: "fsd", "flat"). */
+  name: string;
+  label: string;
+  description: string;
+  /** 이 arch 가 적용 가능한 플랫폼들. */
+  platforms: readonly CreatePlatform[];
+  /** 논리 키 → 파일시스템 경로 (앱 루트 기준). */
+  paths: Record<ArchPathKey, string>;
+  /** 논리 키 → import alias prefix (TS 코드 emit 시). */
+  aliases: Record<ArchPathKey, string>;
+  /** tsconfig.json 의 paths 블록에 그대로 들어갈 객체. */
+  tsconfigPaths: Record<string, string[]>;
+};
+
+export const allArchitectures: readonly ArchManifest[];
+export const DEFAULT_ARCH: 'fsd';
+export function getArchByName(name: string): ArchManifest;
+export function getArchesForPlatform(platform: CreatePlatform): readonly ArchManifest[];
+export function isKnownArch(name: string): boolean;
+
 /* ─────── 테마 프리셋 ─────── */
 
 export type ThemePresetName = 'neutral' | 'slate' | 'rose' | 'emerald' | 'violet';

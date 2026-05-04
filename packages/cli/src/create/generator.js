@@ -4,6 +4,11 @@ import fs from 'fs-extra';
 import os from 'node:os';
 import path from 'node:path';
 import { getPluginChoices, getPluginsByNames } from './plugins/index.js';
+import {
+  assertArchPlatformCompat,
+  getArchesForPlatform,
+  DEFAULT_ARCH,
+} from './architectures/index.js';
 import { resolveTheme } from './theme/decode.js';
 import { THEME_PRESETS, getThemePreset } from './theme/presets.js';
 import {
@@ -89,6 +94,19 @@ export async function createProject(options = {}) {
       { name: 'Flutter', value: 'flutter' },
     ],
   });
+
+  // arch 결정 — platform 확정 후. 사용자가 --arch 미지정 시:
+  //   - next  → DEFAULT_ARCH ('fsd')
+  //   - flutter → 현재 Flutter arch 디스크립터 없음 → null. 미래에 flutter arch 추가되면
+  //     해당 platform 의 첫 번째 arch 또는 별도 default 로 변경.
+  // 명시한 경우 platform 호환성 검증 후 디스크립터 resolve. 잘못된 조합은 친절한 에러.
+  let arch = null;
+  if (platform === 'next') {
+    const archName = options.arch ?? DEFAULT_ARCH;
+    arch = assertArchPlatformCompat(archName, 'next');
+  } else if (platform === 'flutter' && options.arch) {
+    arch = assertArchPlatformCompat(options.arch, 'flutter');
+  }
 
   // CSS 프레임워크 — 현재는 plain 만 지원하지만, 곧 추가될 옵션을 disabled 로
   // 미리 노출해 사용자가 변종 시스템의 존재를 인지할 수 있게 한다.
@@ -186,9 +204,9 @@ export async function createProject(options = {}) {
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
 
   if (projectType === 'standalone') {
-    await generateStandalone(targetDir, projectName, plugins, theme, cssFramework);
+    await generateStandalone(targetDir, projectName, plugins, theme, cssFramework, arch);
   } else {
-    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme, css: cssFramework });
+    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme, css: cssFramework, arch });
   }
 
   await finalizeProject(targetDir, { dryRun: options.dryRun });
@@ -267,7 +285,13 @@ export async function addApp() {
     return;
   }
 
-  await generateApp(appsDir, appName, port, plugins);
+  // addApp 은 기존 monorepo 의 새 앱 추가 — arch 는 일관성을 위해 모노레포가 처음
+  // 만들어질 때 정한 값과 같아야 한다. 현재는 root sh-ui.config.json 등에 별도 저장
+  // 안 해 두므로 일단 DEFAULT_ARCH (fsd) 로 fallback. 향후 root config 에 arch 박아두고
+  // 여기서 읽어오는 흐름으로 개선 가능.
+  const arch = assertArchPlatformCompat(DEFAULT_ARCH, 'next');
+
+  await generateApp(appsDir, appName, port, plugins, arch);
 
   console.log(`\n✅ apps/${appName} 이 추가되었습니다!`);
   console.log('\n  pnpm install');
@@ -355,8 +379,16 @@ async function generateFlutter(targetDir, projectName, theme, css) {
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css);
 }
 
-async function generateStandalone(targetDir, projectName, plugins, theme, css) {
-  await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-standalone'), targetDir);
+async function generateStandalone(targetDir, projectName, plugins, theme, css, arch) {
+  // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 같은 패턴.
+  await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-standalone'), targetDir, {
+    filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
+  });
+  await fs.copy(
+    path.join(TEMPLATES_DIR, 'nextjs-standalone', '_arch', arch.name),
+    targetDir,
+    { overwrite: true },
+  );
 
   // Update package.json
   const pkgPath = path.join(targetDir, 'package.json');
@@ -372,16 +404,16 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css) {
   }
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
-  await writeNextConfig(targetDir, plugins, { isMonorepo: false });
+  await writeNextConfig(targetDir, plugins, { isMonorepo: false, arch });
   await appendEnvVars(path.join(targetDir, '.env.example'), plugins);
-  await writePluginFiles(targetDir, plugins);
-  await composeProviders(targetDir, plugins);
-  await applyTransforms(targetDir, plugins);
+  await writePluginFiles(targetDir, plugins, arch);
+  await composeProviders(targetDir, plugins, arch);
+  await applyTransforms(targetDir, plugins, arch);
   await injectCssTheme(targetDir, theme);
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -412,14 +444,24 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   });
 
   const appsDir = path.join(targetDir, 'apps', appName);
-  await generateApp(appsDir, appName, port, plugins);
+  await generateApp(appsDir, appName, port, plugins, arch);
   const uiAppDir = path.join(targetDir, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
   await injectCssTheme(uiAppDir, theme);
   await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css);
 }
 
-async function generateApp(targetDir, appName, port, plugins) {
-  await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-app'), targetDir);
+async function generateApp(targetDir, appName, port, plugins, arch) {
+  // 베이스 템플릿 (arch-neutral 파일들) 만 카피 — _arch/ 디렉토리는 스킵.
+  // 그 후 선택된 arch 의 오버레이를 위에 머지해 arch-coupled 파일들 (layout.tsx,
+  // src/ 또는 lib+components/, tsconfig.json paths 블록 등) 을 떨어뜨린다.
+  await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-app'), targetDir, {
+    filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
+  });
+  await fs.copy(
+    path.join(TEMPLATES_DIR, 'nextjs-app', '_arch', arch.name),
+    targetDir,
+    { overwrite: true },
+  );
 
   // Replace ui-app-name placeholder with actual app name in all files
   await replaceInAllFiles(targetDir, 'ui-app-name', `ui-${appName}`);
@@ -440,7 +482,7 @@ async function generateApp(targetDir, appName, port, plugins) {
   }
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
-  await writeNextConfig(targetDir, plugins, { isMonorepo: true, appName });
+  await writeNextConfig(targetDir, plugins, { isMonorepo: true, appName, arch });
 
   // Update Dockerfile
   const dockerPath = path.join(targetDir, 'Dockerfile');
@@ -461,9 +503,9 @@ async function generateApp(targetDir, appName, port, plugins) {
   }
 
   await appendEnvVars(path.join(targetDir, '.env.example'), plugins);
-  await writePluginFiles(targetDir, plugins);
-  await composeProviders(targetDir, plugins);
-  await applyTransforms(targetDir, plugins);
+  await writePluginFiles(targetDir, plugins, arch);
+  await composeProviders(targetDir, plugins, arch);
+  await applyTransforms(targetDir, plugins, arch);
 }
 
 // ─── Helpers ───
@@ -509,7 +551,7 @@ async function replaceInAllFiles(dir, search, replace) {
   }
 }
 
-async function writeNextConfig(targetDir, plugins, { isMonorepo, appName }) {
+async function writeNextConfig(targetDir, plugins, { isMonorepo, appName, arch }) {
   const imports = [`import type { NextConfig } from 'next';`];
   const preExport = [];
   let configBody;
@@ -535,7 +577,8 @@ async function writeNextConfig(targetDir, plugins, { isMonorepo, appName }) {
 
   for (const plugin of plugins) {
     if (plugin.imports) imports.push(...plugin.imports);
-    if (plugin.preExport) preExport.push(...plugin.preExport);
+    const pluginPreExport = resolveArchField(plugin.preExport, arch);
+    if (pluginPreExport) preExport.push(...pluginPreExport);
   }
 
   let exportExpr = 'nextConfig';
@@ -569,10 +612,25 @@ async function appendEnvVars(envPath, plugins) {
   }
 }
 
-async function writePluginFiles(targetDir, plugins) {
+/**
+ * 플러그인 manifest 의 함수형 필드를 arch 디스크립터로 평가해 정적 값으로 변환.
+ * Layer 1 에서는 모든 플러그인이 정적이라 사실상 no-op 분기. Layer 2 에서 플러그인이
+ * `files: (arch) => ({...})` 형태로 전환되면 이 헬퍼가 함수를 호출해 평가한다.
+ *
+ * arch 가 null (flutter 경로) 일 때는 함수형 필드는 빈 값으로 fallback —
+ * Flutter 에는 next-arch 가 없으므로 이런 플러그인이 호출되지 않아야 정상이지만
+ * 방어적 처리.
+ */
+function resolveArchField(field, arch) {
+  if (typeof field === 'function') return field(arch);
+  return field;
+}
+
+async function writePluginFiles(targetDir, plugins, arch) {
   for (const plugin of plugins) {
-    if (plugin.files) {
-      for (const [filePath, content] of Object.entries(plugin.files)) {
+    const files = resolveArchField(plugin.files, arch);
+    if (files) {
+      for (const [filePath, content] of Object.entries(files)) {
         const fullPath = path.join(targetDir, filePath);
         await fs.ensureDir(path.dirname(fullPath));
         await fs.writeFile(fullPath, content);
@@ -582,12 +640,15 @@ async function writePluginFiles(targetDir, plugins) {
 
   // auth-jwt + next-intl 동시 활성화 시 proxy.ts 병합
   // (각 플러그인이 단독으로 깐 proxy.ts 를 합친 버전으로 덮어쓴다)
+  // i18n routing import 는 arch.aliases.config 기준 — FSD 면 @/src/shared/config,
+  // flat 이면 @/lib/config 로 해석.
   const names = new Set(plugins.map((p) => p.name));
   if (names.has('auth-jwt') && names.has('next-intl')) {
+    const configAlias = arch ? arch.aliases.config : '@/src/shared/config';
     const mergedProxy = `import createIntlMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { routing } from '@/src/shared/config/i18n/routing';
+import { routing } from '${configAlias}/i18n/routing';
 
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];
 
@@ -635,18 +696,24 @@ export const config = {
   }
 }
 
-async function composeProviders(targetDir, plugins) {
+async function composeProviders(targetDir, plugins, arch) {
   const extraImports = [];
   const wrappers = [];
 
   for (const plugin of plugins) {
-    if (plugin.providerImports) extraImports.push(...plugin.providerImports);
-    if (plugin.providerWrappers) wrappers.push(...plugin.providerWrappers);
+    const providerImports = resolveArchField(plugin.providerImports, arch);
+    const providerWrappers = resolveArchField(plugin.providerWrappers, arch);
+    if (providerImports) extraImports.push(...providerImports);
+    if (providerWrappers) wrappers.push(...providerWrappers);
   }
 
   if (extraImports.length === 0 && wrappers.length === 0) return;
 
-  const globalProviderPath = path.join(targetDir, 'src/app/providers/GlobalProvider/index.tsx');
+  // GlobalProvider 위치는 arch.paths.providers 기준 — Layer 2 에서 플러그인이
+  // arch.aliases.providers 를 import 에 사용하게 되면 이 경로도 일관됨.
+  // arch 미지정 (legacy) 시 FSD 디폴트 fallback.
+  const providersDir = arch ? arch.paths.providers : 'src/app/providers';
+  const globalProviderPath = path.join(targetDir, providersDir, 'GlobalProvider', 'index.tsx');
   if (!(await fs.pathExists(globalProviderPath))) return;
 
   let content = await fs.readFile(globalProviderPath, 'utf-8');
@@ -674,11 +741,12 @@ async function composeProviders(targetDir, plugins) {
   await fs.writeFile(globalProviderPath, content);
 }
 
-async function applyTransforms(targetDir, plugins) {
+async function applyTransforms(targetDir, plugins, arch) {
   for (const plugin of plugins) {
-    if (!plugin.transforms) continue;
+    const transforms = resolveArchField(plugin.transforms, arch);
+    if (!transforms) continue;
 
-    for (const transform of plugin.transforms) {
+    for (const transform of transforms) {
       const { type } = transform;
 
       if (type === 'move') {
@@ -746,8 +814,9 @@ const OPTIONAL_DART_INJECTORS = [
 async function injectCssTheme(projectDir, theme) {
   if (!theme) return;
   const candidates = [
-    'src/shared/styles/tokens.css',
-    'src/styles/tokens.css',
+    'src/shared/styles/tokens.css',  // FSD standalone
+    'src/styles/tokens.css',          // monorepo ui-app-template (arch-neutral)
+    'lib/styles/tokens.css',          // flat standalone
   ];
   for (const rel of candidates) {
     const abs = path.join(projectDir, rel);

@@ -899,4 +899,246 @@ describe('sh-ui create smoke tests', () => {
       expect(await fs.pathExists(path.join(tmpDir, 'dry-git'))).toBe(false);
     });
   });
+
+  // ─── arch=flat 매트릭스 ───
+  //
+  // Layer 3 부터 --arch flat 지원. 베이스 템플릿이 _arch/{fsd,flat}/ 오버레이로
+  // 분리됐고, 플러그인은 arch.paths/aliases 만 보고 flat 경로로 emit.
+  // 핵심 회귀 가드:
+  //   - flat 에는 src/ 가 절대 없어야 함 (FSD 슬라이스 부재가 flat 의 본질)
+  //   - lib/ + components/ 가 있어야 함
+  //   - 플러그인 산출물이 flat 경로로 떨어져야 함
+  //   - tsconfig 의 paths 가 scoped (@/lib/*, @/components/*, @/app/*)
+  //   - 어떤 파일에도 @/src/ import 가 남아있지 않아야 함
+
+  describe('arch=flat 매트릭스', () => {
+    async function readAllSources(dir) {
+      const out = [];
+      async function walk(d) {
+        const entries = await fs.readdir(d, { withFileTypes: true });
+        for (const e of entries) {
+          const full = path.join(d, e.name);
+          if (e.isDirectory()) {
+            if (e.name === 'node_modules' || e.name === '.git' || e.name === '.next') continue;
+            await walk(full);
+          } else if (e.isFile() && (full.endsWith('.ts') || full.endsWith('.tsx'))) {
+            out.push({ path: full, content: await fs.readFile(full, 'utf-8') });
+          }
+        }
+      }
+      await walk(dir);
+      return out;
+    }
+
+    it('flat standalone — 플러그인 없음 — src/ 부재, lib/components 존재, scoped tsconfig', async () => {
+      await createProject({
+        name: 'flat-bare',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        arch: 'flat',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'flat-bare');
+      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(false);
+      expect(await fs.pathExists(path.join(dir, 'lib'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'components'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'components', 'layouts', 'RootLayout.tsx'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'components', 'providers', 'GlobalProvider', 'index.tsx'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'http.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'lib', 'styles', 'tokens.css'))).toBe(true);
+
+      const tsconfig = await fs.readJson(path.join(dir, 'tsconfig.json'));
+      expect(tsconfig.compilerOptions.paths['@/lib/*']).toEqual(['./lib/*']);
+      expect(tsconfig.compilerOptions.paths['@/components/*']).toEqual(['./components/*']);
+      expect(tsconfig.compilerOptions.paths['@/app/*']).toEqual(['./app/*']);
+      expect(tsconfig.compilerOptions.paths['@/*']).toBeUndefined();
+    });
+
+    it('flat standalone — @/src/ import 가 어떤 .ts/.tsx 파일에도 남아있지 않음', async () => {
+      await createProject({
+        name: 'flat-no-src',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        arch: 'flat',
+        yes: true,
+      });
+      const sources = await readAllSources(path.join(tmpDir, 'flat-no-src'));
+      const violators = sources.filter((s) => /@\/src\//.test(s.content));
+      if (violators.length > 0) {
+        // 디버깅용 — 어디에 남아있는지 보이게
+        const detail = violators.map((v) => v.path.replace(tmpDir, '')).join('\n');
+        throw new Error(`@/src/ import 가 남아있음:\n${detail}`);
+      }
+      expect(violators).toEqual([]);
+    });
+
+    it('flat standalone — sentry — observability 와 FallbackBoundary 가 flat 경로로', async () => {
+      await createProject({
+        name: 'flat-sentry',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['sentry'],
+        arch: 'flat',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'flat-sentry');
+      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'observability.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'components', 'common', 'FallbackBoundary', 'index.tsx'))).toBe(true);
+      // FSD 경로엔 없어야 함
+      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(false);
+
+      // FallbackBoundary 가 ApiError 를 flat alias 로 import
+      const fb = await fs.readFile(
+        path.join(dir, 'components', 'common', 'FallbackBoundary', 'index.tsx'),
+        'utf-8',
+      );
+      expect(fb).toContain("from '@/lib/api/error'");
+    });
+
+    it('flat standalone — next-intl — i18n 설정이 lib/config/i18n 으로', async () => {
+      await createProject({
+        name: 'flat-intl',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['next-intl'],
+        arch: 'flat',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'flat-intl');
+      expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'routing.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'request.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'messages', 'ko.json'))).toBe(true);
+
+      // [locale]/layout.tsx 는 flat alias 로 RootLayout import
+      const localeLayout = await fs.readFile(
+        path.join(dir, 'app', '[locale]', 'layout.tsx'),
+        'utf-8',
+      );
+      expect(localeLayout).toContain("from '@/components/layouts/RootLayout'");
+
+      // RootLayout 은 flat alias 로 GlobalProvider + i18n routing import
+      const rootLayout = await fs.readFile(
+        path.join(dir, 'components', 'layouts', 'RootLayout.tsx'),
+        'utf-8',
+      );
+      expect(rootLayout).toContain("from '@/components/providers'");
+      expect(rootLayout).toContain("from '@/lib/config/i18n/routing'");
+
+      // next.config.ts 의 createNextIntlPlugin 경로도 flat 기준
+      const nextConfig = await fs.readFile(path.join(dir, 'next.config.ts'), 'utf-8');
+      expect(nextConfig).toContain("'./lib/config/i18n/request.ts'");
+    });
+
+    it('flat standalone — auth-jwt — refreshSession 등이 lib/api 로, BFF 가 flat alias 로', async () => {
+      await createProject({
+        name: 'flat-auth',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['auth-jwt'],
+        arch: 'flat',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'flat-auth');
+      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'refreshSession.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'withAuthRetry.ts'))).toBe(true);
+
+      const bff = await fs.readFile(
+        path.join(dir, 'app', 'api', 'proxy', '[...path]', 'route.ts'),
+        'utf-8',
+      );
+      expect(bff).toContain("from '@/lib/api/observability'");
+      expect(bff).toContain("from '@/lib/api/refreshSession'");
+    });
+
+    it('flat standalone — sentry + next-intl + auth-jwt 셋 다 — proxy 병합 + 모든 산출물 flat 경로', async () => {
+      await createProject({
+        name: 'flat-all',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: ['sentry', 'next-intl', 'auth-jwt'],
+        arch: 'flat',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'flat-all');
+
+      // 병합된 proxy.ts 는 flat alias 로 i18n routing import
+      const proxy = await fs.readFile(path.join(dir, 'proxy.ts'), 'utf-8');
+      expect(proxy).toContain("from '@/lib/config/i18n/routing'");
+      expect(proxy).toContain('createIntlMiddleware');
+      expect(proxy).toContain('accessToken');
+
+      // src/ 절대 부재
+      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(false);
+
+      // 모든 산출물이 flat 경로
+      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'observability.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'refreshSession.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'routing.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'components', 'common', 'FallbackBoundary', 'index.tsx'))).toBe(true);
+
+      // 어디에도 @/src/ import 없음
+      const sources = await readAllSources(dir);
+      const violators = sources.filter((s) => /@\/src\//.test(s.content));
+      expect(violators).toEqual([]);
+    });
+
+    it('flat monorepo — apps/web 에 flat 구조 + 플러그인 산출물', async () => {
+      await createProject({
+        name: 'flat-mono',
+        platform: 'next',
+        structure: 'monorepo',
+        plugins: ['sentry', 'next-intl', 'auth-jwt'],
+        arch: 'flat',
+        yes: true,
+      });
+      const webDir = path.join(tmpDir, 'flat-mono', 'apps', 'web');
+      expect(await fs.pathExists(path.join(webDir, 'src'))).toBe(false);
+      expect(await fs.pathExists(path.join(webDir, 'lib', 'api', 'observability.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(webDir, 'components', 'layouts', 'RootLayout.tsx'))).toBe(true);
+
+      const sources = await readAllSources(webDir);
+      const violators = sources.filter((s) => /@\/src\//.test(s.content));
+      expect(violators).toEqual([]);
+    });
+  });
+
+  // ─── FSD 회귀 가드 — Layer 1~3 변경 후에도 v0.57 까지의 출력과 동일해야 함 ───
+
+  describe('arch=fsd 회귀 가드', () => {
+    it('fsd standalone — src/ 존재, components/lib 부재', async () => {
+      await createProject({
+        name: 'fsd-keep',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        arch: 'fsd',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'fsd-keep');
+      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'app', 'layouts', 'RootLayout.tsx'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'shared', 'api', 'http.ts'))).toBe(true);
+      // flat 디렉토리는 없어야 함
+      expect(await fs.pathExists(path.join(dir, 'lib'))).toBe(false);
+      expect(await fs.pathExists(path.join(dir, 'components'))).toBe(false);
+
+      const tsconfig = await fs.readJson(path.join(dir, 'tsconfig.json'));
+      expect(tsconfig.compilerOptions.paths['@/*']).toEqual(['./*']);
+    });
+
+    it('fsd standalone — arch 미지정 시 fsd 가 default', async () => {
+      await createProject({
+        name: 'fsd-default',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        // arch 미지정
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'fsd-default');
+      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(true);
+    });
+  });
 });

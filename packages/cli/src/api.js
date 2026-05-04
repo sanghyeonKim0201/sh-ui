@@ -23,4 +23,11 @@ export {
 } from './constants.js';
 
 export { allPlugins } from './create/plugins/index.js';
+export {
+  allArchitectures,
+  DEFAULT_ARCH,
+  getArchByName,
+  getArchesForPlatform,
+  isKnownArch,
+} from './create/architectures/index.js';
 export { THEME_PRESETS, THEME_PRESET_NAMES } from './create/theme/presets.js';
