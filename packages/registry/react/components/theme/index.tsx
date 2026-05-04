@@ -61,13 +61,30 @@ export function ThemeProvider({
   const [_theme, _setTheme] = React.useState<Theme>(defaultTheme);
   const theme = themeProp ?? _theme;
 
+  // SSR 폴백 보정 — force-static 페이지에서는 cookies() 가 throw 해 defaultTheme 이
+  // 항상 "light" 로 들어온다. mount 시 cookie 를 직접 읽어 React state 와 documentElement
+  // 클래스를 사용자가 마지막에 고른 값으로 동기화. 비제어 모드에서만.
+  React.useEffect(() => {
+    if (themeProp !== undefined) return;
+    if (typeof document === "undefined") return;
+    const m = document.cookie.match(/(?:^|; )sh-ui-theme=(dark|light)/);
+    if (!m) return;
+    const fromCookie = m[1] as Theme;
+    _setTheme(fromCookie);
+    const root = document.documentElement.classList;
+    root.toggle("dark", fromCookie === "dark");
+    root.toggle("light", fromCookie === "light");
+  }, [themeProp]);
+
   const setTheme = React.useCallback(
     (next: Theme) => {
       if (onThemeChange) onThemeChange(next);
       else _setTheme(next);
 
       if (typeof document !== "undefined") {
-        document.documentElement.classList.toggle("dark", next === "dark");
+        const root = document.documentElement.classList;
+        root.toggle("dark", next === "dark");
+        root.toggle("light", next === "light");
         document.cookie = `${THEME_COOKIE_NAME}=${next}; path=/; max-age=${THEME_COOKIE_MAX_AGE}`;
       }
     },

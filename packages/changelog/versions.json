@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.56.1",
+      "date": "2026-05-04",
+      "title": "fix — 테마 토글이 새로고침 후 초기화 + v0.54.0 템플릿/빌더 완성",
+      "type": "patch",
+      "highlights": [
+        "**force-static 페이지에서 테마 영속화 복구** — `cookies()` 가 throw 해 SSR 시 항상 `isDark=false` 폴백이라 사용자가 토글한 결과(`sh-ui-theme` 쿠키) 가 무시되던 문제. `<head>` 인라인 스크립트로 hydration 전에 쿠키를 읽어 `.dark`/`.light` 클래스 즉시 부여 — 깜빡임 없음.",
+        "**ThemeProvider mount-time 동기화 추가** — React state 도 mount 시 쿠키를 직접 확인해 SSR 폴백(`light`)에 갇히지 않도록 보정. 토글 버튼 UI 가 실제 클래스와 항상 일치. registry 원본 + apps/docs 카피본 둘 다 동일하게 패치.",
+        "**v0.54.0 미반영 템플릿/빌더 완성** — `nextjs-standalone` / `ui-app-template` 의 `tokens.css` 에 `prefers-color-scheme` 블록 추가, `packages/tokens/build.mjs` 가 해당 블록을 emit. v0.54.0 릴리즈 노트에 약속됐지만 누락됐던 부분을 같은 패치로 정리.",
+        "**docs `tokens.css` 의 `@theme inline` 블록 추가** — Tailwind v4 유틸(`bg-primary` / `text-foreground` 등) 이 토큰 변수와 자동 매핑되도록. 기존엔 컴포넌트가 hex fallback 으로만 동작하던 곳도 토큰 흐름으로 통일."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.56.1"
+    },
+    {
       "version": "0.56.0",
       "date": "2026-05-04",
       "title": "playground — Success / Warning / Info 색 그룹",
