@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.52.0",
+      "date": "2026-05-04",
+      "title": "Flutter 위젯 golden 시각 회귀 테스트",
+      "type": "minor",
+      "highlights": [
+        "**Flutter 골든 테스트 인프라** — `apps/showcase/test/golden_test.dart`. button(2개 variant) · card · input · checkbox · radio · switch · skeleton · slider · label 10개 위젯의 기본 상태를 골든 이미지로 비교. 의도하지 않은 시각 변경을 PR 에서 잡음.",
+        "**macOS CI 워크플로우** — `.github/workflows/showcase-visual.yml` — apps/showcase 또는 packages/registry/flutter 변경 시에만 트리거. macos-latest 러너에서 `flutter test` 실행, 실패 시 diff 를 artifact 로 업로드.",
+        "**기준 골든 commit** — 10개 png 가 `test/goldens/` 에 commit. 새 위젯 추가는 `golden_test.dart` 안에 testWidgets 한 줄 + `flutter test --update-goldens` 갱신.",
+        "이로써 sh-ui 양쪽 플랫폼 (React docs · Flutter showcase) 모두 시각 회귀 가드가 깔림. v0.51.0 의 Playwright 작업과 한 쌍."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.0"
+    },
+    {
       "version": "0.51.0",
       "date": "2026-05-04",
       "title": "Playwright 기반 시각 회귀 테스트 도입",
