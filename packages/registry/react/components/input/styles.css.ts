@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 
 export const input = style({
   display: "block",
@@ -105,12 +105,12 @@ export const affix = style({
   justifyContent: "center",
   color: "var(--foreground-muted)",
   pointerEvents: "none",
+});
 
-  selectors: {
-    "& > *": {
-      pointerEvents: "auto",
-    },
-  },
+// vanilla-extract 의 selectors 키는 universal/element descendant (& > *) 도 허용 안 함.
+// 자식 요소에 룰 적용하려면 globalStyle 로 빼야 함.
+globalStyle(`${affix} > *`, {
+  pointerEvents: "auto",
 });
 
 export const affixPrefix = style({ left: "var(--space-3)" });

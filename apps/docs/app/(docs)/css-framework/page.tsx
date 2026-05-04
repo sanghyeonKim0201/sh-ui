@@ -65,9 +65,9 @@ export default function CssFrameworkPage() {
           },
           {
             prop: "vanilla-extract",
-            type: "지원",
+            type: "파일럿 (PLANNED)",
             description:
-              "TS 안에서 타입 안전하게 CSS 작성 (.css.ts). 빌드 타임에 정적 CSS 로 컴파일 — 런타임 비용 0. 모든 styled 컴포넌트(43 개) 가 이 변종을 갖춤. 사용자 프로젝트의 bundler 에 빌드 플러그인 등록 필요.",
+              "button/card/input 3 개에 수동 작성 변종 보유. 사용자가 sh-ui.config.json 을 직접 손대면 동작 (CLI/UI 노출은 SUPPORTED 승격 후). v0.50.0 의 자동 변환 일괄 rollout 은 vanilla-extract 의 strict selector 규칙 위반으로 v0.52.2 에서 회수 — 정식 rollout 은 globalStyle() 분기 처리 후 다시 승격 예정.",
           },
         ]}
       />
@@ -211,11 +211,13 @@ export const Button = ({ variant = "primary", ...props }) => (
         <strong>적합한 경우</strong>: 이미 CSS Modules 컨벤션을 쓰는 프로젝트 / 클래스 이름 충돌 없이 컴포넌트별 스타일 격리를 원할 때 / Tailwind 의존을 피하고 싶을 때.
       </p>
 
-      <h2 id="vanilla-extract">vanilla-extract — 타입 안전 CSS-in-TS</h2>
+      <h2 id="vanilla-extract">vanilla-extract — 타입 안전 CSS-in-TS (파일럿, PLANNED)</h2>
       <p>
         CSS 룰을 TypeScript 객체로 작성한다 — 변수 참조는 import, hover/focus 등 의사 클래스는{" "}
         <code>selectors</code> 키로 표현. <code>.css.ts</code> 파일이 빌드 타임에 정적 CSS 로 컴파일되므로 런타임 비용 0.
-        모든 styled 컴포넌트(43 개)가 이 변종을 갖추며, 동적 키 (<code>byKey</code> lookup) 도 지원.
+        button/card/input 3 개에 수동 작성 파일럿 변종이 있으며, 사용자가{" "}
+        <code>sh-ui.config.json</code> 을 직접 <code>&quot;vanilla-extract&quot;</code> 로 두면 동작.
+        (정식 rollout 은 추후 — vanilla-extract 의 strict selector 규칙에 맞춰 globalStyle 분기 처리 후 SUPPORTED 승격 예정.)
       </p>
       <CodeTabs
         items={[
@@ -355,7 +357,7 @@ $ npx sh-ui-cli add button card dialog --overwrite
 ✓ some-new-component → src/components/ui/some-new-component/index.tsx`}
       />
       <p className="muted">
-        v0.47.0 기준 모든 styled 컴포넌트(43 개) 가 plain · tailwind · css-modules 3 변종을 갖춰 실제 fallback 은 거의 발생하지 않음. 새 컴포넌트가 추가되거나 vanilla-extract 가 도입되면 같은 메커니즘으로 처리.
+        v0.47.0 기준 모든 styled 컴포넌트(43 개) 가 plain · tailwind · css-modules 3 변종을 갖춰 실제 fallback 은 거의 발생하지 않음. 새 컴포넌트가 추가되거나 vanilla-extract 가 정식 rollout 되면 같은 메커니즘으로 처리.
       </p>
 
       <h2 id="how-it-works">내부 동작 (선택)</h2>
