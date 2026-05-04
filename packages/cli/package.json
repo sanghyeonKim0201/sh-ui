@@ -28,7 +28,7 @@
     "@inquirer/prompts": "^7.0.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "fs-extra": "^11.2.0",
-    "zod": "^3.25.0"
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "vitest": "^3.2.4"
