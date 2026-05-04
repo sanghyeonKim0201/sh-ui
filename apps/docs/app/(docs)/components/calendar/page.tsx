@@ -14,6 +14,9 @@ import {
   DisabledDatesDemo,
   MondayStartDemo,
   NoOutsideDaysDemo,
+  LocaleEnDemo,
+  LocaleJaDemo,
+  LocaleFrWithMessagesDemo,
   CompoundMonthOnlyDemo,
   CompoundYearOnlyDemo,
   CompoundNoArrowsDemo,
@@ -226,6 +229,81 @@ const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30
         />
       </Preview>
 
+      <h2>다국어 (i18n)</h2>
+      <p className="muted">
+        <code>locale</code> prop 한 줄로 요일·월·연도 라벨이 <code>Intl.DateTimeFormat</code> 으로 자동 생성된다.
+        Nav 버튼/select 의 aria-label 은 ko/en 만 내장 기본값이 있고, 그 외 언어는{" "}
+        <code>messages</code> 로 직접 전달한다.
+        <br />
+        기본값은 <code>&quot;ko-KR&quot;</code> — prop 을 안 주면 기존 동작 그대로다.
+      </p>
+
+      <h3>English (en-US)</h3>
+      <Preview>
+        <Preview.Demo>
+          <LocaleEnDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Calendar locale="en-US" />`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>日本語 (ja-JP)</h3>
+      <Preview>
+        <Preview.Demo>
+          <LocaleJaDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Calendar locale="ja-JP" />`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>Français — messages override</h3>
+      <p className="muted">
+        ko/en 외 언어는 nav/select aria-label 이 기본 영어로 fallback 된다. 스크린리더에 해당 언어로 들리게 하려면{" "}
+        <code>messages</code> 객체를 직접 전달.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <LocaleFrWithMessagesDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `<Calendar
+  locale="fr-FR"
+  weekStartsOn={1}
+  messages={{
+    prevYear: "Année précédente",
+    nextYear: "Année suivante",
+    prevMonth: "Mois précédent",
+    nextMonth: "Mois suivant",
+    yearSelectLabel: "Année",
+    monthSelectLabel: "Mois",
+  }}
+/>`,
+            },
+          ]}
+        />
+      </Preview>
+
       <h2>Compound 조립</h2>
       <p className="muted">
         children 으로 헤더 파츠를 직접 조립하면 화살표를 선택적으로 노출할 수 있다.
@@ -336,8 +414,10 @@ const max = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30
           { prop: "disabled", type: "(date: Date) => boolean", description: "날짜별 비활성 콜백. min/max 와 함께 적용." },
           { prop: "showOutsideDays", type: "boolean", default: "true", description: "이전/다음 달 날짜 표시 여부." },
           { prop: "weekStartsOn", type: "0 | 1", default: "0", description: "주 시작 요일. 0=일, 1=월." },
-          { prop: "weekdayLabels", type: "readonly string[]", default: `["일","월","화","수","목","금","토"]`, description: "요일 라벨 (Sunday-first 7개). weekStartsOn 에 맞춰 회전된다." },
-          { prop: "formatMonthLabel", type: "(year: number, month: number) => string", default: `"YYYY년 M월"`, description: "월 헤더 그룹의 aria-label 포맷." },
+          { prop: "weekdayLabels", type: "readonly string[]", default: "locale 기반 자동 생성", description: "요일 라벨 (Sunday-first 7개). 미지정 시 locale 에서 파생, weekStartsOn 에 맞춰 회전." },
+          { prop: "formatMonthLabel", type: "(year: number, month: number) => string", default: "locale 기반 자동 생성", description: "월 헤더 그룹의 aria-label 포맷. 미지정 시 locale 에서 파생." },
+          { prop: "locale", type: "string", default: `"ko-KR"`, description: "BCP47 로케일 (예: \"en-US\", \"ja-JP\"). 요일·월·연도 라벨이 Intl.DateTimeFormat 으로 자동 생성된다. 개별 포맷터 prop 이 우선." },
+          { prop: "messages", type: "CalendarMessages", default: "ko/en 내장", description: "Nav 버튼/select 의 aria-label override. ko/en 외 언어는 fallback 영어." },
           { prop: "fromYear", type: "number", default: "min?.getFullYear() ?? 현재−10", description: "연도 dropdown 의 시작 연도." },
           { prop: "toYear", type: "number", default: "max?.getFullYear() ?? 현재+10", description: "연도 dropdown 의 끝 연도." },
           { prop: "className", type: "string", description: "캘린더 컨테이너 클래스." },

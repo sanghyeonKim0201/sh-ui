@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.52.3 (2026-05-04) — 시각 회귀 커버리지 확장 + Flutter showcase 누락 위젯 보강
+**최신 버전**: v0.53.0 (2026-05-04) — Calendar/DatePicker i18n — locale + messages prop
 
 ## React — Components
 
@@ -881,6 +881,14 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.53.0 — Calendar/DatePicker i18n — locale + messages prop (2026-05-04)
+- **Calendar `locale` prop 추가** — BCP47 로케일(예: `"en-US"`, `"ja-JP"`) 한 줄로 요일·월 헤더·연도/월 dropdown 라벨이 모두 `Intl.DateTimeFormat` 으로 자동 생성. 한국어만 지원되던 기존 동작에서 다국어 지원으로 확장. 기본값은 `"ko-KR"` 유지 — 기존 사용자 영향 없음.
+- **`messages` prop 으로 aria-label override** — Nav 버튼(`이전 해`/`다음 달` 등) 과 select aria-label(`연도`/`월`) 을 `CalendarMessages` 객체로 한 번에 교체. ko/en 은 내장 기본값 제공, 그 외 언어는 직접 문자열 전달.
+- **DatePicker / DateRangePicker 도 `locale` 전파** — 내부 Calendar 에 자동 전달되고 placeholder(`날짜 선택`/`Select date` / `시작일 ~ 종료일`/`Start date – end date`) 도 locale 기반 자동 결정. `placeholder` 를 직접 넘기면 그게 우선.
+- **개별 포맷터 prop 은 그대로 유효** — `weekdayLabels`/`formatMonthLabel`/`CalendarYearSelect.formatYear` 등 기존 세밀 override 는 locale 보다 우선. 마이그레이션 불필요.
+- **새 export** — `Calendar` 모듈에서 `DEFAULT_LOCALE` 상수와 `CalendarMessages` 타입을 추가로 노출.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.53.0
+
 ### v0.52.3 — 시각 회귀 커버리지 확장 + Flutter showcase 누락 위젯 보강 (2026-05-04)
 - **React 시각 회귀 확장** — 15 → 37 컴포넌트. 헤비 에디터 (color-picker, code-editor, markdown-editor, rich-text-editor) 와 fixed-position toast / non-styled form·theme / Preview 없는 page-toc 만 의도적 제외.
 - **Flutter 골든 확장** — 10 → 24 케이스. 위에 추가한 누락 위젯 + 다양한 variant (button-danger/ghost/disabled, checkbox-unchecked, switch-off 등) 도 commit.
@@ -907,13 +915,6 @@
 - **기준 골든 commit** — 10개 png 가 `test/goldens/` 에 commit. 새 위젯 추가는 `golden_test.dart` 안에 testWidgets 한 줄 + `flutter test --update-goldens` 갱신.
 - 이로써 sh-ui 양쪽 플랫폼 (React docs · Flutter showcase) 모두 시각 회귀 가드가 깔림. v0.51.0 의 Playwright 작업과 한 쌍.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.0
-
-### v0.51.0 — Playwright 기반 시각 회귀 테스트 도입 (2026-05-04)
-- **시각 회귀 테스트 인프라** — `apps/docs` 에 Playwright 셋업. 15 개 컴포넌트 페이지의 Preview 영역을 캡쳐해 기준 스냅샷과 비교, 의도하지 않은 시각 변경을 PR 에서 잡음. `pnpm --filter @sh-ui/docs visual` 로 검증, `visual:update` 로 기준 갱신.
-- **macOS CI 워크플로우** — `.github/workflows/visual.yml` — macos-latest 러너에서 시각 비교, 실패 시 diff 리포트를 artifact 로 업로드.
-- **기준 스냅샷 commit** — button/card/input/badge/checkbox/switch/radio/label/separator/spinner/skeleton/progress/avatar/tooltip/textarea 15 개 시작. 새 컴포넌트는 `tests/visual/components.spec.ts` 의 COMPONENTS 배열에 슬러그만 추가하면 됨.
-- **docs 가이드 추가** — css-framework 페이지에 시각 회귀 워크플로우 섹션. 사용자 영향 없음 (npm 패키지엔 변동 없는 인프라 변경).
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.51.0
 
 ## Resources
 

@@ -154,6 +154,22 @@ export function CompoundDemo() {
   );
 }
 
+export function LocaleEnDemo() {
+  return (
+    <div style={{ width: "100%", maxWidth: 280 }}>
+      <DatePicker locale="en-US" />
+    </div>
+  );
+}
+
+export function RangeLocaleJaDemo() {
+  return (
+    <div style={{ width: "100%", maxWidth: 280 }}>
+      <DateRangePicker locale="ja-JP" />
+    </div>
+  );
+}
+
 export function CustomTriggerDemo() {
   const [date, setDate] = useState<Date | undefined>();
 
