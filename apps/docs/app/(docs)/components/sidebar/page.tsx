@@ -11,6 +11,7 @@ import {
   SidebarHeaderlessIconDemo,
   SidebarHeaderlessInsideDemo,
 } from "./_demos/headerless";
+import { VariantSource } from "@/components/variant-source";
 import { SidebarMixedDemo, SidebarPanelDemo } from "./_demos/panel";
 
 export default function SidebarPage() {
@@ -128,9 +129,7 @@ export default function SidebarPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/sidebar/</code>로 복사하고, 아이콘 의존성을 설치한다.
-      </p>
+      <VariantSource name="sidebar" />
       <CodeTabs
         items={[
           {

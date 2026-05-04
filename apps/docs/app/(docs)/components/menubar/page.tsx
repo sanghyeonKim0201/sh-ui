@@ -1,6 +1,7 @@
 export const dynamic = "force-static";
 
 import { CodeTabs } from "@/components/ui/code-tabs";
+import { VariantSource } from "@/components/variant-source";
 import { Preview } from "@/components/preview";
 import { MenubarBasicDemo } from "./_demos/basic";
 
@@ -87,6 +88,9 @@ export default function MenubarPage() {
       <p className="muted">
         DropdownMenu가 함께 설치된다(<code>registryDependencies</code>).
       </p>
+
+      <h3>Manual</h3>
+      <VariantSource name="menubar" />
 
       <h2>API Reference</h2>
       <p className="muted">

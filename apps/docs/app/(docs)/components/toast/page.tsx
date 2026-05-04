@@ -5,6 +5,7 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { BasicDemo, VariantsDemo, TitleDescDemo, ActionDemo } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function ToastPage() {
   return (
@@ -59,14 +60,7 @@ ShUiButton(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        React: registry의 <code>components/ui/toast/</code> 파일을 복사.
-        Flutter: <code>packages/registry/flutter/widgets/sh_ui_toast.dart</code>를 <code>lib/widgets/</code>로 복사.
-      </p>
-      <ul>
-        <li><code>index.tsx</code> / <code>styles.css</code> (React)</li>
-        <li><code>sh_ui_toast.dart</code> (Flutter)</li>
-      </ul>
+      <VariantSource name="toast" />
 
       <h3>Toaster 설정</h3>
       <p className="muted">

@@ -5,6 +5,7 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Progress } from "@/components/ui/progress";
 import { AnimatedProgressDemo } from "./_demos/animated";
+import { VariantSource } from "@/components/variant-source";
 
 export default function ProgressPage() {
   return (
@@ -58,6 +59,9 @@ export default function ProgressPage() {
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="progress" />
+
 
       <h2>Examples</h2>
 

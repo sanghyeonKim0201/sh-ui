@@ -7,6 +7,7 @@ import {
   CodePanelCopy,
   CodePanelBody,
 } from "@/components/ui/code-panel";
+import { VariantSource } from "@/components/variant-source";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 
@@ -65,9 +66,7 @@ export default function CodePanelPage() {
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add code-panel`} />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/code-panel/</code>로 복사하고, Shiki를 설치한다.
-      </p>
+      <VariantSource name="code-panel" />
       <CodePanel language="bash" showLineNumbers={false} code={`pnpm add shiki`} />
       <ul>
         <li><code>index.tsx</code></li>

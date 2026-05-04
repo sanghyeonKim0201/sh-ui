@@ -14,6 +14,7 @@ import {
   PaginationEllipsis,
   getPaginationRange,
 } from "@/components/ui/pagination";
+import { VariantSource } from "@/components/variant-source";
 
 export default function PaginationDocsPage() {
   const [page, setPage] = useState(1);
@@ -129,6 +130,9 @@ export default function PaginationDocsPage() {
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="pagination" />
+
 
       <h2>Examples</h2>
 

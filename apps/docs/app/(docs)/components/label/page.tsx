@@ -6,6 +6,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
+import { VariantSource } from "@/components/variant-source";
 
 export default function LabelPage() {
   return (
@@ -84,13 +85,7 @@ const ShUiInput(placeholder: 'you@example.com'),`,
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 복사한다. (React: <code>components/ui/label/</code>, Flutter: <code>lib/widgets/sh_ui_label.dart</code>)
-      </p>
-      <ul>
-        <li>React: <code>index.tsx</code>, <code>styles.css</code></li>
-        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_label.dart</code></li>
-      </ul>
+      <VariantSource name="label" />
 
       <h2>Usage</h2>
       <p className="muted">

@@ -4,6 +4,7 @@ import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
+import { VariantSource } from "@/components/variant-source";
 
 const reactSnippet = `import { Button } from "@/components/ui/button";
 
@@ -58,6 +59,9 @@ export default function CodeTabsDocsPage() {
       <p className="muted">
         <code>tabs</code> 와 <code>code-panel</code> 이 자동으로 함께 설치된다 (registry dependencies).
       </p>
+      <h3>Manual</h3>
+      <VariantSource name="code-tabs" />
+
 
       <h2>Usage</h2>
       <CodePanel

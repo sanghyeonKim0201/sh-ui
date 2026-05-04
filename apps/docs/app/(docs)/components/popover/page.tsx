@@ -5,6 +5,7 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { PopoverBasicDemo } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function PopoverPage() {
   return (
@@ -90,9 +91,7 @@ export default function PopoverPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/popover/</code>로 복사하고 Base UI를 설치한다.
-      </p>
+      <VariantSource name="popover" />
       <CodeTabs
         items={[
           {

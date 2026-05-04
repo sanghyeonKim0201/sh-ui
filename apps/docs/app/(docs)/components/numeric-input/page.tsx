@@ -9,6 +9,7 @@ import {
   SliderCompanionDemo,
   DisabledDemo,
 } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function NumericInputPage() {
   return (
@@ -52,11 +53,7 @@ export default function NumericInputPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">registry 에서 아래 파일을 복사한다.</p>
-      <ul>
-        <li><code>components/ui/numeric-input/index.tsx</code></li>
-        <li><code>components/ui/numeric-input/styles.css</code></li>
-      </ul>
+      <VariantSource name="numeric-input" />
 
       <h2>Usage</h2>
       <CodeTabs

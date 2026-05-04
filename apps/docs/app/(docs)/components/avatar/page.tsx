@@ -5,6 +5,7 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { VariantSource } from "@/components/variant-source";
 
 export default function AvatarPage() {
   return (
@@ -73,6 +74,9 @@ export default function AvatarPage() {
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="avatar" />
+
 
       <h2>Examples</h2>
 

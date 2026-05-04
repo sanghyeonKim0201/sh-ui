@@ -7,6 +7,7 @@ import {
   FileUploadList,
 } from "@/components/ui/file-upload";
 import { CodeTabs } from "@/components/ui/code-tabs";
+import { VariantSource } from "@/components/variant-source";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { MultiValidateDemo } from "./_demos/multi-validate";
@@ -81,13 +82,7 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 복사한다.
-      </p>
-      <ul>
-        <li>React: <code>components/ui/file-upload/index.tsx</code>, <code>styles.css</code></li>
-        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_file_upload.dart</code> → <code>lib/widgets/</code></li>
-      </ul>
+      <VariantSource name="file-upload" />
 
       <h2>Usage</h2>
       <CodeTabs

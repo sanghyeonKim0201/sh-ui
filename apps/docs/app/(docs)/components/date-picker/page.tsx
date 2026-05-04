@@ -16,6 +16,7 @@ import {
   CompoundDemo,
   CustomTriggerDemo,
 } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function DatePickerPage() {
   return (
@@ -58,13 +59,7 @@ export default function DatePickerPage() {
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 복사한다.
-      </p>
-      <ul>
-        <li>React: <code>components/ui/date-picker/index.tsx</code>, <code>styles.css</code></li>
-        <li>Flutter: <code>packages/registry/flutter/widgets/sh_ui_date_picker.dart</code> → <code>lib/widgets/</code></li>
-      </ul>
+      <VariantSource name="date-picker" />
 
       <h2>Usage</h2>
       <CodeTabs

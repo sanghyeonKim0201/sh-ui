@@ -7,6 +7,7 @@ import { BasicDemo } from "./_demos/basic";
 import { JsonDemo } from "./_demos/json";
 import { ReadOnlyDemo } from "./_demos/readonly";
 import { MarkdownDemo } from "./_demos/markdown";
+import { VariantSource } from "@/components/variant-source";
 
 export default function CodeEditorPage() {
   return (
@@ -37,9 +38,7 @@ export default function CodeEditorPage() {
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add code-editor`} />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 <code>components/ui/code-editor/</code>로 파일을 복사하고, CodeMirror 6 패키지를 설치한다.
-      </p>
+      <VariantSource name="code-editor" />
       <CodePanel
         language="bash"
         showLineNumbers={false}

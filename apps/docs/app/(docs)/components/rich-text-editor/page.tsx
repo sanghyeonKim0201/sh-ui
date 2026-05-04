@@ -6,6 +6,7 @@ import { PropsTable } from "@/components/props-table";
 import { BasicDemo } from "./_demos/basic";
 import { WithOutputDemo } from "./_demos/with-output";
 import { ReadOnlyDemo } from "./_demos/readonly";
+import { VariantSource } from "@/components/variant-source";
 
 export default function RichTextEditorPage() {
   return (
@@ -36,9 +37,7 @@ export default function RichTextEditorPage() {
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add rich-text-editor`} />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 <code>components/ui/rich-text-editor/</code>로 파일을 복사하고, Tiptap 패키지를 설치한다.
-      </p>
+      <VariantSource name="rich-text-editor" />
       <CodePanel
         language="bash"
         showLineNumbers={false}

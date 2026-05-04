@@ -4,6 +4,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Spinner } from "@/components/ui/spinner";
+import { VariantSource } from "@/components/variant-source";
 
 export default function SpinnerPage() {
   return (
@@ -63,6 +64,9 @@ ShUiSpinner(size: ShUiSpinnerSize.lg)`,
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="spinner" />
+
 
       <h2>Examples</h2>
 

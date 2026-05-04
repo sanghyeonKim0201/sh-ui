@@ -4,6 +4,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SwitchBasicDemo, SwitchSizeDemo, SwitchDisabledDemo } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function SwitchPage() {
   return (
@@ -61,13 +62,7 @@ Row(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        React: registry의 <code>components/ui/switch/</code> 파일을 복사. Flutter: <code>packages/registry/flutter/widgets/sh_ui_switch.dart</code>를 <code>lib/widgets/</code>로 복사.
-      </p>
-      <ul>
-        <li><code>index.tsx</code> / <code>styles.css</code> (React)</li>
-        <li><code>sh_ui_switch.dart</code> (Flutter)</li>
-      </ul>
+      <VariantSource name="switch" />
 
       <h2>Usage</h2>
       <CodeTabs

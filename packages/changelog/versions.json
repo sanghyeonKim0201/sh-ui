@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.48.0",
+      "date": "2026-05-04",
+      "title": "컴포넌트 페이지에 변종 별 소스 탭 추가",
+      "type": "minor",
+      "highlights": [
+        "**컴포넌트 페이지의 Manual 섹션 = 변종 별 소스 탭** — 기존엔 \"index.tsx, styles.css 를 복사한다\" 한 줄 안내 + 파일명 리스트뿐이었던 자리에 plain · tailwind · css-modules 3 변종 소스를 탭으로 직접 표시. 사용자가 cssFramework 별로 어떤 코드가 들어오는지 페이지에서 바로 비교 가능.",
+        "**`<VariantSource name=\"...\" />` 공용 컴포넌트** — registry 변종 소스를 빌드 타임에 한 번 읽어 정적 모듈로 emit (`apps/docs/lib/variants.generated.ts`). 이후 컴포넌트는 fs 의존 없이 client component 페이지 (pagination, page-toc 등) 에서도 그대로 사용. registry 컴포넌트가 바뀌면 `pnpm generate:variants` (build/dev/typecheck 전 자동 호출) 가 다시 emit.",
+        "**45 개 컴포넌트 페이지 일괄 패치** — 33 개는 기존 Manual 섹션을 `<VariantSource>` 로 교체, 12 개는 신규 Manual 섹션 추가. 비-styled 컴포넌트(theme, code-tabs 등)도 보유한 변종만 자동으로 표시 — 변종이 없으면 탭 자체 생략."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.48.0"
+    },
+    {
       "version": "0.47.0",
       "date": "2026-05-04",
       "title": "CSS Modules 전수 롤아웃 — SUPPORTED 승격",

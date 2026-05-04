@@ -6,6 +6,7 @@ import {
   SliderRange,
   SliderThumb,
 } from "@/components/ui/slider";
+import { VariantSource } from "@/components/variant-source";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
@@ -74,13 +75,7 @@ ShUiSlider(
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/slider/</code>로 복사한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
-      </ul>
+      <VariantSource name="slider" />
 
       <h2>Usage</h2>
       <CodeTabs

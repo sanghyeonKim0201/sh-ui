@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
+import { VariantSource } from "@/components/variant-source";
 
 export default function SkeletonPage() {
   return (
@@ -79,13 +80,7 @@ const ShUiSkeleton(height: 16, width: 270),`,
       />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry에서 아래 파일을 <code>components/ui/skeleton/</code>로 복사한다.
-      </p>
-      <ul>
-        <li><code>index.tsx</code></li>
-        <li><code>styles.css</code></li>
-      </ul>
+      <VariantSource name="skeleton" />
 
       <h2>Usage</h2>
       <CodeTabs

@@ -2,6 +2,7 @@ export const dynamic = "force-static";
 
 import { CodePanel } from "@/components/ui/code-panel";
 import { PropsTable } from "@/components/props-table";
+import { VariantSource } from "@/components/variant-source";
 
 export default function PageTOCDocsPage() {
   return (
@@ -19,10 +20,7 @@ export default function PageTOCDocsPage() {
       <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli add page-toc`} />
 
       <h3>Manual</h3>
-      <p className="muted">
-        registry 에서 <code>components/ui/page-toc/</code> 의 <code>index.tsx</code> · <code>styles.css</code> 두
-        파일을 복사. 외부 의존성 없음.
-      </p>
+      <VariantSource name="page-toc" />
 
       <h2>Usage</h2>
       <p>

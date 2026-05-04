@@ -16,6 +16,7 @@ import {
   HeaderTitle,
   HeaderTrigger,
 } from "@/components/ui/header";
+import { VariantSource } from "@/components/variant-source";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/ui/code-tabs";
@@ -93,6 +94,9 @@ ShUiHeader(
           { value: "flutter", label: "Flutter", language: "bash", code: "npx sh-ui-cli add header" },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="header" />
+
 
       <h2>Usage</h2>
       <p>

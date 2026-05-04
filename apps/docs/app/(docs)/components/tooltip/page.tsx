@@ -5,6 +5,7 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { TooltipBasicDemo } from "./_demos/basic";
+import { VariantSource } from "@/components/variant-source";
 
 export default function TooltipPage() {
   return (
@@ -66,6 +67,9 @@ export default function TooltipPage() {
           },
         ]}
       />
+      <h3>Manual</h3>
+      <VariantSource name="tooltip" />
+
 
       <h2>구성 요소</h2>
       <SubComponents
