@@ -100,7 +100,7 @@
 }
 .toggle:hover { color: var(--foreground); background: var(--background-muted); }
 .toggle:focus-visible {
-  outline: var(--border-width-strong) solid var(--primary);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 

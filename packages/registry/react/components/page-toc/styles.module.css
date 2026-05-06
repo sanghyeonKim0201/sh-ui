@@ -59,7 +59,7 @@
   background: var(--background-subtle);
 }
 .page-toc__link:focus-visible {
-  outline: var(--border-width-strong) solid var(--primary);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .page-toc__link[data-active="true"] {

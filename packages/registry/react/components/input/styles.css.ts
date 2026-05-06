@@ -137,7 +137,7 @@ export const toggle = style({
       background: "var(--background-muted)",
     },
     "&:focus-visible": {
-      outline: "var(--border-width-strong) solid var(--primary)",
+      outline: "var(--border-width-strong) solid var(--ring)",
       outlineOffset: "2px",
     },
   },

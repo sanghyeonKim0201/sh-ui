@@ -5,14 +5,15 @@
     {
       "version": "0.58.3",
       "date": "2026-05-06",
-      "title": "디자인 디폴트 개편 2라운드 — 모든 focus ring 을 primary 로 통일",
+      "title": "디자인 디폴트 개편 2라운드 — `--ring` 토큰 도입 + 모든 focus ring 통일",
       "type": "patch",
       "highlights": [
-        "**27개 컴포넌트의 focus ring 색을 `foreground` → `primary` 로 통일** — accordion / badge / breadcrumb / calendar / carousel / checkbox / code-editor / code-panel / color-picker / combobox / dialog / dropdown-menu / file-upload / header / input / menubar / page-toc / pagination / popover / radio / rich-text-editor / select / sidebar / slider / switch / tabs / toast / toggle. v0.58.2 에서 Button 만 단독으로 시작했던 패턴을 디자인 시스템 전체로 확장.",
-        "**다크모드 순백 outline 의 압박감 해소** — 다크 배경 위에서 `outline: ... solid var(--foreground)` 는 거의 100% 명도라 시각적으로 \"공격적\"이었음. `--primary` (브랜드 톤) 로 바꾸면 사용자 식별 가능한 동시에 톤 자연스러움.",
-        "**4가지 variant + apps/docs 카피본 모두 동기화** — Tailwind / plain CSS / CSS Modules / vanilla-extract. sed 일괄 패치로 100+ 파일 갱신, 누락 0.",
-        "**광범위 visual diff** — 사용자가 컴포넌트 클릭/탭 이동 시 보이는 focus ring 색이 일제히 변경됨. 톤 자체는 더 자연스러워지지만 기존 익숙함과 다름. patch release 노트에 명시.",
-        "**철학 — 디자인 일관성은 디폴트가 책임** — 매번 사용자가 컴포넌트마다 \"focus ring 색 어떡할까\" 결정하지 않도록, 디자인 시스템이 처음부터 \"브랜드 톤\" 으로 정렬. 모든 컴포넌트가 같은 답을 줌."
+        "**`--ring` 토큰 신규 — `color-mix(in srgb, var(--primary) 50%, transparent)`** — primary 의 50% 투명도로 부드러운 focus ring. solid primary 는 다크에서 너무 시끄러웠고, foreground 는 너무 stark 했음. 50% 투명도가 둘의 절충 — 키보드 사용자에게는 식별 가능, 시각적으로는 부드러움. shadcn/ui · Radix · Linear 의 ring 패턴과 일관.",
+        "**`--color-ring: var(--ring)` @theme inline 매핑 추가** — Tailwind v4 에서 `outline-ring` 유틸로 사용 가능. 템플릿 + apps/docs + ui-app-template 모두 동기화.",
+        "**27개 컴포넌트의 focus ring 을 `--ring` 으로 일괄 변경** — accordion / badge / breadcrumb / button / calendar / carousel / card / checkbox / code-editor / code-panel / color-picker / combobox / dialog / dropdown-menu / file-upload / header / input / menubar / page-toc / pagination / popover / radio / rich-text-editor / select / sidebar / slider / switch / tabs / toast / toggle. 모든 컴포넌트가 같은 ring 톤 사용 — 디자인 일관성 확보.",
+        "**4가지 variant + 듀얼 카피본 + 템플릿 모두 동기화** — Tailwind / plain CSS / CSS Modules / vanilla-extract + apps/docs + cli/templates. sed 일괄 패치로 110+ 파일 갱신.",
+        "**철학 — focus ring 은 별도 token 으로 분리** — 사용자가 brand color 를 바꿔도 focus ring 의 \"부드러움\" 은 유지됨 (color-mix 로 primary 의 투명도 형태 유지). 매번 컴포넌트마다 결정하지 않도록 디자인 시스템이 책임.",
+        "**FYI — `outline-primary` 단독 솔리드 (이번 PR 초기 커밋) 는 squash 머지로 사용자에게 도달하지 않음.** 최종 머지 결과는 `outline-ring` (반투명 primary) 로 통일."
       ],
       "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.3"
     },

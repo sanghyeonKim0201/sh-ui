@@ -53,7 +53,7 @@ export const BreadcrumbLink = React.forwardRef<
     <a
       ref={ref}
       className={cn(
-        "text-foreground-muted no-underline rounded-[calc(var(--radius)-2px)] px-0.5 transition-colors duration-[var(--duration-fast)] hover:text-foreground hover:underline hover:underline-offset-[3px] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 motion-reduce:transition-none",
+        "text-foreground-muted no-underline rounded-[calc(var(--radius)-2px)] px-0.5 transition-colors duration-[var(--duration-fast)] hover:text-foreground hover:underline hover:underline-offset-[3px] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 motion-reduce:transition-none",
         className,
       )}
       {...props}

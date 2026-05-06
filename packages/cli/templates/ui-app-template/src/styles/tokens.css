@@ -16,6 +16,7 @@
   --primary: #171717;
   --primary-foreground: #FAFAFA;
   --primary-hover: #262626;
+  --ring: color-mix(in srgb, var(--primary) 50%, transparent);
   --danger: #DC2626;
   --danger-foreground: #FFFFFF;
 }

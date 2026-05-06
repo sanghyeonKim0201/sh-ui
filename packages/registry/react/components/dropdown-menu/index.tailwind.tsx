@@ -21,7 +21,7 @@ export const DropdownMenuTrigger = React.forwardRef<
     <BaseMenu.Trigger
       ref={ref}
       className={cn(
-        "font-[inherit] cursor-pointer focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2",
+        "font-[inherit] cursor-pointer focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2",
         className,
       )}
       {...props}

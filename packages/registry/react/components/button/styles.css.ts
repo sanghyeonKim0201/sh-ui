@@ -21,7 +21,7 @@ export const button = style({
       pointerEvents: "none",
     },
     "&:focus-visible": {
-      outline: "var(--border-width-strong) solid var(--primary)",
+      outline: "var(--border-width-strong) solid var(--ring)",
       outlineOffset: "2px",
     },
     "&:active:not(:disabled)": {

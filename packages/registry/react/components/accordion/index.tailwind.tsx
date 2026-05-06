@@ -45,7 +45,7 @@ export const AccordionTrigger = React.forwardRef<
     <BaseAccordion.Trigger
       ref={ref}
       className={cn(
-        "flex items-center justify-between gap-[var(--space-4)] w-full px-[var(--space-1)] py-[var(--space-4)] bg-transparent border-none text-foreground text-[0.9375rem] font-medium leading-snug text-left cursor-pointer transition-[background-color] duration-[var(--duration-fast)] hover:not-disabled:not-data-[disabled]:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 focus-visible:rounded-[calc(var(--radius)-2px)] disabled:cursor-not-allowed disabled:text-foreground-muted data-[disabled]:cursor-not-allowed data-[disabled]:text-foreground-muted [[data-size=sm]_&]:py-[var(--space-2)] [[data-size=sm]_&]:text-[length:var(--text-xs)] [[data-size=sm]_&]:leading-[1.2] motion-reduce:transition-none",
+        "flex items-center justify-between gap-[var(--space-4)] w-full px-[var(--space-1)] py-[var(--space-4)] bg-transparent border-none text-foreground text-[0.9375rem] font-medium leading-snug text-left cursor-pointer transition-[background-color] duration-[var(--duration-fast)] hover:not-disabled:not-data-[disabled]:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 focus-visible:rounded-[calc(var(--radius)-2px)] disabled:cursor-not-allowed disabled:text-foreground-muted data-[disabled]:cursor-not-allowed data-[disabled]:text-foreground-muted [[data-size=sm]_&]:py-[var(--space-2)] [[data-size=sm]_&]:text-[length:var(--text-xs)] [[data-size=sm]_&]:leading-[1.2] motion-reduce:transition-none",
         className,
       )}
       {...props}

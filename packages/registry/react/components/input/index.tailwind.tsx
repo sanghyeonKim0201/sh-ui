@@ -149,7 +149,7 @@ Input.displayName = "Input";
 /* ───────── PasswordInput ───────── */
 
 const passwordToggleClasses =
-  "inline-flex items-center justify-center w-8 h-8 p-0 bg-transparent border-none rounded-[calc(var(--radius)-2px)] text-foreground-muted cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center w-8 h-8 p-0 bg-transparent border-none rounded-[calc(var(--radius)-2px)] text-foreground-muted cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2";
 
 function EyeIcon() {
   return (

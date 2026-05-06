@@ -29,7 +29,7 @@
 }
 
 .sh-ui-file-upload__dropzone:focus-visible {
-  outline: var(--border-width-strong) solid var(--primary);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
   border-color: var(--foreground);
 }
@@ -93,7 +93,7 @@
   border-color: var(--border-strong);
 }
 .sh-ui-file-upload__trigger:focus-visible {
-  outline: var(--border-width-strong) solid var(--primary);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .sh-ui-file-upload__trigger:disabled {
@@ -161,7 +161,7 @@
   background: var(--background-muted);
 }
 .sh-ui-file-upload__remove:focus-visible {
-  outline: var(--border-width-strong) solid var(--primary);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .sh-ui-file-upload__remove:disabled {

@@ -10,7 +10,7 @@
 }
 .sh-ui-code-editor:focus-within {
   border-color: var(--foreground);
-  outline: var(--border-width-strong) solid var(--primary);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .sh-ui-code-editor[data-readonly] {

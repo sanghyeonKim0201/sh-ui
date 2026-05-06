@@ -34,7 +34,7 @@ export const PaginationItem = React.forwardRef<HTMLLIElement, React.LiHTMLAttrib
 );
 
 const linkBase =
-  "inline-flex items-center justify-center gap-1.5 min-w-9 h-9 px-3 rounded-[calc(var(--radius)-2px)] border border-transparent bg-transparent text-foreground no-underline transition-[background-color,border-color,color] duration-[var(--duration-fast)] cursor-pointer select-none hover:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 data-[active]:bg-foreground data-[active]:text-background data-[active]:font-medium data-[active]:hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-45 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[size=sm]:min-w-8 data-[size=sm]:h-8 data-[size=sm]:px-2 motion-reduce:transition-none";
+  "inline-flex items-center justify-center gap-1.5 min-w-9 h-9 px-3 rounded-[calc(var(--radius)-2px)] border border-transparent bg-transparent text-foreground no-underline transition-[background-color,border-color,color] duration-[var(--duration-fast)] cursor-pointer select-none hover:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[active]:bg-foreground data-[active]:text-background data-[active]:font-medium data-[active]:hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-45 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[size=sm]:min-w-8 data-[size=sm]:h-8 data-[size=sm]:px-2 motion-reduce:transition-none";
 
 export interface PaginationLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   isActive?: boolean;

@@ -25,6 +25,7 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-hover: var(--primary-hover);
+  --color-ring: var(--ring);
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
   --color-success: var(--success);

@@ -3,7 +3,7 @@ import { cn } from "@SH_UI_UTILS@";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-[var(--space-2)] border border-transparent rounded-[var(--radius)] font-medium leading-none cursor-pointer select-none transition-[background-color,color,border-color] duration-[var(--duration-fast)] disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 active:scale-[0.97]",
+  "inline-flex items-center justify-center gap-[var(--space-2)] border border-transparent rounded-[var(--radius)] font-medium leading-none cursor-pointer select-none transition-[background-color,color,border-color] duration-[var(--duration-fast)] disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2 active:scale-[0.97]",
   {
     variants: {
       variant: {
