@@ -242,7 +242,7 @@ export const SliderThumb = React.forwardRef<
       aria-disabled={disabled || undefined}
       onKeyDown={onKeyDown}
       className={cn(
-        "absolute top-1/2 w-4 h-4 -ml-2 -translate-y-1/2 bg-background border-2 border-primary rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.1)] cursor-grab transition-transform duration-[80ms] active:cursor-grabbing active:scale-110 active:-translate-y-1/2 focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5 [@media(hover:none)_and_(pointer:coarse)]:-ml-2.5",
+        "absolute top-1/2 w-4 h-4 -ml-2 -translate-y-1/2 bg-background border-2 border-primary rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.1)] cursor-grab transition-transform duration-[80ms] active:cursor-grabbing active:scale-110 active:-translate-y-1/2 focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5 [@media(hover:none)_and_(pointer:coarse)]:-ml-2.5",
         className,
       )}
       style={{ left: percent, ...style }}

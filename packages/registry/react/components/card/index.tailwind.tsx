@@ -9,7 +9,7 @@ export const Card = React.forwardRef<HTMLDivElement, DivProps>(
     <div
       ref={ref}
       className={cn(
-        "flex flex-col gap-[var(--space-6)] py-[var(--space-6)] bg-background text-foreground border border-border rounded-[var(--radius)] max-sm:gap-[var(--space-4)] max-sm:py-[var(--space-4)]",
+        "flex flex-col gap-[var(--space-6)] py-[var(--space-6)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[var(--shadow-sm)] max-sm:gap-[var(--space-4)] max-sm:py-[var(--space-4)]",
         className,
       )}
       {...props}

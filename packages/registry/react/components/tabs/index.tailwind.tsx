@@ -65,7 +65,7 @@ export const TabsTrigger = React.forwardRef<
   <BaseTabs.Tab
     ref={ref}
     className={cn(
-      "relative z-[1] inline-flex items-center justify-center gap-1.5 py-[var(--space-2)] px-[var(--space-3)] bg-transparent text-foreground-muted border-0 text-[length:var(--text-sm)] font-medium leading-none cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] select-none whitespace-nowrap hover:not-disabled:not-data-[selected]:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[selected]:text-foreground disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed",
+      "relative z-[1] inline-flex items-center justify-center gap-1.5 py-[var(--space-2)] px-[var(--space-3)] bg-transparent text-foreground-muted border-0 text-[length:var(--text-sm)] font-medium leading-none cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] select-none whitespace-nowrap hover:not-disabled:not-data-[selected]:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[selected]:text-foreground disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed",
       triggerVariantClasses,
       className,
     )}
@@ -100,7 +100,7 @@ export const TabsContent = React.forwardRef<
   <BaseTabs.Panel
     ref={ref}
     className={cn(
-      "outline-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 focus-visible:rounded-[var(--radius)]",
+      "outline-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 focus-visible:rounded-[var(--radius)]",
       className,
     )}
     {...props}

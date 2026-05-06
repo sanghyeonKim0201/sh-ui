@@ -91,7 +91,7 @@
   background: var(--sh-ui-header-hover-bg);
 }
 .header__trigger:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 
@@ -135,7 +135,7 @@
   font-weight: var(--weight-semibold);
 }
 .header__item:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 
@@ -216,7 +216,7 @@
   background: var(--sh-ui-header-hover-bg);
 }
 .header__menu-trigger:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .header__chevron {

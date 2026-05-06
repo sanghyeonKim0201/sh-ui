@@ -205,7 +205,7 @@ export const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttribute
 CarouselItem.displayName = "CarouselItem";
 
 const navClasses =
-  "absolute top-1/2 w-8 h-8 inline-flex items-center justify-center bg-background text-foreground border border-border rounded-full cursor-pointer -translate-y-1/2 z-[1] transition-[opacity,background-color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed motion-reduce:transition-none data-[orientation=vertical]:left-1/2 data-[orientation=vertical]:-translate-x-1/2 data-[orientation=vertical]:[top:auto]";
+  "absolute top-1/2 w-8 h-8 inline-flex items-center justify-center bg-background text-foreground border border-border rounded-full cursor-pointer -translate-y-1/2 z-[1] transition-[opacity,background-color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 disabled:opacity-40 disabled:cursor-not-allowed motion-reduce:transition-none data-[orientation=vertical]:left-1/2 data-[orientation=vertical]:-translate-x-1/2 data-[orientation=vertical]:[top:auto]";
 
 export const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
   ({ className, onClick, disabled, children, ...props }, ref) => {
@@ -295,7 +295,7 @@ export const CarouselIndicators = React.forwardRef<HTMLDivElement, CarouselIndic
             role="tab"
             aria-selected={i === index}
             aria-label={labelFor ? labelFor(i) : `${i + 1}번 슬라이드`}
-            className="w-2 h-2 p-0 bg-border border-none rounded-full cursor-pointer transition-[background-color,transform] duration-[var(--duration-fast)] hover:bg-border-strong data-[active]:bg-foreground data-[active]:scale-[1.2] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none"
+            className="w-2 h-2 p-0 bg-border border-none rounded-full cursor-pointer transition-[background-color,transform] duration-[var(--duration-fast)] hover:bg-border-strong data-[active]:bg-foreground data-[active]:scale-[1.2] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 motion-reduce:transition-none"
             data-active={i === index || undefined}
             onClick={() => goTo(i)}
           />

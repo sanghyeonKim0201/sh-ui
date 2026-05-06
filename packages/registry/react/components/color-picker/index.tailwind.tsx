@@ -296,7 +296,7 @@ export function ColorPickerSwatches({ className, colors, ...rest }: ColorPickerS
           <button
             key={c}
             type="button"
-            className="w-5 h-5 p-0 border border-border rounded-[calc(var(--radius)-4px)] cursor-pointer transition-[transform,box-shadow] duration-[var(--duration-fast)] hover:scale-110 focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[selected]:shadow-[0_0_0_2px_var(--background),0_0_0_3.5px_var(--foreground)]"
+            className="w-5 h-5 p-0 border border-border rounded-[calc(var(--radius)-4px)] cursor-pointer transition-[transform,box-shadow] duration-[var(--duration-fast)] hover:scale-110 focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[selected]:shadow-[0_0_0_2px_var(--background),0_0_0_3.5px_var(--foreground)]"
             aria-label={c}
             aria-pressed={selected}
             data-selected={selected || undefined}

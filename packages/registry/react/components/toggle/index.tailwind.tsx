@@ -8,7 +8,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@SH_UI_UTILS@";
 const toggleVariants = cva(
-  "inline-flex items-center justify-center gap-1.5 border border-transparent rounded-[var(--radius)] font-medium leading-none cursor-pointer text-foreground-muted bg-transparent transition-[background-color,color,border-color] duration-[var(--duration-fast)] select-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none data-[pressed]:bg-background-muted data-[pressed]:text-foreground motion-reduce:transition-none",
+  "inline-flex items-center justify-center gap-1.5 border border-transparent rounded-[var(--radius)] font-medium leading-none cursor-pointer text-foreground-muted bg-transparent transition-[background-color,color,border-color] duration-[var(--duration-fast)] select-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none data-[pressed]:bg-background-muted data-[pressed]:text-foreground motion-reduce:transition-none",
   {
     variants: {
       variant: {

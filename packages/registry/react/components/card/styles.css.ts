@@ -9,6 +9,7 @@ export const card = style({
   color: "var(--foreground)",
   border: "1px solid var(--border)",
   borderRadius: "var(--radius)",
+  boxShadow: "var(--shadow-sm)",
 
   "@media": {
     "(max-width: 640px)": {

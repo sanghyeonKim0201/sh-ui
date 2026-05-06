@@ -197,7 +197,7 @@ export const HeaderTrigger = React.forwardRef<HTMLButtonElement, React.ButtonHTM
         ref={setRefs}
         type="button"
         className={cn(
-          "hidden items-center justify-center w-9 h-9 p-0 bg-transparent border-0 text-foreground rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color] duration-[var(--duration-fast)] hover:bg-[var(--sh-ui-header-hover-bg)] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 max-md:inline-flex max-md:order-[-1]",
+          "hidden items-center justify-center w-9 h-9 p-0 bg-transparent border-0 text-foreground rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color] duration-[var(--duration-fast)] hover:bg-[var(--sh-ui-header-hover-bg)] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 max-md:inline-flex max-md:order-[-1]",
           className,
         )}
         aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
@@ -292,7 +292,7 @@ export const HeaderItem = React.forwardRef<
       ref={ref}
       href={href}
       className={cn(
-        "inline-flex items-center gap-[var(--space-1)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground-muted no-underline bg-transparent border-0 rounded-[calc(var(--radius)-2px)] cursor-pointer whitespace-nowrap transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-[var(--sh-ui-header-hover-bg)] data-[active]:text-foreground data-[active]:font-semibold focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none max-md:py-[var(--space-3)] max-md:px-[var(--space-3)]",
+        "inline-flex items-center gap-[var(--space-1)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground-muted no-underline bg-transparent border-0 rounded-[calc(var(--radius)-2px)] cursor-pointer whitespace-nowrap transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-[var(--sh-ui-header-hover-bg)] data-[active]:text-foreground data-[active]:font-semibold focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 motion-reduce:transition-none max-md:py-[var(--space-3)] max-md:px-[var(--space-3)]",
         className,
       )}
       data-active={computedActive ? "" : undefined}
@@ -437,7 +437,7 @@ export const HeaderMenuTrigger = React.forwardRef<HTMLButtonElement, React.Butto
         aria-controls={contentId}
         data-open={open ? "" : undefined}
         className={cn(
-          "inline-flex items-center gap-[var(--space-1)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground-muted bg-transparent border-0 rounded-[calc(var(--radius)-2px)] cursor-pointer whitespace-nowrap transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-[var(--sh-ui-header-hover-bg)] data-[open]:text-foreground data-[open]:bg-[var(--sh-ui-header-hover-bg)] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none",
+          "inline-flex items-center gap-[var(--space-1)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground-muted bg-transparent border-0 rounded-[calc(var(--radius)-2px)] cursor-pointer whitespace-nowrap transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-[var(--sh-ui-header-hover-bg)] data-[open]:text-foreground data-[open]:bg-[var(--sh-ui-header-hover-bg)] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 motion-reduce:transition-none",
           location === "drawer" && "max-md:justify-between max-md:w-full max-md:py-[var(--space-3)] max-md:px-[var(--space-3)]",
           className,
         )}

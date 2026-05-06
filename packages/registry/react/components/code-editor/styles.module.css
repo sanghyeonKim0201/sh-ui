@@ -10,7 +10,7 @@
 }
 .code-editor:focus-within {
   border-color: var(--foreground);
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .code-editor[data-readonly] {

@@ -32,7 +32,7 @@ const cx = (...args: (string | undefined | false | null)[]) =>
   args.filter(Boolean).join(" ");
 
 const linkBase =
-  "block px-2 py-1 rounded-[calc(var(--radius)-4px)] text-foreground-muted no-underline leading-snug transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-background-subtle focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:bg-background-subtle motion-reduce:transition-none";
+  "block px-2 py-1 rounded-[calc(var(--radius)-4px)] text-foreground-muted no-underline leading-snug transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-background-subtle focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:bg-background-subtle motion-reduce:transition-none";
 
 export function PageTOC({
   containerSelector = "main",

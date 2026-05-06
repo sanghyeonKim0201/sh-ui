@@ -9,7 +9,7 @@
 }
 .rte:focus-within {
   border-color: var(--foreground);
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .rte[data-readonly] {
@@ -50,7 +50,7 @@
   border-color: var(--border);
 }
 .rte__btn:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 1px;
 }
 .rte__btn.is-active {

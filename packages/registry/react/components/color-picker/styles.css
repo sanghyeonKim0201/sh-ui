@@ -158,7 +158,7 @@
   transform: scale(1.08);
 }
 .sh-ui-color-picker__swatch-btn:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 .sh-ui-color-picker__swatch-btn[data-selected] {

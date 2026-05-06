@@ -102,7 +102,7 @@
 }
 .sh-ui-input__toggle:hover { color: var(--foreground); background: var(--background-muted); }
 .sh-ui-input__toggle:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--ring);
   outline-offset: 2px;
 }
 
