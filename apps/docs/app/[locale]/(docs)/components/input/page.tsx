@@ -4,7 +4,6 @@ import {
   Input,
   InputAdornment,
   InputGroup,
-  PasswordInput,
 } from "@/components/ui/input";
 import { VariantSource } from "@/components/variant-source";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -16,6 +15,10 @@ import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { EmailValidationDemo } from "./_demos/email-validation";
 import { FormLayoutDemo } from "./_demos/form-layout";
+import {
+  PasswordToggleLeftLockDemo,
+  PasswordToggleRightDemo,
+} from "./_demos/password-toggle";
 import {
   BusinessNumberInputDemo,
   NumberInputDemo,
@@ -72,12 +75,12 @@ export default function InputPage() {
             value: "react",
             label: "React",
             language: "tsx",
-            code: `import { Input, PasswordInput } from "@/components/ui/input";
+            code: `import { Input } from "@/components/ui/input";
 
 <Input placeholder="이름" />
 <Input type="email" value={email} onChange={e => setEmail(e.target.value)} />
 <Input aria-invalid={hasError} />
-<PasswordInput placeholder="비밀번호" />`,
+<Input type="password" placeholder="비밀번호" />`,
           },
           {
             value: "flutter",
@@ -91,7 +94,7 @@ ShUiInput(
   onChanged: (v) => setState(() => email = v),
 ),
 ShUiInput(invalid: hasError),
-const ShUiPasswordInput(placeholder: '비밀번호'),`,
+const ShUiInput(placeholder: '비밀번호', obscureText: true),`,
           },
         ]}
       />
@@ -103,8 +106,7 @@ const ShUiPasswordInput(placeholder: '비밀번호'),`,
         <Preview.Demo>
           <div style={{ width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <Input type="email" placeholder="email@example.com" />
-            <PasswordInput placeholder="비밀번호 (토글 가능)" />
-            <Input type="password" placeholder="type=password (토글 없음)" />
+            <Input type="password" placeholder="비밀번호" />
             <Input type="number" placeholder="0" />
             <DatePicker placeholder="날짜 선택" />
           </div>
@@ -116,10 +118,11 @@ const ShUiPasswordInput(placeholder: '비밀번호'),`,
               label: "React",
               language: "tsx",
               code: `<Input type="email" placeholder="email@example.com" />
-<PasswordInput placeholder="비밀번호 (토글 가능)" />
-<Input type="password" placeholder="type=password (토글 없음)" />
+<Input type="password" placeholder="비밀번호" />
 <Input type="number" placeholder="0" />
-<DatePicker placeholder="날짜 선택" />`,
+<DatePicker placeholder="날짜 선택" />
+
+{/* 표시/숨김 토글이 필요하면 아래 InputGroup 레시피 참고 */}`,
             },
             {
               value: "flutter",
@@ -129,10 +132,9 @@ const ShUiPasswordInput(placeholder: '비밀번호'),`,
   placeholder: 'email@example.com',
   keyboardType: TextInputType.emailAddress,
 ),
-const ShUiPasswordInput(placeholder: '비밀번호 (토글 가능)'),
-const ShUiPasswordInput(
-  placeholder: '토글 없음',
-  hideToggle: true,
+const ShUiInput(
+  placeholder: '비밀번호',
+  obscureText: true,
 ),
 const ShUiInput(
   placeholder: '0',
@@ -660,6 +662,89 @@ const ShUiInput(placeholder: '검색...'),`,
         />
       </Preview>
 
+      <h3>비밀번호 토글 (레시피)</h3>
+      <p className="muted">
+        <code>InputGroup</code> + <code>InputAdornment</code> 합성으로 비밀번호
+        표시/숨김 토글을 직접 조립한다. 아이콘·위치·세부 동작을 자유롭게 바꿀 수 있고,
+        토글 버튼은 <code>aria-pressed</code>로 상태를 노출하고 Tab 흐름에서 제외(<code>tabIndex=-1</code>)한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <div style={{ width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <PasswordToggleRightDemo />
+            <PasswordToggleLeftLockDemo />
+          </div>
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `"use client";
+
+import { useState } from "react";
+import { Input, InputAdornment, InputGroup } from "@/components/ui/input";
+
+export function PasswordField() {
+  const [visible, setVisible] = useState(false);
+  return (
+    <InputGroup>
+      <Input type={visible ? "text" : "password"} placeholder="비밀번호" />
+      <InputAdornment interactive>
+        <button
+          type="button"
+          className="sh-ui-input__toggle"
+          onClick={() => setVisible((v) => !v)}
+          aria-label={visible ? "비밀번호 숨기기" : "비밀번호 표시"}
+          aria-pressed={visible}
+          tabIndex={-1}
+        >
+          {visible ? <EyeOffIcon /> : <EyeIcon />}
+        </button>
+      </InputAdornment>
+    </InputGroup>
+  );
+}`,
+            },
+            {
+              value: "left-lock",
+              label: "왼쪽 자물쇠 + 우측 토글",
+              language: "tsx",
+              code: `<InputGroup>
+  <InputAdornment><LockIcon /></InputAdornment>
+  <Input type={visible ? "text" : "password"} placeholder="비밀번호" />
+  <InputAdornment interactive>
+    <button type="button" className="sh-ui-input__toggle" onClick={...}>
+      {visible ? <EyeOffIcon /> : <EyeIcon />}
+    </button>
+  </InputAdornment>
+</InputGroup>`,
+            },
+            {
+              value: "flutter",
+              label: "Flutter",
+              language: "dart",
+              code: `// Flutter는 ShUiInput.suffix 슬롯에 직접 IconButton 을 넣는다.
+class _PasswordFieldState extends State<PasswordField> {
+  bool _visible = false;
+  @override
+  Widget build(BuildContext context) {
+    return ShUiInput(
+      placeholder: '비밀번호',
+      obscureText: !_visible,
+      suffix: IconButton(
+        icon: Icon(_visible ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+        onPressed: () => setState(() => _visible = !_visible),
+      ),
+    );
+  }
+}`,
+            },
+          ]}
+        />
+      </Preview>
+
       <h3>폼 레이아웃</h3>
       <Preview>
         <Preview.Demo>
@@ -722,7 +807,6 @@ const ShUiInput(placeholder: '검색...'),`,
           { name: "Input", description: "단일 행 입력 필드. prefix/suffix 슬롯 지원. InputGroup 내부에서는 자체 보더를 감추고 그룹의 포커스 링을 공유." },
           { name: "InputGroup", description: "Compound 컨테이너. 공용 보더·포커스 링·aria-invalid·disabled 상태를 제공." },
           { name: "InputAdornment", description: "InputGroup 내부에 배치하는 좌/우 adornment. 위치는 children 순서로 결정." },
-          { name: "PasswordInput", description: "type=password + 표시/숨김 토글 버튼이 내장." },
           { name: "NumberInput", description: "정수 입력. 천 단위 콤마 + min/max clamp." },
           { name: "PhoneInput", description: "한국 전화번호 자동 하이픈." },
           { name: "BusinessNumberInput", description: "한국 사업자등록번호 자동 하이픈 + 체크섬 검증(옵션)." },

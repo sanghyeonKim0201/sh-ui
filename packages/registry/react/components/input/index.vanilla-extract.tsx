@@ -10,7 +10,6 @@ import {
   group,
   input,
   inputWrap,
-  toggle,
   withPrefix,
   withSuffix,
 } from "./styles.css";
@@ -139,68 +138,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   },
 );
 Input.displayName = "Input";
-
-/* ───────── PasswordInput ───────── */
-
-function EyeIcon() {
-  return (
-    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
-      <path
-        d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <circle cx="10" cy="10" r="2.25" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function EyeOffIcon() {
-  return (
-    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
-      <path
-        d="M3 3l14 14M8 5a8 8 0 0 1 2-.3c5 0 8 5.3 8 5.3a13 13 0 0 1-2.3 2.9M12 12a2.5 2.5 0 0 1-3.4-3.4m-2.3-2.5A13 13 0 0 0 2 10s3 5.5 8 5.5a8 8 0 0 0 3.3-.7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-export interface PasswordInputProps extends Omit<InputProps, "type" | "suffix"> {
-  /** 비밀번호 표시 토글 버튼을 숨긴다. @default false */
-  hideToggle?: boolean;
-}
-
-export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ hideToggle, ...props }, ref) => {
-    const [visible, setVisible] = React.useState(false);
-
-    const toggleBtn = hideToggle ? undefined : (
-      <button
-        type="button"
-        className={toggle}
-        onClick={() => setVisible((v) => !v)}
-        aria-label={visible ? "비밀번호 숨기기" : "비밀번호 표시"}
-        aria-pressed={visible}
-        tabIndex={-1}
-      >
-        {visible ? <EyeOffIcon /> : <EyeIcon />}
-      </button>
-    );
-
-    return (
-      <Input
-        ref={ref}
-        type={visible ? "text" : "password"}
-        suffix={toggleBtn}
-        {...props}
-      />
-    );
-  },
-);
-PasswordInput.displayName = "PasswordInput";
 
 /* ───────── NumberInput ───────── */
 

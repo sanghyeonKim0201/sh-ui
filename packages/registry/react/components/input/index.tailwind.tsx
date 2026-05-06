@@ -146,59 +146,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = "Input";
 
-/* ───────── PasswordInput ───────── */
-
-const passwordToggleClasses =
-  "inline-flex items-center justify-center w-8 h-8 p-0 bg-transparent border-none rounded-[calc(var(--radius)-2px)] text-foreground-muted cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] hover:text-foreground hover:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2";
-
-function EyeIcon() {
-  return (
-    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
-      <path d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10Z" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="10" cy="10" r="2.25" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function EyeOffIcon() {
-  return (
-    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden>
-      <path
-        d="M3 3l14 14M8 5a8 8 0 0 1 2-.3c5 0 8 5.3 8 5.3a13 13 0 0 1-2.3 2.9M12 12a2.5 2.5 0 0 1-3.4-3.4m-2.3-2.5A13 13 0 0 0 2 10s3 5.5 8 5.5a8 8 0 0 0 3.3-.7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-export interface PasswordInputProps extends Omit<InputProps, "type" | "suffix"> {
-  hideToggle?: boolean;
-}
-
-export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ hideToggle, ...props }, ref) => {
-    const [visible, setVisible] = React.useState(false);
-
-    const toggle = hideToggle ? undefined : (
-      <button
-        type="button"
-        className={passwordToggleClasses}
-        onClick={() => setVisible((v) => !v)}
-        aria-label={visible ? "비밀번호 숨기기" : "비밀번호 표시"}
-        aria-pressed={visible}
-        tabIndex={-1}
-      >
-        {visible ? <EyeOffIcon /> : <EyeIcon />}
-      </button>
-    );
-
-    return <Input ref={ref} type={visible ? "text" : "password"} suffix={toggle} {...props} />;
-  },
-);
-PasswordInput.displayName = "PasswordInput";
-
 /* ───────── NumberInput / PhoneInput / BusinessNumberInput
  * 이 세 컴포넌트는 Input 을 wrap 만 — 자체 className 사용 안 함.
  * plain 변종과 동일한 로직을 그대로 노출. */
