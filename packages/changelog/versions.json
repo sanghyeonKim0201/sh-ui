@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.5",
+      "date": "2026-05-06",
+      "title": "디자인 디폴트 개편 4라운드 — Tabs/Color-picker 의 active·selected 표시를 primary 로",
+      "type": "patch",
+      "highlights": [
+        "**Tabs underline variant 의 active 표시선** — 가로(`inset 0 -2px 0 var(--foreground)`) / 세로(`inset -2px 0 0 var(--foreground)`) 모두 `var(--primary)` 로 변경. 활성 탭이 브랜드 톤으로 강조 — 다크에서 순백 라인이 stark 했던 문제 해소.",
+        "**Color-picker 의 selected 색상 ring** — `0 0 0 3.5px var(--foreground)` (선택된 색 둘레) → `var(--primary)`. 선택 상태가 brand 톤으로 명확.",
+        "**v0.58.3·4 ring/focus 와 일관** — 활성/선택/focus 모두 primary 또는 ring (50% primary). 다음 라운드에서 Avatar/Badge/Progress 톤 점검 예정.",
+        "**4 variant + 듀얼 카피본 + pactrack 동기화** — 8개 파일 sed."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.5"
+    },
+    {
       "version": "0.58.4",
       "date": "2026-05-06",
       "title": "디자인 디폴트 개편 3라운드 — 폼 필드의 focus·hover 색을 primary 로",

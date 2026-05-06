@@ -98,7 +98,7 @@
   left: var(--active-tab-left);
   width: var(--active-tab-width);
   height: var(--active-tab-height);
-  box-shadow: inset 0 -2px 0 var(--foreground);
+  box-shadow: inset 0 -2px 0 var(--primary);
 }
 
 .tabs[data-variant="underline"][data-orientation="vertical"] > .tabs__list {
@@ -107,7 +107,7 @@
 }
 
 .tabs[data-variant="underline"][data-orientation="vertical"] .tabs__indicator {
-  box-shadow: inset -2px 0 0 var(--foreground);
+  box-shadow: inset -2px 0 0 var(--primary);
 }
 
 /* ─────────────── variant: pill (세그먼트) ─────────────── */

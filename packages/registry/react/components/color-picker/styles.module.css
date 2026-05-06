@@ -162,5 +162,5 @@
   outline-offset: 2px;
 }
 .color-picker__swatch-btn[data-selected] {
-  box-shadow: 0 0 0 2px var(--background), 0 0 0 3.5px var(--foreground);
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 3.5px var(--primary);
 }
