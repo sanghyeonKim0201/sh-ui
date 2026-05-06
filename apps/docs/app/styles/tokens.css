@@ -17,6 +17,7 @@
   --primary-hover: #262626;
   --ring: color-mix(in srgb, var(--primary) 50%, transparent);
   --danger: #DC2626;
+  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
   --radius: 0.5rem;
   --space-0: 0px;
@@ -87,6 +88,7 @@
     --primary-foreground: #171717;
     --primary-hover: #E5E5E5;
     --danger: #DC2626;
+  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
     --danger-foreground: #FFFFFF;
   }
 }
@@ -106,6 +108,7 @@
   --primary-foreground: #171717;
   --primary-hover: #E5E5E5;
   --danger: #DC2626;
+  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
 }
 
@@ -125,6 +128,7 @@
   --color-primary-hover: var(--primary-hover);
   --color-ring: var(--ring);
   --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
   --color-danger-foreground: var(--danger-foreground);
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);

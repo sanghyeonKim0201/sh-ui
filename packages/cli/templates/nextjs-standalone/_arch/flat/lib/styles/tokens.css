@@ -18,6 +18,7 @@
   --primary-hover: #262626;
   --ring: color-mix(in srgb, var(--primary) 50%, transparent);
   --danger: #DC2626;
+  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
 }
 @media (prefers-color-scheme: dark) {
@@ -36,6 +37,7 @@
     --primary-foreground: #171717;
     --primary-hover: #E5E5E5;
     --danger: #DC2626;
+  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
     --danger-foreground: #FFFFFF;
   }
 }
@@ -54,6 +56,7 @@
   --primary-foreground: #171717;
   --primary-hover: #E5E5E5;
   --danger: #DC2626;
+  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
 }
 /* sh-ui:theme-colors-end */

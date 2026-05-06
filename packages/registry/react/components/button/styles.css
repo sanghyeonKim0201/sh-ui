@@ -64,6 +64,7 @@
   background-color: var(--danger);
   color: var(--danger-foreground);
 }
+.sh-ui-button--danger:hover { background-color: var(--danger-hover); }
 
 /* link — 배경/테두리 없이 밑줄. size는 font-size만 유지, height/padding 제거 */
 .sh-ui-button--link {

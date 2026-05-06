@@ -97,6 +97,9 @@ export const variants = styleVariants({
   danger: {
     backgroundColor: "var(--danger)",
     color: "var(--danger-foreground)",
+    selectors: {
+      "&:hover": { backgroundColor: "var(--danger-hover)" },
+    },
   },
   link: {
     backgroundColor: "transparent",
