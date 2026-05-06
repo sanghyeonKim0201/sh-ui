@@ -14,7 +14,7 @@ const buttonVariants = cva(
         ghost:
           "bg-transparent text-foreground hover:bg-background-muted",
         danger:
-          "bg-danger text-danger-foreground hover:brightness-95",
+          "bg-danger text-danger-foreground hover:bg-danger-hover",
         link:
           "bg-transparent text-primary underline-offset-4 hover:underline",
       },

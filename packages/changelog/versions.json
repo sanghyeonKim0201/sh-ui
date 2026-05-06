@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.6",
+      "date": "2026-05-06",
+      "title": "디자인 디폴트 개편 5라운드 — `--danger-hover` 토큰 + Button danger hover 일관화",
+      "type": "patch",
+      "highlights": [
+        "**`--danger-hover` 토큰 신규** — `color-mix(in srgb, var(--danger) 90%, black)` (10% 어둡게). primary 가 `--primary-hover` 가지듯 danger 도 일관된 hover 토큰. 향후 컴포넌트가 `danger` 색을 hover 시 어떻게 바꿀지 한 곳에서 결정.",
+        "**`--color-danger-hover: var(--danger-hover)` @theme inline 매핑** — Tailwind `bg-danger-hover` 유틸 활성화.",
+        "**Button danger 의 `hover:brightness-95` 제거 → `hover:bg-danger-hover`** — Tailwind variant 의 \"더블펌프 후 잔존 brightness\" 정리. primary/secondary/ghost 와 같은 token-기반 hover 패턴으로 정렬.",
+        "**plain CSS / module / vanilla-extract 의 누락된 danger:hover 추가** — 기존엔 Tailwind variant 만 hover 효과 있었고 다른 3개 variant 는 hover 시 색이 그대로였음 (히든 버그). 이제 4개 variant 모두 동일한 hover 동작.",
+        "**일관성 — 5라운드까지의 누적 효과**: focus(ring 50% primary) / inline focus(1px primary) / active indicator(primary) / hover(token-driven) — 모든 인터랙션 상태가 brand 토큰으로 정렬. \"매번 사용자가 결정\" 패턴 제거."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.6"
+    },
+    {
       "version": "0.58.5",
       "date": "2026-05-06",
       "title": "디자인 디폴트 개편 4라운드 — Tabs/Color-picker 의 active·selected 표시를 primary 로",

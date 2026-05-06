@@ -64,6 +64,7 @@
   background-color: var(--danger);
   color: var(--danger-foreground);
 }
+.danger:hover { background-color: var(--danger-hover); }
 
 .link {
   background-color: transparent;
