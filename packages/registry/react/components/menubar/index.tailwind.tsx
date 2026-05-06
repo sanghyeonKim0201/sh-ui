@@ -21,7 +21,7 @@ export const Menubar = React.forwardRef<
     <BaseMenubar
       ref={ref}
       className={cn(
-        "inline-flex items-center gap-[var(--space-1)] p-[var(--space-1)] bg-background border border-border rounded-[var(--radius)] shadow-[0_1px_2px_rgba(0,0,0,0.04)]",
+        "inline-flex items-center gap-[var(--space-1)] p-[var(--space-1)] bg-background border border-border rounded-[var(--radius)] shadow-[var(--shadow-sm)]",
         className,
       )}
       {...props}

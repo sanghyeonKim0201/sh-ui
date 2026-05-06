@@ -244,7 +244,7 @@
     width: min(var(--sidebar-panel-width), 90vw);
     z-index: var(--z-modal);
     border-inline-end: 1px solid var(--sidebar-border);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-xl);
   }
 }
 .sidebar-wrapper[data-embedded] .sidebar__panel {

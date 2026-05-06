@@ -25,7 +25,7 @@ const triggerClasses =
   "inline-flex items-center justify-between w-full h-[var(--control-md)] px-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] font-[inherit] text-[length:var(--text-sm)] leading-none cursor-pointer transition-[border-color,box-shadow] duration-[var(--duration-fast)] hover:not-disabled:border-border-strong focus-visible:outline-none focus-visible:border-primary focus-visible:shadow-[0_0_0_1px_var(--primary)] disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed disabled:bg-background-subtle aria-[invalid=true]:border-danger aria-[invalid=true]:focus-visible:shadow-[0_0_0_1px_var(--danger)] [@media(hover:none)_and_(pointer:coarse)]:h-11 [@media(hover:none)_and_(pointer:coarse)]:text-[length:var(--text-base)]";
 
 const popupClasses =
-  "bg-background border border-border rounded-[var(--radius)] shadow-[0_8px_24px_rgba(0,0,0,0.12)] outline-none p-[var(--space-3)] origin-[var(--transform-origin)] transition-[opacity,transform] duration-[140ms] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95";
+  "bg-background border border-border rounded-[var(--radius)] shadow-[var(--shadow-lg)] outline-none p-[var(--space-3)] origin-[var(--transform-origin)] transition-[opacity,transform] duration-[140ms] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95";
 
 function CalendarIcon() {
   return (

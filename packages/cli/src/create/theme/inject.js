@@ -303,7 +303,10 @@ const colorToARGBHex = ({ a, r, g, b }) => {
 const SHADOW_KEYS = ['sm', 'md', 'lg', 'xl'];
 
 export const buildCssShadowsBlock = (shadows) =>
-  SHADOW_KEYS.map((k) => `  --shadow-${k}: ${shadows[k]};`).join('\n');
+  [
+    ...SHADOW_KEYS.map((k) => `  --shadow-${k}: ${shadows[k]};`),
+    `  --shadow-menu: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);`,
+  ].join('\n');
 
 const parseSingleBoxShadow = (s) => {
   const tokens = tokenizeSpaceAware(s);

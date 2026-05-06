@@ -107,7 +107,7 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
 
   return (
     <div
-      className="sh-ui-toast relative flex items-start gap-2.5 w-full pl-[var(--space-3)] pr-9 py-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[0_4px_16px_rgba(0,0,0,0.12)] pointer-events-auto motion-reduce:!animate-none"
+      className="sh-ui-toast relative flex items-start gap-2.5 w-full pl-[var(--space-3)] pr-9 py-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[var(--shadow-md)] pointer-events-auto motion-reduce:!animate-none"
       role={item.variant === "danger" ? "alert" : "status"}
       aria-live={item.variant === "danger" ? "assertive" : "polite"}
       data-exiting={exiting || undefined}

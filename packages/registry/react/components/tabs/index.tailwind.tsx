@@ -75,7 +75,7 @@ export const TabsTrigger = React.forwardRef<
 TabsTrigger.displayName = "TabsTrigger";
 
 const indicatorVariantClasses =
-  "[[data-variant=underline]_&]:shadow-[inset_0_-2px_0_var(--primary)] [[data-variant=pill]_&]:bg-background [[data-variant=pill]_&]:rounded-[calc(var(--radius)-2px)] [[data-variant=pill]_&]:shadow-[0_1px_2px_rgba(0,0,0,0.06)] [[data-variant=plain]_&]:hidden [[data-orientation=vertical][data-variant=underline]_&]:shadow-[inset_-2px_0_0_var(--primary)] forced-colors:[[data-variant=underline]_&]:shadow-[inset_0_-2px_0_Highlight] forced-colors:[[data-variant=pill]_&]:[border:1px_solid_Highlight] forced-colors:[[data-variant=pill]_&]:[background:ButtonFace] forced-colors:[[data-orientation=vertical][data-variant=underline]_&]:shadow-[inset_-2px_0_0_Highlight]";
+  "[[data-variant=underline]_&]:shadow-[inset_0_-2px_0_var(--primary)] [[data-variant=pill]_&]:bg-background [[data-variant=pill]_&]:rounded-[calc(var(--radius)-2px)] [[data-variant=pill]_&]:shadow-[var(--shadow-sm)] [[data-variant=plain]_&]:hidden [[data-orientation=vertical][data-variant=underline]_&]:shadow-[inset_-2px_0_0_var(--primary)] forced-colors:[[data-variant=underline]_&]:shadow-[inset_0_-2px_0_Highlight] forced-colors:[[data-variant=pill]_&]:[border:1px_solid_Highlight] forced-colors:[[data-variant=pill]_&]:[background:ButtonFace] forced-colors:[[data-orientation=vertical][data-variant=underline]_&]:shadow-[inset_-2px_0_0_Highlight]";
 
 export const TabsIndicator = React.forwardRef<
   HTMLSpanElement,
