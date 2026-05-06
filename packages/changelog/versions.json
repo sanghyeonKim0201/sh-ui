@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.10",
+      "date": "2026-05-06",
+      "title": "fix — docs 우측 TOC · 사이드바 active 하이라이트 (i18n locale prefix)",
+      "type": "patch",
+      "highlights": [
+        "**우측 목차(TOC)가 컴포넌트 페이지에서 사라진 문제 수정** — i18n 도입 후 `usePathname()` 이 `/en/components/...` / `/ko/components/...` 를 반환하는데, `TocSlot` 가드가 여전히 `/components/` prefix 만 검사해 항상 false → TOC 가 mount 되지 않았다.",
+        "**사이드바 active 하이라이트 동시 복구** — `app-sidebar.tsx` 의 `componentsActive` / `pluginsActive` / `architecturesActive` 와 `isActive(href)` 모두 raw pathname 으로 비교하던 걸 locale prefix 를 벗긴 `withoutLocale` 기준으로 통일.",
+        "**가드 방식** — `pathname.replace(/^\\/[a-z]{2}(?=\\/|$)/, \"\")` 로 두 글자 locale 코드만 안전하게 제거 (`/en` / `/ko` 외 라우트는 그대로 통과).",
+        "**검증** — `/ko/components/button`, `/en/components/card`, `/ko/architectures/fsd` 세 경로에서 TOC 표시 여부와 사이드바 `data-active` 가 의도대로 동작하는지 브라우저로 확인."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.10"
+    },
+    {
       "version": "0.59.9",
       "date": "2026-05-06",
       "title": "fix — next-intl standalone 빌드 (globals.css 상대 경로 보정)",
