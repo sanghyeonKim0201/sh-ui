@@ -20,13 +20,12 @@
 }
 
 .button:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 2px;
 }
 
 .button:active:not(:disabled) {
   transform: scale(0.97);
-  filter: brightness(0.92);
   transition-duration: 40ms;
 }
 

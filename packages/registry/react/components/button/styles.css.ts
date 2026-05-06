@@ -21,12 +21,11 @@ export const button = style({
       pointerEvents: "none",
     },
     "&:focus-visible": {
-      outline: "var(--border-width-strong) solid var(--foreground)",
+      outline: "var(--border-width-strong) solid var(--primary)",
       outlineOffset: "2px",
     },
     "&:active:not(:disabled)": {
       transform: "scale(0.97)",
-      filter: "brightness(0.92)",
       transitionDuration: "40ms",
     },
   },
