@@ -119,12 +119,14 @@ export function AppSidebar() {
   const pathname = usePathname();
   const tSidebar = useTranslations("sidebar");
   const tCommon = useTranslations("common");
-  const componentsActive = pathname.startsWith("/components/");
-  const pluginsActive = pathname.startsWith("/plugins/");
-  const architecturesActive = pathname.startsWith("/architectures/") || pathname === "/architectures";
+  // i18n: pathname 에 `/en` / `/ko` 같은 locale prefix 가 붙어 있어 직접 매칭 불가
+  const withoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, "") || "/";
+  const componentsActive = withoutLocale.startsWith("/components/");
+  const pluginsActive = withoutLocale.startsWith("/plugins/");
+  const architecturesActive = withoutLocale.startsWith("/architectures/") || withoutLocale === "/architectures";
 
   const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
+    withoutLocale === href || withoutLocale.startsWith(href + "/");
 
   return (
     <Sidebar collapsible="icon">
@@ -162,7 +164,7 @@ export function AppSidebar() {
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/architectures"}>
+                        <SidebarMenuSubButton asChild isActive={withoutLocale === "/architectures"}>
                           <Link href="/architectures">
                             <span>{tCommon("viewAll")}</span>
                           </Link>
@@ -191,7 +193,7 @@ export function AppSidebar() {
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/plugins"}>
+                        <SidebarMenuSubButton asChild isActive={withoutLocale === "/plugins"}>
                           <Link href="/plugins">
                             <span>{tCommon("viewAll")}</span>
                           </Link>
@@ -220,7 +222,7 @@ export function AppSidebar() {
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/components"}>
+                        <SidebarMenuSubButton asChild isActive={withoutLocale === "/components"}>
                           <Link href="/components">
                             <span>{tCommon("viewAll")}</span>
                           </Link>
