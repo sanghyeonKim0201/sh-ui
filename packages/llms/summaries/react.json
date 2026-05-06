@@ -3,7 +3,7 @@
   "summaries": {
     "button": "기본 버튼 — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).",
     "card": "카드 컨테이너 — compound (Card.Header / Card.Body / Card.Footer / Card.Title / Card.Description).",
-    "input": "단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PasswordInput / PhoneInput / BusinessNumberInput 변형 포함.",
+    "input": "단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PhoneInput / BusinessNumberInput 변형 포함. 비밀번호 토글은 InputGroup + InputAdornment 레시피로 조립.",
     "numeric-input": "슬라이더 동반·토큰 편집기용 컴팩트 숫자 입력 — onChange 즉시 min/max clamp, focus select-all, 단위(px/ms/%/° 등) suffix. 일반 폼 입력은 NumberInput 권장.",
     "textarea": "여러 행 텍스트 입력 — rows, autoResize.",
     "label": "폼 레이블 — htmlFor로 입력과 연결.",

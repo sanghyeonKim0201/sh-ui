@@ -66,14 +66,6 @@ class _InputPageState extends State<InputPage> {
 
           const SizedBox(height: 24),
 
-          // --- Password ---
-          _section('Password Input', colors),
-          const ShUiPasswordInput(
-            placeholder: 'Enter password',
-          ),
-
-          const SizedBox(height: 24),
-
           // --- Disabled ---
           _section('Disabled', colors),
           const ShUiInput(

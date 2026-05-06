@@ -128,7 +128,7 @@ const ShUiLabel(
   isRequired: true,
   child: ShUiLabelTitle('비밀번호'),
 ),
-const ShUiPasswordInput(),`,
+const ShUiInput(obscureText: true),`,
           },
         ]}
       />
