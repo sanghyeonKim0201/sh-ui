@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.6",
+      "date": "2026-05-06",
+      "title": "접근성 라운드 6 — Tailwind variant forced-colors",
+      "type": "patch",
+      "highlights": [
+        "**Tailwind variant 의 5 컴포넌트에 `forced-colors:` utility 추가** — Checkbox / Radio / Switch / Tabs / Toggle. v0.59.4 에서 plain CSS · CSS Modules variant 에만 들어갔던 시스템 컬러 폴백을 Tailwind 사용자도 동일하게 받음.",
+        "**arbitrary property 문법 사용** — `forced-colors:[border-color:ButtonBorder]`, `forced-colors:data-[checked]:[background:Highlight]` 등. system color identifier 는 Tailwind 색상 토큰이 아니라 CSS 키워드라 arbitrary 가 가장 안전.",
+        "**Switch Thumb 분리 처리** — 스위치 토글의 thumb (이동하는 원) 도 별도 cva. `forced-colors:[background:ButtonText]` 기본 + `data-[checked]:[background:HighlightText]` 로 on 상태 구분.",
+        "**prefers-contrast: high** — 추가 작업 0. 토큰 레벨에서 처리되므로 Tailwind 의 `bg-primary`/`border-border` 같은 utility 가 자동으로 강화된 값을 픽업.",
+        "**일관성 회복** — 이제 3 variant (plain · CSS Modules · Tailwind) 모두 동일한 접근성 fallback 보유."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.6"
+    },
+    {
       "version": "0.59.5",
       "date": "2026-05-06",
       "title": "접근성 라운드 5 — RTL via logical properties",

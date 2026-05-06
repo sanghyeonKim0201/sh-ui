@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@SH_UI_UTILS@";
 const switchRoot = cva(
-  "inline-flex items-center border-none rounded-full bg-background-muted cursor-pointer shrink-0 p-0.5 transition-colors duration-150 hover:not-data-[disabled]:bg-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[checked]:bg-primary data-[checked]:hover:not-data-[disabled]:bg-primary-hover data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none",
+  "inline-flex items-center border-none rounded-full bg-background-muted cursor-pointer shrink-0 p-0.5 transition-colors duration-150 hover:not-data-[disabled]:bg-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[checked]:bg-primary data-[checked]:hover:not-data-[disabled]:bg-primary-hover data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none forced-colors:[border:1px_solid_ButtonBorder] forced-colors:[background:ButtonFace] forced-colors:focus-visible:[outline-color:Highlight] forced-colors:data-[checked]:[background:Highlight] forced-colors:data-[checked]:[border-color:Highlight] forced-colors:data-[disabled]:[border-color:GrayText]",
   {
     variants: {
       size: {
@@ -18,7 +18,7 @@ const switchRoot = cva(
 );
 
 const switchThumb = cva(
-  "block rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.12)] transition-transform duration-150 ease-out motion-reduce:transition-none",
+  "block rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.12)] transition-transform duration-150 ease-out motion-reduce:transition-none forced-colors:[background:ButtonText] forced-colors:data-[checked]:[background:HighlightText] forced-colors:data-[disabled]:[background:GrayText]",
   {
     variants: {
       size: {
