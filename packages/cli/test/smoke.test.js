@@ -974,6 +974,25 @@ describe('sh-ui create smoke tests', () => {
       expect(violators).toEqual([]);
     });
 
+    it('flat standalone — globals.css 의 tokens import 가 실재하는 파일을 가리킴', async () => {
+      // v0.59.7 회귀: 베이스 globals.css 가 fsd 경로(`../src/shared/styles/tokens.css`)를
+      // 하드코딩하고 _arch/flat/app/globals.css 오버라이드가 없어, flat standalone 빌드 시
+      // tailwindcss 가 토큰 파일을 못 찾고 폭발했다. .css 상대 import 까지 가드.
+      await createProject({
+        name: 'flat-globals',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        arch: 'flat',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'flat-globals');
+      const globals = await fs.readFile(path.join(dir, 'app', 'globals.css'), 'utf-8');
+      expect(globals).toContain("'../lib/styles/tokens.css'");
+      expect(globals).not.toContain("'../src/shared/styles/tokens.css'");
+      expect(await fs.pathExists(path.join(dir, 'lib', 'styles', 'tokens.css'))).toBe(true);
+    });
+
     it('flat standalone — sentry — observability 와 FallbackBoundary 가 flat 경로로', async () => {
       await createProject({
         name: 'flat-sentry',

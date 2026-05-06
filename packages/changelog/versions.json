@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.8",
+      "date": "2026-05-06",
+      "title": "fix — flat standalone globals.css 토큰 import 경로",
+      "type": "patch",
+      "highlights": [
+        "**`sh-ui-cli create --arch flat --structure standalone` 빌드 폭발 수정** — 베이스 `app/globals.css` 가 fsd 경로(`../src/shared/styles/tokens.css`)를 하드코딩하고 있었고 `_arch/flat/` 에 오버라이드가 없어, flat standalone 으로 생성한 프로젝트는 `pnpm dev` 첫 페이지에서 tailwindcss 가 토큰 파일을 못 찾고 CssSyntaxError 로 죽었다.",
+        "**오버라이드 추가** — `_arch/flat/app/globals.css` 가 베이스를 덮어 `../lib/styles/tokens.css` 로 토큰을 import. 다른 토큰 주입(`injectCssTheme`)/마커 검증은 이미 flat 경로를 알고 있었어서 그쪽은 변경 불필요.",
+        "**회귀 가드** — 기존 flat 가드는 `.ts/.tsx` 만 검사해 `.css` 의 상대 import 누수를 못 잡았다. `globals.css 의 tokens import 가 실재하는 파일을 가리킴` 케이스를 smoke.test 에 추가해 재발 방지.",
+        "**영향 범위** — flat + standalone 조합만 해당. fsd standalone, 어떤 monorepo 조합도 영향 없음 (monorepo 는 토큰을 별도 패키지에서 import)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.8"
+    },
+    {
       "version": "0.59.7",
       "date": "2026-05-06",
       "title": "라운드 7 — Shadow 토큰 일관화",
