@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.9",
+      "date": "2026-05-06",
+      "title": "fix — next-intl standalone 빌드 (globals.css 상대 경로 보정)",
+      "type": "patch",
+      "highlights": [
+        "**`sh-ui-cli create --plugins next-intl --structure standalone` prod 빌드 폭발 수정** — next-intl 플러그인이 `app/layout.tsx` 를 `app/[locale]/layout.tsx` 로 이동하면서 보존하는 side-effect import (`import './globals.css';`) 의 상대 경로를 보정하지 않아, 한 단계 깊어진 새 위치에서 `./globals.css` 가 미해결 모듈이 됐다. `pnpm build` (`next build`) 가 `Module not found: Can't resolve './globals.css'` 로 실패.",
+        "**경로 보정** — `nextIntl.js` 의 `contentFn` 에서 보존되는 side-effect import 의 `./` / `../` 접두사를 디렉토리 깊이 변화(1단계)만큼 끌어올림. 절대 경로(`/x`) 와 모듈명(`polyfills`) 은 그대로.",
+        "**회귀 가드 강화** — smoke 시나리오 3 의 globals.css 검사가 `/[^'\"]*globals\\.css/` 단순 존재만 봤어서 v0.59.8 까지 누락. `import '../globals.css';` 정확 매치 + `import './globals.css';` 부재로 강화.",
+        "**전수 검증** — 36-combo 스캐폴드 매트릭스(structure × arch × css × plugins) 의 standalone+all-plugins 6 케이스 모두 fix 후 prod 빌드 성공 확인. monorepo+all-plugins 는 원래부터 정상."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.9"
+    },
+    {
       "version": "0.59.8",
       "date": "2026-05-06",
       "title": "fix — flat standalone globals.css 토큰 import 경로",
