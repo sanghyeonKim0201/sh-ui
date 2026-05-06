@@ -63,7 +63,7 @@
   flex-shrink: 0;
   display: inline-flex;
   color: var(--foreground-muted);
-  margin-left: var(--space-2);
+  margin-inline-start: var(--space-2);
 }
 
 /* ── Positioner / Popup ── */

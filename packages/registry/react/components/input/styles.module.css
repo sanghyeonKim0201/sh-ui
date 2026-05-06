@@ -64,8 +64,8 @@
   display: block;
 }
 
-.withPrefix { padding-left: var(--space-10); }
-.withSuffix { padding-right: var(--space-10); }
+.withPrefix { padding-inline-start: var(--space-10); }
+.withSuffix { padding-inline-end: var(--space-10); }
 
 .affix {
   position: absolute;
@@ -77,8 +77,8 @@
   color: var(--foreground-muted);
   pointer-events: none;
 }
-.affixPrefix { left: var(--space-3); }
-.affixSuffix { right: var(--space-1); }
+.affixPrefix { inset-inline-start: var(--space-3); }
+.affixSuffix { inset-inline-end: var(--space-1); }
 
 .affix > * { pointer-events: auto; }
 

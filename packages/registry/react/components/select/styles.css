@@ -38,7 +38,7 @@
 
 .sh-ui-select__value {
   flex: 1 1 auto;
-  text-align: left;
+  text-align: start;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -134,7 +134,7 @@
 
 .sh-ui-select__indicator {
   order: 1;
-  margin-left: auto;
+  margin-inline-start: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -30,7 +30,7 @@
   font-size: 0.9375rem;
   font-weight: var(--weight-medium);
   line-height: 1.4;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: background-color var(--duration-fast) var(--ease-standard);
   -webkit-tap-highlight-color: transparent;

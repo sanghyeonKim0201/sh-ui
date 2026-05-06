@@ -40,7 +40,7 @@
 .sh-ui-code-editor .cm-gutters {
   background: var(--background-subtle);
   color: var(--foreground-muted);
-  border-right: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
 }
 .sh-ui-code-editor .cm-activeLineGutter,
 .sh-ui-code-editor .cm-activeLine {
@@ -48,7 +48,7 @@
 }
 .sh-ui-code-editor .cm-cursor,
 .sh-ui-code-editor .cm-dropCursor {
-  border-left-color: var(--foreground);
+  border-inline-start-color: var(--foreground);
 }
 .sh-ui-code-editor .cm-selectionBackground,
 .sh-ui-code-editor .cm-editor .cm-selectionBackground,

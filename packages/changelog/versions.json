@@ -3,6 +3,21 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.5",
+      "date": "2026-05-06",
+      "title": "접근성 라운드 5 — RTL via logical properties",
+      "type": "patch",
+      "highlights": [
+        "**모든 컴포넌트 CSS 를 logical property 로 전환** — `padding-left/right` → `padding-inline-start/end`, `margin-left/right` → `margin-inline-start/end`, `border-left/right` → `border-inline-start/end`, `text-align: left/right` → `start/end`. 60+ 파일, 155 라인 변경.",
+        "**affix / icon column / 닫기 버튼 등 절대 위치 요소** — `left:` / `right:` 도 `inset-inline-start/end` 로 전환. Input affix prefix/suffix, Dropdown/Context Menu indicator, Code-panel 복사 버튼, Carousel 컨트롤, Page-toc 위치, Toast close 버튼.",
+        "**그대로 유지한 패턴** — `left: 50% + transform: translateX(-50%)` 센터링 hack, `[data-side=\"left|right\"]` 사용자 명시 사이드 (Sidebar / Toast position), JS 가 측정해 주입하는 `--active-tab-left` (Tabs).",
+        "**RTL 효과** — `<html dir=\"rtl\">` 또는 `direction: rtl` 컨테이너에서 자동으로 padding/margin/icon-position 이 미러링. Arabic, Hebrew, Persian 등 지원.",
+        "**LTR 영향 0** — logical 속성은 LTR 에서 기존 physical 과 동일하게 해석. 회귀 없음.",
+        "**3 variant 동기화** — registry/react plain CSS + CSS Modules + apps/docs + Tailwind variant 의 inline CSS string."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.5"
+    },
+    {
       "version": "0.59.4",
       "date": "2026-05-06",
       "title": "접근성 라운드 4 — forced-colors 모드 (Windows High Contrast)",

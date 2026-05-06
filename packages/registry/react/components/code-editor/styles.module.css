@@ -40,7 +40,7 @@
 .code-editor .cm-gutters {
   background: var(--background-subtle);
   color: var(--foreground-muted);
-  border-right: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
 }
 .code-editor .cm-activeLineGutter,
 .code-editor .cm-activeLine {
@@ -48,7 +48,7 @@
 }
 .code-editor .cm-cursor,
 .code-editor .cm-dropCursor {
-  border-left-color: var(--foreground);
+  border-inline-start-color: var(--foreground);
 }
 .code-editor .cm-selectionBackground,
 .code-editor .cm-editor .cm-selectionBackground,

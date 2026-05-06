@@ -15,7 +15,7 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--text-xs);
   line-height: 1.2;
-  text-align: right;
+  text-align: end;
   border: 1px solid transparent;
   border-radius: calc(var(--radius) - 4px);
   background: transparent;

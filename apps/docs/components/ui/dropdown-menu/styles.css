@@ -86,12 +86,12 @@
 
 /* checkbox/radio item — 왼쪽 인디케이터 공간 확보 */
 .sh-ui-dm__item--check {
-  padding-left: 1.75rem;
+  padding-inline-start: 1.75rem;
 }
 
 .sh-ui-dm__item-indicator {
   position: absolute;
-  left: 0.5rem;
+  inset-inline-start: 0.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -129,7 +129,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
+  margin-inline-start: auto;
   color: var(--foreground-muted);
 }
 

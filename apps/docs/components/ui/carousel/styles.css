@@ -111,7 +111,7 @@
 .sh-ui-carousel__indicators[data-orientation="vertical"] {
   position: absolute;
   top: 50%;
-  right: 0.5rem;
+  inset-inline-end: 0.5rem;
   margin-top: 0;
   flex-direction: column;
   transform: translateY(-50%);
