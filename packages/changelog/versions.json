@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.2",
+      "date": "2026-05-06",
+      "title": "Sidebar — 메뉴 항목 기본 간격 gap 0 → 2px (한글/긴 라벨 가독성)",
+      "type": "patch",
+      "highlights": [
+        "**`SidebarMenu` 기본 `gap` 을 `0` → `2px` (Tailwind `gap-0.5`)** 로 변경 — 한글이나 긴 라벨에서 항목이 너무 촘촘하게 붙어 시각적으로 압축돼 보이던 문제. 디자인 시스템 디폴트 자체가 더 보편적으로 \"이상적\" 이 되도록 한 결정. shadcn/ui 의 `gap-0` 컨벤션과 살짝 갈리지만, sh-ui 의 한글 우선 + Linear 톤 정체성에 더 자연스러움.",
+        "**4가지 변종 모두 동기화** — plain CSS (`styles.css`), CSS Modules (`styles.module.css`), Tailwind variant (`index.tailwind.tsx`), apps/docs 듀얼 카피본. 영향: 사용자 화면이 항목당 ~2px 늘어남 — 시각 변화 미세하지만 patch release 노트에 명시.",
+        "**디자인 디폴트 가드 — bare 단어 절대 치환 안 함**: 이번 변경은 `SidebarMenu` 의 `gap` 만 손봤고, `SidebarContent` 의 wrapper `gap-0` 은 의도적으로 유지 (그룹 간 간격은 별도 layout 결정)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.2"
+    },
+    {
       "version": "0.58.1",
       "date": "2026-05-06",
       "title": "fix — Sidebar focus trap 의 TS strict 위반 (firstEl/lastEl possibly undefined)",
