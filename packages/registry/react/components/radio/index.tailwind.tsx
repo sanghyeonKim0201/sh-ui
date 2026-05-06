@@ -16,12 +16,12 @@ export const Radio = React.forwardRef<HTMLElement, RadioProps>(
     <BaseRadio.Root
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center w-[1.125rem] h-[1.125rem] border border-border-strong rounded-full bg-background cursor-pointer shrink-0 transition-[border-color] duration-[var(--duration-fast)] hover:not-data-[disabled]:border-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[checked]:border-primary data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5",
+        "inline-flex items-center justify-center w-[1.125rem] h-[1.125rem] border border-border-strong rounded-full bg-background cursor-pointer shrink-0 transition-[border-color] duration-[var(--duration-fast)] hover:not-data-[disabled]:border-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[checked]:border-primary data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5 forced-colors:[border-color:ButtonBorder] forced-colors:focus-visible:[outline-color:Highlight] forced-colors:data-[checked]:[border-color:Highlight] forced-colors:data-[disabled]:[border-color:GrayText]",
         className,
       )}
       {...props}
     >
-      <BaseRadio.Indicator className="w-2 h-2 rounded-full bg-primary scale-0 transition-transform duration-[var(--duration-fast)] ease-out data-[checked]:scale-100 motion-reduce:transition-none" />
+      <BaseRadio.Indicator className="w-2 h-2 rounded-full bg-primary scale-0 transition-transform duration-[var(--duration-fast)] ease-out data-[checked]:scale-100 motion-reduce:transition-none forced-colors:[background:Highlight] forced-colors:group-data-[disabled]:[background:GrayText]" />
     </BaseRadio.Root>
   ),
 );

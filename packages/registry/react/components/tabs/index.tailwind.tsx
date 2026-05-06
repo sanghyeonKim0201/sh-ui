@@ -65,7 +65,7 @@ export const TabsTrigger = React.forwardRef<
   <BaseTabs.Tab
     ref={ref}
     className={cn(
-      "relative z-[1] inline-flex items-center justify-center gap-1.5 py-[var(--space-2)] px-[var(--space-3)] bg-transparent text-foreground-muted border-0 text-[length:var(--text-sm)] font-medium leading-none cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] select-none whitespace-nowrap hover:not-disabled:not-data-[selected]:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[selected]:text-foreground disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed",
+      "relative z-[1] inline-flex items-center justify-center gap-1.5 py-[var(--space-2)] px-[var(--space-3)] bg-transparent text-foreground-muted border-0 text-[length:var(--text-sm)] font-medium leading-none cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] select-none whitespace-nowrap hover:not-disabled:not-data-[selected]:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 data-[selected]:text-foreground disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed forced-colors:focus-visible:[outline-color:Highlight] forced-colors:data-[selected]:[color:Highlight] forced-colors:data-[selected]:[[data-variant=plain]_&]:[outline:1px_solid_Highlight]",
       triggerVariantClasses,
       className,
     )}
@@ -75,7 +75,7 @@ export const TabsTrigger = React.forwardRef<
 TabsTrigger.displayName = "TabsTrigger";
 
 const indicatorVariantClasses =
-  "[[data-variant=underline]_&]:shadow-[inset_0_-2px_0_var(--primary)] [[data-variant=pill]_&]:bg-background [[data-variant=pill]_&]:rounded-[calc(var(--radius)-2px)] [[data-variant=pill]_&]:shadow-[0_1px_2px_rgba(0,0,0,0.06)] [[data-variant=plain]_&]:hidden [[data-orientation=vertical][data-variant=underline]_&]:shadow-[inset_-2px_0_0_var(--primary)]";
+  "[[data-variant=underline]_&]:shadow-[inset_0_-2px_0_var(--primary)] [[data-variant=pill]_&]:bg-background [[data-variant=pill]_&]:rounded-[calc(var(--radius)-2px)] [[data-variant=pill]_&]:shadow-[0_1px_2px_rgba(0,0,0,0.06)] [[data-variant=plain]_&]:hidden [[data-orientation=vertical][data-variant=underline]_&]:shadow-[inset_-2px_0_0_var(--primary)] forced-colors:[[data-variant=underline]_&]:shadow-[inset_0_-2px_0_Highlight] forced-colors:[[data-variant=pill]_&]:[border:1px_solid_Highlight] forced-colors:[[data-variant=pill]_&]:[background:ButtonFace] forced-colors:[[data-orientation=vertical][data-variant=underline]_&]:shadow-[inset_-2px_0_0_Highlight]";
 
 export const TabsIndicator = React.forwardRef<
   HTMLSpanElement,
@@ -100,7 +100,7 @@ export const TabsContent = React.forwardRef<
   <BaseTabs.Panel
     ref={ref}
     className={cn(
-      "outline-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 focus-visible:rounded-[var(--radius)]",
+      "outline-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 focus-visible:rounded-[var(--radius)] forced-colors:focus-visible:[outline-color:Highlight]",
       className,
     )}
     {...props}
