@@ -44,7 +44,7 @@
   color: var(--foreground);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   outline: none;
   transform-origin: var(--transform-origin);
   transition: opacity 140ms ease, transform 140ms ease;

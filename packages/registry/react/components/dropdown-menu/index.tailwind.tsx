@@ -53,7 +53,7 @@ export const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenu
           <BaseMenu.Popup
             ref={ref}
             className={cn(
-              "min-w-40 max-h-[min(24rem,var(--available-height,24rem))] overflow-y-auto p-[var(--space-1)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.05)] text-[length:var(--text-sm)] origin-[var(--transform-origin)] animate-[sh-ui-dm-in_140ms_ease-out] data-[ending-style]:animate-[sh-ui-dm-out_100ms_ease-in_forwards] outline-none motion-reduce:animate-none motion-reduce:data-[ending-style]:animate-none",
+              "min-w-40 max-h-[min(24rem,var(--available-height,24rem))] overflow-y-auto p-[var(--space-1)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[var(--shadow-menu)] text-[length:var(--text-sm)] origin-[var(--transform-origin)] animate-[sh-ui-dm-in_140ms_ease-out] data-[ending-style]:animate-[sh-ui-dm-out_100ms_ease-in_forwards] outline-none motion-reduce:animate-none motion-reduce:data-[ending-style]:animate-none",
               className,
             )}
             {...props}

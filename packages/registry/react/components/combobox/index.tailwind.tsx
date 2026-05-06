@@ -48,7 +48,7 @@ export const ComboboxContent = React.forwardRef<
         <BaseCombobox.Popup
           ref={ref}
           className={cn(
-            "max-h-[min(20rem,var(--available-height))] overflow-y-auto p-[var(--space-1)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[0_8px_24px_rgba(0,0,0,0.08)] outline-none origin-[var(--transform-origin)] transition-[opacity,transform] duration-[140ms] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-[0.97] data-[ending-style]:opacity-0 data-[ending-style]:scale-[0.97]",
+            "max-h-[min(20rem,var(--available-height))] overflow-y-auto p-[var(--space-1)] bg-background text-foreground border border-border rounded-[var(--radius)] shadow-[var(--shadow-lg)] outline-none origin-[var(--transform-origin)] transition-[opacity,transform] duration-[140ms] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-[0.97] data-[ending-style]:opacity-0 data-[ending-style]:scale-[0.97]",
             className,
           )}
           {...props}

@@ -262,7 +262,7 @@ export function SidebarPanel({ id, className, children, ...props }: SidebarPanel
   return (
     <aside
       ref={ref}
-      className={cn("[--sidebar-panel-width:20rem] flex flex-col w-[var(--sidebar-panel-width)] shrink-0 bg-background border-r border-[var(--sidebar-border)] relative z-[4] overflow-hidden animate-[sh-ui-sidebar-panel-in_180ms_ease-out] data-[state=closed]:hidden max-md:fixed max-md:top-0 max-md:bottom-0 max-md:left-0 max-md:w-[min(var(--sidebar-panel-width),90vw)] max-md:z-[var(--z-modal)] max-md:shadow-[0_10px_30px_rgba(0,0,0,0.15)] motion-reduce:animate-none",
+      className={cn("[--sidebar-panel-width:20rem] flex flex-col w-[var(--sidebar-panel-width)] shrink-0 bg-background border-r border-[var(--sidebar-border)] relative z-[4] overflow-hidden animate-[sh-ui-sidebar-panel-in_180ms_ease-out] data-[state=closed]:hidden max-md:fixed max-md:top-0 max-md:bottom-0 max-md:left-0 max-md:w-[min(var(--sidebar-panel-width),90vw)] max-md:z-[var(--z-modal)] max-md:shadow-[var(--shadow-xl)] motion-reduce:animate-none",
         className)}
       data-state={open ? "open" : "closed"}
       role={isMobile ? "dialog" : undefined}
