@@ -70,7 +70,7 @@
 .sh-ui-pagination__link[aria-disabled="true"],
 .sh-ui-pagination__link[data-disabled] {
   pointer-events: none;
-  opacity: 0.45;
+  opacity: var(--opacity-disabled);
 }
 
 .sh-ui-pagination__nav {
