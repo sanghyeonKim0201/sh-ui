@@ -146,3 +146,27 @@
 .tabs[data-variant="plain"] .tabs__indicator {
   display: none;
 }
+
+/* Windows 고대비 모드: indicator 색이 시스템 색에 덮이면 active 탭 구별 불가. */
+@media (forced-colors: active) {
+  .tabs__trigger[data-selected] {
+    color: Highlight;
+  }
+  .tabs[data-variant="underline"] .tabs__indicator {
+    box-shadow: inset 0 -2px 0 Highlight;
+  }
+  .tabs[data-variant="underline"][data-orientation="vertical"] .tabs__indicator {
+    box-shadow: inset -2px 0 0 Highlight;
+  }
+  .tabs[data-variant="pill"] .tabs__indicator {
+    border: 1px solid Highlight;
+    background: ButtonFace;
+  }
+  .tabs[data-variant="plain"] .tabs__trigger[data-selected] {
+    outline: 1px solid Highlight;
+  }
+  .tabs__trigger:focus-visible,
+  .tabs__content:focus-visible {
+    outline-color: Highlight;
+  }
+}

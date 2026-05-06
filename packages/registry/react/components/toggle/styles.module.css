@@ -83,3 +83,19 @@
     transition: none;
   }
 }
+
+/* Windows 고대비 모드: pressed 가 background-color 만으로 표시되므로 시스템 색에 덮이면 구별 불가. */
+@media (forced-colors: active) {
+  .toggle[data-pressed] {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+  .toggle:focus-visible {
+    outline-color: Highlight;
+  }
+  .toggle:disabled {
+    color: GrayText;
+    border-color: GrayText;
+  }
+}

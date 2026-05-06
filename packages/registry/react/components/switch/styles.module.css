@@ -81,3 +81,30 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Windows 고대비 모드: on/off 가 background-color 만으로 표시되므로 시스템 색에 덮이면 구별 불가. */
+@media (forced-colors: active) {
+  .switch {
+    border: 1px solid ButtonBorder;
+    background: ButtonFace;
+  }
+  .switch[data-checked] {
+    background: Highlight;
+    border-color: Highlight;
+  }
+  .switch__thumb {
+    background: ButtonText;
+  }
+  .switch[data-checked] .switch__thumb {
+    background: HighlightText;
+  }
+  .switch:focus-visible {
+    outline-color: Highlight;
+  }
+  .switch[data-disabled] {
+    border-color: GrayText;
+  }
+  .switch[data-disabled] .switch__thumb {
+    background: GrayText;
+  }
+}

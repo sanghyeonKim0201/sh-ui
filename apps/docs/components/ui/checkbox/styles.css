@@ -73,3 +73,23 @@
     transition: none;
   }
 }
+
+/* Windows 고대비 모드: 색만으로 표시되는 checked 상태가 시스템 색에 덮여 사라지는 걸 방지. */
+@media (forced-colors: active) {
+  .sh-ui-checkbox {
+    border-color: ButtonBorder;
+  }
+  .sh-ui-checkbox[data-checked],
+  .sh-ui-checkbox[data-indeterminate] {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .sh-ui-checkbox:focus-visible {
+    outline-color: Highlight;
+  }
+  .sh-ui-checkbox[data-disabled] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}
