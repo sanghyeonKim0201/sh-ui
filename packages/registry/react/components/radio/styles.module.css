@@ -78,3 +78,25 @@
     transition: none;
   }
 }
+
+/* Windows 고대비 모드. */
+@media (forced-colors: active) {
+  .radio {
+    border-color: ButtonBorder;
+  }
+  .radio[data-checked] {
+    border-color: Highlight;
+  }
+  .radio__indicator {
+    background: Highlight;
+  }
+  .radio:focus-visible {
+    outline-color: Highlight;
+  }
+  .radio[data-disabled] {
+    border-color: GrayText;
+  }
+  .radio[data-disabled] .radio__indicator {
+    background: GrayText;
+  }
+}

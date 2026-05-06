@@ -78,3 +78,25 @@
     transition: none;
   }
 }
+
+/* Windows 고대비 모드. */
+@media (forced-colors: active) {
+  .sh-ui-radio {
+    border-color: ButtonBorder;
+  }
+  .sh-ui-radio[data-checked] {
+    border-color: Highlight;
+  }
+  .sh-ui-radio__indicator {
+    background: Highlight;
+  }
+  .sh-ui-radio:focus-visible {
+    outline-color: Highlight;
+  }
+  .sh-ui-radio[data-disabled] {
+    border-color: GrayText;
+  }
+  .sh-ui-radio[data-disabled] .sh-ui-radio__indicator {
+    background: GrayText;
+  }
+}

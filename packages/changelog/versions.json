@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.4",
+      "date": "2026-05-06",
+      "title": "접근성 라운드 4 — forced-colors 모드 (Windows High Contrast)",
+      "type": "patch",
+      "highlights": [
+        "**`@media (forced-colors: active)` 블록 추가** — Windows 고대비 / Edge 강제 색 모드에서 시스템 컬러 (Highlight, ButtonBorder, ButtonText, GrayText) 로 폴백. 사용자가 색 토큰을 OS 색상에 강제 매핑해도 컴포넌트 상태 (checked/pressed/active) 가 시각적으로 구별됨.",
+        "**대상 컴포넌트** — `Checkbox` / `Radio` (checked indicator) / `Switch` (on/off thumb + track) / `Tabs` (active indicator + selected color) / `Toggle` (pressed background+border).",
+        "**문제 원인** — 기존 디자인이 `background: var(--primary)` 만으로 active 상태를 표현. 강제 색 모드에서 `--primary` 가 시스템 `Canvas`/`ButtonFace` 로 덮이면 unchecked 와 동일하게 보여 구별 불가. 이제 `Highlight` (selection color) 로 명시 폴백.",
+        "**3 variant 동기화** — registry/react plain CSS + CSS Modules + apps/docs. Tailwind variant 는 별도 라운드 (forced-colors: 모디파이어 필요).",
+        "**일반 사용자 영향 0** — forced-colors 미활성 시 룰 무시. 활성 시에만 시스템 색이 우선되며 디자인 토큰을 덮어씀."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.4"
+    },
+    {
       "version": "0.59.3",
       "date": "2026-05-06",
       "title": "접근성 라운드 3 — Card container queries (자기 너비 기준 반응형)",
