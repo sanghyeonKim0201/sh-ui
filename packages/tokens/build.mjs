@@ -194,8 +194,9 @@ function cssColorToDart(css) {
   throw new Error(`지원하지 않는 CSS 색상: ${css}`);
 }
 
-/** "0.5rem" → 8.0, "16px" → 16.0 */
+/** "0.5rem" → 8.0, "16px" → 16.0, "0" → 0.0 */
 function dimensionToDart(value) {
+  if (value === "0" || value === 0) return "0.0";
   const rem = /^(-?\d*\.?\d+)rem$/.exec(value);
   if (rem) return (parseFloat(rem[1]) * 16).toFixed(1);
   const px = /^(-?\d*\.?\d+)px$/.exec(value);

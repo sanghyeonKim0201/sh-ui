@@ -126,9 +126,17 @@ export const buildDartRadiusBlock = (theme) => {
 
 const SPACING_KEYS = ['0', '1', '2', '3', '4', '5', '6', '8', '10', '12', '16'];
 
-export const buildCssSpacingBlock = (spacing) =>
-  SPACING_KEYS.map((k) => `  --space-${k}: ${spacing[k]}px;`).join('\n');
+// 1rem = 16px 가정. 0 은 unit 없이 emit (CSS 권장).
+// trailing zero 제거 (0.50 → 0.5, 1.00 → 1).
+const toRem = (px) => {
+  if (px === 0) return '0';
+  return `${parseFloat((px / 16).toFixed(4))}rem`;
+};
 
+export const buildCssSpacingBlock = (spacing) =>
+  SPACING_KEYS.map((k) => `  --space-${k}: ${toRem(spacing[k])};`).join('\n');
+
+// Flutter 는 logical pixel 사용. Dart 측은 PX 그대로 유지.
 export const buildDartSpacingBlock = (spacing) =>
   SPACING_KEYS.map((k) => `    s${k}: ${spacing[k].toFixed(1)},`).join('\n');
 
@@ -137,7 +145,7 @@ export const buildDartSpacingBlock = (spacing) =>
 const TYPOGRAPHY_KEYS = ['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl'];
 
 export const buildCssTypographyBlock = (typography) =>
-  TYPOGRAPHY_KEYS.map((k) => `  --text-${k}: ${typography[k]}px;`).join('\n');
+  TYPOGRAPHY_KEYS.map((k) => `  --text-${k}: ${toRem(typography[k])};`).join('\n');
 
 // Dart 클래스는 'xl2'/'xl3'/'xl4' 명명 규칙 사용 (숫자 prefix 회피).
 const DART_TEXT_FIELD_NAMES = {
@@ -165,7 +173,7 @@ export const buildDartWeightsBlock = (weights) =>
 const CONTROL_KEYS = ['sm', 'md', 'lg'];
 
 export const buildCssControlsBlock = (controls) =>
-  CONTROL_KEYS.map((k) => `  --control-${k}: ${controls[k]}px;`).join('\n');
+  CONTROL_KEYS.map((k) => `  --control-${k}: ${toRem(controls[k])};`).join('\n');
 
 export const buildDartControlsBlock = (controls) =>
   CONTROL_KEYS.map((k) => `    ${k}: ${controls[k].toFixed(1)},`).join('\n');

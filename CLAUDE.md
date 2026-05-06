@@ -50,11 +50,13 @@
 
 ### 2. "px 등 고정 단위 사용 금지"의 해석
 
-`nextjs/design-principles.md` 는 `px` 같은 절대 단위 직접 사용을 금지한다. sh-ui에서는:
+`nextjs/design-principles.md` 는 `px` 같은 절대 단위 직접 사용을 금지한다. sh-ui에서는 (v0.59.0+):
 
-- **토큰 정의부(`packages/tokens/`, 템플릿의 `tokens.css`)** 는 `--space-1: 4px` 처럼 px 원시값 사용 허용 — 이게 토큰의 본질
-- **컴포넌트 스타일(`packages/registry/*/components/*/styles.css`)** 및 **사용자 코드**는 항상 토큰 변수(`var(--space-3)`) 경유. 매직 px 하드코딩 금지
-- 불가피한 단위는 `rem`/`em`/`%`/`vw`/`vh` 우선 — 이 원칙은 그대로
+- **토큰 정의부 (`packages/tokens/`, 템플릿의 `tokens.css`) 는 `rem` 사용** — `--space-1: 0.25rem`, `--text-sm: 0.875rem`, `--control-md: 2.625rem`. 사용자 브라우저 글꼴 확대(접근성 / 시력 보조)에 비례 반응. WCAG 1.4.4 기준.
+- **PX 허용 예외** — `--border-width: 1px` 같이 1px 미만 정밀도가 의미 있는 값. shadow offset (`--shadow-sm: 0 1px 2px ...`) 도 PX 가 더 명료. 거의 1~2 token 한정.
+- **컴포넌트 스타일 (`packages/registry/*/components/*/styles.css`) 및 사용자 코드**는 항상 토큰 변수(`var(--space-3)`) 경유. 매직 px / rem 직접 하드코딩 금지.
+- **회귀 가드**: 1rem = 16px 기본 가정 시 시각적 no-op. 사용자가 root font-size 안 건드리면 변화 없음.
+- **변경 이력**: v0.58.x 까지는 px 토큰. v0.59.0 에서 정책 전환. 사용자 프로젝트의 기존 tokens.css 는 `sh-ui add tokens` 재설치 또는 수동 마이그레이션.
 
 ### 3. 브랜치 정책
 

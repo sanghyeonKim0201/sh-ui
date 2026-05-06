@@ -53,17 +53,17 @@
   },
 
   "spacing": {
-    "0":  { "$value": "0px",   "$type": "dimension" },
-    "1":  { "$value": "4px",   "$type": "dimension" },
-    "2":  { "$value": "8px",   "$type": "dimension" },
-    "3":  { "$value": "12px",  "$type": "dimension" },
-    "4":  { "$value": "16px",  "$type": "dimension" },
-    "5":  { "$value": "20px",  "$type": "dimension" },
-    "6":  { "$value": "24px",  "$type": "dimension" },
-    "8":  { "$value": "32px",  "$type": "dimension" },
-    "10": { "$value": "40px",  "$type": "dimension" },
-    "12": { "$value": "48px",  "$type": "dimension" },
-    "16": { "$value": "64px",  "$type": "dimension" }
+    "0":  { "$value": "0",         "$type": "dimension" },
+    "1":  { "$value": "0.25rem",   "$type": "dimension" },
+    "2":  { "$value": "0.5rem",    "$type": "dimension" },
+    "3":  { "$value": "0.75rem",   "$type": "dimension" },
+    "4":  { "$value": "1rem",      "$type": "dimension" },
+    "5":  { "$value": "1.25rem",   "$type": "dimension" },
+    "6":  { "$value": "1.5rem",    "$type": "dimension" },
+    "8":  { "$value": "2rem",      "$type": "dimension" },
+    "10": { "$value": "2.5rem",    "$type": "dimension" },
+    "12": { "$value": "3rem",      "$type": "dimension" },
+    "16": { "$value": "4rem",      "$type": "dimension" }
   },
 
   "radius": {
@@ -76,14 +76,14 @@
   },
 
   "fontSize": {
-    "xs":  { "$value": "12px", "$type": "dimension" },
-    "sm":  { "$value": "14px", "$type": "dimension" },
-    "base":{ "$value": "16px", "$type": "dimension" },
-    "lg":  { "$value": "18px", "$type": "dimension" },
-    "xl":  { "$value": "20px", "$type": "dimension" },
-    "2xl": { "$value": "24px", "$type": "dimension" },
-    "3xl": { "$value": "30px", "$type": "dimension" },
-    "4xl": { "$value": "36px", "$type": "dimension" }
+    "xs":  { "$value": "0.75rem",  "$type": "dimension" },
+    "sm":  { "$value": "0.875rem", "$type": "dimension" },
+    "base":{ "$value": "1rem",     "$type": "dimension" },
+    "lg":  { "$value": "1.125rem", "$type": "dimension" },
+    "xl":  { "$value": "1.25rem",  "$type": "dimension" },
+    "2xl": { "$value": "1.5rem",   "$type": "dimension" },
+    "3xl": { "$value": "1.875rem", "$type": "dimension" },
+    "4xl": { "$value": "2.25rem",  "$type": "dimension" }
   },
 
   "fontWeight": {
@@ -112,9 +112,9 @@
   },
 
   "controlHeight": {
-    "sm": { "$value": "32px", "$type": "dimension" },
-    "md": { "$value": "40px", "$type": "dimension" },
-    "lg": { "$value": "48px", "$type": "dimension" }
+    "sm": { "$value": "2rem",   "$type": "dimension" },
+    "md": { "$value": "2.5rem", "$type": "dimension" },
+    "lg": { "$value": "3rem",   "$type": "dimension" }
   },
 
   "borderWidth": {

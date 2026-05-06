@@ -289,7 +289,7 @@ describe('sh-ui create smoke tests', () => {
     expect(css).toMatch(/:root\s*\{[^}]*--background:\s*#FF0000/s);
     expect(css).toMatch(/\.dark\s*\{[^}]*--background:\s*#0000FF/s);
     expect(css).toContain('--radius: 1rem;');
-    expect(css).toContain('--space-0: 0px;');
+    expect(css).toContain('--space-0: 0;');
   });
 
   it('scenario 9 — theme 주입 (Flutter)', async () => {
@@ -379,10 +379,10 @@ describe('sh-ui create smoke tests', () => {
     const cssPath = path.join(tmpDir, 'spaced', 'src', 'shared', 'styles', 'tokens.css');
     const css = await fs.readFile(cssPath, 'utf-8');
     // spacing 마커 사이 새 값 — 디폴트 4 가 8 로 바뀜
-    expect(css).toContain('--space-1: 8px;');
-    expect(css).toContain('--space-16: 128px;');
+    expect(css).toContain('--space-1: 0.5rem;');
+    expect(css).toContain('--space-16: 8rem;');
     // 다른 카테고리(text 등)는 그대로
-    expect(css).toContain('--text-xs: 12px;');
+    expect(css).toContain('--text-xs: 0.75rem;');
   });
 
   it('scenario 11e — 카테고리 누락 시 템플릿 디폴트 유지', async () => {
@@ -405,8 +405,8 @@ describe('sh-ui create smoke tests', () => {
     // 색은 주입됐고
     expect(css).toMatch(/:root\s*\{[^}]*--background:\s*#FF0000/s);
     // 다른 카테고리는 디폴트 그대로
-    expect(css).toContain('--space-1: 4px;');
-    expect(css).toContain('--text-base: 16px;');
+    expect(css).toContain('--space-1: 0.25rem;');
+    expect(css).toContain('--text-base: 1rem;');
     expect(css).toContain('--weight-bold: 700;');
   });
 
@@ -534,11 +534,11 @@ describe('sh-ui create smoke tests', () => {
       path.join(tmpDir, 'rose-controls', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
     );
     // rose 의 controls = { sm: 36, md: 44, lg: 52 } 가 주입되어 디폴트 32/40/48 을 덮어씀
-    expect(css).toContain('--control-sm: 36px;');
-    expect(css).toContain('--control-md: 44px;');
-    expect(css).toContain('--control-lg: 52px;');
+    expect(css).toContain('--control-sm: 2.25rem;');
+    expect(css).toContain('--control-md: 2.75rem;');
+    expect(css).toContain('--control-lg: 3.25rem;');
     // typography 는 미정의 — 디폴트 그대로
-    expect(css).toContain('--text-base: 16px;');
+    expect(css).toContain('--text-base: 1rem;');
   });
 
   it('scenario 11k — Phase 4: slate 프리셋이 typography + controls 둘 다 차별화', async () => {
@@ -554,9 +554,9 @@ describe('sh-ui create smoke tests', () => {
       path.join(tmpDir, 'slate-dense', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
     );
     // slate typography 14px 본문 + 작은 컨트롤
-    expect(css).toContain('--text-base: 14px;');
-    expect(css).toContain('--text-xs: 11px;');
-    expect(css).toContain('--control-md: 36px;');
+    expect(css).toContain('--text-base: 0.875rem;');
+    expect(css).toContain('--text-xs: 0.6875rem;');
+    expect(css).toContain('--control-md: 2.25rem;');
   });
 
   it('scenario 11l — Phase 4: violet 프리셋이 borders.widthStrong 3px 까지 차별화', async () => {
@@ -573,7 +573,7 @@ describe('sh-ui create smoke tests', () => {
     );
     expect(css).toContain('--border-width: 1px;');
     expect(css).toContain('--border-width-strong: 3px;');
-    expect(css).toContain('--control-md: 42px;');
+    expect(css).toContain('--control-md: 2.625rem;');
   });
 
   it('scenario 11m — Phase 4: neutral / emerald 는 카테고리 차별화 없음 (디폴트 유지)', async () => {
@@ -589,8 +589,8 @@ describe('sh-ui create smoke tests', () => {
       path.join(tmpDir, 'neutral-baseline', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
     );
     // neutral 은 디폴트 — 그대로 유지
-    expect(css).toContain('--control-md: 40px;');
-    expect(css).toContain('--text-base: 16px;');
+    expect(css).toContain('--control-md: 2.5rem;');
+    expect(css).toContain('--text-base: 1rem;');
     expect(css).toContain('--border-width-strong: 2px;');
   });
 
@@ -647,7 +647,7 @@ describe('sh-ui create smoke tests', () => {
     expect(css).toMatch(/\.dark\s*\{[^}]*--background:\s*#0000FF/s);
     expect(css).toContain('--radius: 0.25rem;');
     // 마커 바깥 토큰(spacing 등) 는 그대로
-    expect(css).toContain('--space-0: 0px;');
+    expect(css).toContain('--space-0: 0;');
   });
 
   describe('비대화형 환경 가드 (no-TTY)', () => {
