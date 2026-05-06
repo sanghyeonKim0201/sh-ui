@@ -59,7 +59,7 @@
   border-color: var(--border-strong);
 }
 .rte__btn:disabled {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 .rte__sep {

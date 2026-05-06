@@ -157,7 +157,7 @@ function ToolbarButton({ editor, label, icon, isActive, canRun, run, disabled }:
     <button
       type="button"
       className={cn(
-        "inline-flex items-center justify-center w-7 h-7 p-0 bg-transparent text-foreground-muted border border-transparent rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[color,background-color,border-color] duration-[var(--duration-fast)] hover:not-disabled:text-foreground hover:not-disabled:bg-background hover:not-disabled:border-border focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-1 disabled:opacity-50 disabled:cursor-not-allowed motion-reduce:transition-none",
+        "inline-flex items-center justify-center w-7 h-7 p-0 bg-transparent text-foreground-muted border border-transparent rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[color,background-color,border-color] duration-[var(--duration-fast)] hover:not-disabled:text-foreground hover:not-disabled:bg-background hover:not-disabled:border-border focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-1 disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed motion-reduce:transition-none",
         isActive && "text-foreground bg-background border-border-strong",
       )}
       aria-label={label}

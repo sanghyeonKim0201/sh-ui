@@ -70,7 +70,7 @@
 .pagination__link[aria-disabled="true"],
 .pagination__link[data-disabled] {
   pointer-events: none;
-  opacity: 0.45;
+  opacity: var(--opacity-disabled);
 }
 
 .pagination__nav {

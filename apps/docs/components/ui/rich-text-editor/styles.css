@@ -59,7 +59,7 @@
   border-color: var(--border-strong);
 }
 .sh-ui-rte__btn:disabled {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 .sh-ui-rte__sep {

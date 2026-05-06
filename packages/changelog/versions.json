@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.7",
+      "date": "2026-05-06",
+      "title": "디자인 디폴트 개편 6라운드 — disabled opacity 토큰 통일",
+      "type": "patch",
+      "highlights": [
+        "**`--opacity-disabled` (0.5) 토큰을 모든 컴포넌트가 사용** — 그동안 calendar(0.3) / carousel(0.4) / pagination(0.45) / rich-text-editor(0.5) 가 각자 다른 disabled opacity 값을 쓰고 있었음. 단일 토큰으로 정렬해 \"disabled 느낌\"이 모든 컴포넌트에서 동일.",
+        "**Tailwind variant 의 하드코딩 opacity 클래스 제거** — `disabled:opacity-30` / `disabled:opacity-40` / `disabled:opacity-50` / `aria-disabled:opacity-45` / `data-[disabled]:opacity-45` → `disabled:opacity-[var(--opacity-disabled)]`.",
+        "**plain CSS / module / vanilla-extract 동기화** — `:disabled { opacity: 0.X }` 의 0.3/0.4/0.45/0.5 하드코딩 → `var(--opacity-disabled)`.",
+        "**outside / inactive 같은 \"비활성이지만 disabled 아님\" 상태는 별도 유지** — calendar 의 day--outside (0.4) 는 disabled 와 다른 시각 의도라 이번 통일에서 제외.",
+        "**철학 — \"disabled 느낌\" 은 토큰의 책임**: 사용자가 brand 톤 한 번 결정하면 모든 컴포넌트의 disabled 가 같은 깊이로 fade. 컴포넌트별 미세 조정 X."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.7"
+    },
+    {
       "version": "0.58.6",
       "date": "2026-05-06",
       "title": "디자인 디폴트 개편 5라운드 — `--danger-hover` 토큰 + Button danger hover 일관화",
