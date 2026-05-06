@@ -83,7 +83,7 @@
 
 .combobox__item-indicator {
   order: 1;
-  margin-left: auto;
+  margin-inline-start: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -121,7 +121,7 @@
   align-items: center;
   gap: var(--space-1);
   padding: 0.125rem 0.375rem 0.125rem var(--space-2);
-  margin-right: var(--space-1);
+  margin-inline-end: var(--space-1);
   font-size: var(--text-xs);
   line-height: 1.25rem;
   background: var(--background-muted);

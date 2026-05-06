@@ -40,15 +40,15 @@
   flex-shrink: 0;
   background: var(--sidebar-bg);
   color: var(--sidebar-fg);
-  border-right: 1px solid var(--sidebar-border);
+  border-inline-end: 1px solid var(--sidebar-border);
   transition: width var(--duration-slow) ease;
   position: relative;
   z-index: 5;
 }
 
 .sh-ui-sidebar[data-side="right"] {
-  border-right: none;
-  border-left: 1px solid var(--sidebar-border);
+  border-inline-end: none;
+  border-inline-start: 1px solid var(--sidebar-border);
   order: 1;
 }
 
@@ -118,7 +118,7 @@
   width: var(--sidebar-width-mobile);
   z-index: var(--z-overlay);
   transition: transform var(--duration-slow) ease;
-  border-right: 1px solid var(--sidebar-border);
+  border-inline-end: 1px solid var(--sidebar-border);
 }
 .sh-ui-sidebar--mobile[data-side="left"] {
   left: 0;
@@ -127,8 +127,8 @@
 .sh-ui-sidebar--mobile[data-side="right"] {
   right: 0;
   transform: translateX(100%);
-  border-right: none;
-  border-left: 1px solid var(--sidebar-border);
+  border-inline-end: none;
+  border-inline-start: 1px solid var(--sidebar-border);
 }
 .sh-ui-sidebar--mobile[data-state="open"] {
   transform: translateX(0);
@@ -178,7 +178,7 @@
   width: var(--sidebar-panel-width);
   flex-shrink: 0;
   background: var(--background);
-  border-right: 1px solid var(--sidebar-border);
+  border-inline-end: 1px solid var(--sidebar-border);
   position: relative;
   z-index: 4;
   overflow: hidden;
@@ -243,7 +243,7 @@
     left: 0;
     width: min(var(--sidebar-panel-width), 90vw);
     z-index: var(--z-modal);
-    border-right: 1px solid var(--sidebar-border);
+    border-inline-end: 1px solid var(--sidebar-border);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   }
 }
@@ -335,7 +335,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2);
-  text-align: left;
+  text-align: start;
   font-size: var(--text-sm);
   color: var(--sidebar-fg);
   background: transparent;
@@ -400,8 +400,8 @@
   list-style: none;
   margin: 0.125rem 0 0;
   padding: 0.125rem 0 0.125rem 0.625rem;
-  margin-left: 0.875rem;
-  border-left: 1px solid var(--sidebar-border);
+  margin-inline-start: 0.875rem;
+  border-inline-start: 1px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
@@ -453,7 +453,7 @@
 .sh-ui-sidebar__chevron {
   width: 0.875rem !important;
   height: 0.875rem !important;
-  margin-left: auto;
+  margin-inline-start: auto;
   flex-shrink: 0;
   transition: transform 150ms ease;
   color: var(--foreground-muted);
@@ -474,10 +474,10 @@
   gap: 0.125rem;
   margin: 0;
   padding: 0;
-  border-left: 0;
+  border-inline-start: 0;
 }
 .sh-ui-sidebar__collapsible-flyout .sh-ui-sidebar__menu-sub-button {
-  padding-left: 0.625rem;
+  padding-inline-start: 0.625rem;
 }
 
 /* collapsed=icon 상태에서는 chevron 숨기고 content도 숨김 */

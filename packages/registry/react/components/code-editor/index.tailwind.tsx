@@ -153,9 +153,9 @@ if (typeof document !== "undefined" && !document.querySelector("style[data-sh-ui
 .sh-ui-code-editor .cm-scroller { font-family: inherit; min-height: var(--sh-ui-code-editor-min-height, 7.5rem); max-height: var(--sh-ui-code-editor-max-height, 25rem); }
 .sh-ui-code-editor .cm-content { caret-color: var(--foreground); color: var(--foreground); padding: var(--space-3) 0; }
 .sh-ui-code-editor .cm-line { padding: 0 var(--space-3); }
-.sh-ui-code-editor .cm-gutters { background: var(--background-subtle); color: var(--foreground-muted); border-right: 1px solid var(--border); }
+.sh-ui-code-editor .cm-gutters { background: var(--background-subtle); color: var(--foreground-muted); border-inline-end: 1px solid var(--border); }
 .sh-ui-code-editor .cm-activeLineGutter, .sh-ui-code-editor .cm-activeLine { background: var(--background-muted); }
-.sh-ui-code-editor .cm-cursor, .sh-ui-code-editor .cm-dropCursor { border-left-color: var(--foreground); }
+.sh-ui-code-editor .cm-cursor, .sh-ui-code-editor .cm-dropCursor { border-inline-start-color: var(--foreground); }
 .sh-ui-code-editor .cm-selectionBackground, .sh-ui-code-editor .cm-editor .cm-selectionBackground, .sh-ui-code-editor .cm-editor.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .sh-ui-code-editor ::selection { background: var(--background-muted) !important; }
 .sh-ui-code-editor .cm-placeholder { color: var(--foreground-muted); }
 .sh-ui-code-editor .cm-tooltip { background: var(--background); border: 1px solid var(--border); color: var(--foreground); border-radius: calc(var(--radius) - 2px); }

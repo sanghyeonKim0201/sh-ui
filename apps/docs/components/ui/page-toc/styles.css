@@ -4,12 +4,12 @@
 .sh-ui-page-toc {
   position: fixed;
   top: 5rem;
-  right: 1.5rem;
+  inset-inline-end: 1.5rem;
   width: 14rem;
   max-height: calc(100vh - 7rem);
   overflow-y: auto;
   padding: 0.75rem 0.5rem 0.75rem 1rem;
-  border-left: 1px solid var(--border);
+  border-inline-start: 1px solid var(--border);
   font-size: 0.8125rem;
   z-index: 5;
 }
@@ -34,13 +34,13 @@
 
 .sh-ui-page-toc__list > li[data-level="3"] .sh-ui-page-toc__link,
 .sh-ui-page-toc__list > li[data-level="4"] .sh-ui-page-toc__link {
-  padding-left: 1.25rem;
+  padding-inline-start: 1.25rem;
   font-size: 0.8125em;
   color: var(--foreground-subtle, var(--foreground-muted));
 }
 .sh-ui-page-toc__list > li[data-level="5"] .sh-ui-page-toc__link,
 .sh-ui-page-toc__list > li[data-level="6"] .sh-ui-page-toc__link {
-  padding-left: 2rem;
+  padding-inline-start: 2rem;
   font-size: 0.75em;
   color: var(--foreground-subtle, var(--foreground-muted));
 }

@@ -190,10 +190,10 @@ if (typeof document !== "undefined" && !document.querySelector("style[data-sh-ui
 .sh-ui-rte__content h1 { font-size: 1.5rem; }
 .sh-ui-rte__content h2 { font-size: 1.25rem; }
 .sh-ui-rte__content h3 { font-size: 1.125rem; }
-.sh-ui-rte__content ul, .sh-ui-rte__content ol { margin: 0 0 var(--space-3); padding-left: var(--space-5); }
+.sh-ui-rte__content ul, .sh-ui-rte__content ol { margin: 0 0 var(--space-3); padding-inline-start: var(--space-5); }
 .sh-ui-rte__content li { margin-bottom: var(--space-1); }
 .sh-ui-rte__content li > p { margin: 0; }
-.sh-ui-rte__content blockquote { margin: 0 0 var(--space-3); padding: var(--space-2) var(--space-3); border-left: 3px solid var(--border-strong); background: var(--background-subtle); color: var(--foreground-muted); border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0; }
+.sh-ui-rte__content blockquote { margin: 0 0 var(--space-3); padding: var(--space-2) var(--space-3); border-inline-start: 3px solid var(--border-strong); background: var(--background-subtle); color: var(--foreground-muted); border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0; }
 .sh-ui-rte__content blockquote > :last-child { margin-bottom: 0; }
 .sh-ui-rte__content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.875em; padding: 0.125rem 0.375rem; border-radius: calc(var(--radius) - 4px); background: var(--background-muted); color: var(--foreground); }
 .sh-ui-rte__content pre { margin: 0 0 var(--space-3); padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius); background: var(--background-subtle); overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; }

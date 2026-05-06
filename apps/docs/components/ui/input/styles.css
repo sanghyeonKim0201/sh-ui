@@ -65,8 +65,8 @@
   display: block;
 }
 
-.sh-ui-input--with-prefix { padding-left: var(--space-10); }
-.sh-ui-input--with-suffix { padding-right: var(--space-10); }
+.sh-ui-input--with-prefix { padding-inline-start: var(--space-10); }
+.sh-ui-input--with-suffix { padding-inline-end: var(--space-10); }
 
 .sh-ui-input__affix {
   position: absolute;
@@ -78,8 +78,8 @@
   color: var(--foreground-muted);
   pointer-events: none;
 }
-.sh-ui-input__affix--prefix { left: var(--space-3); }
-.sh-ui-input__affix--suffix { right: var(--space-1); }
+.sh-ui-input__affix--prefix { inset-inline-start: var(--space-3); }
+.sh-ui-input__affix--suffix { inset-inline-end: var(--space-1); }
 
 /* suffix 내부 클릭 가능한 요소(버튼 등)는 pointer-events 복원 */
 .sh-ui-input__affix > * { pointer-events: auto; }

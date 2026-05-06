@@ -144,7 +144,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin-left: auto;
+  margin-inline-start: auto;
   flex-shrink: 0;
 }
 
@@ -296,7 +296,7 @@
     bottom: 0;
     width: min(17.5rem, 85vw);
     background: var(--background-subtle);
-    border-right: 1px solid var(--border);
+    border-inline-end: 1px solid var(--border);
     z-index: var(--z-modal);
     transform: translateX(-100%);
     transition: transform var(--duration-base) var(--ease-standard);
