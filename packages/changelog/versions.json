@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.8",
+      "date": "2026-05-06",
+      "title": "디자인 디폴트 개편 7라운드 — Tooltip 의 duration·shadow 를 토큰으로",
+      "type": "patch",
+      "highlights": [
+        "**Tooltip 의 `duration-[120ms]` → `duration-[var(--duration-fast)]`** — 정확히 같은 값(120ms = `--duration-fast`)을 하드코딩하던 걸 토큰으로. 향후 token 단에서 motion 속도를 일괄 조정 가능.",
+        "**Tooltip 의 `shadow-[0_4px_12px_rgba(0,0,0,0.12)]` → `shadow-[var(--shadow-md)]`** — 토큰 `--shadow-md` 와 정확히 동일한 값을 하드코딩하던 걸 정리. 향후 elevation 일괄 조정 가능.",
+        "**다른 컴포넌트들의 shadow 는 별도로 보존** — Popover/Toast/DropdownMenu 등은 component-specific tuning (multi-layer, negative spread 등) 이라 토큰과 정확히 매칭되지 않음. 무리한 표준화는 visual diff 손실로 보류.",
+        "**Heading typography / hover state 일관성** — audit 결과 모두 의도된 차이 (Dialog/Card/Popover 의 size 차등 = 컨텍스트, hover 는 이미 모두 token-driven). 변경 안 함.",
+        "**4 variant + 듀얼 카피본 동기화** — Tooltip Tailwind / plain CSS / CSS Modules / vanilla-extract."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.8"
+    },
+    {
       "version": "0.58.7",
       "date": "2026-05-06",
       "title": "디자인 디폴트 개편 6라운드 — disabled opacity 토큰 통일",
