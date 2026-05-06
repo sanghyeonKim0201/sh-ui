@@ -46,6 +46,7 @@
   margin: 0 0 var(--space-1);
   font-weight: var(--weight-semibold);
   font-size: 0.9375rem;
+  text-wrap: balance;
 }
 
 .sh-ui-popover__description {

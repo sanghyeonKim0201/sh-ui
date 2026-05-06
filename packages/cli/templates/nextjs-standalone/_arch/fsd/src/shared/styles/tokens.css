@@ -137,3 +137,11 @@
   --bp-lg: 1024px;
   --bp-xl: 1280px;
 }
+
+/* WCAG 2.5.5 — 터치 타겟 최소 44×44px. 마우스/스타일러스 대신 손가락 입력 시 control 높이를 보정. */
+@media (hover: none) and (pointer: coarse) {
+  :root {
+    --control-sm: 2.75rem;
+    --control-md: 2.75rem;
+  }
+}

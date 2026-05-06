@@ -55,7 +55,7 @@ export const PopoverTitle = React.forwardRef<
   return (
     <BasePopover.Title
       ref={ref}
-      className={cn("m-0 mb-[var(--space-1)] font-semibold text-[0.9375rem]", className)}
+      className={cn("m-0 mb-[var(--space-1)] font-semibold text-[0.9375rem] text-balance", className)}
       {...props}
     />
   );

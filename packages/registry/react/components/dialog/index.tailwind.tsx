@@ -69,7 +69,7 @@ export const DialogTitle = React.forwardRef<
     <BaseDialog.Title
       ref={ref}
       className={cn(
-        "m-0 mb-[var(--space-1)] font-semibold text-[length:var(--text-lg)] leading-snug",
+        "m-0 mb-[var(--space-1)] font-semibold text-[length:var(--text-lg)] leading-snug text-balance",
         className,
       )}
       {...props}

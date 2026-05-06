@@ -28,6 +28,7 @@
   font-weight: var(--weight-semibold);
   line-height: 1.25;
   letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 .sh-ui-card__description {

@@ -62,6 +62,7 @@
   font-weight: var(--weight-semibold);
   font-size: var(--text-lg);
   line-height: 1.4;
+  text-wrap: balance;
 }
 
 /* ── Description ── */

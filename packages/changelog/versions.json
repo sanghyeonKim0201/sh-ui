@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.1",
+      "date": "2026-05-06",
+      "title": "접근성 라운드 1 — text-wrap: balance + 모바일 터치 타겟",
+      "type": "patch",
+      "highlights": [
+        "**`Card.Title` / `Dialog.Title` / `Popover.Title` 에 `text-wrap: balance` 추가** — 헤딩 텍스트가 두 줄 이상으로 wrap 될 때 마지막 줄에 단어 1~2개만 남는 orphan 문제 해소. 단어가 두 줄에 균등 분포. 한국어처럼 단어 길이 다양한 언어에서 효과 큼. 한 줄에 들어가면 no-op.",
+        "**모바일 터치 타겟 자동 보정 (WCAG 2.5.5)** — tokens.css 에 `@media (hover: none) and (pointer: coarse)` 블록 추가. 손가락 입력 환경에서 `--control-sm` (32px) / `--control-md` (40px) 가 자동으로 44px 로 확장. 모든 Button/Input 등 control-* 토큰을 사용하는 컴포넌트가 자동 적용. 데스크탑 (마우스/트랙패드) 은 영향 없음.",
+        "**`--control-lg`** (48px) 는 이미 44px 초과라 변경 불필요.",
+        "**4 variant + 듀얼 카피본 + pactrack 동기화** — Tailwind/plain/module/vanilla-extract + apps/docs + cli/templates."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.1"
+    },
+    {
       "version": "0.59.0",
       "date": "2026-05-06",
       "title": "토큰 정책 전환 — px → rem (접근성 / 유저 글꼴 확대 반응)",
