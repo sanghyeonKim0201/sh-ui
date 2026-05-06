@@ -38,7 +38,7 @@ export const CardTitle = React.forwardRef<HTMLDivElement, DivProps>(
     <div
       ref={ref}
       className={cn(
-        "text-[length:var(--text-base)] font-semibold leading-tight tracking-tight",
+        "text-[length:var(--text-base)] font-semibold leading-tight tracking-tight text-balance",
         className,
       )}
       {...props}
