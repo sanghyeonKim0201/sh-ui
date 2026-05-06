@@ -3,6 +3,16 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.1",
+      "date": "2026-05-06",
+      "title": "fix — Sidebar focus trap 의 TS strict 위반 (firstEl/lastEl possibly undefined)",
+      "type": "patch",
+      "highlights": [
+        "**Sidebar `useFocusTrap` 의 TS strict 위반 해소** — `items.length === 0` 가드 후에도 `items[0]` / `items[items.length - 1]` 가 `possibly undefined` 로 잡혀 사용자 프로젝트 (strict tsconfig) 에서 typecheck 실패하던 문제. 가드를 `firstEl`/`lastEl` 직접 null-check 로 재구성 — 동작 동일, TS 만족. 사용자가 sh-ui Sidebar 컴포넌트를 add 후 본인 프로젝트에서 `tsc --noEmit` 돌릴 때 막히던 케이스 해소."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.1"
+    },
+    {
       "version": "0.58.0",
       "date": "2026-05-05",
       "title": "아키텍처 (arch) 1급 시민 도입 + flat 추가",
