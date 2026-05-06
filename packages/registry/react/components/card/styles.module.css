@@ -8,6 +8,20 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
+  container-type: inline-size;
+}
+
+/* Card 자체 너비가 좁을 때 padding 자동 축소. */
+@container (max-width: 20rem) {
+  .card {
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+  }
+  .header,
+  .content,
+  .footer {
+    padding-inline: var(--space-4);
+  }
 }
 
 /* 헤더: 기본은 타이틀/설명 세로 스택. action 있으면 2열 그리드로 전환. */

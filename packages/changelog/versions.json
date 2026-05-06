@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.3",
+      "date": "2026-05-06",
+      "title": "접근성 라운드 3 — Card container queries (자기 너비 기준 반응형)",
+      "type": "patch",
+      "highlights": [
+        "**`Card` 가 `container-type: inline-size` 로 컨테이너 컨텍스트 생성** — 자신의 width 기준으로 sub-element padding 조정 가능.",
+        "**`@container (max-width: 20rem)` 블록 추가** — Card 자체 너비가 320px 이하일 때 gap/padding 자동 축소 (`--space-6 → --space-4`). viewport 가 아닌 **부모 컨테이너** 기준이라 좁은 사이드바·column 안에 Card 가 들어가도 자연스럽게.",
+        "**기존 `max-sm:` viewport 룰과 별개로 동작** — 둘 다 fire 해도 같은 값이라 충돌 없음. 모바일 viewport + 어떤 width 든 / 데스크탑 viewport + 좁은 column 등 모두 커버.",
+        "**3 variant 동기화** — plain CSS / CSS Modules / apps/docs. Tailwind variant 는 `container-type` 이 inline class 로 표현 어려워 plain CSS 위주.",
+        "**Sidebar 등 다른 컴포넌트로 확장**: 사용자 요청 시 추가 라운드 가능. Card 가 가장 명확한 win 이라 우선 적용."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.3"
+    },
+    {
       "version": "0.59.2",
       "date": "2026-05-06",
       "title": "접근성 라운드 2 — WCAG audit + prefers-contrast: high 모드",
