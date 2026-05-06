@@ -128,7 +128,11 @@ describe('sh-ui create smoke tests', () => {
       path.join(projectDir, 'app', '[locale]', 'layout.tsx'),
       'utf-8',
     );
-    expect(localeLayout).toMatch(/import\s+['"][^'"]*globals\.css['"];?/);
+    // v0.59.9 회귀 가드: globals.css import 의 상대 경로가 새 위치 기준으로 보정돼야 한다.
+    // 원본 app/layout.tsx 의 `./globals.css` 는 app/[locale]/layout.tsx 로 이동하면서
+    // `../globals.css` 가 돼야 하고, 그렇지 않으면 prod 빌드(`next build`) 가 모듈 미해결로 죽는다.
+    expect(localeLayout).toContain("import '../globals.css';");
+    expect(localeLayout).not.toContain("import './globals.css';");
     expect(localeLayout).toContain('RootLayout');
     expect(localeLayout).toContain('params');
 

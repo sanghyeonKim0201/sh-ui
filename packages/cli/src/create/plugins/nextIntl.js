@@ -64,12 +64,20 @@ export const nextIntlPlugin = {
       // side-effect import (`import 'x';` 형태, binding 없음) 만 보존하고 나머지는 통째 교체.
       // 이름 있는 import (예: `import { RootLayout } from ...`) 는 새 본체와 식별자 충돌 가능성이
       // 있어 제외.
+      //
+      // 경로 보정: 파일이 `app/layout.tsx` → `app/[locale]/layout.tsx` 로 1단계 깊어졌으므로
+      // 보존된 side-effect import 의 상대 경로(`./x` / `../x`)는 `../` 한 번만큼 더 위로 끌어올린다.
+      // 절대 경로(`/x`)나 모듈명(`polyfills`)은 그대로. v0.59.8 까지는 보정이 빠져 standalone+next-intl
+      // 조합에서 `./globals.css` 가 깨졌고 prod 빌드가 실패했다.
       type: 'replace',
       path: 'app/[locale]/layout.tsx',
       contentFn: (existing) => {
+        const adjustRelative = (line) =>
+          line.replace(/(['"])(\.\.?\/)/g, (_m, q, prefix) => `${q}../${prefix === './' ? '' : prefix}`);
         const sideEffectImports = existing
           .split('\n')
           .filter((line) => /^\s*import\s+['"][^'"]+['"];?\s*$/.test(line))
+          .map(adjustRelative)
           .join('\n');
         const body = `import type { Metadata } from 'next';
 import { RootLayout } from '${arch.aliases.layouts}/RootLayout';
