@@ -11,7 +11,7 @@
   font-size: var(--text-xs);
   line-height: 1.4;
   max-width: 20rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
   transform-origin: var(--transform-origin);
   outline: none;
   transition:

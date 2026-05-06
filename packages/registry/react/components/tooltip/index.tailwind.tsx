@@ -38,7 +38,7 @@ export const TooltipContent = React.forwardRef<HTMLDivElement, TooltipContentPro
           <BaseTooltip.Popup
             ref={ref}
             className={cn(
-              "px-2.5 py-1.5 bg-foreground text-background rounded-[calc(var(--radius)-2px)] text-[length:var(--text-xs)] leading-snug max-w-xs shadow-[0_4px_12px_rgba(0,0,0,0.12)] origin-[var(--transform-origin)] outline-none transition-[opacity,transform] duration-[120ms] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 motion-reduce:data-[starting-style]:scale-100 motion-reduce:data-[ending-style]:scale-100",
+              "px-2.5 py-1.5 bg-foreground text-background rounded-[calc(var(--radius)-2px)] text-[length:var(--text-xs)] leading-snug max-w-xs shadow-[var(--shadow-md)] origin-[var(--transform-origin)] outline-none transition-[opacity,transform] duration-[var(--duration-fast)] ease-out motion-reduce:transition-none data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 motion-reduce:data-[starting-style]:scale-100 motion-reduce:data-[ending-style]:scale-100",
               className,
             )}
             {...props}
