@@ -153,7 +153,7 @@ export const FileUploadDropzone = React.forwardRef<HTMLDivElement, FileUploadDro
         aria-disabled={disabled || undefined}
         data-dragging={dragging || undefined}
         className={cn(
-          "relative flex flex-col items-center justify-center gap-[var(--space-2)] py-[var(--space-8)] px-[var(--space-6)] min-h-40 bg-background-subtle text-foreground-muted border-[1.5px] border-dashed border-border rounded-[var(--radius)] cursor-pointer text-center transition-[border-color,background-color,color] duration-[var(--duration-fast)] hover:border-border-strong hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 focus-visible:border-foreground motion-reduce:transition-none",
+          "relative flex flex-col items-center justify-center gap-[var(--space-2)] py-[var(--space-8)] px-[var(--space-6)] min-h-40 bg-background-subtle text-foreground-muted border-[1.5px] border-dashed border-border rounded-[var(--radius)] cursor-pointer text-center transition-[border-color,background-color,color] duration-[var(--duration-fast)] hover:border-border-strong hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 focus-visible:border-primary motion-reduce:transition-none",
           dragging && "border-foreground bg-background-muted text-foreground",
           disabled && "opacity-[var(--opacity-disabled)] cursor-not-allowed pointer-events-none",
           className,

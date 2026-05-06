@@ -32,8 +32,8 @@
 
 .sh-ui-input:focus {
   outline: none;
-  border-color: var(--foreground);
-  box-shadow: 0 0 0 1px var(--foreground);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
 }
 
 .sh-ui-input:disabled {
@@ -143,8 +143,8 @@
 }
 
 .sh-ui-input-group:focus-within {
-  border-color: var(--foreground);
-  box-shadow: 0 0 0 1px var(--foreground);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
 }
 
 .sh-ui-input-group[aria-invalid="true"] {

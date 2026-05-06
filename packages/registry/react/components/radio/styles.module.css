@@ -16,7 +16,7 @@
 }
 
 .radio:hover:not([data-disabled]) {
-  border-color: var(--foreground);
+  border-color: var(--primary);
 }
 
 .radio:focus-visible {

@@ -262,7 +262,7 @@ export function ColorPickerHex({ className, showSwatch = true, ...rest }: ColorP
       <input
         ref={inputRef}
         type="text"
-        className="flex-1 min-w-0 h-7 px-[var(--space-2)] border border-border rounded-[calc(var(--radius)-2px)] bg-background text-foreground font-mono text-[0.8125rem] uppercase focus:outline-none focus:border-foreground focus:shadow-[0_0_0_1px_var(--foreground)]"
+        className="flex-1 min-w-0 h-7 px-[var(--space-2)] border border-border rounded-[calc(var(--radius)-2px)] bg-background text-foreground font-mono text-[0.8125rem] uppercase focus:outline-none focus:border-primary focus:shadow-[0_0_0_1px_var(--primary)]"
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={onCommit}

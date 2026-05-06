@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.58.4",
+      "date": "2026-05-06",
+      "title": "디자인 디폴트 개편 3라운드 — 폼 필드의 focus·hover 색을 primary 로",
+      "type": "patch",
+      "highlights": [
+        "**input / textarea / numeric-input / date-picker / color-picker / checkbox / radio 의 focus·hover 색 통일** — 기존 `border-color: var(--foreground)` + `box-shadow: 0 0 0 1px var(--foreground)` 는 다크에서 순백 강조라 stark. `--primary` 로 변경 — 폼 필드의 활성 시 브랜드 톤으로 자연스럽게 표시.",
+        "**v0.58.3 의 ring 패턴과 정렬** — 버튼 / 컴포넌트 focus ring 은 `--ring` (primary 50%), 폼 필드 inline focus 는 `--primary` solid (1px 이라 풀 포화). 두 layer 가 brand 톤으로 일관.",
+        "**4 variant + 듀얼 카피본 + 템플릿 모두 동기화** — Tailwind / plain CSS / CSS Modules / vanilla-extract.",
+        "**Button danger 의 `hover:brightness-95` 는 다음 라운드** — `--danger-hover` 토큰 추가 필요해서 별도 검토 후 진행."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.58.4"
+    },
+    {
       "version": "0.58.3",
       "date": "2026-05-06",
       "title": "디자인 디폴트 개편 2라운드 — `--ring` 토큰 도입 + 모든 focus ring 통일",

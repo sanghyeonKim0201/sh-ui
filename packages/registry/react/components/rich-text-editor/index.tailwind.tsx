@@ -67,7 +67,7 @@ export function RichTextEditor({
   return (
     <div
       className={cn(
-        "sh-ui-rte flex flex-col border border-border rounded-[var(--radius)] bg-background overflow-hidden transition-[border-color] duration-[var(--duration-fast)] focus-within:border-foreground focus-within:outline-[length:var(--border-width-strong)] focus-within:outline-ring focus-within:outline-offset-2 data-[readonly]:bg-background-subtle motion-reduce:transition-none",
+        "sh-ui-rte flex flex-col border border-border rounded-[var(--radius)] bg-background overflow-hidden transition-[border-color] duration-[var(--duration-fast)] focus-within:border-primary focus-within:outline-[length:var(--border-width-strong)] focus-within:outline-ring focus-within:outline-offset-2 data-[readonly]:bg-background-subtle motion-reduce:transition-none",
         className,
       )}
       data-readonly={readOnly || undefined}
