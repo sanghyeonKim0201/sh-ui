@@ -23,7 +23,7 @@ export const ComboboxInput = React.forwardRef<
     <BaseCombobox.Input
       ref={ref}
       className={cn(
-        "inline-flex w-full min-w-40 h-[var(--control-md)] px-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] text-[length:var(--text-sm)] leading-none outline-none transition-[border-color] duration-[var(--duration-fast)] placeholder:text-foreground-subtle hover:not-disabled:border-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none",
+        "inline-flex w-full min-w-40 h-[var(--control-md)] px-[var(--space-3)] bg-background text-foreground border border-border rounded-[var(--radius)] text-[length:var(--text-sm)] leading-none outline-none transition-[border-color] duration-[var(--duration-fast)] placeholder:text-foreground-subtle hover:not-disabled:border-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:pointer-events-none",
         className,
       )}
       {...props}

@@ -391,7 +391,7 @@ export const CalendarHeader = React.forwardRef<HTMLDivElement, CalendarHeaderPro
 );
 
 const navButtonClasses =
-  "inline-flex items-center justify-center w-7 h-7 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground-muted cursor-pointer shrink-0 transition-[background-color,color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted hover:not-disabled:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none";
+  "inline-flex items-center justify-center w-7 h-7 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground-muted cursor-pointer shrink-0 transition-[background-color,color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted hover:not-disabled:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 motion-reduce:transition-none";
 
 function CalendarNavPlaceholder() {
   return <span className={cn(navButtonClasses, "invisible pointer-events-none")} aria-hidden />;
@@ -501,7 +501,7 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
           ))}
         </div>
         <div
-          className="grid grid-cols-7 outline-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 focus-visible:rounded-[calc(var(--radius)-2px)]"
+          className="grid grid-cols-7 outline-none focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 focus-visible:rounded-[calc(var(--radius)-2px)]"
           role="grid"
           tabIndex={0}
           onKeyDown={ctx.onKeyDown}
@@ -526,7 +526,7 @@ export const CalendarGrid = React.forwardRef<HTMLDivElement, CalendarGridProps>(
                 <button
                   type="button"
                   className={cn(
-                    "flex items-center justify-center w-9 h-9 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground text-[0.8125rem] font-[inherit] cursor-pointer transition-[background-color,color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-30 disabled:cursor-not-allowed motion-reduce:transition-none",
+                    "flex items-center justify-center w-9 h-9 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground text-[0.8125rem] font-[inherit] cursor-pointer transition-[background-color,color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-30 disabled:cursor-not-allowed motion-reduce:transition-none",
                     !current && "text-[var(--foreground-subtle,var(--foreground-muted))] opacity-40",
                     isToday && "font-bold underline underline-offset-[0.125rem]",
                     selected && "bg-primary text-primary-foreground font-semibold hover:not-disabled:bg-primary-hover hover:not-disabled:text-primary-foreground",

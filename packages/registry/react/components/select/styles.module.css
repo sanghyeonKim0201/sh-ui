@@ -23,7 +23,7 @@
 }
 
 .select__trigger:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -188,6 +188,6 @@
   color: var(--foreground);
 }
 .select__chip-remove:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 1px;
 }

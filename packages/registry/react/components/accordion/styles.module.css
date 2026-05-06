@@ -42,7 +42,7 @@
 }
 
 .accordion__trigger:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 2px;
   border-radius: calc(var(--radius) - 2px);
 }

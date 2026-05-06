@@ -133,7 +133,7 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
       )}
       <button
         type="button"
-        className="absolute top-1.5 right-1.5 inline-flex items-center justify-center w-6 h-6 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground-muted text-[length:var(--text-sm)] leading-none cursor-pointer transition-[background-color,color] duration-[var(--duration-fast)] hover:bg-background-muted hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 motion-reduce:transition-none"
+        className="absolute top-1.5 right-1.5 inline-flex items-center justify-center w-6 h-6 p-0 border-none rounded-[calc(var(--radius)-2px)] bg-transparent text-foreground-muted text-[length:var(--text-sm)] leading-none cursor-pointer transition-[background-color,color] duration-[var(--duration-fast)] hover:bg-background-muted hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 motion-reduce:transition-none"
         onClick={() => setExiting(true)}
         aria-label="닫기"
       >

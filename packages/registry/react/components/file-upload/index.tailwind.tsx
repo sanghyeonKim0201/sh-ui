@@ -153,7 +153,7 @@ export const FileUploadDropzone = React.forwardRef<HTMLDivElement, FileUploadDro
         aria-disabled={disabled || undefined}
         data-dragging={dragging || undefined}
         className={cn(
-          "relative flex flex-col items-center justify-center gap-[var(--space-2)] py-[var(--space-8)] px-[var(--space-6)] min-h-40 bg-background-subtle text-foreground-muted border-[1.5px] border-dashed border-border rounded-[var(--radius)] cursor-pointer text-center transition-[border-color,background-color,color] duration-[var(--duration-fast)] hover:border-border-strong hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 focus-visible:border-foreground motion-reduce:transition-none",
+          "relative flex flex-col items-center justify-center gap-[var(--space-2)] py-[var(--space-8)] px-[var(--space-6)] min-h-40 bg-background-subtle text-foreground-muted border-[1.5px] border-dashed border-border rounded-[var(--radius)] cursor-pointer text-center transition-[border-color,background-color,color] duration-[var(--duration-fast)] hover:border-border-strong hover:text-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 focus-visible:border-foreground motion-reduce:transition-none",
           dragging && "border-foreground bg-background-muted text-foreground",
           disabled && "opacity-[var(--opacity-disabled)] cursor-not-allowed pointer-events-none",
           className,
@@ -189,7 +189,7 @@ export const FileUploadTrigger = React.forwardRef<HTMLButtonElement, FileUploadT
         type={type ?? "button"}
         disabled={disabled || rest.disabled}
         className={cn(
-          "inline-flex items-center justify-center gap-[var(--space-2)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground bg-background border border-border rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color,border-color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted hover:not-disabled:border-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed",
+          "inline-flex items-center justify-center gap-[var(--space-2)] py-[var(--space-2)] px-[var(--space-3)] text-[length:var(--text-sm)] font-medium text-foreground bg-background border border-border rounded-[calc(var(--radius)-2px)] cursor-pointer transition-[background-color,border-color] duration-[var(--duration-fast)] hover:not-disabled:bg-background-muted hover:not-disabled:border-border-strong focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed",
           className,
         )}
         onClick={(e) => {
@@ -250,7 +250,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
             <span className="text-[length:var(--text-xs)] text-foreground-muted shrink-0">{formatBytes(file.size)}</span>
             <button
               type="button"
-              className="inline-flex items-center justify-center w-6 h-6 p-0 bg-transparent border-none rounded-[calc(var(--radius)-4px)] text-foreground-muted cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] shrink-0 hover:not-disabled:text-foreground hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed motion-reduce:transition-none"
+              className="inline-flex items-center justify-center w-6 h-6 p-0 bg-transparent border-none rounded-[calc(var(--radius)-4px)] text-foreground-muted cursor-pointer transition-[color,background-color] duration-[var(--duration-fast)] shrink-0 hover:not-disabled:text-foreground hover:not-disabled:bg-background-muted focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-[var(--opacity-disabled)] disabled:cursor-not-allowed motion-reduce:transition-none"
               onClick={() => remove(index)}
               disabled={disabled}
               aria-label={`${file.name} 제거`}

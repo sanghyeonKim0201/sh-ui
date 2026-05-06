@@ -50,7 +50,7 @@
   transform: translateY(-50%) scale(1.1);
 }
 .slider__thumb:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 2px;
 }
 

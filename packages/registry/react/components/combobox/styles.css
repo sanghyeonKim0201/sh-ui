@@ -21,7 +21,7 @@
   border-color: var(--border-strong);
 }
 .sh-ui-combobox__input:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 2px;
 }
 .sh-ui-combobox__input:disabled {

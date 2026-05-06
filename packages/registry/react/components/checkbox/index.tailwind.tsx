@@ -16,7 +16,7 @@ export const Checkbox = React.forwardRef<HTMLElement, CheckboxProps>(
     <BaseCheckbox.Root
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center w-[1.125rem] h-[1.125rem] border border-border-strong rounded-[calc(var(--radius)-2px)] bg-background text-primary-foreground cursor-pointer shrink-0 transition-[background-color,border-color] duration-[var(--duration-fast)] hover:not-data-[disabled]:border-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-foreground focus-visible:outline-offset-2 data-[checked]:bg-primary data-[checked]:border-primary data-[indeterminate]:bg-primary data-[indeterminate]:border-primary data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5",
+        "inline-flex items-center justify-center w-[1.125rem] h-[1.125rem] border border-border-strong rounded-[calc(var(--radius)-2px)] bg-background text-primary-foreground cursor-pointer shrink-0 transition-[background-color,border-color] duration-[var(--duration-fast)] hover:not-data-[disabled]:border-foreground focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-primary focus-visible:outline-offset-2 data-[checked]:bg-primary data-[checked]:border-primary data-[indeterminate]:bg-primary data-[indeterminate]:border-primary data-[disabled]:opacity-[var(--opacity-disabled)] data-[disabled]:cursor-not-allowed motion-reduce:transition-none [@media(hover:none)_and_(pointer:coarse)]:w-5 [@media(hover:none)_and_(pointer:coarse)]:h-5",
         className,
       )}
       {...props}

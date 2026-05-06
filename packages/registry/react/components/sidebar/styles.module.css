@@ -163,7 +163,7 @@
   color: var(--foreground);
 }
 .sidebar__trigger:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -364,7 +364,7 @@
   color: var(--sidebar-accent-fg);
 }
 .sidebar__menu-button:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: -2px;
 }
 .sidebar__menu-button[data-active] {

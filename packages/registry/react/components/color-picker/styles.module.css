@@ -158,7 +158,7 @@
   transform: scale(1.08);
 }
 .color-picker__swatch-btn:focus-visible {
-  outline: var(--border-width-strong) solid var(--foreground);
+  outline: var(--border-width-strong) solid var(--primary);
   outline-offset: 2px;
 }
 .color-picker__swatch-btn[data-selected] {
