@@ -143,3 +143,25 @@
     --control-md: 2.75rem;
   }
 }
+
+/* WCAG AA 보장 — 사용자가 OS/브라우저에서 "고대비" 접근성 옵션 켰을 때.
+ * foreground-subtle, border, border-strong 만 강화 (다른 토큰은 이미 AA 통과). */
+@media (prefers-contrast: high) {
+  :root {
+    --foreground-subtle: #767676;
+    --border: #767676;
+    --border-strong: #595959;
+  }
+  .dark {
+    --foreground-subtle: #B3B3B3;
+    --border: #757575;
+    --border-strong: #999999;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light):not(.dark) {
+      --foreground-subtle: #B3B3B3;
+      --border: #757575;
+      --border-strong: #999999;
+    }
+  }
+}

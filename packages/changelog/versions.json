@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.2",
+      "date": "2026-05-06",
+      "title": "접근성 라운드 2 — WCAG audit + prefers-contrast: high 모드",
+      "type": "patch",
+      "highlights": [
+        "**WCAG color contrast audit 수행** — 모든 색 토큰 조합 검증. 결과: foreground / foreground-muted / primary / danger 는 모두 AA 이상 통과. **fail 발견**: foreground-subtle (light 2.52, dark 4.18) / border (1.26~1.31) / border-strong (1.48~1.91) — 모두 stark 의도라 일반 모드에서 변경 안 함 (시각 hierarchy 손실 우려).",
+        "**`prefers-contrast: high` 모드 신설** — 사용자가 OS/브라우저에서 \"고대비\" 옵션 켜면 자동 적용. 위 fail 토큰만 AA-compliant 값으로 강화: `foreground-subtle`/`border`/`border-strong` 이 4.5:1 (text) / 3:1 (UI) 이상 보장. 일반 사용자 영향 0, 접근성 사용자만 활성화.",
+        "**dark 모드 + 고대비 조합 처리** — 명시 `.dark` 클래스 + 시스템 자동 다크 (`prefers-color-scheme: dark`) 둘 다 nested `@media` 로 매칭.",
+        "**4 tokens.css 위치 + pactrack 동기화**",
+        "**design 가이드** — 일반 작업에서 \"비활성 텍스트\" 가 필요하면 `foreground-subtle` 대신 `foreground-muted` 사용 권장 (AAA 통과). subtle 은 hint/timestamp 같은 비-critical 정보 한정."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.2"
+    },
+    {
       "version": "0.59.1",
       "date": "2026-05-06",
       "title": "접근성 라운드 1 — text-wrap: balance + 모바일 터치 타겟",
