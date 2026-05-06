@@ -3,6 +3,22 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.59.0",
+      "date": "2026-05-06",
+      "title": "토큰 정책 전환 — px → rem (접근성 / 유저 글꼴 확대 반응)",
+      "type": "minor",
+      "highlights": [
+        "**dimension 토큰을 PX → REM 으로 일괄 전환** — `--space-2: 0.5rem`, `--text-sm: 0.875rem`, `--control-md: 2.5rem` 등. 1rem = 16px 가정. 사용자가 브라우저 글꼴 키울 때 컴포넌트가 비례 반응 (WCAG 1.4.4 준수). 사용자 root font-size 안 건드리면 시각적 no-op.",
+        "**PX 유지 예외** — `--border-width: 1px/2px` (1px 미만 정밀도), shadow offset (`--shadow-sm: 0 1px 2px ...`), breakpoint (`640px/768px/...`, MQ 호환성). 거의 1~2 token 한정.",
+        "**`packages/tokens/src/primitives.json` 마이그레이션** — spacing/fontSize/controlHeight 의 \"4px\" 등 dimension 값을 rem 으로 변경. build.mjs 의 dimensionToDart 가 \"0\" 도 처리.",
+        "**`inject.js` 의 spacing/typography/controls emit 함수에 toRem 헬퍼 추가** — 1rem=16px 변환 + trailing zero 제거 (0.50→0.5, 1.00→1).",
+        "**Dart (Flutter) 측은 PX 유지** — Flutter 는 logical pixel 단위라 dimension 그대로. CSS 만 rem 화.",
+        "**CLAUDE.md 규칙 v2** — \"토큰 정의부 PX 허용\" → \"토큰 정의부 REM 사용 (border/shadow 만 PX 예외)\". 향후 신규 토큰도 이 정책 따라야 함.",
+        "**기존 사용자 마이그레이션 가이드** — 기존 프로젝트의 정적 tokens.css 는 그대로 동작 (PX). REM 의 이점을 받으려면 `sh-ui add tokens` 재설치 또는 수동 마이그레이션 필요. patch release 가 아닌 minor 라 대응 시간 확보."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.59.0"
+    },
+    {
       "version": "0.58.8",
       "date": "2026-05-06",
       "title": "디자인 디폴트 개편 7라운드 — Tooltip 의 duration·shadow 를 토큰으로",

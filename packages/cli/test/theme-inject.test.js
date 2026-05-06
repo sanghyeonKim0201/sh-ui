@@ -146,20 +146,20 @@ describe('Phase 2 — 옵셔널 카테고리 빌더', () => {
   it('CSS spacing 11줄', () => {
     const block = buildCssSpacingBlock(spacing);
     expect(block.split('\n')).toHaveLength(11);
-    expect(block).toContain('--space-0: 0px;');
-    expect(block).toContain('--space-16: 64px;');
+    expect(block).toContain('--space-0: 0;');
+    expect(block).toContain('--space-16: 4rem;');
   });
 
   it('CSS typography 8줄', () => {
     const block = buildCssTypographyBlock(typography);
     expect(block.split('\n')).toHaveLength(8);
-    expect(block).toContain('--text-xs: 12px;');
-    expect(block).toContain('--text-4xl: 36px;');
+    expect(block).toContain('--text-xs: 0.75rem;');
+    expect(block).toContain('--text-4xl: 2.25rem;');
   });
 
   it('CSS weights / controls / borders / durations', () => {
     expect(buildCssWeightsBlock(weights)).toContain('--weight-regular: 400;');
-    expect(buildCssControlsBlock(controls)).toContain('--control-md: 40px;');
+    expect(buildCssControlsBlock(controls)).toContain('--control-md: 2.5rem;');
     expect(buildCssBordersBlock(borders)).toContain('--border-width: 1px;');
     expect(buildCssBordersBlock(borders)).toContain('--border-width-strong: 2px;');
     expect(buildCssDurationsBlock(durations)).toContain('--duration-fast: 120ms;');
