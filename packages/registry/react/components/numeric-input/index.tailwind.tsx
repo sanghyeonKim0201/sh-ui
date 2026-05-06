@@ -19,7 +19,7 @@ export interface NumericInputProps
 }
 
 const inputClasses =
-  "w-10 px-1 py-0.5 font-mono text-[length:var(--text-xs)] leading-tight text-right border border-transparent rounded-[calc(var(--radius)-4px)] bg-transparent text-foreground appearance-none [-moz-appearance:textfield] transition-[border-color,background-color] duration-[var(--duration-fast)] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:m-0 hover:not-disabled:not-focus:border-border focus:outline-none focus:border-foreground focus:bg-background focus-visible:outline-none focus-visible:border-foreground disabled:cursor-not-allowed disabled:opacity-[var(--opacity-disabled)]";
+  "w-10 px-1 py-0.5 font-mono text-[length:var(--text-xs)] leading-tight text-right border border-transparent rounded-[calc(var(--radius)-4px)] bg-transparent text-foreground appearance-none [-moz-appearance:textfield] transition-[border-color,background-color] duration-[var(--duration-fast)] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:m-0 hover:not-disabled:not-focus:border-border focus:outline-none focus:border-primary focus:bg-background focus-visible:outline-none focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-[var(--opacity-disabled)]";
 
 export const NumericInput = React.forwardRef<HTMLInputElement, NumericInputProps>(
   (

@@ -40,7 +40,7 @@
 .sh-ui-numeric-input__input:focus,
 .sh-ui-numeric-input__input:focus-visible {
   outline: none;
-  border-color: var(--foreground);
+  border-color: var(--primary);
   background: var(--background);
 }
 

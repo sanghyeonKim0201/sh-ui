@@ -17,7 +17,7 @@
 }
 
 .checkbox:hover:not([data-disabled]) {
-  border-color: var(--foreground);
+  border-color: var(--primary);
 }
 
 .checkbox:focus-visible {

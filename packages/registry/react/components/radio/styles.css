@@ -16,7 +16,7 @@
 }
 
 .sh-ui-radio:hover:not([data-disabled]) {
-  border-color: var(--foreground);
+  border-color: var(--primary);
 }
 
 .sh-ui-radio:focus-visible {

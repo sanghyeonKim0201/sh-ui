@@ -135,7 +135,7 @@ export function CodeEditor({
     <div
       ref={hostRef}
       className={cn(
-        "sh-ui-code-editor relative border border-border rounded-[var(--radius)] bg-background text-[0.8125rem] leading-relaxed overflow-hidden transition-[border-color] duration-[var(--duration-fast)] focus-within:border-foreground focus-within:outline-[length:var(--border-width-strong)] focus-within:outline-ring focus-within:outline-offset-2 data-[readonly]:bg-background-subtle motion-reduce:transition-none",
+        "sh-ui-code-editor relative border border-border rounded-[var(--radius)] bg-background text-[0.8125rem] leading-relaxed overflow-hidden transition-[border-color] duration-[var(--duration-fast)] focus-within:border-primary focus-within:outline-[length:var(--border-width-strong)] focus-within:outline-ring focus-within:outline-offset-2 data-[readonly]:bg-background-subtle motion-reduce:transition-none",
         className,
       )}
       data-readonly={readOnly || undefined}

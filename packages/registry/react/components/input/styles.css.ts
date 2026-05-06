@@ -25,7 +25,7 @@ export const input = style({
     "&:focus": {
       outline: "none",
       borderColor: "var(--foreground)",
-      boxShadow: "0 0 0 1px var(--foreground)",
+      boxShadow: "0 0 0 1px var(--primary)",
     },
     "&:disabled": {
       opacity: "var(--opacity-disabled)",
@@ -164,7 +164,7 @@ export const group = style({
     },
     "&:focus-within": {
       borderColor: "var(--foreground)",
-      boxShadow: "0 0 0 1px var(--foreground)",
+      boxShadow: "0 0 0 1px var(--primary)",
     },
     '&[aria-invalid="true"]': {
       borderColor: "var(--danger)",
