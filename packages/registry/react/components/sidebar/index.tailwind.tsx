@@ -340,7 +340,7 @@ export function SidebarGroupContent({ className, ...props }: React.HTMLAttribute
 }
 
 export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
-  return <ul className={cn("list-none m-0 p-0 flex flex-col min-w-0 gap-0", className)} {...props} />;
+  return <ul className={cn("list-none m-0 p-0 flex flex-col min-w-0 gap-0.5", className)} {...props} />;
 }
 
 export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
