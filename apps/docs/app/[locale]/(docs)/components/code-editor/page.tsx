@@ -17,6 +17,9 @@ export default function CodeEditorPage() {
         CodeMirror 6 기반 인라인 코드 에디터. <code>basicSetup</code>의 신택스 하이라이팅·자동
         들여쓰기·괄호 매칭을 그대로 쓰고, 컬러·여백은 sh-ui 토큰으로 매핑돼 다크 모드까지 자동 추종.
       </p>
+      <p style={{ fontSize: "var(--text-xs)", color: "var(--foreground-subtle)" }}>
+        <strong>플랫폼:</strong> React 전용 — CodeMirror 6 의 Flutter 등가물 부재로 위젯은 제공하지 않는다.
+      </p>
 
       <Preview>
         <Preview.Demo>

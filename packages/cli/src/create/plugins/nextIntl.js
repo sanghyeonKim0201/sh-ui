@@ -37,18 +37,103 @@ export const nextIntlPlugin = {
 
   turboEnvVars: [],
 
-  // ─── 공유 파일 조각 (providers 합성용) ───
-
-  providerImports: [
-    `import { NextIntlClientProvider } from 'next-intl';`,
-  ],
-  providerWrappers: ['NextIntlClientProvider'],
+  // ─── providers 합성 ───
+  //
+  // NextIntlClientProvider 는 GlobalProvider 가 아니라 RootLayout 에서 직접 wrap 한다.
+  // 이유: RootLayout 만이 검증된 `locale: string` 을 가지므로 `<NextIntlClientProvider
+  // locale={locale}>` 처럼 prop 을 명시할 수 있다. GlobalProvider 단에서 wrap 하면
+  // locale 을 prop drilling 해야 해서 깔끔하지 않다. 대신 RootLayout 의 content
+  // (아래 transforms 의 replace) 가 NextIntlClientProvider 를 직접 import + wrap.
 
   // ─── 라우트 구조 변환 ───
 
   transforms: (arch) => [
     { type: 'move', from: 'app/page.tsx', to: 'app/[locale]/page.tsx' },
     { type: 'move', from: 'app/error.tsx', to: 'app/[locale]/error.tsx' },
+    // sentry 가 emit 한 error.tsx 를 i18n-aware 버전으로 교체.
+    // sentry 비활성이면 위 move 가 no-op 이라 [locale]/error.tsx 가 없고 이 replace 도 no-op.
+    {
+      type: 'replace',
+      path: 'app/[locale]/error.tsx',
+      contentFn: () => `'use client';
+
+import * as Sentry from '@sentry/nextjs';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
+
+import { Link } from '${arch.aliases.config}/i18n/navigation';
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  const t = useTranslations('error');
+
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
+  return (
+    <div className='flex min-h-screen items-center justify-center px-4'>
+      <div className='border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-lg'>
+        <div className='mb-4 flex justify-center'>
+          <div className='bg-danger/10 flex h-16 w-16 items-center justify-center rounded-full'>
+            <AlertTriangle className='text-danger h-8 w-8' />
+          </div>
+        </div>
+
+        <h2 className='text-foreground mb-2 text-center text-2xl font-bold'>
+          {t('title')}
+        </h2>
+        <p className='text-foreground-muted mb-6 text-center text-sm'>
+          {t('description')}
+        </p>
+
+        <div className='border-danger/30 bg-danger/5 rounded-md border p-3'>
+          <p className='text-danger text-sm'>
+            {error.message || t('unexpectedError')}
+          </p>
+        </div>
+
+        <div className='mt-6 space-y-3'>
+          <button
+            onClick={reset}
+            className='bg-primary text-primary-foreground hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium'
+          >
+            <RefreshCw className='h-4 w-4' />
+            {t('button.tryAgain')}
+          </button>
+
+          <Link
+            href='/'
+            className='border-border text-foreground hover:bg-background-muted flex w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium'
+          >
+            <Home className='h-4 w-4' />
+            {t('button.goHome')}
+          </Link>
+        </div>
+
+        {process.env.NODE_ENV === 'development' && error.digest && (
+          <div className='bg-background-subtle mt-4 rounded-md p-3'>
+            <p className='text-foreground-subtle text-xs'>
+              Error ID: {error.digest}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+`,
+    },
+    // auth-jwt 플러그인이 함께 활성화돼 있으면 sign-in 도 locale prefix 안으로 이동.
+    // auth-jwt 단독일 때 (= 이 transform 이 없을 때) 는 app/sign-in 이 그대로 root 에 남는다.
+    // `move` 트랜스폼은 from 파일이 없으면 silently skip 이라 auth-jwt 미활성 시 안전한 no-op.
+    { type: 'move', from: 'app/sign-in/page.tsx', to: 'app/[locale]/sign-in/page.tsx' },
     {
       // Next 16 부터 root layout (app/layout.tsx) 은 반드시 <html>/<body> 를 가져야 한다.
       // next-intl 적용 시에는 [locale] 가 root 역할을 맡으므로, 기본 app/layout.tsx 를 그대로
@@ -83,18 +168,19 @@ export const nextIntlPlugin = {
 import { RootLayout } from '${arch.aliases.layouts}/RootLayout';
 
 export const metadata: Metadata = {
-  title: 'My App',
-  description: 'My App Description',
+  title: 'sh-ui app',
+  description: 'sh-ui 기반 앱 — metadata 를 변경하세요.',
 };
 
-export default function Layout({
+export default async function Layout({
   children,
   params,
 }: Readonly<{
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
-  return <RootLayout params={params}>{children}</RootLayout>;
+  const { locale } = await params;
+  return <RootLayout locale={locale}>{children}</RootLayout>;
 }
 `;
         return sideEffectImports ? `${sideEffectImports}\n\n${body}` : body;
@@ -103,20 +189,26 @@ export default function Layout({
     {
       type: 'replace',
       path: `${arch.paths.layouts}/RootLayout.tsx`,
-      content: `import { hasLocale } from 'next-intl';
+      content: `import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { GlobalProvider } from '${arch.aliases.providers}';
 import { routing } from '${arch.aliases.config}/i18n/routing';
 
-export async function RootLayout({
+/**
+ * 루트 셸 — html/body + 전역 Provider. 로케일 검증은 여기서 한 번만.
+ * 호출자([locale]/layout.tsx) 가 이미 \`await params\` 로 string 을 풀어 넘긴다.
+ *
+ * NextIntlClientProvider 는 GlobalProvider 바깥(html 안쪽) 에서 \`locale\` prop 과
+ * 함께 직접 wrap. 자동 detect 로 두면 client 컴포넌트에서 useLocale() 결과가
+ * RSC 컨텍스트와 어긋날 수 있어 명시적으로 전달한다.
+ */
+export function RootLayout({
   children,
-  params,
+  locale,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  locale: string;
 }) {
-  const { locale } = await params;
-
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
@@ -124,7 +216,9 @@ export async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body>
-        <GlobalProvider>{children}</GlobalProvider>
+        <NextIntlClientProvider locale={locale}>
+          <GlobalProvider>{children}</GlobalProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
@@ -240,6 +334,58 @@ export default intl;
 export const config = {
   matcher: '/((?!api|trpc|_next|_vercel|monitoring|.*\\\\..*).*)',
 };
+`,
+
+    // ─── i18n-aware formatter hooks ───
+    //
+    // base 템플릿의 \`formatDate\` / \`formatPrice\` util 은 default 'ko-KR' / 'KRW'.
+    // next-intl 활성 시엔 hook 으로 현재 locale 자동 추적.
+
+    [`${arch.paths.hooks}/useFormatDate.ts`]: `'use client';
+
+import { useCallback } from 'react';
+import { useLocale } from 'next-intl';
+
+import {
+  formatDate as formatDateUtil,
+  formatDateTime as formatDateTimeUtil,
+} from '${arch.aliases.utils}/formatDate';
+
+/**
+ * 현재 locale 을 자동으로 따르는 날짜 포맷 hook.
+ * 'use client' 필요 — RSC 에선 \`getLocale()\` 로 직접 util 호출.
+ */
+export function useFormatDate() {
+  const locale = useLocale();
+  return useCallback((date: Date) => formatDateUtil(date, locale), [locale]);
+}
+
+export function useFormatDateTime() {
+  const locale = useLocale();
+  return useCallback((date: Date) => formatDateTimeUtil(date, locale), [locale]);
+}
+`,
+
+    [`${arch.paths.hooks}/useFormatPrice.ts`]: `'use client';
+
+import { useCallback } from 'react';
+import { useLocale } from 'next-intl';
+
+import { formatPrice as formatPriceUtil } from '${arch.aliases.utils}/formatPrice';
+
+/**
+ * 현재 locale 을 자동으로 따르는 통화 포맷 hook.
+ * currency 는 비즈니스 의존이라 인자로 받음 — 사용처에서 명시.
+ *
+ * 예: const fp = useFormatPrice('USD'); fp(99.5) → "$99.50" (locale 'en-US' 시)
+ */
+export function useFormatPrice(currency = 'KRW') {
+  const locale = useLocale();
+  return useCallback(
+    (amount: number) => formatPriceUtil(amount, locale, currency),
+    [locale, currency],
+  );
+}
 `,
   }),
 };

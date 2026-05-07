@@ -13,6 +13,9 @@ export default function PageTOCDocsPage() {
         렌더한다. 자동 slugify · id 부여, IntersectionObserver 로 현재 보이는 섹션을 active 표시,
         클릭 시 smooth scroll. 라우터 비종속 — Next.js / React Router / no-router 모두 지원.
       </p>
+      <p style={{ fontSize: "var(--text-xs)", color: "var(--foreground-subtle)" }}>
+        <strong>플랫폼:</strong> React 전용 — 웹 DOM (heading id, IntersectionObserver) 의존.
+      </p>
 
       <h2>Installation</h2>
 

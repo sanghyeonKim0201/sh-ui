@@ -5,6 +5,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '.'),
+      '@workspace/ui-app-name': path.resolve(
+        __dirname,
+        '../../packages/ui/ui-apps/ui-app-name/src',
+      ),
     },
   },
   test: {

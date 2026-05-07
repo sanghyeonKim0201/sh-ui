@@ -27,7 +27,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
   --arch <${ARCHES_LIST}>                  프로젝트 아키텍처 — 폴더 구조/import alias 컨벤션. next 에서 사용 가능: ${NEXT_ARCHES}. 기본 fsd
   --plugins <a,b>                    플러그인 (${PLUGINS_LIST}). 미지정/"" → 없음
   --theme <preset|base64>            프리셋 이름(${THEME_PRESETS_LIST}) 또는 playground base64. 선택
-  --css <${CSS_FRAMEWORKS_SUPPORTED.join('|')}>                        CSS 프레임워크 (현재 plain만 지원, 향후 tailwind 등 추가 예정)
+  --css <${CSS_FRAMEWORKS_SUPPORTED.join('|')}>                        CSS 프레임워크. base 파일까지 분기 emit (tailwind/plain/css-modules)
   --yes                              디렉토리 덮어쓰기 + 모노레포 기본값 자동 채택
   --dry-run                          파일을 쓰지 않고 작성될 파일 목록만 출력
   -h, --help                         이 도움말

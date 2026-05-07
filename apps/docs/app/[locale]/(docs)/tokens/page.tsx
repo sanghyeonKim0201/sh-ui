@@ -13,28 +13,28 @@ export default function TokensPage() {
   ];
 
   const spacing = [
-    { name: "space-0", px: 0 },
-    { name: "space-1", px: 4 },
-    { name: "space-2", px: 8 },
-    { name: "space-3", px: 12 },
-    { name: "space-4", px: 16 },
-    { name: "space-5", px: 20 },
-    { name: "space-6", px: 24 },
-    { name: "space-8", px: 32 },
-    { name: "space-10", px: 40 },
-    { name: "space-12", px: 48 },
-    { name: "space-16", px: 64 },
+    { name: "space-0", rem: "0",       px: 0 },
+    { name: "space-1", rem: "0.25rem", px: 4 },
+    { name: "space-2", rem: "0.5rem",  px: 8 },
+    { name: "space-3", rem: "0.75rem", px: 12 },
+    { name: "space-4", rem: "1rem",    px: 16 },
+    { name: "space-5", rem: "1.25rem", px: 20 },
+    { name: "space-6", rem: "1.5rem",  px: 24 },
+    { name: "space-8", rem: "2rem",    px: 32 },
+    { name: "space-10", rem: "2.5rem", px: 40 },
+    { name: "space-12", rem: "3rem",   px: 48 },
+    { name: "space-16", rem: "4rem",   px: 64 },
   ];
 
   const text = [
-    { name: "text-xs", px: 12 },
-    { name: "text-sm", px: 14 },
-    { name: "text-base", px: 16 },
-    { name: "text-lg", px: 18 },
-    { name: "text-xl", px: 20 },
-    { name: "text-2xl", px: 24 },
-    { name: "text-3xl", px: 30 },
-    { name: "text-4xl", px: 36 },
+    { name: "text-xs",   rem: "0.75rem",  px: 12 },
+    { name: "text-sm",   rem: "0.875rem", px: 14 },
+    { name: "text-base", rem: "1rem",     px: 16 },
+    { name: "text-lg",   rem: "1.125rem", px: 18 },
+    { name: "text-xl",   rem: "1.25rem",  px: 20 },
+    { name: "text-2xl",  rem: "1.5rem",   px: 24 },
+    { name: "text-3xl",  rem: "1.875rem", px: 30 },
+    { name: "text-4xl",  rem: "2.25rem",  px: 36 },
   ];
 
   const weights = [
@@ -49,6 +49,7 @@ export default function TokensPage() {
     { name: "shadow-md" },
     { name: "shadow-lg" },
     { name: "shadow-xl" },
+    { name: "shadow-menu" },
   ];
 
   const durations = [
@@ -63,9 +64,9 @@ export default function TokensPage() {
   ];
 
   const control = [
-    { name: "control-sm", px: 32 },
-    { name: "control-md", px: 40 },
-    { name: "control-lg", px: 48 },
+    { name: "control-sm", rem: "2rem",   px: 32 },
+    { name: "control-md", rem: "2.5rem", px: 40 },
+    { name: "control-lg", rem: "3rem",   px: 48 },
   ];
 
   const borderWidth = [
@@ -140,15 +141,16 @@ export default function TokensPage() {
 
       <h3>Spacing</h3>
       <p className="muted">
-        4px 기반 Tailwind 호환 스케일. padding / margin / gap / inset에 사용.
+        Tailwind 호환 스케일. padding / margin / gap / inset 에 사용. v0.59.0 부터 <strong>rem</strong> 단위로
+        정의되어 사용자 브라우저 글꼴 확대(접근성 / 시력 보조)에 비례 반응한다 — 옆의 px 값은 root font-size = 16px 기준 환산값.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)", margin: "var(--space-4) 0" }}>
-        {spacing.map(({ name, px }) => (
+        {spacing.map(({ name, rem, px }) => (
           <div
             key={name}
             style={{
               display: "grid",
-              gridTemplateColumns: "180px 80px 1fr",
+              gridTemplateColumns: "180px 140px 1fr",
               alignItems: "center",
               gap: "var(--space-3)",
               padding: "var(--space-2) var(--space-3)",
@@ -157,7 +159,9 @@ export default function TokensPage() {
             }}
           >
             <code style={{ fontSize: "var(--text-xs)" }}>--{name}</code>
-            <span style={{ fontSize: "var(--text-xs)", color: "var(--foreground-muted)" }}>{px}px</span>
+            <span style={{ fontSize: "var(--text-xs)", color: "var(--foreground-muted)", fontVariantNumeric: "tabular-nums" }}>
+              {rem} · {px}px
+            </span>
             <span
               style={{
                 display: "inline-block",
@@ -172,14 +176,17 @@ export default function TokensPage() {
       </div>
 
       <h3>Typography</h3>
-      <p className="muted">폰트 크기 스케일. CSS에서는 <code>font-size</code>, Flutter는 <code>shUi.text.*</code>.</p>
+      <p className="muted">
+        폰트 크기 스케일. CSS 에서는 <code>font-size</code>, Flutter 는 <code>shUi.text.*</code>. 본문 토큰은 rem 으로
+        정의되어 사용자 글꼴 설정을 그대로 따른다 (WCAG 1.4.4).
+      </p>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-1)", margin: "var(--space-4) 0" }}>
-        {text.map(({ name, px }) => (
+        {text.map(({ name, rem, px }) => (
           <div
             key={name}
             style={{
               display: "grid",
-              gridTemplateColumns: "180px 80px 1fr",
+              gridTemplateColumns: "180px 140px 1fr",
               alignItems: "center",
               gap: "var(--space-3)",
               padding: "var(--space-2) var(--space-3)",
@@ -188,7 +195,9 @@ export default function TokensPage() {
             }}
           >
             <code style={{ fontSize: "var(--text-xs)" }}>--{name}</code>
-            <span style={{ fontSize: "var(--text-xs)", color: "var(--foreground-muted)" }}>{px}px</span>
+            <span style={{ fontSize: "var(--text-xs)", color: "var(--foreground-muted)", fontVariantNumeric: "tabular-nums" }}>
+              {rem} · {px}px
+            </span>
             <span style={{ fontSize: `var(--${name})`, lineHeight: 1 }}>Aa 다람쥐</span>
           </div>
         ))}
@@ -217,7 +226,9 @@ export default function TokensPage() {
       </div>
 
       <h3>Shadow</h3>
-      <p className="muted">카드 / 팝업 / 모달 레벨별 그림자.</p>
+      <p className="muted">
+        카드 / 팝업 / 모달 레벨별 그림자. <code>shadow-menu</code> 는 dropdown / select / context-menu 전용 다층 그림자 (v0.59.7+).
+      </p>
       <div
         style={{
           display: "grid",
@@ -331,14 +342,14 @@ export default function TokensPage() {
 
       <h3>Control height</h3>
       <p className="muted">
-        Button / Input / Select 등 폼 컨트롤의 높이 스케일. Flutter는 <code>shUi.control.*</code>.
+        Button / Input / Select 등 폼 컨트롤의 높이 스케일. Flutter 는 <code>shUi.control.*</code>.
       </p>
       <div style={{ display: "flex", alignItems: "flex-end", gap: "var(--space-4)", margin: "var(--space-4) 0" }}>
-        {control.map(({ name, px }) => (
+        {control.map(({ name, rem, px }) => (
           <div key={name} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-2)" }}>
             <div
               style={{
-                height: px,
+                height: `var(--${name})`,
                 padding: "0 var(--space-4)",
                 display: "flex",
                 alignItems: "center",
@@ -352,7 +363,9 @@ export default function TokensPage() {
               Button
             </div>
             <code style={{ fontSize: "var(--text-xs)" }}>--{name}</code>
-            <span style={{ fontSize: "var(--text-xs)", color: "var(--foreground-muted)" }}>{px}px</span>
+            <span style={{ fontSize: "var(--text-xs)", color: "var(--foreground-muted)", fontVariantNumeric: "tabular-nums" }}>
+              {rem} · {px}px
+            </span>
           </div>
         ))}
       </div>
@@ -461,14 +474,15 @@ export default function TokensPage() {
   --foreground: #0A0A0A;
   --primary: #171717;
   --radius: 0.5rem;
-  --space-4: 16px;
-  --text-sm: 14px;
+  --space-4: 1rem;            /* dimension 토큰은 rem (v0.59.0+) */
+  --text-sm: 0.875rem;
   --weight-medium: 500;
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-menu: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   --duration-fast: 120ms;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --control-md: 40px;
-  --border-width: 1px;
+  --control-md: 2.5rem;
+  --border-width: 1px;        /* 1px 미만 정밀도가 의미 있는 값은 px 유지 */
   --opacity-disabled: 0.5;
   --z-modal: 400;
   /* ... */

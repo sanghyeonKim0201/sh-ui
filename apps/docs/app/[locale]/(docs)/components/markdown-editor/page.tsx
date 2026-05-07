@@ -17,6 +17,9 @@ export default function MarkdownEditorPage() {
         라이브 프리뷰를 얹은 합성 컴포넌트. GFM(테이블·체크리스트·strikethrough)을 지원하고,
         raw HTML 은 기본적으로 차단되어 사용자 입력으로부터의 XSS 가 자동 방어된다.
       </p>
+      <p style={{ fontSize: "var(--text-xs)", color: "var(--foreground-subtle)" }}>
+        <strong>플랫폼:</strong> React 전용 — CodeEditor / react-markdown 의존 (Flutter 미지원).
+      </p>
 
       <Preview>
         <Preview.Demo>

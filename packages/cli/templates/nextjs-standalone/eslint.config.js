@@ -3,13 +3,11 @@ import pluginNext from "@next/eslint-plugin-next"
 import eslintConfigPrettier from "eslint-config-prettier"
 import boundaries from "eslint-plugin-boundaries"
 import checkFile from "eslint-plugin-check-file"
-import importX from "eslint-plugin-import-x"
 import onlyWarn from "eslint-plugin-only-warn"
 import pluginReact from "eslint-plugin-react"
 import pluginReactHooks from "eslint-plugin-react-hooks"
 import globals from "globals"
 import tseslint from "typescript-eslint"
-import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 export default [
   {
@@ -146,17 +144,4 @@ export default [
     },
   },
 
-  // ── import-x ──
-  {
-    plugins: { "import-x": importX },
-    settings: {
-      "import-x/resolver-next": [
-        createTypeScriptImportResolver({ alwaysTryTypes: true }),
-      ],
-    },
-    rules: {
-      "import-x/order": "off",
-      "import-x/no-unresolved": "off",
-    },
-  },
 ]

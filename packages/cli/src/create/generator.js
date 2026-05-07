@@ -1,8 +1,76 @@
 import { input, select, checkbox, confirm } from '@inquirer/prompts';
 import { execSync } from 'node:child_process';
-import fs from 'fs-extra';
+import * as fsp from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+
+/**
+ * Node native fs/promises 위에 얹은 fs-extra 호환 슬림 어댑터.
+ *
+ * 왜 직접 어댑터를 두는가:
+ *   1. fs-extra v11 이 long-running 프로세스(MCP daemon) 에서 internal state 를
+ *      누적시켜 directory filter / recursive copy 가 부분 실패하는 회귀가 보고됨.
+ *      Node 24 의 native `fs.cp` 는 그런 모듈 단위 캐시가 없어 안전.
+ *   2. 의존성 1개 제거 — 부트 시간/번들 크기 이득.
+ *
+ * 의도적으로 fs-extra 의 API 표면 일부만 재현 — 사용처(generator.js) 에서 쓰는 메서드만.
+ * `move` 는 cross-device 시 `rename` 이 EXDEV 를 던지므로 copy+remove fallback 포함.
+ */
+const fs = {
+  ...fsp,
+  /** 파일/디렉토리 존재 여부 — fs-extra `pathExists` 동등. */
+  pathExists: async (p) => {
+    try {
+      await fsp.access(p);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  /** JSON 파일 읽기 — fs-extra `readJson` 동등. */
+  readJson: async (p) => JSON.parse(await fsp.readFile(p, 'utf-8')),
+  /** JSON 파일 쓰기 — fs-extra `writeJson` 동등 (`spaces` 만 지원). */
+  writeJson: async (p, obj, opts = {}) => {
+    const indent = opts.spaces ?? 2;
+    await fsp.writeFile(p, JSON.stringify(obj, null, indent) + '\n');
+  },
+  /** 재귀 삭제 — fs-extra `remove` 동등. 없으면 무시. */
+  remove: async (p) => fsp.rm(p, { recursive: true, force: true }),
+  /** 디렉토리 보장 (mkdir -p) — fs-extra `ensureDir` 동등. */
+  ensureDir: async (p) => fsp.mkdir(p, { recursive: true }),
+  /**
+   * 재귀 복사 — fs-extra `copy` 의 핵심 옵션 (`filter`, `overwrite`) 만 지원.
+   * Node `fs.cp` 의 `force/errorOnExist` 조합으로 fs-extra 의 `overwrite` 시맨틱 재현:
+   *   - overwrite: true  → force=true  (기존 파일 덮어씀)
+   *   - overwrite: false → force=false + errorOnExist=false (기존 파일 스킵, 충돌 throw 없음)
+   */
+  copy: async (src, dest, opts = {}) => {
+    const overwrite = opts.overwrite ?? false;
+    return fsp.cp(src, dest, {
+      recursive: true,
+      filter: opts.filter,
+      force: overwrite,
+      errorOnExist: false,
+    });
+  },
+  /**
+   * 이동 — fs-extra `move` 동등. 같은 파일시스템이면 `rename`, cross-device 면 copy+remove.
+   * `overwrite: true` 시 기존 dest 를 먼저 제거.
+   */
+  move: async (src, dest, opts = {}) => {
+    if (opts.overwrite) {
+      await fsp.rm(dest, { recursive: true, force: true });
+    }
+    try {
+      await fsp.rename(src, dest);
+    } catch (e) {
+      if (e.code !== 'EXDEV') throw e;
+      // cross-device — fallback: copy + remove src.
+      await fsp.cp(src, dest, { recursive: true, force: true, errorOnExist: false });
+      await fsp.rm(src, { recursive: true, force: true });
+    }
+  },
+};
 import { getPluginChoices, getPluginsByNames } from './plugins/index.js';
 import {
   assertArchPlatformCompat,
@@ -47,15 +115,19 @@ const TEMPLATES_DIR = getTemplatesRoot();
 
 /**
  * 템플릿 복사 직후 sh-ui.config.json 의 cssFramework 필드를 갱신.
- * 템플릿엔 이미 기본값이 박혀 있지만, 사용자가 --css 로 다른 값을 지정한
- * 경우 그 값으로 덮어쓴다. 1단계는 plain 만 지원하므로 사실상 idempotent
- * 이지만 2단계 emitter 가 추가되면 이 한 호출만으로 곧바로 동작.
+ *
+ * Flutter 는 cssFramework 가 의미 없으므로 platform=flutter 면 필드 자체를 안 쓴다.
+ * Next.js 는 plain/tailwind/css-modules 따라 컴포넌트 변종 결정 + base 파일도 분기 emit.
  */
 async function patchShUiConfig(configPath, cssFramework) {
-  const fw = cssFramework ?? CSS_FRAMEWORK_DEFAULT;
   if (!(await fs.pathExists(configPath))) return;
   const config = await fs.readJson(configPath);
-  config.cssFramework = fw;
+  // Flutter 는 cssFramework 무관 — 필드 자체를 두지 않는다.
+  if (config.platform === 'flutter') {
+    delete config.cssFramework;
+  } else {
+    config.cssFramework = cssFramework ?? CSS_FRAMEWORK_DEFAULT;
+  }
   await fs.writeJson(configPath, config, { spaces: 2 });
 }
 
@@ -384,11 +456,13 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-standalone'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
   });
+  await ensureArchCleanup(targetDir);
   await fs.copy(
     path.join(TEMPLATES_DIR, 'nextjs-standalone', '_arch', arch.name),
     targetDir,
     { overwrite: true },
   );
+  await assertArchOverlayApplied(targetDir, arch);
 
   // Update package.json
   const pkgPath = path.join(targetDir, 'package.json');
@@ -402,6 +476,9 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
       Object.assign(pkg.devDependencies, plugin.devDependencies);
     }
   }
+  // 플러그인 deps 가 알파벳 정렬을 깨므로 마지막에 정렬해서 일관된 출력 보장.
+  if (pkg.dependencies) pkg.dependencies = sortObjectKeys(pkg.dependencies);
+  if (pkg.devDependencies) pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
   await writeNextConfig(targetDir, plugins, { isMonorepo: false, arch });
@@ -409,6 +486,7 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await writePluginFiles(targetDir, plugins, arch);
   await composeProviders(targetDir, plugins, arch);
   await applyTransforms(targetDir, plugins, arch);
+  await applyCssFrameworkVariant(targetDir, css, { isMonorepo: false, plugins, arch });
   await injectCssTheme(targetDir, theme);
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css);
 }
@@ -444,24 +522,27 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   });
 
   const appsDir = path.join(targetDir, 'apps', appName);
-  await generateApp(appsDir, appName, port, plugins, arch);
+  await generateApp(appsDir, appName, port, plugins, arch, css);
+  // generateApp 이 ui-{app} 패키지의 cssFramework 변종까지 처리. 여기선 theme + sh-ui.config.json 만.
   const uiAppDir = path.join(targetDir, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
   await injectCssTheme(uiAppDir, theme);
   await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css);
 }
 
-async function generateApp(targetDir, appName, port, plugins, arch) {
+async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailwind') {
   // 베이스 템플릿 (arch-neutral 파일들) 만 카피 — _arch/ 디렉토리는 스킵.
   // 그 후 선택된 arch 의 오버레이를 위에 머지해 arch-coupled 파일들 (layout.tsx,
   // src/ 또는 lib+components/, tsconfig.json paths 블록 등) 을 떨어뜨린다.
   await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-app'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
   });
+  await ensureArchCleanup(targetDir);
   await fs.copy(
     path.join(TEMPLATES_DIR, 'nextjs-app', '_arch', arch.name),
     targetDir,
     { overwrite: true },
   );
+  await assertArchOverlayApplied(targetDir, arch);
 
   // Replace ui-app-name placeholder with actual app name in all files
   await replaceInAllFiles(targetDir, 'ui-app-name', `ui-${appName}`);
@@ -480,6 +561,8 @@ async function generateApp(targetDir, appName, port, plugins, arch) {
       Object.assign(pkg.devDependencies, plugin.devDependencies);
     }
   }
+  if (pkg.dependencies) pkg.dependencies = sortObjectKeys(pkg.dependencies);
+  if (pkg.devDependencies) pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
   await writeNextConfig(targetDir, plugins, { isMonorepo: true, appName, arch });
@@ -506,9 +589,617 @@ async function generateApp(targetDir, appName, port, plugins, arch) {
   await writePluginFiles(targetDir, plugins, arch);
   await composeProviders(targetDir, plugins, arch);
   await applyTransforms(targetDir, plugins, arch);
+  // monorepo 의 cssFramework 변종은 web app 디렉토리 + ui-app 패키지 디렉토리 양쪽에 적용.
+  await applyCssFrameworkVariant(targetDir, css, { isMonorepo: true, plugins, arch });
+  if (await fs.pathExists(uiPkgDir)) {
+    await applyCssFrameworkVariant(uiPkgDir, css, { isMonorepo: true, plugins, arch, isUiPackage: true });
+  }
+}
+
+/**
+ * 베이스 템플릿 카피 직후 `_arch/` 잔여 정리.
+ *
+ * `fs.copy` 의 `filter` 가 어떤 환경(특히 long-running MCP daemon — fs-extra v11
+ * 내부 캐시가 누적될 때) 에서 디렉토리 제외에 실패해 `_arch/{flat,fsd}/...` 가
+ * 그대로 사용자 프로젝트에 들어가는 회귀가 보고됐다. 베이스 카피 직후 이 헬퍼가
+ * 명시적으로 `_arch/` 를 제거해 필터 실패와 무관하게 항상 깨끗한 상태를 보장한다.
+ *
+ * 정상 케이스에서는 no-op (디렉토리가 이미 없으므로).
+ */
+async function ensureArchCleanup(targetDir) {
+  const archDir = path.join(targetDir, '_arch');
+  if (await fs.pathExists(archDir)) {
+    await fs.remove(archDir);
+  }
+}
+
+/**
+ * arch 오버레이 카피 직후 핵심 파일이 떨어졌는지 검증.
+ *
+ * 오버레이가 부분적으로만 동작하는 회귀(같은 fs-extra 회귀와 짝을 이뤄
+ * 두 번째 `fs.copy` 가 src/{app,entities,...} 를 빠뜨리는 케이스) 가 발생하면
+ * 곧바로 알아챌 수 있도록 sentinel 파일 존재 검사. 실패하면 명확한 메시지로
+ * throw — 한참 뒤 plugin transform 의 ENOENT 로 노출되는 것보다 진단이 쉽다.
+ */
+async function assertArchOverlayApplied(targetDir, arch) {
+  const sentinel = `${arch.paths.layouts}/RootLayout.tsx`;
+  const sentinelPath = path.join(targetDir, sentinel);
+  if (!(await fs.pathExists(sentinelPath))) {
+    throw new Error(
+      `arch 오버레이 누락: ${arch.name} 의 sentinel 파일(${sentinel}) 이 ${targetDir} 에 없습니다. ` +
+      `오버레이 카피가 정상적으로 동작하지 않은 것으로 보입니다. ` +
+      `(MCP daemon 환경이라면 daemon 재시작 후 재시도 — long-running fs-extra 인스턴스의 internal state 회귀 의심.)`
+    );
+  }
 }
 
 // ─── Helpers ───
+
+/**
+ * 객체의 key 를 알파벳 순으로 정렬한 새 객체 반환. package.json deps 같이 사용자가
+ * 자주 보는 필드의 일관된 출력에 사용.
+ */
+function sortObjectKeys(obj) {
+  return Object.fromEntries(Object.entries(obj).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+/**
+ * cssFramework 별 base 파일 변환.
+ *
+ * 베이스 템플릿은 'tailwind' 기준으로 emit 되어 있다 (글로벌 css, postcss config,
+ * package.json deps, page.tsx, error.tsx 등 모두 Tailwind 가정). cssFramework 가
+ * 'plain' 또는 'css-modules' 면 이 함수가 후처리로 Tailwind 의존성을 제거하고
+ * inline-style / .module.css 변종으로 교체한다.
+ *
+ * 'tailwind' 일 때는 no-op (현재 기본값).
+ */
+async function applyCssFrameworkVariant(targetDir, cssFramework, { isMonorepo, plugins, arch, isUiPackage = false } = {}) {
+  if (cssFramework === 'tailwind') return;
+  if (cssFramework !== 'plain' && cssFramework !== 'css-modules') return;
+
+  // 1) package.json — Tailwind deps 제거.
+  const pkgPath = path.join(targetDir, 'package.json');
+  if (await fs.pathExists(pkgPath)) {
+    const pkg = await fs.readJson(pkgPath);
+    const TAILWIND_DEPS = ['tailwindcss', '@tailwindcss/postcss', 'prettier-plugin-tailwindcss'];
+    let changed = false;
+    for (const key of TAILWIND_DEPS) {
+      if (pkg.dependencies && key in pkg.dependencies) {
+        delete pkg.dependencies[key];
+        changed = true;
+      }
+      if (pkg.devDependencies && key in pkg.devDependencies) {
+        delete pkg.devDependencies[key];
+        changed = true;
+      }
+    }
+    if (changed) await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+  }
+
+  // 2) postcss.config.mjs — Tailwind plugin 제거. plain/cssmodules 둘 다 비움.
+  // (Next.js 가 css-modules 는 자동 처리)
+  const postcssPath = path.join(targetDir, 'postcss.config.mjs');
+  if (await fs.pathExists(postcssPath)) {
+    if (isUiPackage) {
+      // ui 패키지의 postcss.config.mjs 는 host app 의 것을 re-export — 비워두면 안 됨.
+      // 비-tailwind 일 땐 빈 plugins 객체로 교체.
+      await fs.writeFile(postcssPath, `const config = {\n  plugins: {},\n};\n\nexport default config;\n`);
+    } else {
+      await fs.writeFile(postcssPath, `const config = {\n  plugins: {},\n};\n\nexport default config;\n`);
+    }
+  }
+
+  // 3) globals.css — Tailwind import + @theme inline 제거. 토큰 import + 기본 reset 만.
+  const globalsCandidates = [
+    path.join(targetDir, 'app/globals.css'),
+    path.join(targetDir, 'src/styles/globals.css'),
+  ];
+  for (const globals of globalsCandidates) {
+    if (await fs.pathExists(globals)) {
+      // tokens.css 위치 결정 — globals.css 와 같은 directory 내 또는 인접.
+      // standalone fsd: app/globals.css 와 src/shared/styles/tokens.css → '../src/shared/styles/tokens.css'
+      // standalone flat: app/globals.css 와 lib/styles/tokens.css → '../lib/styles/tokens.css'
+      // ui-app-template (monorepo ui pkg): src/styles/globals.css ↔ src/styles/tokens.css → './tokens.css'
+      // 기존 globals.css 의 import 줄을 보존해 그대로 사용 (이미 정확한 상대경로).
+      const existing = await fs.readFile(globals, 'utf-8');
+      const tokenImport = existing
+        .split('\n')
+        .find((l) => /@import\s+['"][^'"]+tokens\.css['"]/.test(l));
+      const newContent = `${tokenImport ?? "@import './tokens.css';"}
+
+/* Plain CSS — Tailwind 미사용. tokens.css 의 변수만 노출. */
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+`;
+      await fs.writeFile(globals, newContent);
+    }
+  }
+
+  // 4) ui 패키지면 여기까지. host app 의 page/error 변환은 host 디렉토리에서만.
+  if (isUiPackage) return;
+
+  // 5) page.tsx — Tailwind 클래스 → inline-style (plain) 또는 .module.css (cssmodules).
+  // 위치는 plugin 활성 여부에 따라 달라짐.
+  const intlActive = plugins?.some((p) => p.name === 'next-intl');
+  const pageCandidates = intlActive
+    ? [path.join(targetDir, 'app/[locale]/page.tsx')]
+    : [path.join(targetDir, 'app/page.tsx')];
+
+  for (const pagePath of pageCandidates) {
+    if (!(await fs.pathExists(pagePath))) continue;
+    if (cssFramework === 'plain') {
+      await fs.writeFile(pagePath, `export default function Home() {
+  return (
+    <main
+      style={{
+        display: 'flex',
+        minHeight: '100vh',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <h1 style={{ fontSize: '2.25rem', fontWeight: 700, margin: 0 }}>
+        Hello World
+      </h1>
+    </main>
+  );
+}
+`);
+    } else {
+      // css-modules
+      const dir = path.dirname(pagePath);
+      await fs.writeFile(path.join(dir, 'page.module.css'), `.main {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+`);
+      await fs.writeFile(pagePath, `import styles from './page.module.css';
+
+export default function Home() {
+  return (
+    <main className={styles.main}>
+      <h1 className={styles.title}>Hello World</h1>
+    </main>
+  );
+}
+`);
+    }
+  }
+
+  // 6) sentry plugin 의 error.tsx 변환 — Tailwind 클래스가 박혀있어서 plain/cssmodules 에서 작동 안 함.
+  // intl + sentry 면 nextIntl 이 [locale]/error.tsx 를 i18n-aware 로 replace 하므로 그것도 변환.
+  const sentryActive = plugins?.some((p) => p.name === 'sentry');
+  if (sentryActive) {
+    const errorCandidates = intlActive
+      ? [path.join(targetDir, 'app/[locale]/error.tsx')]
+      : [path.join(targetDir, 'app/error.tsx')];
+    for (const errPath of errorCandidates) {
+      if (!(await fs.pathExists(errPath))) continue;
+      const useI18n = intlActive;
+      await fs.writeFile(errPath, buildErrorTsxNonTailwind({ useI18n, cssFramework, arch }));
+      if (cssFramework === 'css-modules') {
+        await fs.writeFile(
+          path.join(path.dirname(errPath), 'error.module.css'),
+          buildErrorModuleCss(),
+        );
+      }
+    }
+  }
+
+  // 7) .prettierrc — tailwind plugin 제거.
+  await stripTailwindFromPrettier(path.join(targetDir, '.prettierrc'));
+
+  // 8) monorepo 인 경우 root .prettierrc 와 root package.json 도 정리 (root 의 prettier-plugin-tailwindcss).
+  // applyCssFrameworkVariant 는 apps/web 마다 호출되지만 root 정리는 1회면 충분 — idempotent 라 OK.
+  if (isMonorepo && !isUiPackage) {
+    const monorepoRoot = path.resolve(targetDir, '..', '..');
+    await stripTailwindFromPrettier(path.join(monorepoRoot, '.prettierrc'));
+    const rootPkgPath = path.join(monorepoRoot, 'package.json');
+    if (await fs.pathExists(rootPkgPath)) {
+      const rootPkg = await fs.readJson(rootPkgPath);
+      const TAILWIND_DEPS = ['prettier-plugin-tailwindcss'];
+      let changed = false;
+      for (const key of TAILWIND_DEPS) {
+        if (rootPkg.devDependencies && key in rootPkg.devDependencies) {
+          delete rootPkg.devDependencies[key];
+          changed = true;
+        }
+      }
+      if (changed) await fs.writeJson(rootPkgPath, rootPkg, { spaces: 2 });
+    }
+  }
+}
+
+async function stripTailwindFromPrettier(prettierPath) {
+  if (!(await fs.pathExists(prettierPath))) return;
+  const c = await fs.readJson(prettierPath);
+  if (!Array.isArray(c.plugins)) return;
+  c.plugins = c.plugins.filter((p) => p !== 'prettier-plugin-tailwindcss');
+  if (c.plugins.length === 0) delete c.plugins;
+  await fs.writeJson(prettierPath, c, { spaces: 2 });
+}
+
+/**
+ * sentry 의 error.tsx 를 plain/cssmodules 로 변환한 콘텐츠 생성.
+ * useI18n=true 면 next-intl 의 useTranslations + Link 사용.
+ */
+function buildErrorTsxNonTailwind({ useI18n, cssFramework, arch }) {
+  const i18nImports = useI18n
+    ? `import { useTranslations } from 'next-intl';\n`
+    : '';
+  const configAlias = arch ? arch.aliases.config : '@/src/shared/config';
+  const linkImport = useI18n
+    ? `import { Link } from '${configAlias}/i18n/navigation';\n`
+    : `import Link from 'next/link';\n`;
+  const tHook = useI18n ? `  const t = useTranslations('error');\n` : '';
+  const titleText = useI18n ? `{t('title')}` : `오류가 발생했습니다`;
+  const descText = useI18n
+    ? `{t('description')}`
+    : `예상치 못한 오류가 발생했습니다. 다시 시도해주세요.`;
+  const fallback = useI18n ? `t('unexpectedError')` : `'알 수 없는 오류'`;
+  const tryAgain = useI18n ? `{t('button.tryAgain')}` : `다시 시도`;
+  const goHome = useI18n ? `{t('button.goHome')}` : `홈으로 이동`;
+
+  if (cssFramework === 'css-modules') {
+    return `'use client';
+
+import * as Sentry from '@sentry/nextjs';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+${i18nImports}${linkImport}import { useEffect } from 'react';
+
+import styles from './error.module.css';
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+${tHook}  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
+        <div className={styles.iconRow}>
+          <div className={styles.iconCircle}>
+            <AlertTriangle className={styles.icon} />
+          </div>
+        </div>
+
+        <h2 className={styles.title}>${titleText}</h2>
+        <p className={styles.description}>${descText}</p>
+
+        <div className={styles.errorBox}>
+          <p className={styles.errorText}>{error.message || ${fallback}}</p>
+        </div>
+
+        <div className={styles.actions}>
+          <button onClick={reset} className={styles.primaryButton}>
+            <RefreshCw className={styles.buttonIcon} />
+            ${tryAgain}
+          </button>
+
+          <Link href='/' className={styles.secondaryButton}>
+            <Home className={styles.buttonIcon} />
+            ${goHome}
+          </Link>
+        </div>
+
+        {process.env.NODE_ENV === 'development' && error.digest && (
+          <div className={styles.digest}>
+            <p className={styles.digestText}>Error ID: {error.digest}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+`;
+  }
+
+  // plain — inline style (토큰 var 활용)
+  return `'use client';
+
+import * as Sentry from '@sentry/nextjs';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+${i18nImports}${linkImport}import { useEffect } from 'react';
+
+const wrapper: React.CSSProperties = {
+  display: 'flex',
+  minHeight: '100vh',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '0 16px',
+};
+const card: React.CSSProperties = {
+  width: '100%',
+  maxWidth: 448,
+  borderRadius: 8,
+  border: '1px solid var(--border)',
+  background: 'var(--background)',
+  padding: 24,
+  boxShadow: 'var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.15))',
+};
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+${tHook}  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
+  return (
+    <div style={wrapper}>
+      <div style={card}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: '50%',
+              background: 'color-mix(in srgb, var(--danger) 10%, transparent)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <AlertTriangle style={{ width: 32, height: 32, color: 'var(--danger)' }} />
+          </div>
+        </div>
+
+        <h2
+          style={{
+            fontSize: 24,
+            fontWeight: 700,
+            textAlign: 'center',
+            color: 'var(--foreground)',
+            margin: '0 0 8px',
+          }}
+        >
+          ${titleText}
+        </h2>
+        <p
+          style={{
+            fontSize: 14,
+            color: 'var(--foreground-muted)',
+            textAlign: 'center',
+            margin: '0 0 24px',
+          }}
+        >
+          ${descText}
+        </p>
+
+        <div
+          style={{
+            borderRadius: 6,
+            border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)',
+            background: 'color-mix(in srgb, var(--danger) 5%, transparent)',
+            padding: 12,
+          }}
+        >
+          <p style={{ fontSize: 14, color: 'var(--danger)', margin: 0 }}>
+            {error.message || ${fallback}}
+          </p>
+        </div>
+
+        <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <button
+            onClick={reset}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '8px 16px',
+              borderRadius: 6,
+              border: 'none',
+              background: 'var(--primary)',
+              color: 'var(--primary-foreground)',
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: 'pointer',
+            }}
+          >
+            <RefreshCw style={{ width: 16, height: 16 }} />
+            ${tryAgain}
+          </button>
+
+          <Link
+            href='/'
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '8px 16px',
+              borderRadius: 6,
+              border: '1px solid var(--border)',
+              color: 'var(--foreground)',
+              fontSize: 14,
+              fontWeight: 500,
+              textDecoration: 'none',
+            }}
+          >
+            <Home style={{ width: 16, height: 16 }} />
+            ${goHome}
+          </Link>
+        </div>
+
+        {process.env.NODE_ENV === 'development' && error.digest && (
+          <div
+            style={{
+              marginTop: 16,
+              borderRadius: 6,
+              background: 'var(--background-subtle)',
+              padding: 12,
+            }}
+          >
+            <p style={{ fontSize: 12, color: 'var(--foreground-subtle)', margin: 0 }}>
+              Error ID: {error.digest}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+`;
+}
+
+function buildErrorModuleCss() {
+  return `.wrapper {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 448px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  padding: 24px;
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.15));
+}
+
+.iconRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  color: var(--danger);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--foreground);
+  margin: 0 0 8px;
+}
+
+.description {
+  font-size: 14px;
+  color: var(--foreground-muted);
+  text-align: center;
+  margin: 0 0 24px;
+}
+
+.errorBox {
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  background: color-mix(in srgb, var(--danger) 5%, transparent);
+  padding: 12px;
+}
+
+.errorText {
+  font-size: 14px;
+  color: var(--danger);
+  margin: 0;
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.primaryButton,
+.secondaryButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.primaryButton {
+  border: none;
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.secondaryButton {
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.buttonIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.digest {
+  margin-top: 16px;
+  border-radius: 6px;
+  background: var(--background-subtle);
+  padding: 12px;
+}
+
+.digestText {
+  font-size: 12px;
+  color: var(--foreground-subtle);
+  margin: 0;
+}
+`;
+}
 
 /**
  * 스캐폴드 마무리 — `gitignore` 파일을 `.gitignore` 로 되돌리고 `git init` 실행.
@@ -725,17 +1416,26 @@ async function composeProviders(targetDir, plugins, arch) {
     }
   }
 
-  // wrapper 적용: <ThemeProviders> 바깥쪽에 감싸기
+  // wrapper 적용: <ThemeProvider>...</ThemeProvider> 블록 전체를 잡아 새 wrapper 로 감싼다.
+  // 인덴트 일관성 보장 — 단순 prefix 삽입으로는 내부 라인의 들여쓰기가 wrapper 추가
+  // 깊이만큼 따라 들어가지 않아 들쭉날쭉했다 (v0.59.x 까지의 이슈).
+  // 이제는 블록을 통째로 매칭해 내부 모든 줄에 +2 spaces, 같은 인덴트 레벨에 wrapper
+  // 태그를 두고 재구성한다.
+  const blockRegex = /([ \t]*)(<ThemeProvider>[\s\S]*?<\/ThemeProvider>)/;
   for (const wrapper of wrappers) {
     if (content.includes(`<${wrapper}>`)) continue;
-    content = content.replace(
-      /(<ThemeProviders>)/,
-      `<${wrapper}>\n      $1`,
-    );
-    content = content.replace(
-      /(<\/ThemeProviders>)/,
-      `$1\n      </${wrapper}>`,
-    );
+    const match = content.match(blockRegex);
+    if (!match) continue;
+    const [, indent, block] = match;
+    // 블록 내부 모든 줄에 2 space 추가. 첫 줄은 아래 템플릿의 prefix 가 처리하므로
+    // newline 뒤에만 spaces 를 끼워넣는다.
+    const indentedBlock = block.replace(/\n/g, '\n  ');
+    const replacement = [
+      `${indent}<${wrapper}>`,
+      `${indent}  ${indentedBlock}`,
+      `${indent}</${wrapper}>`,
+    ].join('\n');
+    content = content.replace(blockRegex, replacement);
   }
 
   await fs.writeFile(globalProviderPath, content);

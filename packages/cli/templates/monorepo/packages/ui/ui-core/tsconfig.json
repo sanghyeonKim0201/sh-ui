@@ -6,6 +6,6 @@
       "@workspace/ui-core/*": ["./src/*"]
     }
   },
-  "include": ["."],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }
