@@ -57,6 +57,12 @@ pnpm dev        # docs 사이트 (localhost:3000)
 pnpm -r test    # 패키지별 테스트
 ```
 
+## 기여 / 보안
+
+- 기여 가이드: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- 보안 제보: [SECURITY.md](./SECURITY.md)
+- 행동 강령: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+
 ## 라이선스
 
 MIT
