@@ -43,6 +43,9 @@ export default function CodePanelPage() {
       <p className="muted">
         Shiki 기반 코드 패널. 서버 컴포넌트로 빌드 시 하이라이팅 → 번들 비용 없음, 복사 버튼만 클라이언트.
       </p>
+      <p style={{ fontSize: "var(--text-xs)", color: "var(--foreground-subtle)" }}>
+        <strong>플랫폼:</strong> React 전용 — Shiki 가 Node/브라우저 한정 (Flutter 미지원).
+      </p>
 
       <Preview>
         <Preview.Demo>

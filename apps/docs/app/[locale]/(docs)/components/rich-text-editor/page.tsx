@@ -16,6 +16,9 @@ export default function RichTextEditorPage() {
         Tiptap 3 위에 sh-ui 토큰 테마와 기본 toolbar 를 얹은 WYSIWYG 에디터.
         <code>value</code> 는 HTML 문자열, <code>onChange</code> 는 매 편집마다 최신 HTML 을 넘긴다.
       </p>
+      <p style={{ fontSize: "var(--text-xs)", color: "var(--foreground-subtle)" }}>
+        <strong>플랫폼:</strong> React 전용 — Tiptap 의 Flutter 등가물 부재.
+      </p>
 
       <Preview>
         <Preview.Demo>
