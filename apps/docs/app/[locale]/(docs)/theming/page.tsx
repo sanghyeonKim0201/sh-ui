@@ -200,10 +200,79 @@ static const light = ShUiColorTokens(
         Flutter에서 같은 변경을 하려면 <code>ShUiTextTokens</code>를 직접 만든 뒤 <code>ShUiTheme.light.copyWith(text: customText)</code>로 끼워 넣는다.
       </p>
 
+      <h2>8. base64 테마 코드 — 손본 톤 영구 보관</h2>
+      <p>
+        2~7번으로 손본 토큰을 다음 스캐폴드까지 그대로 가져가고 싶다면 base64 테마 코드로 박제. 프리셋(<code>neutral</code> 등)으로 표현 못 하는 커스텀 톤(개별 색, spacing, typography)을 손실 없이 한 문자열에 담는다. 같은 코드를 <code>sh_ui_create_project</code> 의 <code>theme</code> 인자나 CLI <code>--theme</code> 플래그에 넣으면 다음 프로젝트가 동일 톤으로 재현된다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "playground",
+            label: "플레이그라운드 export",
+            language: "bash",
+            code: `# /create 에서 토큰 시각 편집 → "프로젝트 생성" 다이얼로그가
+# 아래 명령을 자동 합성. --theme 뒤 문자열이 base64 테마 코드.
+npx sh-ui-cli create my-app \\
+  --platform next --structure standalone \\
+  --theme 'eyJsaWdodCI6...'`,
+          },
+          {
+            value: "mcp-encode",
+            label: "MCP encode",
+            language: "ts",
+            code: `// AI 에게 "이 톤 base64 로 저장해줘" → sh_ui_encode_theme 호출.
+// 입력: { light, dark, radius, (선택) success/warning/info ... }
+// 출력: "eyJsaWdodCI6..." (base64 한 문자열)
+//
+// 그 base64 를 sh_ui_create_project 의 theme 인자에 넘기면
+// 다음 프로젝트가 같은 톤으로 스캐폴드된다 (프리셋 자리에 그대로).`,
+          },
+          {
+            value: "roundtrip",
+            label: "round-trip 수정",
+            language: "ts",
+            code: `// 기존 base64 의 일부만 손보고 싶을 때:
+// 1. sh_ui_decode_theme("eyJsaWdodCI6...") → 토큰 객체
+// 2. 객체에서 필요한 키만 변경 (예: light.primary 만 새 색)
+// 3. sh_ui_encode_theme(<수정된 객체>) → 새 base64
+//
+// 매번 처음부터 다시 만들 필요 없음.`,
+          },
+        ]}
+      />
+      <p className="muted">
+        프리셋 이름(<code>neutral</code> / <code>slate</code> / ...)과 base64 둘 다 <code>theme</code> 슬롯에 들어가며 길이로 자동 판별. 옵셔널 색 토큰(<code>success</code> / <code>warning</code> / <code>info</code> + <code>-foreground</code>)도 같이 인코딩되지만 light / dark 양쪽 다 정의된 경우에만 CSS 로 emit — 한쪽만 있으면 컴포넌트 fallback 이 깨질 수 있어 안전 가드. (v0.55.0+)
+      </p>
+
+      <p>
+        <strong>권장 워크플로 — 톤 손본 뒤 base64 로 박제 (AI + MCP)</strong>
+      </p>
+      <p>
+        스캐폴드 직후 톤이 마음에 안 들면, AI 에게 한 마디 던지고 4단계를 한 번에 위임하면 된다. 사용자는 base64 문자열을 직접 만지지 않는다.
+      </p>
+      <ol>
+        <li>
+          AI 가 <code>tokens.css</code> 의 <code>:root</code> / <code>.dark</code> 블록 색만 편집 (생성 마커 <code>/* sh-ui:tokens:* */</code> 는 건드리지 않음 — 다음 <code>add tokens</code> 에서 안전하게 재생성되도록).
+        </li>
+        <li>
+          AI 가 <code>sh_ui_encode_theme</code> 으로 <code>{`{ light, dark, radius }`}</code> 객체를 base64 로 인코딩. 옵셔널 색 토큰(<code>success</code> / <code>warning</code> / <code>info</code>)도 함께 가능.
+        </li>
+        <li>
+          base64 를 사용자에게 한 번 보여주고 (대화 메모리에도 보관) — 이게 톤의 단일 진실 소스가 된다.
+        </li>
+        <li>
+          다음 <code>sh_ui_create_project</code> 호출 시 <code>theme</code> 인자에 그 base64 를 그대로 — 같은 프로젝트를 재생성해도 톤이 살아남는다.
+        </li>
+      </ol>
+      <p className="muted">
+        부분 수정은 round-trip 으로: <code>sh_ui_decode_theme</code> → 객체에서 필요한 키만 바꿈 → <code>sh_ui_encode_theme</code>. AI 가 한 턴 안에 처리하므로 사용자는 "primary 만 좀 더 채도 낮춰줘" 같이 자연어로 지시하면 된다.
+      </p>
+
       <h2>다음 단계</h2>
       <ul>
         <li><a href="/tokens">토큰</a> — 덮을 수 있는 전체 변수 목록</li>
         <li><a href="/create">프로젝트 생성</a> — 인터랙티브로 토큰 값 조정하며 미리보기 + 디자인 그대로 새 프로젝트 생성</li>
+        <li><a href="/mcp">MCP</a> — <code>sh_ui_encode_theme</code> / <code>sh_ui_decode_theme</code> 툴 상세</li>
       </ul>
     </main>
   );
