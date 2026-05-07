@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.61.1",
+      "date": "2026-05-07",
+      "title": "chore — 사용자 프로젝트 템플릿에서 Dockerfile 제거",
+      "type": "patch",
+      "highlights": [
+        "**`nextjs-app` / `nextjs-standalone` 템플릿의 `Dockerfile` 삭제** — sh-ui 가 1급 docker 지원이 아니고 그동안 emit 한 Dockerfile 도 검증 없이 multi-stage build 만 쓰여 있었음. 사용자가 docker 가 필요하면 자신의 배포 환경에 맞춰 직접 작성하는 게 정확.",
+        "**`generateApp` 의 Dockerfile EXPOSE/PORT 자동 갱신 로직 제거** — emit 안 하니 갱신할 대상도 없음.",
+        "**README 의 Docker 언급 정리** — 'Docker 지원' 항목과 구조 도해의 Dockerfile 라인 제거.",
+        "**`rename-app` 은 그대로 동작** — 사용자가 직접 Dockerfile 을 추가했을 때를 대비해 rename 패턴은 유지 (TEXT_BASENAMES 에 Dockerfile/Dockerfile.dev/Dockerfile.prod 그대로)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.61.1"
+    },
+    {
       "version": "0.61.0",
       "date": "2026-05-07",
       "title": "create CLI 대규모 정비 — cssFramework 진짜 분기 + i18n hooks + 49건 결함 수정",

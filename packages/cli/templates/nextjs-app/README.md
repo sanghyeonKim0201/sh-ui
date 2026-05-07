@@ -14,7 +14,6 @@ UI 컴포넌트는 `@workspace/ui-{name}` 패키지를 참조하며, sh-ui 설�
 - **next-themes** + **Sonner**
 - **Zod**
 - **Vitest** + **Testing Library**
-- **Docker** 지원
 
 ## 프로젝트 구조
 
@@ -37,7 +36,6 @@ UI 컴포넌트는 `@workspace/ui-{name}` 패키지를 참조하며, sh-ui 설�
 ├── postcss.config.mjs        # @workspace/ui-{name}/postcss.config 재사용
 ├── next.config.ts
 ├── vitest.config.ts
-├── Dockerfile
 └── .env.example
 ```
 
