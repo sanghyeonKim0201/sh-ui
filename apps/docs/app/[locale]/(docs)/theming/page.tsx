@@ -238,6 +238,24 @@ npx sh-ui-cli create my-app \\
 //
 // 매번 처음부터 다시 만들 필요 없음.`,
           },
+          {
+            value: "external",
+            label: "외부 디자인 import",
+            language: "ts",
+            code: `// 디자이너가 Figma / 브랜드 가이드 / 다른 DS 토큰을 가져온 경우.
+// 형태 자유 — hex 묶음, design tokens JSON, Tailwind config 등.
+//
+// 사용자: "primary #7C3AED, accent #EC4899, dark 모드 primary #A78BFA,
+//          radius 0.75rem 으로 sh-ui base64 만들어줘"
+//
+// AI 가 내부적으로:
+// 1. neutral 같은 베이스 프리셋을 깔고
+// 2. 위에서 받은 키만 덮어쓴 뒤 (빠진 background/border 등 자동 채움)
+// 3. sh_ui_encode_theme 으로 인코딩 → "eyJsaWdodCI6..."
+//
+// 그 base64 를 sh_ui_create_project 의 theme 에 넣으면 처음부터
+// 디자이너 톤으로 스캐폴드된다 — tokens.css 후편집 불필요.`,
+          },
         ]}
       />
       <p className="muted">
@@ -266,6 +284,42 @@ npx sh-ui-cli create my-app \\
       </ol>
       <p className="muted">
         부분 수정은 round-trip 으로: <code>sh_ui_decode_theme</code> → 객체에서 필요한 키만 바꿈 → <code>sh_ui_encode_theme</code>. AI 가 한 턴 안에 처리하므로 사용자는 "primary 만 좀 더 채도 낮춰줘" 같이 자연어로 지시하면 된다.
+      </p>
+
+      <p>
+        <strong>외부 디자인 가져오기 — 디자이너 톤을 sh-ui 로 import</strong>
+      </p>
+      <p>
+        Figma 의 design tokens, 브랜드 가이드의 hex 팔레트, 다른 디자인 시스템 export — 형식은 자유. AI 한테 그대로 던지면 sh-ui 토큰 shape 으로 매핑한 뒤 base64 로 박제한다. 핵심 스키마는 <strong>light/dark 각 15개 필수 색 토큰</strong>(<code>background</code> / <code>foreground</code> / <code>primary</code> / <code>border</code> / <code>danger</code> 계열) + <code>radius</code>. 디자이너가 일부만 가져왔어도 빠진 키는 가장 가까운 프리셋(<code>neutral</code> / <code>slate</code> 등)에서 자동으로 채워 검증을 통과시킨다.
+      </p>
+      <CodePanel
+        language="md"
+        filename="대화 흐름 예시"
+        code={`# 1. 디자이너가 톤을 들고 옴 (Figma export, 브랜드 hex 리스트, 무엇이든)
+사용자: 우리 브랜드 컬러야:
+        - primary #7C3AED, primary-hover #6D28D9, primary-foreground #FFFFFF
+        - accent #EC4899
+        - danger #EF4444
+        - radius 0.75rem
+        - 다크 모드는 primary #A78BFA, primary-hover #C4B5FD
+
+        sh-ui base64 만들어줘.
+
+# 2. AI 가 빠진 키(background/foreground/border 계열)를 neutral 에서 채우고
+#    light/dark 양쪽 15키 충족 검증 → encodeTheme
+
+AI:    ✓ 인코딩 완료. 다음 명령으로 처음부터 그 톤으로 스캐폴드:
+
+       npx sh-ui-cli create my-app --platform next --structure standalone \\
+         --theme 'eyJsaWdodCI6...'
+
+       또는 sh_ui_create_project 의 theme 인자에 위 base64 그대로.`}
+      />
+      <p className="muted">
+        옵셔널 색 토큰 6개(<code>success</code> / <code>warning</code> / <code>info</code> + 각 <code>-foreground</code>)는 <strong>light/dark 양쪽 다 정의된 경우에만</strong> 인코딩에 포함 — 한쪽만 있으면 컴포넌트 fallback 이 깨질 수 있어 안전 가드. 디자이너가 한쪽만 줬다면 AI 가 빠진 쪽을 한 번 더 묻거나 베이스 프리셋 값으로 채운다.
+      </p>
+      <p className="muted">
+        Figma <em>Design Tokens</em> 플러그인 export (W3C DTCG JSON) 도 그대로 첨부 가능 — 키 이름이 sh-ui shape 과 다를 때 AI 가 의미 매핑(<code>color/brand/primary</code> → <code>primary</code> 등). 모호한 키는 사용자에게 한 번 확인.
       </p>
 
       <h2>다음 단계</h2>
