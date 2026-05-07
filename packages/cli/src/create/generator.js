@@ -567,15 +567,6 @@ async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailw
 
   await writeNextConfig(targetDir, plugins, { isMonorepo: true, appName, arch });
 
-  // Update Dockerfile
-  const dockerPath = path.join(targetDir, 'Dockerfile');
-  if (await fs.pathExists(dockerPath)) {
-    let dockerfile = await fs.readFile(dockerPath, 'utf-8');
-    dockerfile = dockerfile.replace(/EXPOSE \d+/, `EXPOSE ${port}`);
-    dockerfile = dockerfile.replace(/ENV PORT=\d+/, `ENV PORT=${port}`);
-    await fs.writeFile(dockerPath, dockerfile);
-  }
-
   // Create packages/ui/ui-apps/ui-{appName}/ from ui-app-template
   const monorepoRoot = path.resolve(targetDir, '..', '..');
   const uiPkgDir = path.join(monorepoRoot, 'packages', 'ui', 'ui-apps', `ui-${appName}`);

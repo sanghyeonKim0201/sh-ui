@@ -1,8 +1,8 @@
 // monorepo 의 앱 이름 (apps/<old>/ + packages/ui/ui-apps/ui-<old>/) 을 일괄 변경.
 //
-// 디렉토리 이동 + 정해진 6개 패턴 치환을 자동화. 사용자가 손으로
-// 6~10 군데 (package.json 이름, tsconfig paths, Dockerfile WORKDIR,
-// next.config transpilePackages, sh-ui.config aliases, README, ...) 를
+// 디렉토리 이동 + 정해진 패턴 치환을 자동화. 사용자가 손으로
+// 6~10 군데 (package.json 이름, tsconfig paths, next.config transpilePackages,
+// sh-ui.config aliases, README, 필요 시 사용자가 추가한 Dockerfile WORKDIR ...) 를
 // 일일이 갈아엎지 않도록.
 //
 // false-positive 방지를 위해 bare 단어 (`web`) 는 절대 치환하지 않고,
