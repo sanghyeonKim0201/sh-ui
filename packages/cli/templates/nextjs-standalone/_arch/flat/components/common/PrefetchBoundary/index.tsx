@@ -6,7 +6,7 @@ import {
   HydrationBoundary,
 } from '@tanstack/react-query';
 
-import getQueryClient from '@/lib/utils/getQueryClient';
+import { getQueryClient } from '@/lib/utils/getQueryClient';
 
 export type FetchOptions = Pick<FetchQueryOptions, 'queryKey' | 'queryFn'>;
 

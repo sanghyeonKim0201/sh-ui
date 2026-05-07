@@ -239,7 +239,7 @@ export async function startMcpServer() {
         theme: z.string().optional()
           .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 base64 테마 코드. 사용자가 톤을 직접 손본 결과를 영구 보관하려면 sh_ui_encode_theme 으로 base64 를 만들어 여기에 넘긴다.`),
         cssFramework: z.enum(CSS_FRAMEWORKS).optional()
-          .describe(`CSS 프레임워크. 기본 plain. 현재 ${CSS_FRAMEWORKS.join('/')} 지원 — 변종 미보유 컴포넌트는 add 시 plain 으로 자동 fallback`),
+          .describe(`CSS 프레임워크. 기본 plain. base 파일까지 분기 emit (plain/tailwind/css-modules) + 컴포넌트 변종까지 결정. 변종 미보유 시 add 는 plain fallback`),
         cwd: z.string().optional()
           .describe("부모 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()
@@ -311,7 +311,7 @@ export async function startMcpServer() {
         mode: z.enum(MODES).optional()
           .describe("색 모드. 기본 light-dark"),
         cssFramework: z.enum(CSS_FRAMEWORKS).optional()
-          .describe(`CSS 프레임워크. 기본 plain. 현재 ${CSS_FRAMEWORKS.join('/')} 지원 — 변종 미보유 컴포넌트는 add 시 plain 으로 자동 fallback`),
+          .describe(`CSS 프레임워크. 기본 plain. base 파일까지 분기 emit (plain/tailwind/css-modules) + 컴포넌트 변종까지 결정. 변종 미보유 시 add 는 plain fallback`),
         cwd: z.string().optional()
           .describe("작업 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()

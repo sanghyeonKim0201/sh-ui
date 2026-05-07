@@ -9,8 +9,8 @@ UI 컴포넌트는 `@workspace/ui-{name}` 패키지를 참조하며, sh-ui 설�
 - **React 19**
 - **TypeScript 5.9**
 - **@workspace/ui-{name}** (sh-ui 컴포넌트 패키지)
-- **TanStack React Query** + **Axios**
-- **Zustand**
+- **TanStack React Query** (server state, isomorphic fetch — Axios 미사용)
+- **Zustand** (client state)
 - **next-themes** + **Sonner**
 - **Zod**
 - **Vitest** + **Testing Library**
@@ -21,10 +21,12 @@ UI 컴포넌트는 `@workspace/ui-{name}` 패키지를 참조하며, sh-ui 설�
 ```
 ├── app/                      # Next.js App Router
 │   ├── layout.tsx            # 루트 레이아웃 (@workspace/ui-{name}/globals.css import)
-│   └── page.tsx
-├── src/
+│   │                         #   next-intl 활성 시 app/[locale]/layout.tsx 로 이동
+│   └── page.tsx              # next-intl 활성 시 app/[locale]/page.tsx 로 이동
+├── src/                      # FSD 아키텍처 — flat 선택 시 `lib/` + `components/` 로 분기
 │   ├── app/
-│   │   └── providers/        # QueryClient, Theme, Toaster
+│   │   ├── providers/        # QueryClient, Theme, Toaster (Sentry 시 FallbackBoundary)
+│   │   └── layouts/          # RootLayout (html/body)
 │   ├── shared/               # FSD: 공유 유틸, 설정, 타입
 │   ├── entities/
 │   ├── features/
@@ -55,10 +57,10 @@ apps/{name}/
 
 ```bash
 # 모든 ui 패키지에 추가 (대화형)
-npx sh-ui-create add-component button
+npx sh-ui-cli create add-component button
 
 # 이 앱의 ui 패키지에만 추가
-npx sh-ui-create add-component button --app {name}
+npx sh-ui-cli create add-component button --app {name}
 ```
 
 각 `ui-{app}/` 패키지의 `sh-ui.config.json` 경로 설정에 따라 `src/components/` 로 복사됨.

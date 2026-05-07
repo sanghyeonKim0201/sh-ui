@@ -90,7 +90,8 @@ describe('architectures — descriptor 시스템', () => {
     it('tsconfigPaths 는 카테고리별 scoped', () => {
       expect(flat.tsconfigPaths['@/lib/*']).toEqual(['./lib/*']);
       expect(flat.tsconfigPaths['@/components/*']).toEqual(['./components/*']);
-      expect(flat.tsconfigPaths['@/app/*']).toEqual(['./app/*']);
+      // @/app/* alias 는 Next.js routes 에서 사용 안 됨 → 제외 (v0.59.10+).
+      expect(flat.tsconfigPaths['@/app/*']).toBeUndefined();
       expect(flat.tsconfigPaths['@/*']).toBeUndefined();
     });
   });

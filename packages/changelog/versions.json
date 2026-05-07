@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.61.0",
+      "date": "2026-05-07",
+      "title": "create CLI 대규모 정비 — cssFramework 진짜 분기 + i18n hooks + 49건 결함 수정",
+      "type": "minor",
+      "highlights": [
+        "**`--css plain` / `--css css-modules` 가 진짜로 분기 emit** — 이전엔 `sh-ui.config.json` 의 cssFramework 필드만 바뀌고 페이지/스타일은 모두 Tailwind 동일했음. 이제 plain 은 `tailwindcss` 의존 없음 + `page.tsx` 가 inline style, css-modules 는 `page.module.css` + class import. sentry 의 `error.tsx`, monorepo root `.prettierrc` / `package.json` 까지 cssFramework 별로 정리.",
+        "**i18n-aware 포맷 hook + error code mapping 신규** — next-intl 활성 시 `useFormatDate()` / `useFormatPrice(currency)` hook emit (현재 locale 자동). 새 `errorMessages.ts` + `resolveErrorMessage()` 가 backend raw 메시지 직접 노출 대신 코드별 안전 메시지로 변환. `useAppMutation` 이 자동 사용.",
+        "**플러그인 emit 결함 일괄 수정** — auth-jwt 가 redirect 만 시키고 sign-in 페이지를 안 만들어 무한 404 루프에 빠지던 문제 (placeholder 페이지 emit). `[locale]/error.tsx` 가 i18n messages 를 사용 안 해 dead code 였던 것 (`useTranslations` + `Link` from i18n navigation). `clientFetch` 의 `/sign-in` redirect 가 locale prefix 무시해 루프 위험이던 것 (regex 매칭).",
+        "**fs-extra → Node native fs/promises 마이그레이션** — long-running MCP daemon 환경에서 fs-extra v11 의 internal state 누적으로 `fs.copy` filter 가 부분 실패하던 회귀를 native `fs.cp` 로 우회. `ensureArchCleanup` + `assertArchOverlayApplied` invariant 가드 추가.",
+        "**작은 정리 모음** — `.eslintrc.js` (legacy ESLint 8) 제거, `Dockerfile` multi-stage build 로 교체, `getQueryClient` default → named export, `ThemeProviders` → `ThemeProvider` rename, deps 알파벳 정렬, flat arch 전용 `eslint-config/flat` 신설, Flutter `sh-ui.config.json` 의 의미 없는 `cssFramework` 필드 제거. 96 combo install + typecheck + build 회귀 가드 통과."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.61.0"
+    },
+    {
       "version": "0.60.0",
       "date": "2026-05-06",
       "title": "BREAKING — PasswordInput 제거, InputGroup 레시피로 강등",

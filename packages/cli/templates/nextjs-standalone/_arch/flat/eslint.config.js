@@ -68,17 +68,15 @@ export default [
     },
   },
 
-  // ── FSD boundaries ──
+  // ── Flat-arch boundaries ──
+  // FSD 의 src/* 슬라이스 대신 flat 의 lib/components/app 의존 방향만 강제.
   {
     plugins: { boundaries },
     settings: {
       "boundaries/elements": [
-        { type: "app", pattern: ["src/app"], mode: "folder" },
-        { type: "shared", pattern: ["src/shared/*"], mode: "folder" },
-        { type: "entity", pattern: ["src/entities/*"], mode: "folder" },
-        { type: "feature", pattern: ["src/features/*"], mode: "folder" },
-        { type: "widget", pattern: ["src/widgets/*"], mode: "folder" },
-        { type: "view", pattern: ["src/views/*"], mode: "folder" },
+        { type: "lib", pattern: ["lib/*"], mode: "folder" },
+        { type: "components", pattern: ["components/*"], mode: "folder" },
+        { type: "app", pattern: ["app"], mode: "folder" },
       ],
       "boundaries/ignore": ["**/*.test.*", "**/*.spec.*"],
     },
@@ -88,30 +86,9 @@ export default [
         {
           default: "disallow",
           rules: [
-            { from: "app", allow: ["view", "widget", "feature", "entity", "shared"] },
-            { from: "view", allow: ["widget", "feature", "entity", "shared"] },
-            { from: "widget", allow: ["feature", "entity", "shared"] },
-            { from: "feature", allow: ["entity", "shared"] },
-            { from: "entity", allow: ["shared"] },
-            { from: "shared", allow: ["shared"] },
-          ],
-        },
-      ],
-      "boundaries/entry-point": [
-        "warn",
-        {
-          default: "disallow",
-          rules: [
-            { target: "shared", allow: "**" },
-            { target: "app", allow: "**" },
-            {
-              target: ["entity", "widget", "view"],
-              allow: "index.{ts,tsx}",
-            },
-            {
-              target: ["feature"],
-              allow: ["index.{ts,tsx}", "*/index.{ts,tsx}"],
-            },
+            { from: "app", allow: ["components", "lib"] },
+            { from: "components", allow: ["components", "lib"] },
+            { from: "lib", allow: ["lib"] },
           ],
         },
       ],
@@ -125,8 +102,8 @@ export default [
       "check-file/filename-naming-convention": [
         "error",
         {
-          "**/src/**/*.tsx": "PASCAL_CASE",
-          "**/src/**/*.ts": "CAMEL_CASE",
+          "**/components/**/*.tsx": "PASCAL_CASE",
+          "**/lib/**/*.ts": "CAMEL_CASE",
         },
         { ignoreMiddleExtensions: true },
       ],
@@ -143,5 +120,4 @@ export default [
       "check-file/filename-naming-convention": "off",
     },
   },
-
 ]

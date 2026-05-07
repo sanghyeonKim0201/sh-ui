@@ -1,12 +1,9 @@
 import boundaries from "eslint-plugin-boundaries"
-import importX from "eslint-plugin-import-x"
 import checkFile from "eslint-plugin-check-file"
-import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 /**
  * FSD (Feature-Sliced Design) ESLint configuration.
  * boundaries: layer import direction + public API enforcement
- * import-x: import group ordering
  * check-file: file/folder naming convention enforcement
  *
  * @type {import("eslint").Linter.Config[]}
@@ -96,24 +93,6 @@ export const fsdConfig = [
     ],
     rules: {
       "check-file/filename-naming-convention": "off",
-    },
-  },
-
-  // ── import-x plugin ──
-  {
-    plugins: {
-      "import-x": importX,
-    },
-    settings: {
-      "import-x/resolver-next": [
-        createTypeScriptImportResolver({
-          alwaysTryTypes: true,
-        }),
-      ],
-    },
-    rules: {
-      "import-x/order": "off",
-      "import-x/no-unresolved": "off",
     },
   },
 ]

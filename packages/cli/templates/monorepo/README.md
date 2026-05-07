@@ -8,8 +8,17 @@ Turborepo + pnpm workspace 기반 모노레포 템플릿 (sh-ui 기반).
 - **pnpm 10** (워크스페이스 패키지 매니저)
 - **TypeScript 5.9**
 - **sh-ui** (앱별 독립 테마 — 각 `ui-{app}/` 패키지가 자체 `sh-ui.config.json` 보유)
-- **ESLint 9** (flat config)
-- **Prettier** (tailwind 플러그인)
+- **ESLint 9** (flat config — fsd / flat arch 별 boundaries 규칙)
+- **Prettier** (tailwind 사용 시에만 prettier-plugin-tailwindcss 활성)
+
+## CSS 프레임워크 선택
+
+`sh-ui-cli create --css <plain | tailwind | css-modules>` 옵션이 **base 파일까지** 분기합니다.
+- `tailwind` (기본): Tailwind v4 + utility class 기반 페이지/스타일
+- `plain`: Tailwind 의존 없음, inline style + 토큰 변수 사용
+- `css-modules`: `.module.css` 파일 + 클래스 import 패턴
+
+같은 옵션이 `npx sh-ui-cli add <component>` 로 추가되는 컴포넌트의 styling 변종도 결정합니다.
 
 ## 프로젝트 구조
 
@@ -37,7 +46,8 @@ Turborepo + pnpm workspace 기반 모노레포 템플릿 (sh-ui 기반).
 │   │   ├── base.js                   # 기본 (TS + Turbo + Prettier)
 │   │   ├── next.js                   # Next.js 앱용
 │   │   ├── react-internal.js         # React 라이브러리용
-│   │   └── fsd.js                    # FSD 레이어 규칙 (boundaries, 파일 네이밍)
+│   │   ├── fsd.js                    # FSD 레이어 규칙 (boundaries, 파일 네이밍)
+│   │   └── flat.js                   # flat arch 규칙 (lib/components/app boundaries)
 │   │
 │   └── typescript-config/            # 공유 TypeScript 설정
 │       ├── base.json                 # 기본 (strict, ES2022)
@@ -45,9 +55,8 @@ Turborepo + pnpm workspace 기반 모노레포 템플릿 (sh-ui 기반).
 │       └── react-library.json        # React 라이브러리용 (react-jsx)
 │
 ├── turbo.json                        # Turbo 태스크 파이프라인
-├── pnpm-workspace.yaml               # apps/* + packages/*
+├── pnpm-workspace.yaml               # apps/* + packages 명시 매핑
 ├── .prettierrc
-├── .eslintrc.js
 ├── .gitignore
 └── .dockerignore
 ```

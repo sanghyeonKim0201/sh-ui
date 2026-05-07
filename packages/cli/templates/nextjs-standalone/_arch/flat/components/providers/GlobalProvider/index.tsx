@@ -3,7 +3,7 @@ import { Toaster } from 'sonner';
 
 import { QueryClientProvider } from '../tanstack/QueryClientProvider';
 import { TanstackDevtoolsProvider } from '../tanstack/TanstackDevtoolsProvider';
-import { ThemeProviders } from '../theme/ThemeProviders';
+import { ThemeProvider } from '../theme/ThemeProvider';
 
 interface GlobalProviderProps {
   children: ReactNode;
@@ -11,13 +11,13 @@ interface GlobalProviderProps {
 
 export function GlobalProvider({ children }: GlobalProviderProps) {
   return (
-    <ThemeProviders>
+    <ThemeProvider>
       <QueryClientProvider>
         <TanstackDevtoolsProvider>
           <Toaster />
           {children}
         </TanstackDevtoolsProvider>
       </QueryClientProvider>
-    </ThemeProviders>
+    </ThemeProvider>
   );
 }

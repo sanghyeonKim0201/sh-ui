@@ -56,7 +56,7 @@ const proxyRequest = async (
         data: null,
         error: {
           code: 'NETWORK_ERROR',
-          message: '서버에 연결할 수 없습니다.',
+          message: 'Failed to reach upstream server.',
         },
       },
       { status: 502 },

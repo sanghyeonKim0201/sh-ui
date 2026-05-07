@@ -248,7 +248,9 @@ describe('sh-ui create smoke tests', () => {
     // Flutter 는 cssFramework 프롬프트를 띄우지 않으므로 select 호출은 정확히 2회
     expect(prompts.select).toHaveBeenCalledTimes(2);
     const cfg = await fs.readJson(path.join(tmpDir, 'my-flutter', 'sh-ui.config.json'));
-    expect(cfg.cssFramework).toBe('plain');
+    // Flutter 는 cssFramework 필드 자체를 두지 않는다 (v0.59.10+).
+    expect(cfg.cssFramework).toBeUndefined();
+    expect(cfg.platform).toBe('flutter');
   });
 
   it('scenario 7 — 부분 플래그 (name, platform 만 제공, 나머지는 프롬프트)', async () => {
@@ -912,7 +914,7 @@ describe('sh-ui create smoke tests', () => {
   //   - flat 에는 src/ 가 절대 없어야 함 (FSD 슬라이스 부재가 flat 의 본질)
   //   - lib/ + components/ 가 있어야 함
   //   - 플러그인 산출물이 flat 경로로 떨어져야 함
-  //   - tsconfig 의 paths 가 scoped (@/lib/*, @/components/*, @/app/*)
+  //   - tsconfig 의 paths 가 scoped (@/lib/*, @/components/*)
   //   - 어떤 파일에도 @/src/ import 가 남아있지 않아야 함
 
   describe('arch=flat 매트릭스', () => {
@@ -955,7 +957,8 @@ describe('sh-ui create smoke tests', () => {
       const tsconfig = await fs.readJson(path.join(dir, 'tsconfig.json'));
       expect(tsconfig.compilerOptions.paths['@/lib/*']).toEqual(['./lib/*']);
       expect(tsconfig.compilerOptions.paths['@/components/*']).toEqual(['./components/*']);
-      expect(tsconfig.compilerOptions.paths['@/app/*']).toEqual(['./app/*']);
+      // @/app/* alias 제외 — Next.js routes 에선 alias 사용 안 됨.
+      expect(tsconfig.compilerOptions.paths['@/app/*']).toBeUndefined();
       expect(tsconfig.compilerOptions.paths['@/*']).toBeUndefined();
     });
 

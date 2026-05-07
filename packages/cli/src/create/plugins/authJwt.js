@@ -33,6 +33,56 @@ export const authJwtPlugin = {
   // BFF 와 withAuthRetry 가 자동 활용한다.
 
   files: (arch) => ({
+    // placeholder sign-in page — proxy.ts 가 미인증 요청을 /sign-in 으로 redirect
+    // 하므로, 페이지가 없으면 사용자가 dev 띄우자마자 무한 404 루프에 빠진다.
+    // 템플릿 단계에선 dev 우회용 "fake 토큰 set" 버튼 + 안내 문구로 최소화.
+    // next-intl 활성 시 nextIntl 플러그인의 transforms 가 [locale]/sign-in 으로 옮긴다.
+    'app/sign-in/page.tsx': `'use client';
+
+/**
+ * auth-jwt 플러그인의 placeholder sign-in 페이지.
+ *
+ * 실제 프로덕션에선 백엔드 sign-in API 와 연동하는 폼으로 교체해야 한다.
+ * 지금은 dev 시 미인증 redirect 루프를 끊기 위한 최소 페이지.
+ */
+export default function SignInPage() {
+  const setDevToken = () => {
+    document.cookie = 'accessToken=dev-placeholder; path=/; max-age=86400';
+    document.cookie = 'refreshToken=dev-placeholder; path=/; max-age=86400';
+    window.location.href = '/';
+  };
+
+  // 토큰 기반 색상 — 다크/라이트 자동 적응. inline hex 사용 시 다크에서 시인성 깨짐.
+  return (
+    <main style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ maxWidth: 420, width: '100%', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <h1 style={{ fontSize: 24, margin: 0, color: 'var(--foreground)' }}>Sign in</h1>
+        <p style={{ color: 'var(--foreground-muted)', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+          auth-jwt 플러그인 placeholder 페이지입니다. 실제 인증 연동 전까지는
+          아래 버튼으로 dev 용 가짜 토큰을 설정해 가드를 우회할 수 있습니다.
+        </p>
+        <button
+          type="button"
+          onClick={setDevToken}
+          style={{
+            padding: '10px 16px',
+            borderRadius: 8,
+            border: '1px solid var(--border-strong)',
+            background: 'var(--primary)',
+            color: 'var(--primary-foreground)',
+            cursor: 'pointer',
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
+          Continue (dev — set fake token)
+        </button>
+      </div>
+    </main>
+  );
+}
+`,
+
     'proxy.ts': `import { NextRequest, NextResponse } from 'next/server';
 
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];
@@ -245,7 +295,7 @@ const proxyRequest = async (
         data: null,
         error: {
           code: 'NETWORK_ERROR',
-          message: '서버에 연결할 수 없습니다.',
+          message: 'Failed to reach upstream server.',
         },
       },
       { status: 502 },

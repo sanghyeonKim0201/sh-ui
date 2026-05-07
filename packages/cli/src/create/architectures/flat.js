@@ -43,9 +43,9 @@ export const flatArch = {
   },
 
   // Scoped alias — 카테고리별로 명시. FSD 의 catch-all `@/*` 와 의도적으로 다름.
+  // Next.js 의 `app/` 라우트 디렉토리는 import alias 가 거의 쓰이지 않아 제외.
   tsconfigPaths: {
     '@/lib/*':        ['./lib/*'],
     '@/components/*': ['./components/*'],
-    '@/app/*':        ['./app/*'],
   },
 };

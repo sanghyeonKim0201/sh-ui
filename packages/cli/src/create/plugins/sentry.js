@@ -65,6 +65,8 @@ export const sentryPlugin = {
   files: (arch) => ({
     'sentry.server.config.ts': `import * as Sentry from '@sentry/nextjs';
 
+import { ApiError } from '${arch.aliases.api}/error';
+
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   environment: process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? 'dev',
@@ -77,10 +79,8 @@ Sentry.init({
 
     const error = hint?.originalException;
 
-    if (error instanceof Error && error.name === 'ApiError') {
-      const status = (error as { status?: number }).status;
-      if (status === 401) return null;
-    }
+    // 401 (인증 실패) 은 비즈니스 흐름 — Sentry 로 안 보냄.
+    if (error instanceof ApiError && error.status === 401) return null;
 
     if (event.exception?.values?.[0]?.value?.includes('An error occurred in the Server Components render')) {
       return null;
@@ -186,6 +186,8 @@ Sentry.init({
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 `,
 
+    // global-error.tsx — root layout 자체가 깨졌을 때의 fallback. Tailwind/CSS 가 로드 안 될 수
+    // 있어 inline style 위주. 한국어로 통일 ([locale]/error.tsx 와 동일 메시지 톤).
     'app/global-error.tsx': `'use client';
 
 import * as Sentry from '@sentry/nextjs';
@@ -201,13 +203,23 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html>
-      <body>
-        <div className='flex min-h-screen items-center justify-center'>
-          <div className='text-center'>
-            <h1 className='text-2xl font-bold'>Something went wrong!</h1>
-            <p className='mt-2 text-gray-600'>{error.message}</p>
-          </div>
+    <html lang='ko'>
+      <body
+        style={{
+          margin: 0,
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily:
+            'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        }}
+      >
+        <div style={{ textAlign: 'center', padding: 24 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>
+            오류가 발생했습니다
+          </h1>
+          <p style={{ marginTop: 8, color: '#6b7280' }}>{error.message}</p>
         </div>
       </body>
     </html>
@@ -215,6 +227,10 @@ export default function GlobalError({
 }
 `,
 
+    // [locale] 안으로 이동 시 next-intl 플러그인이 i18n-aware 버전으로 replace 함.
+    // 여기 emit 되는 버전은 next-intl 미활성 케이스용 — 한국어 + 토큰 기반 색상.
+    // \`bg-accent\` 같은 미정의 토큰은 사용하지 않고 \`--background-muted\` / \`--danger\`
+    // 등 tokens.css 에 실재하는 변수만 사용.
     'app/error.tsx': `'use client';
 
 import * as Sentry from '@sentry/nextjs';
@@ -235,20 +251,22 @@ export default function Error({
 
   return (
     <div className='flex min-h-screen items-center justify-center px-4'>
-      <div className='w-full max-w-md rounded-lg border p-6 shadow-lg'>
+      <div className='border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-lg'>
         <div className='mb-4 flex justify-center'>
-          <div className='flex h-16 w-16 items-center justify-center rounded-full bg-red-50 dark:bg-red-950'>
-            <AlertTriangle className='h-8 w-8 text-red-600 dark:text-red-400' />
+          <div className='bg-danger/10 flex h-16 w-16 items-center justify-center rounded-full'>
+            <AlertTriangle className='text-danger h-8 w-8' />
           </div>
         </div>
 
-        <h2 className='mb-2 text-center text-2xl font-bold'>오류가 발생했습니다</h2>
-        <p className='mb-6 text-center text-sm text-gray-500'>
+        <h2 className='text-foreground mb-2 text-center text-2xl font-bold'>
+          오류가 발생했습니다
+        </h2>
+        <p className='text-foreground-muted mb-6 text-center text-sm'>
           예상치 못한 오류가 발생했습니다. 다시 시도해주세요.
         </p>
 
-        <div className='rounded-md border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950'>
-          <p className='text-sm text-red-600 dark:text-red-400'>
+        <div className='border-danger/30 bg-danger/5 rounded-md border p-3'>
+          <p className='text-danger text-sm'>
             {error.message || '알 수 없는 오류'}
           </p>
         </div>
@@ -256,7 +274,7 @@ export default function Error({
         <div className='mt-6 space-y-3'>
           <button
             onClick={reset}
-            className='flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90'
+            className='bg-primary text-primary-foreground hover:bg-primary-hover flex w-full items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium'
           >
             <RefreshCw className='h-4 w-4' />
             다시 시도
@@ -264,7 +282,7 @@ export default function Error({
 
           <Link
             href='/'
-            className='flex w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-accent'
+            className='border-border text-foreground hover:bg-background-muted flex w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium'
           >
             <Home className='h-4 w-4' />
             홈으로 이동
@@ -272,8 +290,8 @@ export default function Error({
         </div>
 
         {process.env.NODE_ENV === 'development' && error.digest && (
-          <div className='mt-4 rounded-md bg-gray-50 p-3 dark:bg-gray-900'>
-            <p className='text-xs text-gray-600 dark:text-gray-400'>
+          <div className='bg-background-subtle mt-4 rounded-md p-3'>
+            <p className='text-foreground-subtle text-xs'>
               Error ID: {error.digest}
             </p>
           </div>
@@ -436,7 +454,9 @@ export const logApiError = (prefix: string, params: ApiLogParams): void => {
   console.error(\`- Status: \${status ?? 'N/A'}\`);
 
   if (requestHeaders) {
-    const { Authorization: _, ...safeHeaders } = requestHeaders;
+    // Authorization 토큰은 로그에서 가린다.
+    const { Authorization: _authorization, ...safeHeaders } = requestHeaders;
+    void _authorization;
     console.error('- Request Headers:', safeHeaders);
   }
   if (requestBody) console.error('- Request Body:', requestBody);

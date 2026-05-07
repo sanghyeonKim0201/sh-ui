@@ -1,6 +1,5 @@
 {
   "platform": "flutter",
-  "cssFramework": "plain",
   "theme": {
     "base": "neutral",
     "radius": "md",
