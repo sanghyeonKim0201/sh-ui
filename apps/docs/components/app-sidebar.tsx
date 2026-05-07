@@ -48,6 +48,7 @@ const topLinks: TopLink[] = [
   { key: "mcp", href: "/mcp", icon: PlugIcon },
   { key: "cssFramework", href: "/css-framework", icon: LayersIcon },
   { key: "tokens", href: "/tokens", icon: PaletteIcon },
+  { key: "foundations", href: "/foundations", icon: BoxesIcon },
   { key: "theming", href: "/theming", icon: BrushIcon },
   { key: "guidelines", href: "/guidelines", icon: BookOpenIcon },
   { key: "recipes", href: "/recipes", icon: WrenchIcon },
