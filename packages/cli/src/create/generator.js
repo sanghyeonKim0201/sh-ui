@@ -1348,6 +1348,13 @@ import { routing } from '${configAlias}/i18n/routing';
 
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];
 
+/**
+ * 홈(\`/\`, \`/{locale}\`) 진입 시 redirect 할 path. 빈 문자열이면
+ * \`app/[locale]/page.tsx\` 가 그대로 노출. 예: '/dashboard', '/projects'.
+ * 인증 가드 위에서 동작하므로 미인증이면 그대로 \`/sign-in\` 으로 빠진다.
+ */
+const HOME_REDIRECT = '';
+
 const intl = createIntlMiddleware(routing);
 
 /**
@@ -1368,7 +1375,8 @@ const stripLocalePrefix = (pathname: string): string => {
  * Next 16+ proxy.ts (구 middleware.ts).
  * next-intl 라우팅 + auth-jwt 토큰 존재 체크 합성 버전.
  *
- * - intl 이 먼저 로케일 prefix 처리 + NEXT_LOCALE 쿠키 set
+ * - \`/\` + HOME_REDIRECT 설정 → 해당 경로로 리다이렉트 (인증 가드보다 먼저)
+ * - intl 이 로케일 prefix 처리 + NEXT_LOCALE 쿠키 set
  * - 그 위에 인증 가드 — 토큰 없고 인증 라우트도 아니면 /sign-in 으로 redirect
  * - AT 만료 검사나 refresh 는 하지 않는다 (BFF 가 처리)
  */
@@ -1377,6 +1385,10 @@ export default function proxy(req: NextRequest) {
   const pathname = stripLocalePrefix(req.nextUrl.pathname);
   const hasToken = !!req.cookies.get('accessToken')?.value;
   const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
+
+  if (pathname === '/' && HOME_REDIRECT) {
+    return NextResponse.redirect(new URL(HOME_REDIRECT, req.url));
+  }
 
   if (isAuthRoute) return intlRes;
   if (!hasToken) return NextResponse.redirect(new URL('/sign-in', req.url));
