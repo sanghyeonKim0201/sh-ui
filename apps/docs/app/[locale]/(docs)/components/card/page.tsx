@@ -280,6 +280,103 @@ ShUiCard(
         />
       </Preview>
 
+      <h3>로딩 상태 (Skeleton placeholder)</h3>
+      <p className="muted">
+        Card 자체에는 로딩 prop 이 없다. 데이터가 도착하기 전에는 같은 자리·같은 크기의{" "}
+        <code>Skeleton</code> 으로 본문을 채워 레이아웃 점프를 막는다. Card 에는{" "}
+        <code>aria-busy</code> 를 두어 스크린리더에 진행 중임을 알린다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function UserCard({ userId }: { userId: string }) {
+  const { data, isLoading } = useUser(userId);
+
+  return (
+    <Card aria-busy={isLoading || undefined}>
+      <CardHeader>
+        <CardTitle>
+          {isLoading ? (
+            <Skeleton style={{ height: "1.25rem", width: "8rem" }} />
+          ) : (
+            data.name
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+            <Skeleton style={{ height: "1rem" }} />
+            <Skeleton style={{ height: "1rem", width: "85%" }} />
+            <Skeleton style={{ height: "1rem", width: "60%" }} />
+          </div>
+        ) : (
+          <p>{data.bio}</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_card.dart';
+import '../widgets/sh_ui_skeleton.dart';
+
+class UserCard extends StatelessWidget {
+  final bool isLoading;
+  final User? data;
+  const UserCard({super.key, required this.isLoading, this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      // 스크린리더에 진행 중임을 알림
+      liveRegion: isLoading,
+      child: ShUiCard(
+        children: [
+          ShUiCardHeader(
+            children: [
+              isLoading
+                  ? const ShUiSkeleton(width: 128, height: 20)
+                  : ShUiCardTitle(child: Text(data!.name)),
+            ],
+          ),
+          ShUiCardContent(
+            child: isLoading
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: const [
+                      ShUiSkeleton(height: 16),
+                      SizedBox(height: 8),
+                      ShUiSkeleton(height: 16, width: 240),
+                      SizedBox(height: 8),
+                      ShUiSkeleton(height: 16, width: 160),
+                    ],
+                  )
+                : Text(data!.bio),
+          ),
+        ],
+      ),
+    );
+  }
+}`,
+          },
+        ]}
+      />
+      <p className="muted" style={{ marginTop: "var(--space-3)" }}>
+        팁 — Skeleton 의 너비는 실제 텍스트가 차지할 너비에 가깝게 잡는다 (제목은 짧게, 본문은 가득).
+        그래야 데이터가 도착했을 때 시각적 점프가 거의 없다.
+      </p>
+
       <h2>구성 요소</h2>
       <SubComponents
         rows={[
