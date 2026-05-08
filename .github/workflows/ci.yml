@@ -29,3 +29,6 @@ jobs:
 
       - name: Typecheck docs
         run: pnpm --filter @sh-ui/docs typecheck
+
+      - name: Lint — registry/summary 정합성 + 듀얼카피 drift
+        run: pnpm lint:drift

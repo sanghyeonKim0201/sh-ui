@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.64.5",
+      "date": "2026-05-08",
+      "title": "patch — registry drift 가드 (CI lint 3종) + form/calendar summary 추가",
+      "type": "patch",
+      "highlights": [
+        "**CI lint 3종 추가** — `scripts/lint-registry.mjs` (B: registry.json ↔ summary key 매칭, C: summary 텍스트의 PascalCase 식별자가 실제 export 에 있는지 휴리스틱 검증) + `scripts/lint-dual-copy.mjs` (A: registry/<plat>/components/<name>/ ↔ apps/docs/components/ui/<name>/ drift 검출). PR/push 마다 `pnpm lint:drift` 가 ci.yml 에서 자동 실행. v0.64.0~0.64.4 audit 의 13건 React + 16건 Flutter 잘못 가 같은 종류였고, 앞으로는 컴포넌트 추가/변경 시 동기화 빠뜨리는 걸 자동으로 막는다.",
+        "**baseline 기반 가드** — 듀얼카피 lint 는 도입 시점의 알려진 drift 10건은 BASELINE_DRIFTS 로 통과시키고, **새 drift 만 fail**. 기존 drift 는 별도 cleanup PR 에서 점진 해소. baseline 항목 fix 후 BASELINE_DRIFTS 에서 제거하는 흐름을 알리는 stale warning 도 포함.",
+        "**form / form-yup / form-rhf / form-tanstack / calendar summary 추가** — 그동안 generate.mjs 가 'summary 누락' 경고만 띄우던 5개 컴포넌트 채움. `sh_ui_list_components` 결과에서 빈 summary 였던 부분이 이제 실제 사용법 노출."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.5"
+    },
+    {
       "version": "0.64.4",
       "date": "2026-05-08",
       "title": "patch — Flutter summary 16건 정확성 audit",

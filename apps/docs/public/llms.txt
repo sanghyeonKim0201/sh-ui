@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.3 (2026-05-08) — patch — Trigger·Close 컴포넌트 7종 소스 JSDoc 에 render-prop 함정 명시
+**최신 버전**: v0.64.4 (2026-05-08) — patch — Flutter summary 16건 정확성 audit
 
 ## React Components
 
@@ -31,8 +31,8 @@
 - **input** — 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PhoneInput / BusinessNumberInput 변형 포함. 비밀번호 토글은 InputGroup + InputAdornment 레시피로 조립.
 - **numeric-input** — 슬라이더 동반·토큰 편집기용 컴팩트 숫자 입력 — onChange 즉시 min/max clamp, focus select-all, 단위(px/ms/%/° 등) suffix. 일반 폼 입력은 NumberInput 권장.
 - **file-upload** — 파일 업로드 — 드롭존, 다중 파일, 진행률.
-- **form** — Form 컴포넌트.
-- **form-yup** — FormYup 컴포넌트.
+- **form** — compound 폼 빌더 — `Form` (Form.Field / Form.Label / Form.Description / Form.Error / Form.Control / Form.Section / Form.SectionTitle / Form.Steps / Form.Step) + useShUiForm 훅 + createFormStore + useFormSteps. 검증은 Standard Schema (yup/zod 등) 또는 inline 함수로 부착. 외부 form 라이브러리 어댑터는 form-rhf / form-tanstack / form-yup 별도 entry.
+- **form-yup** — yup 스키마 → sh-ui Form 의 Standard Schema 어댑터. `yupSchema(yupObject)` 로 감싸 Form 의 `validation` prop 에 전달. yup 자체는 peerDependency.
 - **code-panel** — Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.
 - **code-tabs** — 여러 코드 뷰(예: React/Flutter, 강조/전체)를 탭으로 전환 — Tabs + CodePanel 합성, 각 탭 내용은 CodePanelProps 그대로.
 - **page-toc** — 페이지 자동 목차 — 헤딩 스캔 · slugify · IntersectionObserver active 추적 · smooth scroll. routeKey 로 라우트 변경 자동 재스캔, levels/excludeSelector 커스터마이즈.
@@ -66,13 +66,13 @@
 - **toggle** — 단일 토글 / 토글 그룹 — pressed 상태 (Base UI).
 - **textarea** — 여러 행 텍스트 입력 — rows. autoResize 같은 추가 prop 없음.
 - **toast** — 임시 알림 — `toast()` 함수 호출 + `<Toaster />` 컴포넌트 (sonner-style). useToast 훅·ToastProvider 아님. aria-live 자동.
-- **calendar** — Calendar 컴포넌트.
+- **calendar** — 내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장.
 - **date-picker** — 날짜 선택 — separate exports: DatePicker / DatePickerTrigger / DatePickerContent / DatePickerCalendar / DatePickerFooter / DateRangePicker + useDatePicker 훅 (Base UI). DatePickerTrigger 는 sh-ui 자체 `<button>` 이라 자식 button 중첩 금지 — 외관 커스터마이즈는 `children` 함수 패턴(현재 값/포맷/placeholder 인자) 또는 `className` 직접 스타일링 사용 (Base UI 의 `render` prop 패턴 아님).
 - **skeleton** — 스켈레톤 로딩 플레이스홀더.
 - **accordion** — 펼침/접힘 아코디언 — separate exports: Accordion / AccordionItem / AccordionTrigger / AccordionContent (Base UI). single/multiple 모드. AccordionTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - **carousel** — 슬라이드 캐러셀 — Embla 기반, autoplay/autoscroll.
-- **form-rhf** — FormRhf 컴포넌트.
-- **form-tanstack** — FormTanstack 컴포넌트.
+- **form-rhf** — React Hook Form 인스턴스 → sh-ui FormStore 어댑터. `adaptReactHookForm(rhfInstance, config)` — RHF 가 state owner, sh-ui 가 메타(steps/sections) 관리. react-hook-form 은 peerDependency.
+- **form-tanstack** — TanStack Form 인스턴스 → sh-ui FormStore 어댑터. `adaptTanstackForm(tanstackInstance, config)` — TanStack Form 이 state owner. @tanstack/react-form 은 peerDependency.
 
 ## React — 유틸 / 훅 / 스타일 기반
 

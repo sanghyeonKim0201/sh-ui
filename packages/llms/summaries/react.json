@@ -50,6 +50,11 @@
     "animations": "공용 애니메이션 키프레임 — animations.css.",
     "cn": "className 합성 헬퍼. plain 변종(`cn.ts`)은 순수 concat, tailwind 변종(`cn.tailwind.ts`)은 clsx + tailwind-merge 로 utility 충돌 자동 머지 (`cn('bg-red-500', 'bg-blue-500')` → `'bg-blue-500'`).",
     "use-media-query": "미디어 쿼리 매칭 훅.",
-    "use-active-section": "스크롤 위치로 현재 섹션 감지 훅."
+    "use-active-section": "스크롤 위치로 현재 섹션 감지 훅.",
+    "form": "compound 폼 빌더 — `Form` (Form.Field / Form.Label / Form.Description / Form.Error / Form.Control / Form.Section / Form.SectionTitle / Form.Steps / Form.Step) + useShUiForm 훅 + createFormStore + useFormSteps. 검증은 Standard Schema (yup/zod 등) 또는 inline 함수로 부착. 외부 form 라이브러리 어댑터는 form-rhf / form-tanstack / form-yup 별도 entry.",
+    "form-yup": "yup 스키마 → sh-ui Form 의 Standard Schema 어댑터. `yupSchema(yupObject)` 로 감싸 Form 의 `validation` prop 에 전달. yup 자체는 peerDependency.",
+    "form-rhf": "React Hook Form 인스턴스 → sh-ui FormStore 어댑터. `adaptReactHookForm(rhfInstance, config)` — RHF 가 state owner, sh-ui 가 메타(steps/sections) 관리. react-hook-form 은 peerDependency.",
+    "form-tanstack": "TanStack Form 인스턴스 → sh-ui FormStore 어댑터. `adaptTanstackForm(tanstackInstance, config)` — TanStack Form 이 state owner. @tanstack/react-form 은 peerDependency.",
+    "calendar": "내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장."
   }
 }
