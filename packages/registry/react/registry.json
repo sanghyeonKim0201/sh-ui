@@ -1768,20 +1768,6 @@
         "utils"
       ]
     },
-    "theme": {
-      "name": "theme",
-      "type": "component",
-      "files": [
-        {
-          "src": "components/theme/index.tsx",
-          "dest": "{components}/theme/index.tsx"
-        }
-      ],
-      "dependencies": [
-        "next-themes"
-      ],
-      "registryDependencies": []
-    },
     "checkbox": {
       "name": "checkbox",
       "type": "component",

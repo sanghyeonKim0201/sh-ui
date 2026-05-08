@@ -11,10 +11,6 @@ import { meta as checkoutFlow } from "./checkout-flow/meta";
 import { Example as CheckoutFlowExample } from "./checkout-flow/Example";
 import { meta as onboardingFlow } from "./onboarding-flow/meta";
 import { Example as OnboardingFlowExample } from "./onboarding-flow/Example";
-import { meta as themeDashboard } from "./theme-dashboard/meta";
-import { Example as ThemeDashboardExample } from "./theme-dashboard/Example";
-import { meta as themeLogin } from "./theme-login/meta";
-import { Example as ThemeLoginExample } from "./theme-login/Example";
 
 export const examples: ExampleEntry[] = [
   {
@@ -46,16 +42,6 @@ export const examples: ExampleEntry[] = [
     ...onboardingFlow,
     Component: OnboardingFlowExample,
     sourceFiles: ["onboarding-flow/Example.tsx", "onboarding-flow/example.css"],
-  },
-  {
-    ...themeDashboard,
-    Component: ThemeDashboardExample,
-    sourceFiles: ["theme-dashboard/Example.tsx", "theme-dashboard/example.css"],
-  },
-  {
-    ...themeLogin,
-    Component: ThemeLoginExample,
-    sourceFiles: ["theme-login/Example.tsx", "theme-login/example.css"],
   },
 ];
 

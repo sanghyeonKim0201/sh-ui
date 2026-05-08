@@ -37,7 +37,6 @@
     "spinner": "로딩 스피너 — size.",
     "separator": "구분선 — orientation(horizontal/vertical).",
     "skeleton": "스켈레톤 로딩 플레이스홀더.",
-    "theme": "테마 프로바이더 + useTheme 훅 — light/dark/system.",
     "code-panel": "Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.",
     "code-tabs": "여러 코드 뷰(예: React/Flutter, 강조/전체)를 탭으로 전환 — Tabs + CodePanel 합성, 각 탭 내용은 CodePanelProps 그대로.",
     "page-toc": "페이지 자동 목차 — 헤딩 스캔 · slugify · IntersectionObserver active 추적 · smooth scroll. routeKey 로 라우트 변경 자동 재스캔, levels/excludeSelector 커스터마이즈.",

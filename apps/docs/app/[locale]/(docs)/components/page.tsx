@@ -79,12 +79,6 @@ const groups: Group[] = [
       { name: "PageTOC", slug: "page-toc", description: "페이지 자동 목차 — 헤딩 스캔 · 스크롤 추적 · smooth scroll." },
     ],
   },
-  {
-    title: "Theme",
-    items: [
-      { name: "Theme", slug: "theme", description: "테마 프로바이더 + useTheme — light/dark/system." },
-    ],
-  },
 ];
 
 export default function ComponentsIndexPage() {

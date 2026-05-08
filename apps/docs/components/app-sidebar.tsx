@@ -110,7 +110,6 @@ const components: { title: string; href: string }[] = [
   { title: "Switch", href: "/components/switch" },
   { title: "Tabs", href: "/components/tabs" },
   { title: "Textarea", href: "/components/textarea" },
-  { title: "Theme", href: "/components/theme" },
   { title: "Toast", href: "/components/toast" },
   { title: "Toggle", href: "/components/toggle" },
   { title: "Tooltip", href: "/components/tooltip" },
