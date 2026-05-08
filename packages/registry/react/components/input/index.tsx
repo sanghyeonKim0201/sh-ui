@@ -377,10 +377,10 @@ export function isValidBRN(digits: string): boolean {
   if (d.length !== 10) return false;
   const w = [1, 3, 7, 1, 3, 7, 1, 3, 5];
   let sum = 0;
-  for (let i = 0; i < 9; i++) sum += parseInt(d[i], 10) * w[i];
-  sum += Math.floor((parseInt(d[8], 10) * 5) / 10);
+  for (let i = 0; i < 9; i++) sum += parseInt(d[i]!, 10) * w[i]!;
+  sum += Math.floor((parseInt(d[8]!, 10) * 5) / 10);
   const check = (10 - (sum % 10)) % 10;
-  return check === parseInt(d[9], 10);
+  return check === parseInt(d[9]!, 10);
 }
 
 export interface BusinessNumberInputProps

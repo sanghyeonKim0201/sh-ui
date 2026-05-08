@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.63.2",
+      "date": "2026-05-08",
+      "title": "patch — input `isValidBRN` strict-indexing typecheck 통과",
+      "type": "patch",
+      "highlights": [
+        "**`isValidBRN` 의 배열 인덱싱 4곳에 non-null assertion 추가** — `noUncheckedIndexedAccess: true` 인 사용자 프로젝트에서 `parseInt(d[i], 10)` 가 `string | undefined` 로 접혀 typecheck 실패하던 회귀 수정. 직전 길이 가드(`d.length !== 10`) 로 모든 접근이 안전한 구간이라 런타임 동작 변경 없음.",
+        "**4 variant 모두 적용** — plain / tailwind / vanilla-extract / css-modules. `apps/docs` 듀얼카피본도 동기화."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.2"
+    },
+    {
       "version": "0.63.1",
       "date": "2026-05-08",
       "title": "patch — templates ThemeProvider 옵션 정비",
