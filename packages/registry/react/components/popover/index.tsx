@@ -12,10 +12,18 @@ type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
  */
 export const Popover = BasePopover.Root;
 
-/** Popover를 여는 트리거. */
+/**
+ * Popover 를 여는 트리거. 자체로 `<button>` 을 렌더 — 자식 button 중첩 금지.
+ * 커스텀 Button 등으로 슬롯하려면 `render` prop:
+ *
+ *   <PopoverTrigger render={<Button>열기</Button>} />
+ */
 export const PopoverTrigger = BasePopover.Trigger;
 
-/** Popover를 닫는 요소. */
+/**
+ * Popover 를 닫는 요소. 자체로 `<button>` — 자식 button 중첩 금지. 다른
+ * 엘리먼트 슬롯은 `render` prop.
+ */
 export const PopoverClose = BasePopover.Close;
 
 export interface PopoverContentProps

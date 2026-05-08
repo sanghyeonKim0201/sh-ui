@@ -30,6 +30,13 @@ export function SelectValue({
   );
 }
 
+/**
+ * Select 트리거. 자체로 `<button>` 을 렌더 (chevron icon 포함) — 자식으로
+ * 또 다른 button (예: 커스텀 Button) 을 넣지 말 것. 트리거를 다른 엘리먼트
+ * 로 바꾸려면 Base UI 의 `render` prop:
+ *
+ *   <SelectTrigger render={<Button variant='secondary'>{...}</Button>} />
+ */
 export const SelectTrigger = React.forwardRef<
   HTMLButtonElement,
   Omit<React.ComponentPropsWithoutRef<typeof BaseSelect.Trigger>, "className"> & { className?: string }

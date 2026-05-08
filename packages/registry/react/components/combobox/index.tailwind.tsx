@@ -9,8 +9,20 @@ type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
 export const Combobox = BaseCombobox.Root;
 export const ComboboxIcon = BaseCombobox.Icon;
+
+/**
+ * Combobox 토글 트리거. 자체로 `<button>` 을 렌더 — 자식으로 또 다른 button
+ * (예: 커스텀 Button) 을 넣지 말 것. 다른 엘리먼트로 슬롯하려면 Base UI 의
+ * `render` prop 사용.
+ */
 export const ComboboxTrigger = BaseCombobox.Trigger;
+
+/**
+ * 입력값 클리어 버튼. 자체로 `<button>` — 자식 button 중첩 금지. 다른
+ * 엘리먼트 슬롯은 `render` prop.
+ */
 export const ComboboxClear = BaseCombobox.Clear;
+
 export const ComboboxValue = BaseCombobox.Value;
 export const ComboboxGroup = BaseCombobox.Group;
 export const ComboboxChips = BaseCombobox.Chips;

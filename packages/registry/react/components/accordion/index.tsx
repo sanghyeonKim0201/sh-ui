@@ -45,8 +45,13 @@ export const AccordionItem = React.forwardRef<
 AccordionItem.displayName = "AccordionItem";
 
 /**
- * Trigger: 헤더 버튼. 우측에 chevron이 자동으로 붙고 expanded 상태에서 회전한다.
- * Base UI의 AccordionHeader(h3)로 감싸 의미론적 헤더 구조를 유지한다.
+ * Trigger: 헤더 버튼. 우측에 chevron 이 자동으로 붙고 expanded 상태에서 회전한다.
+ * Base UI 의 AccordionHeader(h3) 로 감싸 의미론적 헤더 구조를 유지한다.
+ *
+ * 자체로 `<button>` 을 렌더하므로 자식으로 또 다른 button 을 넣지 말 것.
+ * 다른 엘리먼트로 슬롯하려면 Base UI 의 `render` prop:
+ *
+ *   <AccordionTrigger render={<MyHeader>...</MyHeader>} />
  */
 export const AccordionTrigger = React.forwardRef<
   HTMLButtonElement,
