@@ -3,6 +3,16 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.61.3",
+      "date": "2026-05-08",
+      "title": "fix — `sh-ui add tokens` 가 base=custom 테마에서 깨지던 회귀",
+      "type": "patch",
+      "highlights": [
+        "**`sh-ui add tokens` 가 `theme.base: \"custom\"` 일 때 `해석 실패: {color.custom.50}` 로 깨지던 회귀 수정** — v0.61.2 에서 base64 테마 입력 시 `theme.base` 를 `'custom'` 으로 기록하기 시작했는데, 토큰 빌더가 `{color.<base>.<shade>}` placeholder 를 풀려다 'custom' 스케일을 못 찾아 throw 했음. base64 는 사후 색상 재해석이 불가능한 원본이므로 add tokens 를 no-op 으로 처리하고 안내 메시지 출력 (tokens.css 는 create 시점에 이미 정확히 주입됨)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.61.3"
+    },
+    {
       "version": "0.61.2",
       "date": "2026-05-08",
       "title": "fix — create 산출물의 sh-ui.config.json 누수 두 건 (paths.styles · theme.base)",
