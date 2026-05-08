@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.3 (2026-05-08) — patch — Trigger·Close 컴포넌트 7종 소스 JSDoc 에 render-prop 함정 명시
+**최신 버전**: v0.64.4 (2026-05-08) — patch — Flutter summary 16건 정확성 audit
 
 ## React — Components
 
@@ -77,6 +77,7 @@
 ### form
 
 - Type: component
+- Summary: compound 폼 빌더 — `Form` (Form.Field / Form.Label / Form.Description / Form.Error / Form.Control / Form.Section / Form.SectionTitle / Form.Steps / Form.Step) + useShUiForm 훅 + createFormStore + useFormSteps. 검증은 Standard Schema (yup/zod 등) 또는 inline 함수로 부착. 외부 form 라이브러리 어댑터는 form-rhf / form-tanstack / form-yup 별도 entry.
 - Install: `npx sh-ui-cli add form`
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/form`
@@ -85,6 +86,7 @@
 ### form-yup
 
 - Type: component
+- Summary: yup 스키마 → sh-ui Form 의 Standard Schema 어댑터. `yupSchema(yupObject)` 로 감싸 Form 의 `validation` prop 에 전달. yup 자체는 peerDependency.
 - Install: `npx sh-ui-cli add form-yup`
 - Registry deps: form (자동 설치됨)
 - Import: `@/components/ui/form-yup`
@@ -411,6 +413,7 @@
 ### calendar
 
 - Type: component
+- Summary: 내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장.
 - Install: `npx sh-ui-cli add calendar`
 - Registry deps: select, utils (자동 설치됨)
 - Import: `@/components/ui/calendar`
@@ -457,6 +460,7 @@
 ### form-rhf
 
 - Type: component
+- Summary: React Hook Form 인스턴스 → sh-ui FormStore 어댑터. `adaptReactHookForm(rhfInstance, config)` — RHF 가 state owner, sh-ui 가 메타(steps/sections) 관리. react-hook-form 은 peerDependency.
 - Install: `npx sh-ui-cli add form-rhf`
 - npm/pub deps: react-hook-form
 - Registry deps: form (자동 설치됨)
@@ -466,6 +470,7 @@
 ### form-tanstack
 
 - Type: component
+- Summary: TanStack Form 인스턴스 → sh-ui FormStore 어댑터. `adaptTanstackForm(tanstackInstance, config)` — TanStack Form 이 state owner. @tanstack/react-form 은 peerDependency.
 - Install: `npx sh-ui-cli add form-tanstack`
 - npm/pub deps: @tanstack/react-form
 - Registry deps: form (자동 설치됨)
@@ -873,6 +878,12 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.64.4 — patch — Flutter summary 16건 정확성 audit (2026-05-08)
+- **사실관계 정정 6건** — `card`/`dialog` 의 'header/body/footer named slot' (실제는 separate widget, Body 가 아니라 Content), `dialog` 의 'showDialog 로 호출' (실제는 `ShUiDialog.show<T>()` static, Flutter 빌트인 `showDialog` 와 다름), `checkbox` 의 'tristate' (실제 prop 은 `indeterminate`), `toast` 의 'ShUiToastOverlay' (실재 X — `ShUiToaster` + `ShUiToast.show()`), `tabs` 의 'ShUiTabsController' (실재 X — `ShUiTabs` + `ShUiTab` 데이터).
+- **exports 명시 보강 10건** — select/combobox 의 Multi 변종 (`ShUiMultiSelect<T>`, `ShUiMultiCombobox<T>`), date-picker 의 `ShUiDateRangePicker`, dropdown-menu 의 sealed `ShUiDropdownMenuEntry<T>` 자식들 (Item / CheckboxItem / RadioItem / Divider / Label), menubar 의 `ShUiMenubarMenu`, sidebar 의 Provider/Trigger/Header/Footer/Inset + `.of(ctx)` 패턴, app-shell 의 `ShUiAppShellGroup`/`Item`, header 의 `ShUiHeaderItem`, breadcrumb 의 `ShUiBreadcrumbItem`, popover 의 Title/Description, checkbox 의 `ShUiCheckboxGroup`. v0.64.1·v0.64.2 의 React audit 과 동일 톤으로 통일.
+- **MCP 양 플랫폼 정보 일관성 마무리** — React (v0.64.1·v0.64.2·v0.64.3) + Flutter (이번) 모두 source-of-truth 정확도 확보. AI 가 sh-ui MCP 로 컴포넌트 요청 시 환각으로 잘못된 위젯명·prop·호출 패턴을 만들어 내던 실패 모드 해소.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.4
+
 ### v0.64.3 — patch — Trigger·Close 컴포넌트 7종 소스 JSDoc 에 render-prop 함정 명시 (2026-05-08)
 - **컴포넌트 소스 JSDoc 보강 (7종 × 4 변종)** — `sh_ui_get_component` 와 사용자 프로젝트에 설치된 컴포넌트 모두 소스의 JSDoc 만 보이는데 `render` prop 안내가 거기 없어 AI 가 button 중첩 워크어라운드를 반복하던 문제를 차단. dialog / popover / select / dropdown-menu / accordion / combobox 의 Trigger·Close·SubTrigger·Clear 위에 "`<button>` 자체 렌더 → 자식 button 중첩 금지 → 다른 엘리먼트 슬롯은 `render` prop" 패턴을 일관 톤으로 박음.
 - **`render` 와 `children` 패턴 구분 명시** — date-picker 의 DatePickerTrigger 는 sh-ui 자체 `<button>` 이라 Base UI 의 `render` prop 이 아닌 `children` 함수 패턴(value/formatted/placeholder 인자) + `className` 직접 스타일링이 정석. 이 차이를 JSDoc + summary 양쪽에 명시.
@@ -894,11 +905,6 @@
 - **templates proxy.ts 에 `HOME_REDIRECT` 상수 추가** — `/` 진입 시 redirect 할 path 를 사용자가 한 줄로 지정. 빈 문자열이 기본이라 동작 변화 없음(= `app/page.tsx` 그대로 노출). `auth-jwt` 단독 / `next-intl` 단독 / `auth-jwt + next-intl` 합성 세 케이스 모두 동일 패턴. `/[locale]/page.tsx` 에 redirect RSC 를 따로 만들 필요 없이 미들웨어 한 곳에서 라우팅 게이트 처리.
 - **fix(input)**: `isValidBRN` 의 배열 인덱싱 4곳에 non-null assertion 추가 — `noUncheckedIndexedAccess: true` 인 사용자 프로젝트에서 `parseInt(d[i], 10)` 가 `string | undefined` 로 접혀 typecheck 실패하던 회귀. 직전 길이 가드(`d.length !== 10`) 로 모든 접근이 안전한 구간이라 런타임 동작 변경 없음. plain / tailwind / vanilla-extract / css-modules + `apps/docs` 듀얼카피본 동기화.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.0
-
-### v0.63.1 — patch — templates ThemeProvider 옵션 정비 (2026-05-08)
-- **templates 의 `ThemeProvider` 4곳에 `disableTransitionOnChange` 추가** — 토글 순간 transition 깜빡임 차단. nextjs-app / nextjs-standalone × flat / fsd 변종 모두 동일.
-- **옵션 의도 코멘트 보강** — attribute='class', defaultTheme/enableSystem, disableTransitionOnChange 가 왜 들어 있는지 + useTheme 는 next-themes 에서 직접 import 한다는 점을 파일 상단에 명시. 사용자가 RootLayout 작업 시 어디를 만져야 하는지 한눈에.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.1
 
 ## Resources
 
