@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.2 (2026-05-08) — patch — llms summary 13건 정확성 audit + Base UI render-prop 함정 일괄 명시
+**최신 버전**: v0.64.3 (2026-05-08) — patch — Trigger·Close 컴포넌트 7종 소스 JSDoc 에 render-prop 함정 명시
 
 ## React Components
 
@@ -90,38 +90,38 @@
 
 - **tokens** — ShUiTheme (ThemeExtension) — 색상/간격/타이포/반경/지속시간 토큰. Theme.of(ctx).extension<ShUiTheme>()로 접근.
 - **button** — ShUiButton — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).
-- **card** — ShUiCard — header/body/footer named slot.
+- **card** — ShUiCard — separate widgets: ShUiCard / ShUiCardHeader / ShUiCardTitle / ShUiCardDescription / ShUiCardContent / ShUiCardFooter (named slot 아님, Body 가 아니라 Content).
 - **input** — ShUiInput — TextField 래퍼 + sh-ui 토큰 스타일.
-- **checkbox** — ShUiCheckbox — tristate 지원.
+- **checkbox** — ShUiCheckbox / ShUiCheckboxGroup — `indeterminate` prop 으로 중간 상태 (Material 의 `tristate` 아님).
 - **radio** — ShUiRadio / ShUiRadioGroup — 단일 선택.
 - **switch** — ShUiSwitch — 토글 스위치.
 - **toggle** — ShUiToggle — 프레스 상태 유지 버튼.
 - **textarea** — ShUiTextarea — 다중 행 입력.
 - **label** — ShUiLabel — 폼 레이블.
 - **slider** — ShUiSlider — 단일 값, step.
-- **select** — ShUiSelect — 네이티브 대체 드롭다운 셀렉트.
-- **tabs** — ShUiTabs / ShUiTabsController — 탭 내비.
-- **dialog** — ShUiDialog — header/body/footer named slot, showDialog로 호출.
-- **popover** — ShUiPopover — 트리거 기준 오버레이.
-- **toast** — ShUiToast — ShUiToastOverlay로 스택 관리.
-- **date-picker** — ShUiDatePicker — 캘린더 팝업.
+- **select** — ShUiSelect<T> + ShUiSelectItem<T> / ShUiSelectGroup / ShUiSelectSeparator (모두 ShUiSelectElement). 다중 선택은 ShUiMultiSelect<T>.
+- **tabs** — ShUiTabs + ShUiTab (data class) — 탭 내비. `ShUiTabsController` 클래스 아님.
+- **dialog** — ShUiDialog + ShUiDialogTrigger / ShUiDialogContent / ShUiDialogHeader 분리 위젯. 명령형 호출은 `ShUiDialog.show<T>(...)` static (Flutter 빌트인 `showDialog` 아님).
+- **popover** — ShUiPopover + ShUiPopoverTitle / ShUiPopoverDescription — 트리거 기준 오버레이.
+- **toast** — 임시 알림 — `ShUiToast.show(ctx, ...)` static (또는 `.success` / `.danger` / `.warning`) + `ShUiToaster` 위젯 (앱 루트에 배치, 스택 관리). `ShUiToastOverlay` 클래스 아님.
+- **date-picker** — ShUiDatePicker (단일) + ShUiDateRangePicker (범위) — 캘린더 팝업.
 - **color-picker** — ShUiColorPicker — 색상 선택.
-- **combobox** — ShUiCombobox — 검색 가능 셀렉트.
+- **combobox** — ShUiCombobox<T> + ShUiComboboxItem<T> — 검색 가능 셀렉트. 다중 선택은 ShUiMultiCombobox<T>.
 - **file-upload** — ShUiFileUpload — 파일 선택/드롭.
-- **sidebar** — ShUiSidebar — 접이식 사이드바.
-- **app-shell** — ShUiAppShell — 사이드바 + 상단 바 + 본문 레이아웃.
-- **header** — ShUiHeader — 로고/네비/액션 영역.
+- **sidebar** — ShUiSidebar + ShUiSidebarProvider (앱 루트, 접힘 상태 보유) / ShUiSidebarTrigger / ShUiSidebarHeader / ShUiSidebarFooter / ShUiSidebarInset (본문 영역). 자식에서 상태 접근은 `ShUiSidebar.of(context)`.
+- **app-shell** — ShUiAppShell — 사이드바 + 상단 바 + 본문 레이아웃. nav 항목은 `ShUiAppShellItem` (label/icon/route 등) 을 `ShUiAppShellGroup` 에 묶어 전달.
+- **header** — ShUiHeader — 로고/네비/액션 영역. nav 항목은 `ShUiHeaderItem` (label/route/onTap 등) 을 items 에 전달.
 - **skeleton** — ShUiSkeleton — 로딩 플레이스홀더.
 - **accordion** — ShUiAccordion — 펼침/접힘. single/multiple.
 - **carousel** — ShUiCarousel — PageView 기반, autoplay/dots.
 - **badge** — ShUiBadge — 상태 뱃지.
 - **avatar** — ShUiAvatar — 이미지/initials fallback.
-- **breadcrumb** — ShUiBreadcrumb(items: [...]) — items 기반 경로 내비.
+- **breadcrumb** — ShUiBreadcrumb(items: [...]) — items 기반 경로 내비. items 원소는 `ShUiBreadcrumbItem` 위젯.
 - **pagination** — ShUiPagination(page:, pageCount:, siblingCount:, onPageChanged:) — 페이지 범위 계산 내장.
 - **tooltip** — ShUiTooltip — long-press / hover 힌트.
-- **dropdown-menu** — ShUiDropdownMenu — 트리거 기준 메뉴.
+- **dropdown-menu** — ShUiDropdownMenu<T> + ShUiDropdownMenuItem<T> / ShUiDropdownMenuCheckboxItem<T> / ShUiDropdownMenuRadioItem<T> / ShUiDropdownMenuDivider<T> / ShUiDropdownMenuLabel<T> (모두 ShUiDropdownMenuEntry<T> 의 sealed 자식).
 - **context-menu** — ShUiContextMenu — 길게 누르기/우클릭 메뉴.
-- **menubar** — ShUiMenubar — 수평 메뉴바.
+- **menubar** — ShUiMenubar + ShUiMenubarMenu — 수평 메뉴바, 각 ShUiMenubarMenu 가 하나의 드롭다운.
 - **progress** — ShUiProgress — 선형 진행률, indeterminate.
 - **spinner** — ShUiSpinner — 원형 로딩.
 - **separator** — ShUiSeparator — 구분선 (horizontal/vertical).
