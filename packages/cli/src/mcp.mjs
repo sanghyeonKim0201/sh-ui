@@ -179,17 +179,23 @@ function buildServerInstructions(cliName) {
 
 사용자가 "apps/web 을 apps/dashboard 로 바꿔줘" 같이 모노레포 앱 이름 변경을 요청하면 \`sh_ui_rename_app\` 사용 — 손으로 6~10 군데 (디렉토리, package.json name, tsconfig paths, Dockerfile WORKDIR, next.config transpilePackages, sh-ui.config aliases, README, .github/workflows) 갈아엎지 않도록 자동화. \`dryRun: true\` 로 먼저 변경 매트릭스 보여주고 사용자 확인 후 실행 권장.
 
-## 테마 커스터마이징 (스캐폴드 결과 톤이 마음에 안 들 때)
+## 테마 — encode-first, edit-later 금지
 
-스캐폴드 후 사용자가 "눈 아프다" / "Linear 톤으로" 같이 톤 조정을 요청하면, **\`tokens.css\` 직접 편집** + **편집 결과를 base64 로 백업** 두 단계를 같이 한다 — 그래야 다음에 같은 프로젝트를 재생성해도 톤이 보존된다.
+\`sh_ui_create_project\` 는 **단일 진입점**이다. 톤은 create **호출 전에** 정하고 \`theme\` 인자로 넘긴다 — 스캐폴드 후 \`tokens.css\` 를 손으로 고치는 흐름은 사용하지 않는다 (변경분이 다음 재스캐폴드 때 유실됨).
 
-1. \`tokens.css\` 의 \`:root\` / \`.dark\` 블록 색만 손봄 (마커는 건드리지 않음).
-2. \`sh_ui_encode_theme\` 으로 \`{ light, dark, radius }\` 객체를 base64 로 인코딩.
-   - 옵셔널 색 토큰(\`success\`/\`warning\`/\`info\` + \`-foreground\`)도 같이 넣을 수 있음.
-3. 그 base64 를 사용자에게 보여주고 (또는 메모리에 저장), **다음 \`sh_ui_create_project\` 호출 시 \`theme\` 인자에 그대로** 넣어 영구 보관.
-4. 기존 base64 를 일부만 고치고 싶으면 \`sh_ui_decode_theme\` → 객체 수정 → \`sh_ui_encode_theme\` round-trip.
+### 정석 흐름
 
-> 프리셋(\`neutral\`/\`slate\`/...) 이름과 base64 둘 다 \`theme\` 인자에 넣을 수 있다 — 길이로 자동 판별.
+1. **톤 정한다** — 프리셋(\`neutral\`/\`slate\`/\`rose\`/\`emerald\`/\`violet\`) 또는 base64.
+2. **커스텀이면 \`sh_ui_encode_theme\` 으로 base64 만든다** — \`{ light, dark, radius }\` (+ 옵셔널 \`success\`/\`warning\`/\`info\`). 기존 base64 일부 수정은 \`sh_ui_decode_theme\` → 객체 수정 → 재인코딩 round-trip.
+3. **\`sh_ui_create_project\` 의 \`theme\` 인자에 그대로 넘긴다** — 길이로 프리셋/base64 자동 판별. 결과:
+   - \`tokens.css\` 의 색 블록이 정확히 주입됨 (수동 수정 불필요).
+   - \`sh-ui.config.json\` 의 \`theme.base\` 가 프리셋이면 그 이름, base64 면 \`'custom'\` 으로 기록.
+   - \`paths.styles\` 도 자동 박힘 — \`sh_ui_add_component\` 가 \`base\` 같은 스타일 산출물을 깨짐 없이 처리.
+4. **base64 는 메모리에 저장**해 둔다 (사용자별 프로젝트 메모리). 같은 프로젝트 재스캐폴드/이주 시 같은 톤 보존용.
+
+### 기존 프로젝트 톤만 바꾸고 싶을 때
+
+> v0.61.2 부터 \`theme.base: "custom"\` 인 프로젝트에서 \`sh_ui_add_component\` 의 \`tokens\` 는 no-op (보존). 색을 바꾸려면 새 base64 를 만들고 새 디렉토리로 \`force: true\` 재스캐폴드하는 게 정석. 부분 편집을 원해도 \`tokens.css\` 직접 수정 후 \`sh_ui_encode_theme\` 로 새 base64 백업까지 같이 — 그 base64 를 메모리에 갱신해야 다음 재스캐폴드와 일관됨.
 `;
 }
 
@@ -219,7 +225,9 @@ export async function startMcpServer() {
     {
       description:
         "빈 폴더에 sh-ui 프로젝트 스캐폴드 — Next.js (standalone/monorepo) 또는 Flutter. " +
-        `FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx ${cliName} create 직접 호출보다 우선).`,
+        `FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx ${cliName} create 직접 호출보다 우선). ` +
+        "**단일 진입점** — theme/plugins/cssFramework/structure 모두 호출 시점에 정해서 한 번에 박는다. 호출 후 sh-ui.config.json/tokens.css 를 손으로 패치하지 말 것 (다음 재스캐폴드 시 유실). " +
+        "산출물: theme 인자가 프리셋이면 sh-ui.config.json 의 theme.base 가 그 이름, base64 면 'custom'. paths.styles · paths.tokens 도 자동 박혀서 sh_ui_add_component 가 사후 패치 없이 동작.",
       inputSchema: {
         name: z.string().min(1)
           .describe("프로젝트 디렉토리 이름. 예: my-app"),
@@ -412,7 +420,8 @@ export async function startMcpServer() {
     {
       description:
         "컴포넌트 한 개 이상을 프로젝트에 설치. 외부 npm 패키지 deps 도 자동 설치(pnpm/npm/yarn/bun 자동 감지). " +
-        "특수값 'tokens' 는 sh-ui.config.json 기반 토큰 파일 생성.",
+        "특수값 'tokens' 는 sh-ui.config.json 기반 토큰 파일 생성 — 단, theme.base 가 'custom' (= base64 로 만든 프로젝트) 이면 tokens 는 no-op (create 시점에 정확히 주입됐으므로 보존). " +
+        "특수값 'base' 는 sh-ui:reset 스타일 — paths.styles 가 sh-ui.config.json 에 있어야 동작 (v0.61.2+ 의 create 산출물은 자동 포함).",
       inputSchema: {
         names: z.array(z.string()).min(1)
           .describe("설치할 컴포넌트 이름들. 예: ['tokens', 'button', 'dialog']"),
@@ -487,9 +496,9 @@ export async function startMcpServer() {
     "sh_ui_encode_theme",
     {
       description:
-        "사용자가 손본 색 토큰을 sh-ui base64 테마 코드로 인코딩. " +
-        "산출물을 sh_ui_create_project 의 theme 인자에 그대로 넣으면 다음 스캐폴드에서 톤이 보존된다. " +
-        "스캐폴드 후 tokens.css 를 직접 편집한 케이스에서 그 결과를 영구 보관할 때 사용.",
+        "색 토큰 객체({ light, dark, radius }) 를 sh-ui base64 테마 코드로 인코딩. " +
+        "정석 흐름: 톤을 정해 (사용자와 합의 또는 프리셋 변형) 이 툴로 base64 만든 뒤 sh_ui_create_project 의 theme 인자에 그대로 넘긴다 — create 한 번에 끝, 스캐폴드 후 tokens.css 손편집 불필요. " +
+        "이미 만든 프로젝트의 톤을 다음 재스캐폴드까지 영구 보관할 때도 사용 (메모리 등에 base64 저장).",
       inputSchema: {
         light: tokenMapSchema.describe("라이트 모드 토큰"),
         dark: tokenMapSchema.describe("다크 모드 토큰"),
