@@ -172,6 +172,19 @@ async function addTokens(config, cwd, diffMode, summary, conflictResolver) {
   if (!destRel) throw new Error("paths.tokens 가 설정에 없습니다.");
   const dest = resolve(cwd, destRel);
 
+  // theme.base === 'custom' 이면 토큰 빌더가 color.custom.X 스케일을 못 찾아 throw 한다 —
+  // base64 테마는 사후 색상 재생성 자체가 불가능 (원본 base64 가 단일 진실, 재해석 X).
+  // create 시점에 tokens.css 가 이미 정확히 주입돼 있으므로 보존하고 사용자에게 안내한다.
+  if (config.theme?.base === 'custom') {
+    if (!diffMode) {
+      console.log(
+        `↷ tokens → ${relative(cwd, dest)} (custom 테마 — tokens.css 보존, ` +
+        `색 조정은 파일 직접 편집 또는 sh_ui_encode_theme 으로 새 base64 생성 후 재스캐폴드)`
+      );
+    }
+    return;
+  }
+
   const { buildTokens } = await loadTokensBuilder();
   const content = await buildTokens(config);
 
