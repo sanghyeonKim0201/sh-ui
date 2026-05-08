@@ -26,6 +26,7 @@ const DEFAULTS = INIT_DEFAULTS;
 const PATHS = {
   react: {
     tokens: "src/styles/tokens.css",
+    styles: "src/styles",
     components: "src/components/ui",
     utils: "src/lib/utils.ts",
   },

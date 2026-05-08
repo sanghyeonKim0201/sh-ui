@@ -78,7 +78,7 @@ import {
   DEFAULT_ARCH,
 } from './architectures/index.js';
 import { resolveTheme } from './theme/decode.js';
-import { THEME_PRESETS, getThemePreset } from './theme/presets.js';
+import { THEME_PRESETS, THEME_PRESET_NAMES, getThemePreset } from './theme/presets.js';
 import {
   replaceSection,
   buildCssColorsBlock,
@@ -114,12 +114,15 @@ import {
 const TEMPLATES_DIR = getTemplatesRoot();
 
 /**
- * 템플릿 복사 직후 sh-ui.config.json 의 cssFramework 필드를 갱신.
+ * 템플릿 복사 직후 sh-ui.config.json 의 cssFramework + theme.base 필드를 갱신.
  *
  * Flutter 는 cssFramework 가 의미 없으므로 platform=flutter 면 필드 자체를 안 쓴다.
  * Next.js 는 plain/tailwind/css-modules 따라 컴포넌트 변종 결정 + base 파일도 분기 emit.
+ *
+ * themeBase 는 사용자가 고른 프리셋 이름(neutral/slate/rose/emerald/violet) 또는
+ * 커스텀 base64 였을 때 'custom'. null 이면 템플릿 기본값 유지.
  */
-async function patchShUiConfig(configPath, cssFramework) {
+async function patchShUiConfig(configPath, cssFramework, themeBase) {
   if (!(await fs.pathExists(configPath))) return;
   const config = await fs.readJson(configPath);
   // Flutter 는 cssFramework 무관 — 필드 자체를 두지 않는다.
@@ -127,6 +130,10 @@ async function patchShUiConfig(configPath, cssFramework) {
     delete config.cssFramework;
   } else {
     config.cssFramework = cssFramework ?? CSS_FRAMEWORK_DEFAULT;
+  }
+  if (themeBase != null) {
+    config.theme = config.theme ?? {};
+    config.theme.base = themeBase;
   }
   await fs.writeJson(configPath, config, { spaces: 2 });
 }
@@ -208,8 +215,12 @@ export async function createProject(options = {}) {
   }
 
   let theme = null;
+  // themeBase: 'neutral'|'slate'|'rose'|'emerald'|'violet'|'custom'|null.
+  // sh-ui.config.json 의 theme.base 가 실제 사용된 팔레트를 반영하게 한다 (이전엔 항상 템플릿 기본값으로 남아 있던 문제).
+  let themeBase = null;
   if (options.theme) {
     theme = resolveTheme(options.theme);
+    themeBase = THEME_PRESET_NAMES.includes(options.theme) ? options.theme : 'custom';
   } else if (process.stdin.isTTY && !options.yes) {
     // --yes 는 "선택 옵션은 기본값으로" 의미. 테마는 옵션이므로 prompt 우회.
     const NONE = '__none__';
@@ -224,7 +235,10 @@ export async function createProject(options = {}) {
         })),
       ],
     });
-    if (choice !== NONE) theme = getThemePreset(choice);
+    if (choice !== NONE) {
+      theme = getThemePreset(choice);
+      themeBase = choice;
+    }
   }
 
   // dry-run 은 tmpdir 에 그대로 생성한 뒤 파일 목록 출력 + 정리.
@@ -250,7 +264,7 @@ export async function createProject(options = {}) {
   }
 
   if (platform === 'flutter') {
-    await generateFlutter(targetDir, projectName, theme, cssFramework);
+    await generateFlutter(targetDir, projectName, theme, cssFramework, themeBase);
     await finalizeProject(targetDir, { dryRun: options.dryRun });
     console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
     console.log(`\n  cd ${projectName}`);
@@ -276,9 +290,9 @@ export async function createProject(options = {}) {
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
 
   if (projectType === 'standalone') {
-    await generateStandalone(targetDir, projectName, plugins, theme, cssFramework, arch);
+    await generateStandalone(targetDir, projectName, plugins, theme, cssFramework, arch, themeBase);
   } else {
-    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme, css: cssFramework, arch });
+    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme, css: cssFramework, arch, themeBase });
   }
 
   await finalizeProject(targetDir, { dryRun: options.dryRun });
@@ -444,14 +458,14 @@ export async function addComponent(componentName, appName) {
 
 // ─── Generators ───
 
-async function generateFlutter(targetDir, projectName, theme, css) {
+async function generateFlutter(targetDir, projectName, theme, css, themeBase) {
   await fs.copy(path.join(TEMPLATES_DIR, 'flutter-standalone'), targetDir);
   await replaceInAllFiles(targetDir, '{{project_name}}', projectName);
   await injectDartTheme(targetDir, theme);
-  await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css);
+  await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
 
-async function generateStandalone(targetDir, projectName, plugins, theme, css, arch) {
+async function generateStandalone(targetDir, projectName, plugins, theme, css, arch, themeBase) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 같은 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'nextjs-standalone'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -488,10 +502,10 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await applyTransforms(targetDir, plugins, arch);
   await applyCssFrameworkVariant(targetDir, css, { isMonorepo: false, plugins, arch });
   await injectCssTheme(targetDir, theme);
-  await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css);
+  await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -526,7 +540,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   // generateApp 이 ui-{app} 패키지의 cssFramework 변종까지 처리. 여기선 theme + sh-ui.config.json 만.
   const uiAppDir = path.join(targetDir, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
   await injectCssTheme(uiAppDir, theme);
-  await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css);
+  await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css, themeBase);
 }
 
 async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailwind') {
