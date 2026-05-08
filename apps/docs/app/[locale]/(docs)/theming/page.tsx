@@ -263,10 +263,10 @@ npx sh-ui-cli create my-app \\
       </p>
 
       <p>
-        <strong>권장 워크플로 — 톤 손본 뒤 base64 로 박제 (AI + MCP)</strong>
+        <strong>워크플로 — AI 경유 (MCP)</strong>
       </p>
       <p>
-        스캐폴드 직후 톤이 마음에 안 들면, AI 에게 한 마디 던지고 4단계를 한 번에 위임하면 된다. 사용자는 base64 문자열을 직접 만지지 않는다.
+        AI 어시스턴트와 MCP 가 붙어 있다면 4 단계를 자연어로 한 번에 위임할 수 있다 — 사용자는 base64 문자열을 직접 만지지 않는다. <strong>AI 가 없거나 직접 만들고 싶다면</strong> 아래 §9 의 <em>"AI 없이 base64 만들기"</em> 참조 — 같은 산출물을 <code>/create</code> 플레이그라운드 / Node 한 줄 / 브라우저 콘솔 어느 쪽으로도 만들 수 있다.
       </p>
       <ol>
         <li>
@@ -517,6 +517,71 @@ AI:    ✓ 인코딩 완료. 다음 명령으로 처음부터 그 톤으로 스�
       />
       <p className="muted">
         문자열 카테고리 키 — <code>shadows</code> 4(<code>sm/md/lg/xl</code>), <code>eases</code> 2(<code>standard/emphasized</code>), <code>gradients</code> 3(<code>primary/surface/overlay</code>). 빈 문자열 또는 512자 초과는 throw. CSS 문법 자체는 inject 단계에서 검증되므로 잘못된 값(예: <code>cubic-bezir(...)</code> 오타)은 인코드 시점엔 통과한다.
+      </p>
+
+      <h3>AI 없이 base64 만들기 — 3 경로</h3>
+      <p>
+        base64 인코더는 <strong>JSON 을 base64 로 바꿔 round-trip 검증</strong>하는 게 전부다 — AI 와 결합되어 있지 않다. 위 케이스 A~D 의 입력 객체를 직접 손으로 짠 뒤, 아래 셋 중 편한 경로로 인코딩하면 산출물은 동일하다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "playground",
+            label: "/create 플레이그라운드",
+            language: "bash",
+            filename: "추천 — 시각 편집 + 자동 export",
+            code: `# 1. docs 사이트의 /create 페이지 열기
+# 2. 토큰 슬라이더/컬러피커로 톤 조정 (라이브 미리보기)
+# 3. "프로젝트 생성" 다이얼로그가 아래 명령을 자동 합성:
+
+npx sh-ui-cli create my-app \\
+  --platform next --structure standalone \\
+  --theme 'eyJsaWdodCI6...'   # ← 자동 생성된 base64
+
+# 사용자는 base64 문자열을 한 번도 보지 않아도 됨.
+# 클라이언트 사이드 encodeTheme.ts 가 다이얼로그 안에서 합성.`,
+          },
+          {
+            value: "node",
+            label: "Node 한 줄",
+            language: "bash",
+            filename: "스크립트 / CI 친화",
+            code: `# 케이스 A 입력 객체를 그대로 인코드 — JSON.stringify + base64.
+# encodeTheme 함수도 round-trip 검증을 더할 뿐 산출물은 동일.
+
+node -e '
+const theme = {
+  light: { /* §9 케이스 A 의 light 15 키 */ },
+  dark:  { /* §9 케이스 A 의 dark 15 키 */ },
+  radius: 0.5,
+};
+console.log(Buffer.from(JSON.stringify(theme)).toString("base64"));
+'
+
+# 검증까지 같이:
+node -e '
+const { encodeTheme } = require("@sh-ui/cli/src/create/theme/encode.js");
+console.log(encodeTheme(/* 위 theme */));
+'`,
+          },
+          {
+            value: "browser",
+            label: "브라우저 콘솔",
+            language: "js",
+            filename: "DevTools 한 줄",
+            code: `// 어느 페이지든 DevTools Console 에 붙여넣기.
+// btoa 는 base64 만, 검증은 없음 — sh-ui CLI 가 어차피 디코드 시 검증.
+btoa(JSON.stringify({
+  light: { /* §9 케이스 A 의 light 15 키 */ },
+  dark:  { /* §9 케이스 A 의 dark 15 키 */ },
+  radius: 0.5,
+}));
+// → "eyJsaWdodCI6..."`,
+          },
+        ]}
+      />
+      <p className="muted">
+        세 경로 모두 같은 base64 를 만든다 — 검증만 더하느냐의 차이. <code>/create</code> 와 Node 의 <code>encodeTheme</code> 은 round-trip 검증 포함, <code>btoa</code> 직접은 검증 없음 (CLI <code>--theme</code> 가 디코드 시점에 어차피 검증). MCP <code>sh_ui_encode_theme</code> 도 내부에서 같은 함수를 호출할 뿐, 별도 마법은 없다.
       </p>
 
       <h3>케이스 적용 — 새 프로젝트로 그대로 끌고 가기</h3>
