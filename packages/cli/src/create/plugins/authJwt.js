@@ -88,9 +88,17 @@ export default function SignInPage() {
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];
 
 /**
+ * 홈(\`/\`) 진입 시 redirect 할 path. 빈 문자열이면 \`app/page.tsx\` 가 그대로 노출.
+ * 예: '/dashboard', '/projects'. 인증 가드 위에서 동작하므로 미인증이면
+ * 그대로 \`/sign-in\` 으로 빠진다.
+ */
+const HOME_REDIRECT = '';
+
+/**
  * Next 16+ 의 proxy.ts (구 middleware.ts).
  * 토큰 존재 여부만 검사한다 — 만료 검사나 refresh 는 하지 않는다.
  *
+ * - \`/\` + HOME_REDIRECT 설정 → 해당 경로로 리다이렉트
  * - AT 쿠키 없음 + 인증 라우트 아님 → /sign-in 으로 리다이렉트
  * - AT 쿠키 있음 또는 인증 라우트 → 통과
  *
@@ -101,6 +109,10 @@ export default function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const hasToken = !!req.cookies.get('accessToken')?.value;
   const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
+
+  if (pathname === '/' && HOME_REDIRECT) {
+    return NextResponse.redirect(new URL(HOME_REDIRECT, req.url));
+  }
 
   if (isAuthRoute) return NextResponse.next();
   if (!hasToken) return NextResponse.redirect(new URL('/sign-in', req.url));

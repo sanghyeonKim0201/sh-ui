@@ -3,15 +3,15 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
-      "version": "0.63.2",
+      "version": "0.64.0",
       "date": "2026-05-08",
-      "title": "patch — input `isValidBRN` strict-indexing typecheck 통과",
-      "type": "patch",
+      "title": "minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix",
+      "type": "minor",
       "highlights": [
-        "**`isValidBRN` 의 배열 인덱싱 4곳에 non-null assertion 추가** — `noUncheckedIndexedAccess: true` 인 사용자 프로젝트에서 `parseInt(d[i], 10)` 가 `string | undefined` 로 접혀 typecheck 실패하던 회귀 수정. 직전 길이 가드(`d.length !== 10`) 로 모든 접근이 안전한 구간이라 런타임 동작 변경 없음.",
-        "**4 variant 모두 적용** — plain / tailwind / vanilla-extract / css-modules. `apps/docs` 듀얼카피본도 동기화."
+        "**templates proxy.ts 에 `HOME_REDIRECT` 상수 추가** — `/` 진입 시 redirect 할 path 를 사용자가 한 줄로 지정. 빈 문자열이 기본이라 동작 변화 없음(= `app/page.tsx` 그대로 노출). `auth-jwt` 단독 / `next-intl` 단독 / `auth-jwt + next-intl` 합성 세 케이스 모두 동일 패턴. `/[locale]/page.tsx` 에 redirect RSC 를 따로 만들 필요 없이 미들웨어 한 곳에서 라우팅 게이트 처리.",
+        "**fix(input)**: `isValidBRN` 의 배열 인덱싱 4곳에 non-null assertion 추가 — `noUncheckedIndexedAccess: true` 인 사용자 프로젝트에서 `parseInt(d[i], 10)` 가 `string | undefined` 로 접혀 typecheck 실패하던 회귀. 직전 길이 가드(`d.length !== 10`) 로 모든 접근이 안전한 구간이라 런타임 동작 변경 없음. plain / tailwind / vanilla-extract / css-modules + `apps/docs` 듀얼카피본 동기화."
       ],
-      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.2"
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.0"
     },
     {
       "version": "0.63.1",

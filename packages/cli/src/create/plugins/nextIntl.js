@@ -325,11 +325,38 @@ export const { Link, redirect, usePathname, useRouter, getPathname } =
 `,
 
     'proxy.ts': `import createIntlMiddleware from 'next-intl/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { routing } from '${arch.aliases.config}/i18n/routing';
+
+/**
+ * 홈(\`/\`, \`/{locale}\`) 진입 시 redirect 할 path. 빈 문자열이면
+ * \`app/[locale]/page.tsx\` 가 그대로 노출. 예: '/dashboard', '/projects'.
+ */
+const HOME_REDIRECT = '';
 
 const intl = createIntlMiddleware(routing);
 
-export default intl;
+/**
+ * 로케일 prefix (/ko, /en) 를 벗겨 홈 매칭 (\`/\`) 에 사용한다.
+ * 예: /ko → /, /ko/posts → /posts.
+ */
+const stripLocalePrefix = (pathname: string): string => {
+  const locales = routing.locales as readonly string[];
+  const segments = pathname.split('/').filter(Boolean);
+  if (segments[0] && locales.includes(segments[0])) {
+    const rest = segments.slice(1).join('/');
+    return \`/\${rest}\`.replace(/\\/$/, '') || '/';
+  }
+  return pathname;
+};
+
+export default function proxy(req: NextRequest) {
+  if (HOME_REDIRECT && stripLocalePrefix(req.nextUrl.pathname) === '/') {
+    return NextResponse.redirect(new URL(HOME_REDIRECT, req.url));
+  }
+  return intl(req);
+}
 
 export const config = {
   matcher: '/((?!api|trpc|_next|_vercel|monitoring|.*\\\\..*).*)',
