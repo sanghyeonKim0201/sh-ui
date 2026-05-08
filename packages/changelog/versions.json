@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.64.7",
+      "date": "2026-05-08",
+      "title": "patch — MCP instructions 에 \"UI 짤 때 사고 순서\" 섹션 추가 (raw HTML 기본값 회피)",
+      "type": "patch",
+      "highlights": [
+        "**MCP server `instructions` 에 AI 행동 가이드 추가** — sh-ui MCP 가 등록되면 매 세션 상단에 노출되는 instructions 텍스트에 \"UI 짤 때 사고 순서\" 섹션 추가. AI 가 `<aside>` / `<nav>` / `<header>` / `<table>` 같은 시맨틱 태그를 raw 로 쓰기 전에 `sh_ui_list_components` 로 카탈로그를 훑고, Sidebar / Header / Breadcrumb 같은 위젯 단위 컴포넌트를 우선 사용하도록 유도.",
+        "**흔한 누락 패턴 4건 명시** — Sidebar 직접 짜기, Breadcrumb 직접 짜기, DialogClose render prop 누락, Card 미사용. 이전 세션에서 실제로 반복된 실수를 instructions 에 박아 같은 회귀 차단.",
+        "**raw HTML 폴백이 정당한 경우 가이드** — 카탈로그에 매칭 없음 / 의도적 변형 / ad-hoc 레이아웃. 코드에 한 줄 코멘트로 의도 남기기 권장."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.7"
+    },
+    {
       "version": "0.64.6",
       "date": "2026-05-08",
       "title": "patch — apps/docs 듀얼카피 42 파일 전수 동기화 + sync-docs 스크립트",

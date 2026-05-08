@@ -175,6 +175,30 @@ function buildServerInstructions(cliName) {
 - \`sh_ui_add_component\` / \`sh_ui_remove_component\` — 설치/삭제
 - \`sh_ui_get_changelog\` — 최근 변경 내역
 
+## UI 짤 때 사고 순서 (raw HTML 기본값 회피)
+
+새 위젯·페이지를 작성할 때 \`<aside>\` / \`<nav>\` / \`<header>\` / \`<table>\` / \`<button>\` 같은 시맨틱 태그를 raw 로 쓰기 전에:
+
+1. **\`sh_ui_list_components\` 로 카탈로그 한 번 훑기** — Sidebar / Header / AppShell / Breadcrumb / Pagination / Tabs 등 **위젯 단위** 컴포넌트도 있다 (Button/Input 같은 primitive 만 있는 게 아님). "사이드바 직접 짜야지" 같은 자동 사고를 의식적으로 멈추고 카탈로그 확인.
+2. 매칭되는 sh-ui 컴포넌트가 있으면 **그걸 우선 사용**. \`sh_ui_get_component\` 로 props/사용 패턴 확인.
+3. 매칭 없을 때만 raw HTML + Tailwind 폴백.
+4. \`sh_ui_add_component\` 로 설치한 컴포넌트는 페이지 작성 단계에서 다시 의식적으로 import — install 해놓고 안 쓰는 누락이 잦다 (Breadcrumb / DropdownMenu 류). add 시점에 사용처를 머릿속에 메모하고, 페이지 짤 때 그 목록을 한 번 훑기.
+
+### raw HTML 폴백이 정당한 경우
+- 카탈로그에 매칭 컴포넌트 없음 (예: \`<table>\` — sh-ui 에 table 없음)
+- 의도적인 변형 (sh-ui 변종에 없는 dashed border 카드 등)
+- 한 번 쓰는 ad-hoc 레이아웃
+
+이런 경우라도 **"sh-ui 에 X 없어서 직접"** 같은 코멘트를 짧게 남기면 다음 작업자(사람·AI) 가 의도 인식 가능.
+
+### 흔한 누락 패턴
+
+이전 세션에서 반복된 실수:
+- 사이드바를 \`<aside>\` + \`<Link>\` 로 직접 짬 → sh-ui 의 \`Sidebar\` / \`SidebarProvider\` / \`SidebarMenu\` 등 풍부한 API 가 있음
+- breadcrumb 을 \`<nav><Link>···<ChevronRight />···</nav>\` 로 직접 짬 → \`Breadcrumb\` / \`BreadcrumbList\` / \`BreadcrumbItem\` / \`BreadcrumbSeparator\` 가 카탈로그에 있음
+- 다이얼로그 cancel 버튼을 \`<Button onClick={() => setOpen(false)}>\` 로 우회 → 정석은 \`<DialogClose render={<Button>취소</Button>} />\` (Base UI render prop)
+- table 외관의 카드 그리드를 raw \`<div>\` 로 → \`Card\` / \`CardHeader\` / \`CardContent\` / \`CardFooter\` 사용
+
 ## 앱 이름 변경 (monorepo)
 
 사용자가 "apps/web 을 apps/dashboard 로 바꿔줘" 같이 모노레포 앱 이름 변경을 요청하면 \`sh_ui_rename_app\` 사용 — 손으로 6~10 군데 (디렉토리, package.json name, tsconfig paths, Dockerfile WORKDIR, next.config transpilePackages, sh-ui.config aliases, README, .github/workflows) 갈아엎지 않도록 자동화. \`dryRun: true\` 로 먼저 변경 매트릭스 보여주고 사용자 확인 후 실행 권장.
