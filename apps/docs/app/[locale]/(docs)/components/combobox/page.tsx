@@ -195,6 +195,157 @@ ShUiMultiCombobox<String>(
         />
       </Preview>
 
+      <h3>비동기 옵션 로딩 (search-as-you-type)</h3>
+      <p className="muted">
+        서버에서 옵션을 받아오는 패턴. 외부 상태로 <code>items</code> 를 제어하고,{" "}
+        Base UI 의 <code>filter</code> prop 을 끄면 (<code>filter={"{ () => true }"}</code>) 서버가 이미 거른
+        결과를 그대로 노출한다. 페치 중에는 <code>ComboboxEmpty</code> 영역에 <code>Spinner</code> 를 두는 게
+        제일 자연스럽다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { useEffect, useState } from "react";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from "@/components/ui/combobox";
+import { Spinner } from "@/components/ui/spinner";
+
+function UserPicker() {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+    setLoading(true);
+    const ctl = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const data = await searchUsers(query, { signal: ctl.signal });
+        setResults(data);
+      } finally {
+        setLoading(false);
+      }
+    }, 250);  // debounce
+    return () => {
+      ctl.abort();
+      clearTimeout(timer);
+    };
+  }, [query]);
+
+  return (
+    <Combobox
+      items={results}
+      itemToStringLabel={(u: User) => u.name}
+      value={value}
+      onValueChange={setValue}
+      onInputValueChange={setQuery}
+      filter={() => true}   // 서버 결과 그대로 노출 (내장 필터 비활성)
+    >
+      <ComboboxInput placeholder="사용자 검색…" aria-busy={loading || undefined} />
+      <ComboboxContent>
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+              padding: "var(--space-3)",
+              color: "var(--foreground-muted)",
+            }}
+          >
+            <Spinner size="sm" aria-label="검색 중" />
+            검색 중…
+          </div>
+        ) : (
+          <>
+            <ComboboxEmpty>일치하는 사용자가 없습니다</ComboboxEmpty>
+            <ComboboxList>
+              {(u: User) => (
+                <ComboboxItem key={u.id} value={u}>{u.name}</ComboboxItem>
+              )}
+            </ComboboxList>
+          </>
+        )}
+      </ComboboxContent>
+    </Combobox>
+  );
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// ShUiCombobox.async — items 를 직접 제어하는 패턴.
+// 검색어 변경 시 setState 로 items 갱신, 페치 중엔 placeholder 영역에 progress.
+String _query = '';
+List<User> _results = [];
+bool _loading = false;
+User? _value;
+Timer? _debounce;
+
+void _onQuery(String q) {
+  _debounce?.cancel();
+  _debounce = Timer(const Duration(milliseconds: 250), () async {
+    if (q.isEmpty) {
+      setState(() => _results = []);
+      return;
+    }
+    setState(() => _loading = true);
+    try {
+      final data = await searchUsers(q);
+      if (mounted) setState(() => _results = data);
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  });
+}
+
+ShUiCombobox<User>(
+  value: _value,
+  onChanged: (v) => setState(() => _value = v),
+  onSearchChanged: _onQuery,
+  items: _results.map((u) => ShUiComboboxItem(value: u, label: u.name)).toList(),
+  placeholder: '사용자 검색…',
+  emptyBuilder: (_) => _loading
+      ? const Padding(
+          padding: EdgeInsets.all(12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ShUiSpinner(size: ShUiSpinnerSize.sm),
+              SizedBox(width: 8),
+              Text('검색 중…'),
+            ],
+          ),
+        )
+      : const Padding(
+          padding: EdgeInsets.all(12),
+          child: Text('일치하는 사용자가 없습니다'),
+        ),
+)`,
+          },
+        ]}
+      />
+      <p className="muted" style={{ marginTop: "var(--space-3)" }}>
+        포인트 — (1) 250ms 안팎 debounce 로 키 입력마다 페치 폭주 방지,
+        (2) <code>AbortController</code> 로 이전 요청 취소 (race condition 차단),
+        (3) <code>filter={"{() => true}"}</code> 로 내장 필터를 꺼서 서버가 거른 결과를 그대로 노출.
+      </p>
+
       <h2>구성 요소</h2>
       <SubComponents
         rows={[

@@ -491,6 +491,126 @@ ShUiMultiSelect<String>(
         />
       </Preview>
 
+      <h3>비동기 옵션 로딩</h3>
+      <p className="muted">
+        옵션을 서버에서 받아오는 패턴. 페치 동안에는 트리거를 <code>disabled</code> 로 잠그고 라벨에{" "}
+        <code>Spinner</code> 를 끼워 진행을 알린다. 옵션 수가 고정적이고 검색이 필요 없을 때 적합하며,
+        검색-as-you-type 이 필요하면 <a href="../combobox">Combobox</a> 를 쓰는 게 낫다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
+
+function CountrySelect({
+  value,
+  onValueChange,
+}: {
+  value?: string;
+  onValueChange: (v: string) => void;
+}) {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchCountries()
+      .then((data) => {
+        if (!cancelled) setCountries(data);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <Select value={value} onValueChange={onValueChange} disabled={loading}>
+      <SelectTrigger aria-busy={loading || undefined}>
+        {loading ? (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-2)" }}>
+            <Spinner size="sm" aria-label="국가 목록 불러오는 중" />
+            불러오는 중…
+          </span>
+        ) : (
+          <SelectValue placeholder="국가 선택" />
+        )}
+      </SelectTrigger>
+      <SelectContent>
+        {countries.map((c) => (
+          <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `class CountrySelect extends StatefulWidget {
+  final String? value;
+  final ValueChanged<String?> onChanged;
+  const CountrySelect({super.key, this.value, required this.onChanged});
+  @override
+  State<CountrySelect> createState() => _CountrySelectState();
+}
+
+class _CountrySelectState extends State<CountrySelect> {
+  List<Country> _countries = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCountries().then((data) {
+      if (mounted) setState(() {
+        _countries = data;
+        _loading = false;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          ShUiSpinner(size: ShUiSpinnerSize.sm),
+          SizedBox(width: 8),
+          Text('불러오는 중…'),
+        ],
+      );
+    }
+    return ShUiSelect<String>(
+      value: widget.value,
+      onChanged: widget.onChanged,
+      placeholder: '국가 선택',
+      items: _countries
+          .map((c) => ShUiSelectItem(value: c.code, label: c.name))
+          .toList(),
+    );
+  }
+}`,
+          },
+        ]}
+      />
+
       <h2>구성 요소</h2>
       <SubComponents
         rows={[

@@ -244,6 +244,166 @@ ShUiDialog(
         ]}
       />
 
+      <h3>비동기 confirm 액션</h3>
+      <p className="muted">
+        삭제·결제처럼 confirm 액션이 비동기일 때의 패턴. 핵심은 두 가지 — (1) confirm 버튼은{" "}
+        <code>disabled</code> + <code>Spinner</code> 로 더블 클릭 차단,
+        (2) Dialog 는 <code>open</code> 을 직접 제어해서 작업 끝날 때까지 닫히지 않도록.
+        제어 모드에서는 backdrop 클릭·<code>Esc</code> 로도 닫히지 않게 막는 게 안전하다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+
+function DeleteDialog({ id }: { id: string }) {
+  const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  async function handleConfirm() {
+    setPending(true);
+    try {
+      await deleteItem(id);
+      setOpen(false);     // 성공 시에만 닫음
+    } catch (e) {
+      // 에러 토스트 등 — Dialog 는 열린 채로 사용자에게 재시도 기회
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        // pending 중에는 외부 클릭/Esc 로 닫히는 것 차단
+        if (pending) return;
+        setOpen(next);
+      }}
+    >
+      <DialogTrigger render={<Button variant="danger" />}>삭제</DialogTrigger>
+      <DialogContent>
+        <DialogTitle>정말 삭제할까요?</DialogTitle>
+        <DialogDescription>이 작업은 되돌릴 수 없습니다.</DialogDescription>
+        <DialogFooter>
+          <Button
+            variant="secondary"
+            onClick={() => setOpen(false)}
+            disabled={pending}
+          >
+            취소
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleConfirm}
+            disabled={pending}
+            aria-busy={pending || undefined}
+            style={{ minWidth: "6rem" }}
+          >
+            {pending ? (
+              <>
+                <Spinner size="sm" aria-label="삭제 중" />
+                삭제 중…
+              </>
+            ) : (
+              "삭제"
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `class DeleteDialog extends StatefulWidget {
+  final String id;
+  const DeleteDialog({super.key, required this.id});
+  @override
+  State<DeleteDialog> createState() => _DeleteDialogState();
+}
+
+class _DeleteDialogState extends State<DeleteDialog> {
+  bool _open = false;
+  bool _pending = false;
+
+  Future<void> _confirm() async {
+    setState(() => _pending = true);
+    try {
+      await deleteItem(widget.id);
+      if (mounted) setState(() => _open = false);  // 성공 시에만 닫음
+    } finally {
+      if (mounted) setState(() => _pending = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ShUiDialog(
+      open: _open,
+      onOpenChange: (v) {
+        if (_pending) return;  // 작업 중엔 외부 닫기 차단
+        setState(() => _open = v);
+      },
+      // dismissible: false 등 백드롭 차단 prop 이 있다면 같이 사용
+      child: ShUiDialogContent(
+        header: const ShUiDialogHeader(
+          title: '정말 삭제할까요?',
+          description: '이 작업은 되돌릴 수 없습니다.',
+        ),
+        footer: ShUiDialogFooter(children: [
+          ShUiButton(
+            variant: ShUiButtonVariant.secondary,
+            onPressed: _pending ? null : () => setState(() => _open = false),
+            child: const Text('취소'),
+          ),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 96),
+            child: ShUiButton(
+              variant: ShUiButtonVariant.danger,
+              onPressed: _pending ? null : _confirm,
+              child: _pending
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        ShUiSpinner(size: ShUiSpinnerSize.sm),
+                        SizedBox(width: 8),
+                        Text('삭제 중…'),
+                      ],
+                    )
+                  : const Text('삭제'),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}`,
+          },
+        ]}
+      />
+      <p className="muted" style={{ marginTop: "var(--space-3)" }}>
+        주의 — <code>onOpenChange</code> 에서 <code>pending</code> 일 때 early return 하면
+        Esc·backdrop 클릭이 모두 무시된다. 하지만 화면 전체 키보드 트랩이 되지 않게
+        에러 발생 시에는 반드시 <code>pending</code> 을 풀어줘야 한다 (위 <code>finally</code> 참고).
+      </p>
+
       <h2>구성 요소</h2>
       <SubComponents
         rows={[

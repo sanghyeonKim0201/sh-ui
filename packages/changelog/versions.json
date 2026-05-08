@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.61.2",
+      "date": "2026-05-08",
+      "title": "fix — create 산출물의 sh-ui.config.json 누수 두 건 (paths.styles · theme.base)",
+      "type": "patch",
+      "highlights": [
+        "**템플릿의 `sh-ui.config.json` 에 `paths.styles` 추가** — `base.css` 같은 스타일 산출물이 `{styles}` placeholder 를 참조하는데 기존 템플릿(ui-app-template, nextjs-standalone fsd/flat) 이 `paths.styles` 를 안 박아 줘서 `sh-ui add base` 가 'paths.styles 가 sh-ui.config.json에 없습니다' 로 실패하던 문제. 이제 `create` 직후 추가 패치 없이 `add` 가 동작.",
+        "**`create --theme <preset|base64>` 결과가 `sh-ui.config.json` 의 `theme.base` 에 반영** — 기존엔 어떤 테마를 골라도 `theme.base` 가 템플릿 기본값(`neutral`)으로 남아 있어 의미 불일치. 이제 프리셋 이름이면 그 이름(`violet`/`rose`/...), base64 입력이면 `custom` 으로 기록.",
+        "**`init.mjs` 의 `PATHS.react` 에도 `styles` 추가** — `sh-ui init` 으로 만든 config 도 같은 시드 가짐."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.61.2"
+    },
+    {
       "version": "0.61.1",
       "date": "2026-05-07",
       "title": "chore — 사용자 프로젝트 템플릿에서 Dockerfile 제거",

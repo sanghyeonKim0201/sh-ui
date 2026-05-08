@@ -778,6 +778,70 @@ function CharCountField() {
         />
       </Preview>
 
+      {/* Submitting state */}
+      <h2>제출 중 상태</h2>
+      <p className="muted">
+        <code>onSubmit</code> 이 <code>Promise</code> 를 반환하면 그 동안 <code>submitting</code> 이{" "}
+        <code>true</code> 가 된다. <code>{"<form>"}</code> 루트에는 <code>aria-busy={"{submitting}"}</code> 가
+        자동 부착되므로, 사용자 코드에서는 Submit 버튼만 잠그면 된다.{" "}
+        <code>useFormState()</code> 의 <code>submitting</code> 을 읽어 더블 서밋을 막고 spinner 를 띄우는 게
+        표준 패턴이다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { Form, useFormState } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+
+// <Form> 안에서만 호출 가능
+function SubmitButton({ children }: { children: React.ReactNode }) {
+  const { submitting } = useFormState();
+  return (
+    <Button
+      type="submit"
+      disabled={submitting}
+      aria-busy={submitting || undefined}
+      style={{ minWidth: "7rem" }}
+    >
+      {submitting ? (
+        <>
+          <Spinner size="sm" aria-label="저장 중" />
+          저장 중…
+        </>
+      ) : (
+        children
+      )}
+    </Button>
+  );
+}
+
+<Form
+  defaultValues={{ email: "" }}
+  onSubmit={async (values, { reset }) => {
+    await save(values);   // 이 동안 submitting === true
+    reset();
+  }}
+>
+  <Form.Field name="email">
+    <Form.Label>이메일</Form.Label>
+    <Form.Control><Input type="email" /></Form.Control>
+    <Form.Error />
+  </Form.Field>
+  <SubmitButton>가입</SubmitButton>
+</Form>`,
+          },
+        ]}
+      />
+      <p className="muted" style={{ marginTop: "var(--space-3)" }}>
+        주의 — <code>onSubmit</code> 이 동기 함수면 <code>submitting</code> 토글은 일어나지 않는다.
+        반드시 <code>async</code> / <code>Promise</code> 반환 형태여야 한다.
+        비동기 검증이 진행 중일 때도 검증 완료를 기다리는 동안 <code>submitting</code> 이 켜져 있다.
+      </p>
+
       {/* Multistep */}
       <h2>멀티스텝</h2>
       <p className="muted">

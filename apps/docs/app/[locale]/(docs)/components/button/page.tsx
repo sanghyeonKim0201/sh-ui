@@ -244,6 +244,103 @@ const ShUiButton(
         />
       </Preview>
 
+      <h3>로딩 상태</h3>
+      <p className="muted">
+        Button 자체에는 <code>loading</code> prop 이 없다. 비동기 액션 중에는 <code>disabled</code>{" "}
+        + <code>aria-busy</code> 로 더블 서밋을 막고, 안에 <code>Spinner</code> 를 끼워 시각적으로 알린다.
+        문구가 바뀌면 너비가 점프하므로 <code>min-width</code> 로 자리잡거나 텍스트를 그대로 두는 걸 권장.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+
+function SaveButton() {
+  const [pending, setPending] = useState(false);
+
+  async function handleClick() {
+    setPending(true);
+    try {
+      await save();
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <Button
+      onClick={handleClick}
+      disabled={pending}
+      aria-busy={pending || undefined}
+      style={{ minWidth: "6rem" }}
+    >
+      {pending ? (
+        <>
+          <Spinner size="sm" aria-label="저장 중" />
+          저장 중…
+        </>
+      ) : (
+        "저장"
+      )}
+    </Button>
+  );
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `import '../widgets/sh_ui_button.dart';
+import '../widgets/sh_ui_spinner.dart';
+
+class SaveButton extends StatefulWidget {
+  const SaveButton({super.key});
+  @override
+  State<SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<SaveButton> {
+  bool _pending = false;
+
+  Future<void> _handlePressed() async {
+    setState(() => _pending = true);
+    try {
+      await save();
+    } finally {
+      if (mounted) setState(() => _pending = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 96),
+      child: ShUiButton(
+        // onPressed: null 이면 비활성 + 시각 스타일 자동 적용
+        onPressed: _pending ? null : _handlePressed,
+        child: _pending
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  ShUiSpinner(size: ShUiSpinnerSize.sm),
+                  SizedBox(width: 8),
+                  Text('저장 중…'),
+                ],
+              )
+            : const Text('저장'),
+      ),
+    );
+  }
+}`,
+          },
+        ]}
+      />
+
       <h3>전체 매트릭스</h3>
       <Preview>
         <Preview.Demo>

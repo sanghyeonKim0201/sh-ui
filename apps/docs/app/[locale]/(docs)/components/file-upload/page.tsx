@@ -338,6 +338,108 @@ if (_files.isNotEmpty)
         />
       </Preview>
 
+      <h3>업로드 진행 상태</h3>
+      <p className="muted">
+        FileUpload 자체에는 progress prop 이 없다. 업로드 진행은 <code>disabled</code> 로 추가 입력을 잠그고{" "}
+        <code>Progress</code> · <code>Spinner</code> 를 옆에 두는 컴포지션으로 표현한다.
+        업로드 중 사용자가 같은 파일을 다시 떨어뜨려 중복 요청을 보내는 흔한 버그를 막아준다.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "tsx",
+            code: `import { useState } from "react";
+import {
+  FileUpload,
+  FileUploadDropzone,
+  FileUploadTrigger,
+  FileUploadList,
+} from "@/components/ui/file-upload";
+import { Progress } from "@/components/ui/progress";
+
+function UploadField() {
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  async function handleChange(next: File[]) {
+    setFiles(next);
+    if (next.length === 0) return;
+
+    setUploading(true);
+    setProgress(0);
+    try {
+      await uploadFiles(next, {
+        onProgress: (p) => setProgress(p),  // 0~100
+      });
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div aria-busy={uploading || undefined}>
+      <FileUpload
+        multiple
+        accept="image/*"
+        value={files}
+        onValueChange={handleChange}
+        disabled={uploading}
+      >
+        <FileUploadDropzone>
+          <FileUploadTrigger>파일 선택</FileUploadTrigger>
+        </FileUploadDropzone>
+        <FileUploadList />
+      </FileUpload>
+
+      {uploading && (
+        <div style={{ marginTop: "var(--space-2)" }}>
+          <Progress value={progress} aria-label="업로드 진행률" />
+          <p className="muted" style={{ fontSize: "var(--text-sm)" }}>
+            {progress}% 업로드 중…
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}`,
+          },
+          {
+            value: "flutter",
+            label: "Flutter",
+            language: "dart",
+            code: `// ShUiFileUpload 는 disabled prop 으로 트리거를 잠그고,
+// 진행률은 ShUiProgress / 외부 LinearProgressIndicator 로 표현.
+bool _uploading = false;
+double _progress = 0;
+
+ShUiFileUpload(
+  files: _files,
+  multiple: true,
+  disabled: _uploading,
+  onPickFiles: () async {
+    // ... 파일 선택 후
+    setState(() => _uploading = true);
+    try {
+      await uploadFiles(_files, onProgress: (p) {
+        setState(() => _progress = p);
+      });
+    } finally {
+      if (mounted) setState(() => _uploading = false);
+    }
+  },
+),
+if (_uploading) ...[
+  const SizedBox(height: 8),
+  ShUiProgress(value: _progress / 100),
+  Text('\${_progress.toInt()}% 업로드 중…'),
+],`,
+          },
+        ]}
+      />
+
       <h2>API Reference</h2>
 
       <h3>FileUpload</h3>
