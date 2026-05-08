@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.0 (2026-05-08) — minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix
+**최신 버전**: v0.64.1 (2026-05-08) — patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시
 
 ## React — Components
 
@@ -217,7 +217,7 @@
 ### combobox
 
 - Type: component
-- Summary: 검색 가능 셀렉트 — 자동 필터링, 키보드 내비 (Base UI).
+- Summary: 검색 가능 셀렉트 — separate exports: Combobox / ComboboxTrigger / ComboboxClear / ComboboxValue / ComboboxIcon / ComboboxInput / ComboboxContent / ComboboxList / ComboboxGroup / ComboboxChips (Base UI). 자동 필터링·키보드 내비. ComboboxTrigger·ComboboxClear 는 자체로 `<button>` — 자식 button 중첩 금지, 다른 엘리먼트로 슬롯하려면 Base UI 의 `render` prop 사용.
 - Install: `npx sh-ui-cli add combobox`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -227,7 +227,7 @@
 ### popover
 
 - Type: component
-- Summary: floating 팝오버 — 트리거 기준 위치 (Base UI).
+- Summary: floating 팝오버 — separate exports: Popover / PopoverTrigger / PopoverClose / PopoverContent / PopoverTitle / PopoverDescription (Base UI). PopoverTrigger·PopoverClose 는 자체로 `<button>` — 자식으로 button 중첩 금지, 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - Install: `npx sh-ui-cli add popover`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -247,7 +247,7 @@
 ### dropdown-menu
 
 - Type: component
-- Summary: 드롭다운 메뉴 — compound, sub-menu 지원 (Base UI).
+- Summary: 드롭다운 메뉴 — separate exports: DropdownMenu / DropdownMenuTrigger / DropdownMenuContent / DropdownMenuItem / DropdownMenuCheckboxItem / DropdownMenuRadioGroup / DropdownMenuRadioItem / DropdownMenuGroup / DropdownMenuLabel / DropdownMenuSeparator / DropdownMenuSub / DropdownMenuSubTrigger / DropdownMenuSubContent (Base UI). DropdownMenuTrigger·SubTrigger 는 자체로 `<button>` — 자식 button 중첩 금지, 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - Install: `npx sh-ui-cli add dropdown-menu`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -257,7 +257,7 @@
 ### context-menu
 
 - Type: component
-- Summary: 우클릭 컨텍스트 메뉴 — DropdownMenu와 같은 구조 (Base UI).
+- Summary: 우클릭 컨텍스트 메뉴 — DropdownMenu 와 동일 export 패턴 (`Context-` 접두사: ContextMenu / ContextMenuTrigger / ContextMenuContent / ContextMenuItem 등). ContextMenuTrigger 는 임의 엘리먼트를 우클릭 수신 영역으로 지정하는 용도라 자체가 button 은 아니지만, 자식 슬롯이 필요하면 `render` prop 사용.
 - Install: `npx sh-ui-cli add context-menu`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -267,7 +267,7 @@
 ### menubar
 
 - Type: component
-- Summary: 수평 메뉴바 — dropdown-menu 위에 구성 (Base UI).
+- Summary: 수평 메뉴바 — Menubar 단일 export. 내부에 DropdownMenu 들을 나란히 배치하는 컨테이너로, 좌우 화살표로 메뉴 간 이동 (Base UI).
 - Install: `npx sh-ui-cli add menubar`
 - npm/pub deps: @base-ui/react
 - Registry deps: dropdown-menu, utils (자동 설치됨)
@@ -277,7 +277,7 @@
 ### tooltip
 
 - Type: component
-- Summary: 짧은 힌트 — hover/focus 표시, delay/closeDelay (Base UI).
+- Summary: 짧은 힌트 — separate exports: TooltipProvider (앱 루트에 한 번 두어 delay 공유) / Tooltip / TooltipTrigger / TooltipContent (Base UI). hover/focus 표시, delay/closeDelay. TooltipTrigger 는 임의 엘리먼트를 트리거로 슬롯하는 용도라 Button 등과 결합하려면 `render` prop 사용.
 - Install: `npx sh-ui-cli add tooltip`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -296,7 +296,7 @@
 ### pagination
 
 - Type: component
-- Summary: 페이지 단위 내비게이션 — compound (PaginationContent/Item/Link/Previous/Next/Ellipsis). getPaginationRange 유틸 동봉. aria-current 자동.
+- Summary: 페이지 단위 내비게이션 — separate exports: Pagination / PaginationContent / PaginationItem / PaginationLink / PaginationPrevious / PaginationNext / PaginationEllipsis. getPaginationRange 유틸 동봉. aria-current 자동.
 - Install: `npx sh-ui-cli add pagination`
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/pagination`
@@ -363,7 +363,7 @@
 ### radio
 
 - Type: component
-- Summary: 라디오 그룹 — RadioGroup + RadioGroupItem (Base UI).
+- Summary: 라디오 그룹 — Radio (단일 선택지) + RadioGroup (컨테이너) (Base UI). `RadioGroupItem` 이름 아님. 단일 즉시 적용은 Switch, 다중은 Checkbox 권장.
 - Install: `npx sh-ui-cli add radio`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -393,7 +393,7 @@
 ### textarea
 
 - Type: component
-- Summary: 여러 행 텍스트 입력 — rows, autoResize.
+- Summary: 여러 행 텍스트 입력 — rows. autoResize 같은 추가 prop 없음.
 - Install: `npx sh-ui-cli add textarea`
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/textarea`
@@ -402,7 +402,7 @@
 ### toast
 
 - Type: component
-- Summary: 임시 알림 — useToast 훅 + ToastProvider. aria-live 자동.
+- Summary: 임시 알림 — `toast()` 함수 호출 + `<Toaster />` 컴포넌트 (sonner-style). useToast 훅·ToastProvider 아님. aria-live 자동.
 - Install: `npx sh-ui-cli add toast`
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/toast`
@@ -419,7 +419,7 @@
 ### date-picker
 
 - Type: component
-- Summary: 날짜 선택 — 캘린더 팝업 (Base UI).
+- Summary: 날짜 선택 — separate exports: DatePicker / DatePickerTrigger / DatePickerContent / DatePickerCalendar / DatePickerFooter / DateRangePicker + useDatePicker 훅 (Base UI). DatePickerTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - Install: `npx sh-ui-cli add date-picker`
 - npm/pub deps: @base-ui/react
 - Registry deps: calendar, utils (자동 설치됨)
@@ -438,7 +438,7 @@
 ### accordion
 
 - Type: component
-- Summary: 펼침/접힘 아코디언 — single/multiple (Base UI).
+- Summary: 펼침/접힘 아코디언 — separate exports: Accordion / AccordionItem / AccordionTrigger / AccordionContent (Base UI). single/multiple 모드. AccordionTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - Install: `npx sh-ui-cli add accordion`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -512,7 +512,7 @@
 ### cn
 
 - Type: lib
-- Summary: className 머지 유틸 (tailwind-merge 미사용, 순수 concat).
+- Summary: className 합성 헬퍼. plain 변종(`cn.ts`)은 순수 concat, tailwind 변종(`cn.tailwind.ts`)은 clsx + tailwind-merge 로 utility 충돌 자동 머지 (`cn('bg-red-500', 'bg-blue-500')` → `'bg-blue-500'`).
 - Install: `npx sh-ui-cli add cn`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/cn
 
@@ -873,6 +873,11 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.64.1 — patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시 (2026-05-08)
+- **summary 5건 정정 (card / select / dialog / tabs / breadcrumb)** — `compound (Card.Header / ...)` 같이 dot syntax 가 있는 것처럼 적혀 있었지만 실제 구현은 namespace attach 없이 separate export(`CardHeader`, `DialogTitle` 등). MCP `sh_ui_list_components` 와 `apps/docs/public/llms.txt` 가 같은 source 를 읽어 AI 가 잘못된 API 로 코드 생성하던 문제를 차단. card 의 `Body` 도 실제로는 `CardContent` 였던 부분 같이 정정.
+- **Dialog summary 에 `render` prop 함정 명시** — `DialogTrigger` / `DialogClose` 는 자체로 `<button>` 을 렌더하므로 자식으로 커스텀 Button 을 넣으면 button 중첩(invalid HTML). Base UI 의 `render` prop 으로 슬롯 교체하는 패턴 (`<DialogClose render={<Button>닫기</Button>} />`) 을 summary 에 박아 AI 가 onClick 우회 대신 정석을 사용하도록. SelectTrigger 도 동일 노트.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.1
+
 ### v0.64.0 — minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix (2026-05-08)
 - **templates proxy.ts 에 `HOME_REDIRECT` 상수 추가** — `/` 진입 시 redirect 할 path 를 사용자가 한 줄로 지정. 빈 문자열이 기본이라 동작 변화 없음(= `app/page.tsx` 그대로 노출). `auth-jwt` 단독 / `next-intl` 단독 / `auth-jwt + next-intl` 합성 세 케이스 모두 동일 패턴. `/[locale]/page.tsx` 에 redirect RSC 를 따로 만들 필요 없이 미들웨어 한 곳에서 라우팅 게이트 처리.
 - **fix(input)**: `isValidBRN` 의 배열 인덱싱 4곳에 non-null assertion 추가 — `noUncheckedIndexedAccess: true` 인 사용자 프로젝트에서 `parseInt(d[i], 10)` 가 `string | undefined` 로 접혀 typecheck 실패하던 회귀. 직전 길이 가드(`d.length !== 10`) 로 모든 접근이 안전한 구간이라 런타임 동작 변경 없음. plain / tailwind / vanilla-extract / css-modules + `apps/docs` 듀얼카피본 동기화.
@@ -894,13 +899,6 @@
 - **시그니처는 보존, 내부 영속화는 cookie → next-themes localStorage 로 이전** — `{ theme, setTheme, toggleTheme }` 와 `light`/`dark` 두 값만 노출하는 정책 그대로. 사용자 코드는 변경 불필요. 다만 기존 `sh-ui-theme` cookie 값은 새 키로 자동 마이그레이션되지 않음(첫 방문 시 defaultTheme 으로 초기화).
 - **registry.json `theme.dependencies` 에 `next-themes` 추가** — `sh-ui add theme` 시 외부 패키지 자동 설치 안내에 포함. peer-versions.json 에 `^0.4.6` 핀.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.62.0
-
-### v0.61.4 — fix — MCP 안내가 v0.61.2 의 `create` one-shot 흐름과 일치하도록 갱신 (2026-05-08)
-- **MCP 서버 instructions 의 '테마 커스터마이징' 섹션 정정** — 이전엔 '스캐폴드 후 `tokens.css` 직접 편집 + base64 백업' 을 권장했지만, v0.61.2 부터 `create` 가 단일 진입점으로 동작하므로 'encode-first, then create with theme arg' 흐름으로 flip. 사후 `tokens.css` 손편집은 다음 재스캐폴드 시 유실되는 함정.
-- **`sh_ui_create_project` description** 에 paths.styles · theme.base 자동 처리 명시 — AI 가 사후 패치 시도 안 하도록 가드.
-- **`sh_ui_add_component` description** 에 `theme.base: 'custom'` 일 때 `tokens` 는 no-op (보존) 라는 v0.61.3 회귀 가드 동작 명시.
-- **`sh_ui_encode_theme` description** 에서 'tokens.css 손편집 백업용' 표현 제거 — 이제는 'create 호출 전에 base64 만들어 theme 인자로 넘기는 정석 흐름' 으로 표현.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.61.4
 
 ## Resources
 

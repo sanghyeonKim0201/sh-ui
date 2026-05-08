@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.64.2",
+      "date": "2026-05-08",
+      "title": "patch — llms summary 13건 정확성 audit + Base UI render-prop 함정 일괄 명시",
+      "type": "patch",
+      "highlights": [
+        "**summary 사실관계 정정 5건** — `radio` 의 'RadioGroupItem' (실제는 `Radio + RadioGroup`), `toast` 의 'useToast 훅 + ToastProvider' (실제는 `toast()` 함수 + `<Toaster />`, sonner-style), `textarea` 의 'autoResize' (실제 prop 없음), `cn` 의 'tailwind-merge 미사용' (tailwind 변종은 사용함), `pagination` 의 dot/축약 표기. AI 가 헛 import 하던 회귀 차단.",
+        "**`render` prop 함정 일괄 명시 (6건)** — popover / tooltip / dropdown-menu / accordion / date-picker / combobox 의 Trigger·Close 가 자체로 `<button>` 을 렌더한다는 점 + 자식 button 중첩 대신 Base UI 의 `render` prop 으로 슬롯하는 패턴을 summary 에 박음. (`<PopoverClose render={<Button>닫기</Button>} />`). v0.64.1 의 dialog/select 노트와 동일 톤으로 통일.",
+        "**exports 명시 보강 (8건)** — popover / tooltip / dropdown-menu / context-menu / menubar / accordion / date-picker / combobox 의 실제 export 이름을 summary 에 펼쳐 적음. AI 가 namespace attach (`Popover.Trigger` 등) 환각으로 import 하던 문제 해소."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.2"
+    },
+    {
       "version": "0.64.1",
       "date": "2026-05-08",
       "title": "patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시",
