@@ -11,6 +11,9 @@ import { html } from "@codemirror/lang-html";
 import { markdown } from "@codemirror/lang-markdown";
 import "./styles.css";
 
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 export type CodeEditorLanguage =
   | "text"
   | "javascript"
@@ -59,9 +62,6 @@ export interface CodeEditorProps {
   "aria-labelledby"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 function languageExtension(language: CodeEditorLanguage): Extension {
   switch (language) {

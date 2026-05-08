@@ -5,10 +5,10 @@ import { Toggle as BaseToggle } from "@base-ui/react/toggle";
 import { ToggleGroup as BaseToggleGroup } from "@base-ui/react/toggle-group";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
+
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 /* ───────────── Toggle ───────────── */
 
 export type ToggleVariant = "outline" | "ghost";

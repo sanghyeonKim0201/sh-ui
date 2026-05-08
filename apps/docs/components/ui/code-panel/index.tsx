@@ -1,11 +1,11 @@
-import { ensureLanguage } from "./highlighter";
+import { codeToHtml } from "shiki";
 import { CodePanelCopyButton } from "./copy";
 import "./styles.css";
+
 
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 export interface CodePanelProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** 하이라이팅할 코드 문자열. children을 제공하지 않을 때 필수. */
@@ -98,7 +98,6 @@ export async function CodePanel({
 /* ───────── CodePanelHeader ───────── */
 
 /** 파일명·복사 버튼 등을 담는 코드 블록 상단 바. CodePanel 자식으로 사용. */
-/** 파일명·복사 버튼 등을 담는 코드 블록 상단 바. CodePanel 자식으로 사용. */
 export function CodePanelHeader({
   className,
   children,
@@ -113,7 +112,6 @@ export function CodePanelHeader({
 
 /* ───────── CodePanelFilename ───────── */
 
-/** CodePanelHeader 안에 표시되는 파일명 라벨. */
 /** CodePanelHeader 안에 표시되는 파일명 라벨. */
 export function CodePanelFilename({
   className,
@@ -168,10 +166,6 @@ export interface CodePanelBodyProps
  * shiki로 코드를 SSR 하이라이팅하여 렌더하는 async 컴포넌트.
  * 라이트/다크 테마는 `github-light`/`github-dark`를 사용하며, 부모 테마 클래스에 따라 자동 전환된다.
  */
-/**
- * shiki로 코드를 SSR 하이라이팅하여 렌더하는 async 컴포넌트.
- * 라이트/다크 테마는 `github-light`/`github-dark`를 사용하며, 부모 테마 클래스에 따라 자동 전환된다.
- */
 export async function CodePanelBody({
   code,
   language = "text",
@@ -180,8 +174,7 @@ export async function CodePanelBody({
   ...rest
 }: CodePanelBodyProps) {
   const trimmed = code.replace(/\n$/, "");
-  const highlighter = await ensureLanguage(language);
-  const html = highlighter.codeToHtml(trimmed, {
+  const html = await codeToHtml(trimmed, {
     lang: language,
     themes: { light: "github-light", dark: "github-dark" },
     defaultColor: false,

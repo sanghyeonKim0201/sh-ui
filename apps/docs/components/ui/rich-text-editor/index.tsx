@@ -5,6 +5,9 @@ import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import {
   BoldIcon,
   ItalicIcon,
@@ -51,9 +54,6 @@ export interface RichTextEditorProps {
   "aria-label"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * Tiptap 기반 리치 텍스트 에디터.

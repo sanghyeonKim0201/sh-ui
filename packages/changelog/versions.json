@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.64.6",
+      "date": "2026-05-08",
+      "title": "patch — apps/docs 듀얼카피 42 파일 전수 동기화 + sync-docs 스크립트",
+      "type": "patch",
+      "highlights": [
+        "**duplicate drift baseline 0 화** — v0.64.5 가 도입한 lint 의 BASELINE_DRIFTS 10건 (button / card / code-panel / color-picker / file-upload / input / numeric-input / page-toc / sidebar) 을 비롯해 기존에 인라인 `[].filter(Boolean).join(' ')` / `mergeClass()` / `cx` signature 변종 등으로 미세하게 어긋나 있던 42 파일 모두 registry 의 plain 변종 기준으로 일괄 동기화. 이제 baseline 0/0.",
+        "**`scripts/sync-docs.mjs` 신규** — registry → docs 카피본 자동 변환 (cn import 자리에 인라인 cx 함수, `cn(` → `cx(`). dry-run 기본, `--write` 로 실제 적용. 컴포넌트 변경 시 `pnpm lint:drift` 로 빠진 곳 검출 → `node scripts/sync-docs.mjs --write` 로 일괄 갱신 흐름. 손편집 → drift 누적의 회귀 차단."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.6"
+    },
+    {
       "version": "0.64.5",
       "date": "2026-05-08",
       "title": "patch — registry drift 가드 (CI lint 3종) + form/calendar summary 추가",

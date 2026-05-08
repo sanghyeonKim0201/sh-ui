@@ -6,6 +6,9 @@ import remarkGfm from "remark-gfm";
 import { CodeEditor } from "../code-editor";
 import "./styles.css";
 
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 export interface MarkdownEditorProps {
   /**
    * Controlled — 현재 마크다운. 명시 시 외부 상태가 진실원천.
@@ -42,9 +45,6 @@ export interface MarkdownEditorProps {
   "aria-label"?: string;
 }
 
-function cx(...args: (string | undefined | false | null)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 마크다운 에디터 — CodeEditor(소스) + react-markdown(라이브 프리뷰)의 합성.

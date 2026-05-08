@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import { ChevronRightIcon, PanelLeftIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import "./styles.css";
@@ -205,7 +208,7 @@ export function SidebarProvider({
     [state, open, setOpen, isMobile, openMobile, toggleSidebar, activePanel, setActivePanel]
   );
 
-  const classes = ["sh-ui-sidebar-wrapper", className].filter(Boolean).join(" ");
+  const classes = cx("sh-ui-sidebar-wrapper", className);
 
   return (
     <SidebarContext.Provider value={value}>
@@ -288,7 +291,7 @@ export function Sidebar({
   );
 
   if (collapsible === "none") {
-    const classes = ["sh-ui-sidebar", "sh-ui-sidebar--static", className].filter(Boolean).join(" ");
+    const classes = cx("sh-ui-sidebar", "sh-ui-sidebar--static", className);
     return wrap(
       <aside className={classes} data-side={side} data-variant={variant} {...props}>
         {children}
@@ -312,7 +315,7 @@ export function Sidebar({
 
   return wrap(
     <aside
-      className={["sh-ui-sidebar", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar", className)}
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
@@ -351,9 +354,7 @@ function MobileSidebar({
       )}
       <aside
         ref={asideRef}
-        className={["sh-ui-sidebar", "sh-ui-sidebar--mobile", className]
-          .filter(Boolean)
-          .join(" ")}
+        className={cx("sh-ui-sidebar", "sh-ui-sidebar--mobile", className)}
         data-side={side}
         data-state={openMobile ? "open" : "closed"}
         role="dialog"
@@ -378,7 +379,7 @@ export function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerP
     <button
       type="button"
       aria-label="Toggle Sidebar"
-      className={["sh-ui-sidebar__trigger", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__trigger", className)}
       onClick={(e) => {
         onClick?.(e);
         toggleSidebar();
@@ -429,7 +430,7 @@ export function SidebarPanel({ id, className, children, ...props }: SidebarPanel
   return (
     <aside
       ref={ref}
-      className={["sh-ui-sidebar__panel", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__panel", className)}
       data-state={open ? "open" : "closed"}
       role={isMobile ? "dialog" : undefined}
       aria-modal={open && isMobile ? "true" : undefined}
@@ -453,7 +454,7 @@ export function SidebarPanel({ id, className, children, ...props }: SidebarPanel
 export function SidebarPanelHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__panel-header", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__panel-header", className)}
       {...props}
     />
   );
@@ -463,7 +464,7 @@ export function SidebarPanelHeader({ className, ...props }: React.HTMLAttributes
 export function SidebarPanelContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__panel-content", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__panel-content", className)}
       {...props}
     />
   );
@@ -475,7 +476,7 @@ export function SidebarPanelContent({ className, ...props }: React.HTMLAttribute
 export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
   return (
     <main
-      className={["sh-ui-sidebar-inset", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar-inset", className)}
       {...props}
     />
   );
@@ -487,7 +488,7 @@ export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLE
 export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__header", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__header", className)}
       {...props}
     />
   );
@@ -497,7 +498,7 @@ export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTML
 export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__footer", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__footer", className)}
       {...props}
     />
   );
@@ -507,7 +508,7 @@ export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTML
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__content", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__content", className)}
       {...props}
     />
   );
@@ -517,7 +518,7 @@ export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTM
 export function SidebarSeparator({ className, ...props }: React.HTMLAttributes<HTMLHRElement>) {
   return (
     <hr
-      className={["sh-ui-sidebar__separator", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__separator", className)}
       {...props}
     />
   );
@@ -529,7 +530,7 @@ export function SidebarSeparator({ className, ...props }: React.HTMLAttributes<H
 export function SidebarGroup({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__group", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__group", className)}
       {...props}
     />
   );
@@ -539,7 +540,7 @@ export function SidebarGroup({ className, ...props }: React.HTMLAttributes<HTMLD
 export function SidebarGroupLabel({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__group-label", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__group-label", className)}
       {...props}
     />
   );
@@ -549,7 +550,7 @@ export function SidebarGroupLabel({ className, ...props }: React.HTMLAttributes<
 export function SidebarGroupContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={["sh-ui-sidebar__group-content", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__group-content", className)}
       {...props}
     />
   );
@@ -561,7 +562,7 @@ export function SidebarGroupContent({ className, ...props }: React.HTMLAttribute
 export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
-      className={["sh-ui-sidebar__menu", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__menu", className)}
       {...props}
     />
   );
@@ -571,7 +572,7 @@ export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUL
 export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
-      className={["sh-ui-sidebar__menu-item", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__menu-item", className)}
       {...props}
     />
   );
@@ -637,22 +638,16 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
       [onClick, panelId, ctx]
     );
 
-    const cls = [
-      "sh-ui-sidebar__menu-button",
+    const cls = cx("sh-ui-sidebar__menu-button",
       `sh-ui-sidebar__menu-button--${size}`,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+      className);
 
     if (asChild && React.isValidElement(children)) {
       const child = children as React.ReactElement<Record<string, unknown>>;
       const merged: Record<string, unknown> = {
         ...props,
         onClick: handleClick,
-        className: [(child.props.className as string) || "", cls]
-          .filter(Boolean)
-          .join(" "),
+        className: cx((child.props.className as string) || "", cls),
         "data-active": resolvedIsActive || undefined,
       };
       return React.cloneElement(child, merged);
@@ -679,7 +674,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
 export function SidebarMenuSub({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
-      className={["sh-ui-sidebar__menu-sub", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__menu-sub", className)}
       {...props}
     />
   );
@@ -689,7 +684,7 @@ export function SidebarMenuSub({ className, ...props }: React.HTMLAttributes<HTM
 export function SidebarMenuSubItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
   return (
     <li
-      className={["sh-ui-sidebar__menu-sub-item", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-sidebar__menu-sub-item", className)}
       {...props}
     />
   );
@@ -721,21 +716,15 @@ export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarM
     const tocActive = useTOCActiveId();
     const resolvedIsActive =
       isActive ?? (sectionId != null ? tocActive === sectionId : undefined);
-    const cls = [
-      "sh-ui-sidebar__menu-sub-button",
+    const cls = cx("sh-ui-sidebar__menu-sub-button",
       `sh-ui-sidebar__menu-sub-button--${size}`,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+      className);
 
     if (asChild && React.isValidElement(children)) {
       const child = children as React.ReactElement<Record<string, unknown>>;
       const merged: Record<string, unknown> = {
         ...props,
-        className: [(child.props.className as string) || "", cls]
-          .filter(Boolean)
-          .join(" "),
+        className: cx((child.props.className as string) || "", cls),
         "data-active": resolvedIsActive || undefined,
       };
       return React.cloneElement(child, merged);
@@ -859,14 +848,10 @@ export function SidebarCollapsibleTrigger({
 }: SidebarCollapsibleTriggerProps) {
   const { open, toggle, flyoutMode, flyoutOpen } = useCollapsible();
 
-  const cls = [
-    "sh-ui-sidebar__menu-button",
+  const cls = cx("sh-ui-sidebar__menu-button",
     `sh-ui-sidebar__menu-button--${size}`,
     "sh-ui-sidebar__collapsible-trigger",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+    className);
 
   const isOpen = flyoutMode ? flyoutOpen : open;
 

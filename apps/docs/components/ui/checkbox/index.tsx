@@ -3,10 +3,10 @@ import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
+
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 /* ───────────── Checkbox ───────────── */
 
 export type CheckboxProps = Omit<

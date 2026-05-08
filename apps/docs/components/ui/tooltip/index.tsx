@@ -2,11 +2,11 @@ import * as React from "react";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import "./styles.css";
 
-type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
-
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
+
 
 /** 여러 Tooltip이 공통 delay를 공유하도록 묶는다. 앱 루트에 한 번 두는 것을 권장. */
 export const TooltipProvider = BaseTooltip.Provider;

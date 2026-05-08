@@ -4,11 +4,11 @@ import * as React from "react";
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import "./styles.css";
 
-type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
-
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
+
 
 /* ───────── Root ───────── */
 

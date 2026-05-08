@@ -4,11 +4,11 @@ import * as React from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import "./styles.css";
 
-type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
-
-function cx(...args: (string | undefined | false)[]) {
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
+
 
 /**
  * Select + Input의 결합 — 타이핑으로 목록이 자동 필터링된다.

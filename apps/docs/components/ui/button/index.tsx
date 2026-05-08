@@ -1,4 +1,7 @@
 import * as React from "react";
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import "./styles.css";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger" | "link";
@@ -33,14 +36,12 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
  */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", className, ...props }, ref) => {
-    const classes = [
+    const classes = cx(
       "sh-ui-button",
       `sh-ui-button--${variant}`,
       `sh-ui-button--${size}`,
       className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+    );
     return <button ref={ref} className={classes} {...props} />;
   },
 );

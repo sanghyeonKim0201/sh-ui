@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import {
   Select,
   SelectContent,
@@ -8,10 +11,6 @@ import {
   SelectTrigger,
 } from "../select";
 import "./styles.css";
-
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /* ───────── Helpers ───────── */
 

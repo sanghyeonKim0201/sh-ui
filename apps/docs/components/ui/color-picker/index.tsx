@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import "./styles.css";
 
 /* ───────────── types ───────────── */
@@ -234,7 +237,7 @@ export function ColorPicker({
   return (
     <ColorPickerContext.Provider value={ctx}>
       <div
-        className={["sh-ui-color-picker", className].filter(Boolean).join(" ")}
+        className={cx("sh-ui-color-picker", className)}
         {...rest}
       >
         {children ?? (
@@ -271,7 +274,7 @@ export function ColorPickerSaturation({
     <div
       ref={drag.ref}
       onPointerDown={drag.onPointerDown}
-      className={["sh-ui-color-picker__sv", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-color-picker__sv", className)}
       style={{ background: pureHueHex, ...style }}
       role="slider"
       aria-label="채도/명도"
@@ -309,7 +312,7 @@ export function ColorPickerHue({ className, ...rest }: ColorPickerHueProps) {
     <div
       ref={drag.ref}
       onPointerDown={drag.onPointerDown}
-      className={["sh-ui-color-picker__hue", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-color-picker__hue", className)}
       role="slider"
       aria-label="색조"
       aria-valuemin={0}
@@ -341,7 +344,7 @@ export function ColorPickerAlpha({ className, style, ...rest }: ColorPickerAlpha
     <div
       ref={drag.ref}
       onPointerDown={drag.onPointerDown}
-      className={["sh-ui-color-picker__alpha", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-color-picker__alpha", className)}
       role="slider"
       aria-label="투명도"
       aria-valuemin={0}
@@ -392,7 +395,7 @@ export function ColorPickerHex({
 
   return (
     <div
-      className={["sh-ui-color-picker__row", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-color-picker__row", className)}
       {...rest}
     >
       {showSwatch && (
@@ -442,7 +445,7 @@ export function ColorPickerSwatches({
     <div
       role="group"
       aria-label="미리 준비된 색상"
-      className={["sh-ui-color-picker__swatches", className].filter(Boolean).join(" ")}
+      className={cx("sh-ui-color-picker__swatches", className)}
       {...rest}
     >
       {colors.map((c) => {

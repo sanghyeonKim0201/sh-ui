@@ -1,11 +1,11 @@
 import * as React from "react";
 import "./styles.css";
 
-export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
-
-function cx(...args: (string | undefined | false)[]) {
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
 
 /**
  * 여러 줄 텍스트 입력. 네이티브 `<textarea>` 위에 sh-ui 토큰 스타일만 입혔다.

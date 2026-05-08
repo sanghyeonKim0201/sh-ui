@@ -2,11 +2,11 @@ import * as React from "react";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import "./styles.css";
 
-type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
-
-function cx(...args: (string | undefined | false)[]) {
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
+
 
 /**
  * 모달 다이얼로그 루트. 열림 상태를 가지며 자식으로 Trigger·Content를 둔다.
