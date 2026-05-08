@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.61.4",
+      "date": "2026-05-08",
+      "title": "fix — MCP 안내가 v0.61.2 의 `create` one-shot 흐름과 일치하도록 갱신",
+      "type": "patch",
+      "highlights": [
+        "**MCP 서버 instructions 의 '테마 커스터마이징' 섹션 정정** — 이전엔 '스캐폴드 후 `tokens.css` 직접 편집 + base64 백업' 을 권장했지만, v0.61.2 부터 `create` 가 단일 진입점으로 동작하므로 'encode-first, then create with theme arg' 흐름으로 flip. 사후 `tokens.css` 손편집은 다음 재스캐폴드 시 유실되는 함정.",
+        "**`sh_ui_create_project` description** 에 paths.styles · theme.base 자동 처리 명시 — AI 가 사후 패치 시도 안 하도록 가드.",
+        "**`sh_ui_add_component` description** 에 `theme.base: 'custom'` 일 때 `tokens` 는 no-op (보존) 라는 v0.61.3 회귀 가드 동작 명시.",
+        "**`sh_ui_encode_theme` description** 에서 'tokens.css 손편집 백업용' 표현 제거 — 이제는 'create 호출 전에 base64 만들어 theme 인자로 넘기는 정석 흐름' 으로 표현."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.61.4"
+    },
+    {
       "version": "0.61.3",
       "date": "2026-05-08",
       "title": "fix — `sh-ui add tokens` 가 base=custom 테마에서 깨지던 회귀",
