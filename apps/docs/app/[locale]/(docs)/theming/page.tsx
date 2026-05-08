@@ -322,6 +322,243 @@ AI:    ✓ 인코딩 완료. 다음 명령으로 처음부터 그 톤으로 스�
         Figma <em>Design Tokens</em> 플러그인 export (W3C DTCG JSON) 도 그대로 첨부 가능 — 키 이름이 sh-ui shape 과 다를 때 AI 가 의미 매핑(<code>color/brand/primary</code> → <code>primary</code> 등). 모호한 키는 사용자에게 한 번 확인.
       </p>
 
+      <h2>9. 케이스별 입력 예제 — 어디까지 채울 수 있나</h2>
+      <p>
+        <code>sh_ui_encode_theme</code> 입력은 <strong>필수 3 필드</strong>(<code>light</code> / <code>dark</code> / <code>radius</code>) 위에 옵셔널 카테고리를 더하는 구조다. 아래 4 케이스는 가장 가벼운 형태부터 풀스택까지 — 각 케이스의 입력 JSON 과 실제 인코딩 결과 base64 를 짝으로 보여준다. 그대로 복붙해 <code>--theme</code> 또는 <code>sh_ui_create_project</code> 의 <code>theme</code> 인자에 넣어 검증해볼 수 있다.
+      </p>
+
+      <h3>케이스 A — 필수만 (15 + 15 + radius)</h3>
+      <p>
+        가장 단순한 형태. <code>light</code> / <code>dark</code> 각 15 색 토큰 + <code>radius</code> 한 개. 색만 손보고 spacing/typography 같은 메트릭은 디폴트로 두고 싶을 때.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "input",
+            label: "입력 객체",
+            language: "ts",
+            filename: "encodeTheme(input)",
+            code: `{
+  light: {
+    'background': '#FFFFFF',
+    'background-subtle': '#FAFAFA',
+    'background-muted': '#F5F5F5',
+    'background-inverse': '#0A0A0A',
+    'foreground': '#0A0A0A',
+    'foreground-muted': '#525252',
+    'foreground-subtle': '#A3A3A3',
+    'foreground-inverse': '#FFFFFF',
+    'border': '#E5E5E5',
+    'border-strong': '#D4D4D4',
+    'primary': '#7C3AED',
+    'primary-foreground': '#FFFFFF',
+    'primary-hover': '#6D28D9',
+    'danger': '#DC2626',
+    'danger-foreground': '#FFFFFF',
+  },
+  dark: {
+    'background': '#0A0A0A',
+    'background-subtle': '#171717',
+    'background-muted': '#262626',
+    'background-inverse': '#FFFFFF',
+    'foreground': '#FAFAFA',
+    'foreground-muted': '#A3A3A3',
+    'foreground-subtle': '#737373',
+    'foreground-inverse': '#0A0A0A',
+    'border': '#262626',
+    'border-strong': '#404040',
+    'primary': '#A78BFA',
+    'primary-foreground': '#1E1B4B',
+    'primary-hover': '#C4B5FD',
+    'danger': '#DC2626',
+    'danger-foreground': '#FFFFFF',
+  },
+  radius: 0.5,
+}`,
+          },
+          {
+            value: "output",
+            label: "결과 base64",
+            language: "text",
+            filename: "--theme <이 문자열>",
+            code: `eyJsaWdodCI6eyJiYWNrZ3JvdW5kIjoiI0ZGRkZGRiIsImJhY2tncm91bmQtc3VidGxlIjoiI0ZBRkFGQSIsImJhY2tncm91bmQtbXV0ZWQiOiIjRjVGNUY1IiwiYmFja2dyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImZvcmVncm91bmQiOiIjMEEwQTBBIiwiZm9yZWdyb3VuZC1tdXRlZCI6IiM1MjUyNTIiLCJmb3JlZ3JvdW5kLXN1YnRsZSI6IiNBM0EzQTMiLCJmb3JlZ3JvdW5kLWludmVyc2UiOiIjRkZGRkZGIiwiYm9yZGVyIjoiI0U1RTVFNSIsImJvcmRlci1zdHJvbmciOiIjRDRENEQ0IiwicHJpbWFyeSI6IiM3QzNBRUQiLCJwcmltYXJ5LWZvcmVncm91bmQiOiIjRkZGRkZGIiwicHJpbWFyeS1ob3ZlciI6IiM2RDI4RDkiLCJkYW5nZXIiOiIjREMyNjI2IiwiZGFuZ2VyLWZvcmVncm91bmQiOiIjRkZGRkZGIn0sImRhcmsiOnsiYmFja2dyb3VuZCI6IiMwQTBBMEEiLCJiYWNrZ3JvdW5kLXN1YnRsZSI6IiMxNzE3MTciLCJiYWNrZ3JvdW5kLW11dGVkIjoiIzI2MjYyNiIsImJhY2tncm91bmQtaW52ZXJzZSI6IiNGRkZGRkYiLCJmb3JlZ3JvdW5kIjoiI0ZBRkFGQSIsImZvcmVncm91bmQtbXV0ZWQiOiIjQTNBM0EzIiwiZm9yZWdyb3VuZC1zdWJ0bGUiOiIjNzM3MzczIiwiZm9yZWdyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImJvcmRlciI6IiMyNjI2MjYiLCJib3JkZXItc3Ryb25nIjoiIzQwNDA0MCIsInByaW1hcnkiOiIjQTc4QkZBIiwicHJpbWFyeS1mb3JlZ3JvdW5kIjoiIzFFMUI0QiIsInByaW1hcnktaG92ZXIiOiIjQzRCNUZEIiwiZGFuZ2VyIjoiI0RDMjYyNiIsImRhbmdlci1mb3JlZ3JvdW5kIjoiI0ZGRkZGRiJ9LCJyYWRpdXMiOjAuNX0=`,
+          },
+        ]}
+      />
+      <p className="muted">
+        15 색 토큰 키는 모두 채워야 통과한다 — 한 키만 빠져도 <code>theme 디코드 실패: light.X 누락</code> 으로 throw. <code>radius</code> 는 0~1.5 (rem) 범위.
+      </p>
+
+      <h3>케이스 B — 옵셔널 색 토큰 추가 (success / warning / info)</h3>
+      <p>
+        상태 색이 필요한 앱(대시보드, 알림 토스트, 폼 검증)이라면 <code>success</code> / <code>warning</code> / <code>info</code> + 각 <code>-foreground</code> 6 키를 light / dark 양쪽에 추가. <strong>한쪽만 정의되면 인코드는 통과하지만 CSS emit 단계에서 빠진다</strong> — 컴포넌트 fallback 보호.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "input",
+            label: "입력 객체",
+            language: "ts",
+            filename: "encodeTheme(input)",
+            code: `{
+  light: {
+    // ... 케이스 A 의 15 키 그대로 ...
+    'success': '#16A34A',  'success-foreground': '#FFFFFF',
+    'warning': '#D97706',  'warning-foreground': '#FFFFFF',
+    'info':    '#2563EB',  'info-foreground':    '#FFFFFF',
+  },
+  dark: {
+    // ... 케이스 A 의 15 키 그대로 ...
+    'success': '#22C55E',  'success-foreground': '#052E16',
+    'warning': '#F59E0B',  'warning-foreground': '#1C1917',
+    'info':    '#60A5FA',  'info-foreground':    '#0B1A33',
+  },
+  radius: 0.5,
+}`,
+          },
+          {
+            value: "output",
+            label: "결과 base64",
+            language: "text",
+            filename: "--theme <이 문자열>",
+            code: `eyJsaWdodCI6eyJiYWNrZ3JvdW5kIjoiI0ZGRkZGRiIsImJhY2tncm91bmQtc3VidGxlIjoiI0ZBRkFGQSIsImJhY2tncm91bmQtbXV0ZWQiOiIjRjVGNUY1IiwiYmFja2dyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImZvcmVncm91bmQiOiIjMEEwQTBBIiwiZm9yZWdyb3VuZC1tdXRlZCI6IiM1MjUyNTIiLCJmb3JlZ3JvdW5kLXN1YnRsZSI6IiNBM0EzQTMiLCJmb3JlZ3JvdW5kLWludmVyc2UiOiIjRkZGRkZGIiwiYm9yZGVyIjoiI0U1RTVFNSIsImJvcmRlci1zdHJvbmciOiIjRDRENEQ0IiwicHJpbWFyeSI6IiM3QzNBRUQiLCJwcmltYXJ5LWZvcmVncm91bmQiOiIjRkZGRkZGIiwicHJpbWFyeS1ob3ZlciI6IiM2RDI4RDkiLCJkYW5nZXIiOiIjREMyNjI2IiwiZGFuZ2VyLWZvcmVncm91bmQiOiIjRkZGRkZGIiwic3VjY2VzcyI6IiMxNkEzNEEiLCJzdWNjZXNzLWZvcmVncm91bmQiOiIjRkZGRkZGIiwid2FybmluZyI6IiNEOTc3MDYiLCJ3YXJuaW5nLWZvcmVncm91bmQiOiIjRkZGRkZGIiwiaW5mbyI6IiMyNTYzRUIiLCJpbmZvLWZvcmVncm91bmQiOiIjRkZGRkZGIn0sImRhcmsiOnsiYmFja2dyb3VuZCI6IiMwQTBBMEEiLCJiYWNrZ3JvdW5kLXN1YnRsZSI6IiMxNzE3MTciLCJiYWNrZ3JvdW5kLW11dGVkIjoiIzI2MjYyNiIsImJhY2tncm91bmQtaW52ZXJzZSI6IiNGRkZGRkYiLCJmb3JlZ3JvdW5kIjoiI0ZBRkFGQSIsImZvcmVncm91bmQtbXV0ZWQiOiIjQTNBM0EzIiwiZm9yZWdyb3VuZC1zdWJ0bGUiOiIjNzM3MzczIiwiZm9yZWdyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImJvcmRlciI6IiMyNjI2MjYiLCJib3JkZXItc3Ryb25nIjoiIzQwNDA0MCIsInByaW1hcnkiOiIjQTc4QkZBIiwicHJpbWFyeS1mb3JlZ3JvdW5kIjoiIzFFMUI0QiIsInByaW1hcnktaG92ZXIiOiIjQzRCNUZEIiwiZGFuZ2VyIjoiI0RDMjYyNiIsImRhbmdlci1mb3JlZ3JvdW5kIjoiI0ZGRkZGRiIsInN1Y2Nlc3MiOiIjMjJDNTVFIiwic3VjY2Vzcy1mb3JlZ3JvdW5kIjoiIzA1MkUxNiIsIndhcm5pbmciOiIjRjU5RTBCIiwid2FybmluZy1mb3JlZ3JvdW5kIjoiIzFDMTkxNyIsImluZm8iOiIjNjBBNUZBIiwiaW5mby1mb3JlZ3JvdW5kIjoiIzBCMUEzMyJ9LCJyYWRpdXMiOjAuNX0=`,
+          },
+        ]}
+      />
+
+      <h3>케이스 C — 메트릭 스케일 조정 (spacing / typography)</h3>
+      <p>
+        컴팩트 UI(정보 밀도 높이기) 또는 큰 폰트(접근성) 처럼 <strong>색은 그대로지만 메트릭만 다른</strong> 톤. <code>spacing</code> / <code>typography</code> / <code>weights</code> / <code>controls</code> / <code>borders</code> / <code>durations</code> 6 카테고리는 모두 <strong>Record&lt;string, number&gt;</strong> 이며 카테고리를 넣으려면 정의된 키를 빠짐없이 채워야 한다 (부분 패치 불가).
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "input",
+            label: "입력 객체",
+            language: "ts",
+            filename: "encodeTheme(input)",
+            code: `{
+  light: { /* 케이스 A 와 동일 */ },
+  dark:  { /* 케이스 A 와 동일 */ },
+  radius: 0.5,
+
+  // 컴팩트 spacing — 디폴트 대비 약 0.875× (rem)
+  spacing: {
+    '0': 0,    '1': 0.125, '2': 0.25, '3': 0.5,  '4': 0.75,
+    '5': 1,    '6': 1.25,  '8': 1.75, '10': 2.25, '12': 2.75, '16': 3.75,
+  },
+
+  // 본문 15px 기준 타이포 (rem). 다른 카테고리는 생략 → 디폴트 유지.
+  typography: {
+    'xs': 0.75, 'sm': 0.875, 'base': 0.9375, 'lg': 1.0625,
+    'xl': 1.1875, '2xl': 1.4375, '3xl': 1.75, '4xl': 2.125,
+  },
+}`,
+          },
+          {
+            value: "output",
+            label: "결과 base64",
+            language: "text",
+            filename: "--theme <이 문자열>",
+            code: `eyJsaWdodCI6eyJiYWNrZ3JvdW5kIjoiI0ZGRkZGRiIsImJhY2tncm91bmQtc3VidGxlIjoiI0ZBRkFGQSIsImJhY2tncm91bmQtbXV0ZWQiOiIjRjVGNUY1IiwiYmFja2dyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImZvcmVncm91bmQiOiIjMEEwQTBBIiwiZm9yZWdyb3VuZC1tdXRlZCI6IiM1MjUyNTIiLCJmb3JlZ3JvdW5kLXN1YnRsZSI6IiNBM0EzQTMiLCJmb3JlZ3JvdW5kLWludmVyc2UiOiIjRkZGRkZGIiwiYm9yZGVyIjoiI0U1RTVFNSIsImJvcmRlci1zdHJvbmciOiIjRDRENEQ0IiwicHJpbWFyeSI6IiM3QzNBRUQiLCJwcmltYXJ5LWZvcmVncm91bmQiOiIjRkZGRkZGIiwicHJpbWFyeS1ob3ZlciI6IiM2RDI4RDkiLCJkYW5nZXIiOiIjREMyNjI2IiwiZGFuZ2VyLWZvcmVncm91bmQiOiIjRkZGRkZGIn0sImRhcmsiOnsiYmFja2dyb3VuZCI6IiMwQTBBMEEiLCJiYWNrZ3JvdW5kLXN1YnRsZSI6IiMxNzE3MTciLCJiYWNrZ3JvdW5kLW11dGVkIjoiIzI2MjYyNiIsImJhY2tncm91bmQtaW52ZXJzZSI6IiNGRkZGRkYiLCJmb3JlZ3JvdW5kIjoiI0ZBRkFGQSIsImZvcmVncm91bmQtbXV0ZWQiOiIjQTNBM0EzIiwiZm9yZWdyb3VuZC1zdWJ0bGUiOiIjNzM3MzczIiwiZm9yZWdyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImJvcmRlciI6IiMyNjI2MjYiLCJib3JkZXItc3Ryb25nIjoiIzQwNDA0MCIsInByaW1hcnkiOiIjQTc4QkZBIiwicHJpbWFyeS1mb3JlZ3JvdW5kIjoiIzFFMUI0QiIsInByaW1hcnktaG92ZXIiOiIjQzRCNUZEIiwiZGFuZ2VyIjoiI0RDMjYyNiIsImRhbmdlci1mb3JlZ3JvdW5kIjoiI0ZGRkZGRiJ9LCJyYWRpdXMiOjAuNSwic3BhY2luZyI6eyIwIjowLCIxIjowLjEyNSwiMiI6MC4yNSwiMyI6MC41LCI0IjowLjc1LCI1IjoxLCI2IjoxLjI1LCI4IjoxLjc1LCIxMCI6Mi4yNSwiMTIiOjIuNzUsIjE2IjozLjc1fSwidHlwb2dyYXBoeSI6eyJ4cyI6MC43NSwic20iOjAuODc1LCJiYXNlIjowLjkzNzUsImxnIjoxLjA2MjUsInhsIjoxLjE4NzUsIjJ4bCI6MS40Mzc1LCIzeGwiOjEuNzUsIjR4bCI6Mi4xMjV9fQ==`,
+          },
+        ]}
+      />
+      <p className="muted">
+        스칼라 카테고리 전체 키 — <code>spacing</code> 11 키(<code>0~6, 8, 10, 12, 16</code>), <code>typography</code> 8 키(<code>xs~4xl</code>), <code>weights</code> 4 키, <code>controls</code> 3 키(<code>sm/md/lg</code>), <code>borders</code> 2 키(<code>width/widthStrong</code>), <code>durations</code> 3 키(<code>fast/base/slow</code>). 누락 / 추가 키 모두 throw.
+      </p>
+
+      <h3>케이스 D — 비주얼 효과 (shadows / eases / gradients)</h3>
+      <p>
+        그림자 깊이, 모션 곡선, 브랜드 그라디언트까지 손볼 때. 이 3 카테고리는 <strong>Record&lt;string, string&gt;</strong> — CSS 값을 그대로 통과시키므로 <code>cubic-bezier</code> / <code>linear-gradient</code> / multi-shadow 모두 가능.
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "input",
+            label: "입력 객체",
+            language: "ts",
+            filename: "encodeTheme(input)",
+            code: `{
+  light: { /* 케이스 A 와 동일 */ },
+  dark:  { /* 케이스 A 와 동일 */ },
+  radius: 0.5,
+
+  // 부드럽고 얕은 그림자 (Linear 풍)
+  shadows: {
+    'sm': '0 1px 2px 0 rgba(0,0,0,0.04)',
+    'md': '0 4px 8px -2px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04)',
+    'lg': '0 12px 24px -6px rgba(0,0,0,0.08), 0 4px 8px -4px rgba(0,0,0,0.04)',
+    'xl': '0 24px 48px -12px rgba(0,0,0,0.12)',
+  },
+
+  // Material expressive 풍 곡선
+  eases: {
+    'standard':   'cubic-bezier(0.2, 0, 0, 1)',
+    'emphasized': 'cubic-bezier(0.3, 0, 0, 1)',
+  },
+
+  // 브랜드 그라디언트
+  gradients: {
+    'primary': 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
+    'surface': 'linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%)',
+    'overlay': 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%)',
+  },
+}`,
+          },
+          {
+            value: "output",
+            label: "결과 base64",
+            language: "text",
+            filename: "--theme <이 문자열>",
+            code: `eyJsaWdodCI6eyJiYWNrZ3JvdW5kIjoiI0ZGRkZGRiIsImJhY2tncm91bmQtc3VidGxlIjoiI0ZBRkFGQSIsImJhY2tncm91bmQtbXV0ZWQiOiIjRjVGNUY1IiwiYmFja2dyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImZvcmVncm91bmQiOiIjMEEwQTBBIiwiZm9yZWdyb3VuZC1tdXRlZCI6IiM1MjUyNTIiLCJmb3JlZ3JvdW5kLXN1YnRsZSI6IiNBM0EzQTMiLCJmb3JlZ3JvdW5kLWludmVyc2UiOiIjRkZGRkZGIiwiYm9yZGVyIjoiI0U1RTVFNSIsImJvcmRlci1zdHJvbmciOiIjRDRENEQ0IiwicHJpbWFyeSI6IiM3QzNBRUQiLCJwcmltYXJ5LWZvcmVncm91bmQiOiIjRkZGRkZGIiwicHJpbWFyeS1ob3ZlciI6IiM2RDI4RDkiLCJkYW5nZXIiOiIjREMyNjI2IiwiZGFuZ2VyLWZvcmVncm91bmQiOiIjRkZGRkZGIn0sImRhcmsiOnsiYmFja2dyb3VuZCI6IiMwQTBBMEEiLCJiYWNrZ3JvdW5kLXN1YnRsZSI6IiMxNzE3MTciLCJiYWNrZ3JvdW5kLW11dGVkIjoiIzI2MjYyNiIsImJhY2tncm91bmQtaW52ZXJzZSI6IiNGRkZGRkYiLCJmb3JlZ3JvdW5kIjoiI0ZBRkFGQSIsImZvcmVncm91bmQtbXV0ZWQiOiIjQTNBM0EzIiwiZm9yZWdyb3VuZC1zdWJ0bGUiOiIjNzM3MzczIiwiZm9yZWdyb3VuZC1pbnZlcnNlIjoiIzBBMEEwQSIsImJvcmRlciI6IiMyNjI2MjYiLCJib3JkZXItc3Ryb25nIjoiIzQwNDA0MCIsInByaW1hcnkiOiIjQTc4QkZBIiwicHJpbWFyeS1mb3JlZ3JvdW5kIjoiIzFFMUI0QiIsInByaW1hcnktaG92ZXIiOiIjQzRCNUZEIiwiZGFuZ2VyIjoiI0RDMjYyNiIsImRhbmdlci1mb3JlZ3JvdW5kIjoiI0ZGRkZGRiJ9LCJyYWRpdXMiOjAuNSwic2hhZG93cyI6eyJzbSI6IjAgMXB4IDJweCAwIHJnYmEoMCwwLDAsMC4wNCkiLCJtZCI6IjAgNHB4IDhweCAtMnB4IHJnYmEoMCwwLDAsMC4wNiksIDAgMnB4IDRweCAtMnB4IHJnYmEoMCwwLDAsMC4wNCkiLCJsZyI6IjAgMTJweCAyNHB4IC02cHggcmdiYSgwLDAsMCwwLjA4KSwgMCA0cHggOHB4IC00cHggcmdiYSgwLDAsMCwwLjA0KSIsInhsIjoiMCAyNHB4IDQ4cHggLTEycHggcmdiYSgwLDAsMCwwLjEyKSJ9LCJlYXNlcyI6eyJzdGFuZGFyZCI6ImN1YmljLWJlemllcigwLjIsIDAsIDAsIDEpIiwiZW1waGFzaXplZCI6ImN1YmljLWJlemllcigwLjMsIDAsIDAsIDEpIn0sImdyYWRpZW50cyI6eyJwcmltYXJ5IjoibGluZWFyLWdyYWRpZW50KDEzNWRlZywgIzdDM0FFRCAwJSwgI0VDNDg5OSAxMDAlKSIsInN1cmZhY2UiOiJsaW5lYXItZ3JhZGllbnQoMTgwZGVnLCAjRkZGRkZGIDAlLCAjRkFGQUZBIDEwMCUpIiwib3ZlcmxheSI6ImxpbmVhci1ncmFkaWVudCgxODBkZWcsIHJnYmEoMCwwLDAsMCkgMCUsIHJnYmEoMCwwLDAsMC40KSAxMDAlKSJ9fQ==`,
+          },
+        ]}
+      />
+      <p className="muted">
+        문자열 카테고리 키 — <code>shadows</code> 4(<code>sm/md/lg/xl</code>), <code>eases</code> 2(<code>standard/emphasized</code>), <code>gradients</code> 3(<code>primary/surface/overlay</code>). 빈 문자열 또는 512자 초과는 throw. CSS 문법 자체는 inject 단계에서 검증되므로 잘못된 값(예: <code>cubic-bezir(...)</code> 오타)은 인코드 시점엔 통과한다.
+      </p>
+
+      <h3>케이스 적용 — 새 프로젝트로 그대로 끌고 가기</h3>
+      <p>
+        위 base64 중 어느 것이든 <code>theme</code> 자리에 그대로:
+      </p>
+      <CodeTabs
+        items={[
+          {
+            value: "cli",
+            label: "CLI",
+            language: "bash",
+            code: `npx sh-ui-cli create my-app \\
+  --platform next --structure standalone \\
+  --theme 'eyJsaWdodCI6...'   # ← 위 케이스 중 하나의 base64`,
+          },
+          {
+            value: "mcp",
+            label: "MCP create",
+            language: "ts",
+            code: `// AI 한 턴 안에서 끝낼 때
+sh_ui_create_project({
+  name: 'my-app',
+  platform: 'next',
+  structure: 'standalone',
+  theme: 'eyJsaWdodCI6...',  // ← 위 케이스 중 하나의 base64
+});`,
+          },
+          {
+            value: "round-trip",
+            label: "기존 base64 부분 수정",
+            language: "ts",
+            code: `// primary 만 다른 색으로 갈고 싶을 때
+const obj = sh_ui_decode_theme('eyJsaWdodCI6...');  // 케이스 A~D 중 하나
+obj.light.primary = '#0EA5E9';
+obj.light['primary-hover'] = '#0284C7';
+const next = sh_ui_encode_theme(obj);
+// next 를 새 sh_ui_create_project 의 theme 에 넘김`,
+          },
+        ]}
+      />
+
       <h2>다음 단계</h2>
       <ul>
         <li><a href="/tokens">토큰</a> — 덮을 수 있는 전체 변수 목록</li>
