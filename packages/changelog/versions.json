@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.64.4",
+      "date": "2026-05-08",
+      "title": "patch — Flutter summary 16건 정확성 audit",
+      "type": "patch",
+      "highlights": [
+        "**사실관계 정정 6건** — `card`/`dialog` 의 'header/body/footer named slot' (실제는 separate widget, Body 가 아니라 Content), `dialog` 의 'showDialog 로 호출' (실제는 `ShUiDialog.show<T>()` static, Flutter 빌트인 `showDialog` 와 다름), `checkbox` 의 'tristate' (실제 prop 은 `indeterminate`), `toast` 의 'ShUiToastOverlay' (실재 X — `ShUiToaster` + `ShUiToast.show()`), `tabs` 의 'ShUiTabsController' (실재 X — `ShUiTabs` + `ShUiTab` 데이터).",
+        "**exports 명시 보강 10건** — select/combobox 의 Multi 변종 (`ShUiMultiSelect<T>`, `ShUiMultiCombobox<T>`), date-picker 의 `ShUiDateRangePicker`, dropdown-menu 의 sealed `ShUiDropdownMenuEntry<T>` 자식들 (Item / CheckboxItem / RadioItem / Divider / Label), menubar 의 `ShUiMenubarMenu`, sidebar 의 Provider/Trigger/Header/Footer/Inset + `.of(ctx)` 패턴, app-shell 의 `ShUiAppShellGroup`/`Item`, header 의 `ShUiHeaderItem`, breadcrumb 의 `ShUiBreadcrumbItem`, popover 의 Title/Description, checkbox 의 `ShUiCheckboxGroup`. v0.64.1·v0.64.2 의 React audit 과 동일 톤으로 통일.",
+        "**MCP 양 플랫폼 정보 일관성 마무리** — React (v0.64.1·v0.64.2·v0.64.3) + Flutter (이번) 모두 source-of-truth 정확도 확보. AI 가 sh-ui MCP 로 컴포넌트 요청 시 환각으로 잘못된 위젯명·prop·호출 패턴을 만들어 내던 실패 모드 해소."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.4"
+    },
+    {
       "version": "0.64.3",
       "date": "2026-05-08",
       "title": "patch — Trigger·Close 컴포넌트 7종 소스 JSDoc 에 render-prop 함정 명시",
