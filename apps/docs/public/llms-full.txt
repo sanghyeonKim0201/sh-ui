@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.53.0 (2026-05-04) — Calendar/DatePicker i18n — locale + messages prop
+**최신 버전**: v0.64.0 (2026-05-08) — minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix
 
 ## React — Components
 
@@ -39,7 +39,7 @@
 ### card
 
 - Type: component
-- Summary: 카드 컨테이너 — compound (Card.Header / Card.Body / Card.Footer / Card.Title / Card.Description).
+- Summary: 카드 컨테이너 — separate exports: Card / CardHeader / CardTitle / CardDescription / CardAction / CardContent / CardFooter. dot syntax(`Card.Header`) 아님.
 - Install: `npx sh-ui-cli add card`
 - npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
@@ -49,7 +49,7 @@
 ### input
 
 - Type: component
-- Summary: 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PasswordInput / PhoneInput / BusinessNumberInput 변형 포함.
+- Summary: 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PhoneInput / BusinessNumberInput 변형 포함. 비밀번호 토글은 InputGroup + InputAdornment 레시피로 조립.
 - Install: `npx sh-ui-cli add input`
 - npm/pub deps: [object Object]
 - Registry deps: utils (자동 설치됨)
@@ -151,7 +151,7 @@
 ### select
 
 - Type: component
-- Summary: 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
+- Summary: 네이티브 대체 셀렉트 — separate exports: Select / SelectTrigger / SelectValue / SelectContent / SelectGroup / SelectLabel / SelectItem / SelectSeparator (Base UI). MultiSelect 변형 동봉. SelectTrigger 는 그 자체로 button 이라 자식 button 중첩 금지 — 다른 엘리먼트로 바꾸려면 Base UI 의 `render` prop 사용.
 - Install: `npx sh-ui-cli add select`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -207,7 +207,7 @@
 ### tabs
 
 - Type: component
-- Summary: 탭 — compound (Tabs.List / Tabs.Trigger / Tabs.Content) (Base UI).
+- Summary: 탭 — separate exports: Tabs / TabsList / TabsTrigger / TabsContent / TabsIndicator (Base UI). dot syntax(`Tabs.List`) 아님.
 - Install: `npx sh-ui-cli add tabs`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -237,7 +237,7 @@
 ### dialog
 
 - Type: component
-- Summary: 모달 다이얼로그 — compound (Dialog.Trigger / Dialog.Content / Dialog.Title / Dialog.Description) + 포커스 트랩 (Base UI).
+- Summary: 모달 다이얼로그 — separate exports: Dialog / DialogTrigger / DialogClose / DialogContent / DialogTitle / DialogDescription / DialogFooter / DialogCloseX (Base UI, 포커스 트랩). DialogTrigger·DialogClose 는 그 자체로 button 을 렌더 — 자식으로 다른 button 을 넣으면 button 중첩(invalid HTML). 다른 엘리먼트(예: 커스텀 Button)로 슬롯하려면 Base UI 의 `render` prop 사용: `<DialogClose render={<Button>닫기</Button>} />`.
 - Install: `npx sh-ui-cli add dialog`
 - npm/pub deps: @base-ui/react
 - Registry deps: utils (자동 설치됨)
@@ -287,7 +287,7 @@
 ### breadcrumb
 
 - Type: component
-- Summary: 경로 내비게이션 — compound (Breadcrumb.List/Item/Link/Page/Separator/Ellipsis). aria-current 자동.
+- Summary: 경로 내비게이션 — separate exports: Breadcrumb / BreadcrumbList / BreadcrumbItem / BreadcrumbLink / BreadcrumbPage / BreadcrumbSeparator / BreadcrumbEllipsis. dot syntax 아님. aria-current 자동.
 - Install: `npx sh-ui-cli add breadcrumb`
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/breadcrumb`
@@ -349,14 +349,6 @@
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/separator`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/separator
-
-### theme
-
-- Type: component
-- Summary: 테마 프로바이더 + useTheme 훅 — light/dark/system.
-- Install: `npx sh-ui-cli add theme`
-- Import: `@/components/ui/theme`
-- Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/theme
 
 ### checkbox
 
@@ -881,40 +873,34 @@
 
 ## 최근 릴리즈 (최대 5개)
 
-### v0.53.0 — Calendar/DatePicker i18n — locale + messages prop (2026-05-04)
-- **Calendar `locale` prop 추가** — BCP47 로케일(예: `"en-US"`, `"ja-JP"`) 한 줄로 요일·월 헤더·연도/월 dropdown 라벨이 모두 `Intl.DateTimeFormat` 으로 자동 생성. 한국어만 지원되던 기존 동작에서 다국어 지원으로 확장. 기본값은 `"ko-KR"` 유지 — 기존 사용자 영향 없음.
-- **`messages` prop 으로 aria-label override** — Nav 버튼(`이전 해`/`다음 달` 등) 과 select aria-label(`연도`/`월`) 을 `CalendarMessages` 객체로 한 번에 교체. ko/en 은 내장 기본값 제공, 그 외 언어는 직접 문자열 전달.
-- **DatePicker / DateRangePicker 도 `locale` 전파** — 내부 Calendar 에 자동 전달되고 placeholder(`날짜 선택`/`Select date` / `시작일 ~ 종료일`/`Start date – end date`) 도 locale 기반 자동 결정. `placeholder` 를 직접 넘기면 그게 우선.
-- **개별 포맷터 prop 은 그대로 유효** — `weekdayLabels`/`formatMonthLabel`/`CalendarYearSelect.formatYear` 등 기존 세밀 override 는 locale 보다 우선. 마이그레이션 불필요.
-- **새 export** — `Calendar` 모듈에서 `DEFAULT_LOCALE` 상수와 `CalendarMessages` 타입을 추가로 노출.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.53.0
+### v0.64.0 — minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix (2026-05-08)
+- **templates proxy.ts 에 `HOME_REDIRECT` 상수 추가** — `/` 진입 시 redirect 할 path 를 사용자가 한 줄로 지정. 빈 문자열이 기본이라 동작 변화 없음(= `app/page.tsx` 그대로 노출). `auth-jwt` 단독 / `next-intl` 단독 / `auth-jwt + next-intl` 합성 세 케이스 모두 동일 패턴. `/[locale]/page.tsx` 에 redirect RSC 를 따로 만들 필요 없이 미들웨어 한 곳에서 라우팅 게이트 처리.
+- **fix(input)**: `isValidBRN` 의 배열 인덱싱 4곳에 non-null assertion 추가 — `noUncheckedIndexedAccess: true` 인 사용자 프로젝트에서 `parseInt(d[i], 10)` 가 `string | undefined` 로 접혀 typecheck 실패하던 회귀. 직전 길이 가드(`d.length !== 10`) 로 모든 접근이 안전한 구간이라 런타임 동작 변경 없음. plain / tailwind / vanilla-extract / css-modules + `apps/docs` 듀얼카피본 동기화.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.0
 
-### v0.52.3 — 시각 회귀 커버리지 확장 + Flutter showcase 누락 위젯 보강 (2026-05-04)
-- **React 시각 회귀 확장** — 15 → 37 컴포넌트. 헤비 에디터 (color-picker, code-editor, markdown-editor, rich-text-editor) 와 fixed-position toast / non-styled form·theme / Preview 없는 page-toc 만 의도적 제외.
-- **Flutter 골든 확장** — 10 → 24 케이스. 위에 추가한 누락 위젯 + 다양한 variant (button-danger/ghost/disabled, checkbox-unchecked, switch-off 등) 도 commit.
-- **Flutter showcase 누락 위젯 추가** — registry/flutter 에는 있었지만 apps/showcase/lib/widgets 에 없던 10 개 (avatar, badge, breadcrumb, context_menu, dropdown_menu, menubar, progress, separator, spinner, tooltip) 를 복사. 페이지는 이미 존재했으므로 import 가 끊겨 있던 상태가 정상화.
-- **placeholder widget_test.dart 제거** — MyApp 클래스가 더 이상 존재하지 않아 깨져 있던 초기 셋업 잔재 정리. 이제 `flutter test` 가 깨끗이 그린.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.3
+### v0.63.1 — patch — templates ThemeProvider 옵션 정비 (2026-05-08)
+- **templates 의 `ThemeProvider` 4곳에 `disableTransitionOnChange` 추가** — 토글 순간 transition 깜빡임 차단. nextjs-app / nextjs-standalone × flat / fsd 변종 모두 동일.
+- **옵션 의도 코멘트 보강** — attribute='class', defaultTheme/enableSystem, disableTransitionOnChange 가 왜 들어 있는지 + useTheme 는 next-themes 에서 직접 import 한다는 점을 파일 상단에 명시. 사용자가 RootLayout 작업 시 어디를 만져야 하는지 한눈에.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.1
 
-### v0.52.2 — vanilla-extract rollback — 자동 변환 broken, PLANNED 로 후퇴 (2026-05-04)
-- **v0.50.0 의 vanilla-extract 자동 변환 회수** — `.module.css → .css.ts` 자동 변환 스크립트로 ship 했던 40 개 변종이 vanilla-extract 의 strict selector 규칙 (selectors 안 다른 클래스 reference 금지, `& > *` / `& .third-party` 같은 descendant 패턴 거부, mutual reference TDZ 등) 을 어겨 사용자 빌드 시 깨짐. 검증 인프라 (vitest + @vanilla-extract/vite-plugin) 도입 후 발견.
-- **vanilla-extract 를 SUPPORTED → PLANNED 로 되돌림** — `CSS_FRAMEWORKS_SUPPORTED` 에서 제거, `CSS_FRAMEWORKS_PLANNED` 로 이동. CLI/MCP/UI 모두 다시 "곧 지원 예정" 으로 안내. button/card/input 3 개 수동 작성 파일럿 변종은 그대로 유지 — `sh-ui.config.json` 을 직접 손대면 동작.
-- **input 파일럿 fix** — `affix > *` 규칙이 vanilla-extract selectors 키에 들어 있어 거부됐음. `globalStyle()` 로 빼서 수정. 이제 button/card/input 모두 검증 통과.
-- **검증 인프라 정착** — `packages/registry/react/components/_smoke/vanilla-extract.test.ts` — 모든 `styles.css.ts` 가 vanilla-extract 빌드 컨텍스트에서 정상 import 되는지 자동 검증. 향후 정식 rollout 때 회귀 가드.
-- 사용자 영향: vanilla-extract 사용자는 거의 없을 것 (PLANNED 였다가 잠시 SUPPORTED 됐다 다시 PLANNED). plain · tailwind · css-modules 사용자에게는 변동 없음.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.2
+### v0.63.0 — minor — `theme` 컴포넌트 제거, 사용자가 next-themes 직접 사용 (2026-05-08)
+- **`sh-ui add theme` 제거** — registry/react/components/theme 폴더와 registry.json 의 theme 항목 삭제. v0.62.0 의 어댑터는 결국 next-themes 의 얇은 wrapper 였고, 이중 layer 가 외부 deps 안내 누락 같은 잔버그를 부르던 구조. 사용자는 templates RootLayout 에 깔린 next-themes 의 ThemeProvider 위에서 `useTheme` 를 직접 import 해 쓴다.
+- **마이그레이션 (v0.62.0 사용자)** — `import { useTheme } from '@workspace/ui-web/components/theme'` → `import { useTheme } from 'next-themes'`. 시그니처 차이: sh-ui 의 `theme` 은 light/dark 만, next-themes 는 `resolvedTheme` 사용 (`'system'` 가능). 토글은 `setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')` 패턴.
+- **docs 자체도 next-themes 직접 사용으로 마이그레이션** — `apps/docs/components/dark-mode-toggle.tsx`, `apps/docs/app/[locale]/layout.tsx` 가 더 이상 sh-ui registry 의 theme 에 의존하지 않음. 컴포넌트 문서 페이지·examples(theme-dashboard, theme-login) 도 함께 정리.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.0
 
-### v0.52.1 — zod v4 호환 + MCP describe 텍스트 최신화 (2026-05-04)
-- **zod 3 → 4 호환** — `packages/cli/src/create/plugins/pluginSchema.js` 의 `z.function().args().returns()` 패턴이 zod v4 에서 제거됨. 함수 시그니처는 런타임에 의미 있게 검증할 수 없으므로 `z.custom((val) => typeof val === 'function')` 으로 단순화. 사용자 영향 없음 — plugin manifest 의 `wrapExport` 가 함수인지만 확인하던 동작 그대로.
-- **MCP describe 텍스트 최신화** — `mcp.mjs` 의 `cssFramework` 옵션 안내가 `(향후 tailwind 등 추가 예정)` 으로 outdated 였음. 4 변종 모두 SUPPORTED 된 현재 상태로 갱신 — 각 옵션별 한 줄 설명 (plain/tailwind/css-modules/vanilla-extract) + fallback 안내.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.1
+### v0.62.0 — minor — `theme` 컴포넌트가 next-themes 어댑터로 통합 (RootLayout 자동 wiring) (2026-05-08)
+- **`sh-ui add theme` 의 `useTheme` / `ThemeProvider` 가 next-themes 위에서 동작** — 템플릿이 RootLayout 에 이미 깔아둔 next-themes ThemeProvider 와 동일한 컨텍스트를 공유. 사용자가 add 후 어디서든 `useTheme` 호출 시 throw 없이 즉시 동작. 이전엔 templates 의 next-themes 와 sh-ui 자체 cookie ThemeProvider 두 시스템이 분리돼 있어 혼선.
+- **시그니처는 보존, 내부 영속화는 cookie → next-themes localStorage 로 이전** — `{ theme, setTheme, toggleTheme }` 와 `light`/`dark` 두 값만 노출하는 정책 그대로. 사용자 코드는 변경 불필요. 다만 기존 `sh-ui-theme` cookie 값은 새 키로 자동 마이그레이션되지 않음(첫 방문 시 defaultTheme 으로 초기화).
+- **registry.json `theme.dependencies` 에 `next-themes` 추가** — `sh-ui add theme` 시 외부 패키지 자동 설치 안내에 포함. peer-versions.json 에 `^0.4.6` 핀.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.62.0
 
-### v0.52.0 — Flutter 위젯 golden 시각 회귀 테스트 (2026-05-04)
-- **Flutter 골든 테스트 인프라** — `apps/showcase/test/golden_test.dart`. button(2개 variant) · card · input · checkbox · radio · switch · skeleton · slider · label 10개 위젯의 기본 상태를 골든 이미지로 비교. 의도하지 않은 시각 변경을 PR 에서 잡음.
-- **macOS CI 워크플로우** — `.github/workflows/showcase-visual.yml` — apps/showcase 또는 packages/registry/flutter 변경 시에만 트리거. macos-latest 러너에서 `flutter test` 실행, 실패 시 diff 를 artifact 로 업로드.
-- **기준 골든 commit** — 10개 png 가 `test/goldens/` 에 commit. 새 위젯 추가는 `golden_test.dart` 안에 testWidgets 한 줄 + `flutter test --update-goldens` 갱신.
-- 이로써 sh-ui 양쪽 플랫폼 (React docs · Flutter showcase) 모두 시각 회귀 가드가 깔림. v0.51.0 의 Playwright 작업과 한 쌍.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.52.0
+### v0.61.4 — fix — MCP 안내가 v0.61.2 의 `create` one-shot 흐름과 일치하도록 갱신 (2026-05-08)
+- **MCP 서버 instructions 의 '테마 커스터마이징' 섹션 정정** — 이전엔 '스캐폴드 후 `tokens.css` 직접 편집 + base64 백업' 을 권장했지만, v0.61.2 부터 `create` 가 단일 진입점으로 동작하므로 'encode-first, then create with theme arg' 흐름으로 flip. 사후 `tokens.css` 손편집은 다음 재스캐폴드 시 유실되는 함정.
+- **`sh_ui_create_project` description** 에 paths.styles · theme.base 자동 처리 명시 — AI 가 사후 패치 시도 안 하도록 가드.
+- **`sh_ui_add_component` description** 에 `theme.base: 'custom'` 일 때 `tokens` 는 no-op (보존) 라는 v0.61.3 회귀 가드 동작 명시.
+- **`sh_ui_encode_theme` description** 에서 'tokens.css 손편집 백업용' 표현 제거 — 이제는 'create 호출 전에 base64 만들어 theme 인자로 넘기는 정석 흐름' 으로 표현.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.61.4
 
 ## Resources
 

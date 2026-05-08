@@ -22,13 +22,13 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.53.0 (2026-05-04) — Calendar/DatePicker i18n — locale + messages prop
+**최신 버전**: v0.64.0 (2026-05-08) — minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix
 
 ## React Components
 
 - **button** — 기본 버튼 — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).
-- **card** — 카드 컨테이너 — compound (Card.Header / Card.Body / Card.Footer / Card.Title / Card.Description).
-- **input** — 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PasswordInput / PhoneInput / BusinessNumberInput 변형 포함.
+- **card** — 카드 컨테이너 — separate exports: Card / CardHeader / CardTitle / CardDescription / CardAction / CardContent / CardFooter. dot syntax(`Card.Header`) 아님.
+- **input** — 단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PhoneInput / BusinessNumberInput 변형 포함. 비밀번호 토글은 InputGroup + InputAdornment 레시피로 조립.
 - **numeric-input** — 슬라이더 동반·토큰 편집기용 컴팩트 숫자 입력 — onChange 즉시 min/max clamp, focus select-all, 단위(px/ms/%/° 등) suffix. 일반 폼 입력은 NumberInput 권장.
 - **file-upload** — 파일 업로드 — 드롭존, 다중 파일, 진행률.
 - **form** — Form 컴포넌트.
@@ -39,28 +39,27 @@
 - **code-editor** — CodeMirror 6 기반 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.
 - **markdown-editor** — 마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.
 - **rich-text-editor** — Tiptap 3 기반 WYSIWYG 에디터 — HTML 입출력, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.
-- **select** — 네이티브 대체 셀렉트 — compound (Select.Trigger / Select.Content / Select.Item) (Base UI).
+- **select** — 네이티브 대체 셀렉트 — separate exports: Select / SelectTrigger / SelectValue / SelectContent / SelectGroup / SelectLabel / SelectItem / SelectSeparator (Base UI). MultiSelect 변형 동봉. SelectTrigger 는 그 자체로 button 이라 자식 button 중첩 금지 — 다른 엘리먼트로 바꾸려면 Base UI 의 `render` prop 사용.
 - **sidebar** — 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
 - **header** — 앱 헤더 — 로고/네비/액션 compound, 데스크탑 inline / 모바일 drawer 자동 전환. drawer focus trap·ESC·focus restore. HeaderNav value(controlled) / defaultValue+onValueChange(uncontrolled) 로 자식 HeaderItem active 자동 매칭 (aria-current 자동, match 커스터마이즈). HeaderMenu(서브메뉴, 데스크탑 portal dropdown / drawer collapsible) · HeaderNavGroup(섹션 라벨) · HeaderDesktopOnly/HeaderMobileOnly(가시성 토글, drawer 이동 없음). variant(solid/transparent/blur) · stickyHide(prefers-reduced-motion 존중, 컨테이너 스크롤 자동 감지) 정식 지원. backdrop-filter @supports 폴백.
 - **label** — 폼 레이블 — htmlFor로 입력과 연결.
 - **color-picker** — 색상 선택 — hex/rgb, 프리셋 팔레트.
 - **slider** — 수평 슬라이더 — 단일/범위 값, step.
-- **tabs** — 탭 — compound (Tabs.List / Tabs.Trigger / Tabs.Content) (Base UI).
+- **tabs** — 탭 — separate exports: Tabs / TabsList / TabsTrigger / TabsContent / TabsIndicator (Base UI). dot syntax(`Tabs.List`) 아님.
 - **combobox** — 검색 가능 셀렉트 — 자동 필터링, 키보드 내비 (Base UI).
 - **popover** — floating 팝오버 — 트리거 기준 위치 (Base UI).
-- **dialog** — 모달 다이얼로그 — compound (Dialog.Trigger / Dialog.Content / Dialog.Title / Dialog.Description) + 포커스 트랩 (Base UI).
+- **dialog** — 모달 다이얼로그 — separate exports: Dialog / DialogTrigger / DialogClose / DialogContent / DialogTitle / DialogDescription / DialogFooter / DialogCloseX (Base UI, 포커스 트랩). DialogTrigger·DialogClose 는 그 자체로 button 을 렌더 — 자식으로 다른 button 을 넣으면 button 중첩(invalid HTML). 다른 엘리먼트(예: 커스텀 Button)로 슬롯하려면 Base UI 의 `render` prop 사용: `<DialogClose render={<Button>닫기</Button>} />`.
 - **dropdown-menu** — 드롭다운 메뉴 — compound, sub-menu 지원 (Base UI).
 - **context-menu** — 우클릭 컨텍스트 메뉴 — DropdownMenu와 같은 구조 (Base UI).
 - **menubar** — 수평 메뉴바 — dropdown-menu 위에 구성 (Base UI).
 - **tooltip** — 짧은 힌트 — hover/focus 표시, delay/closeDelay (Base UI).
-- **breadcrumb** — 경로 내비게이션 — compound (Breadcrumb.List/Item/Link/Page/Separator/Ellipsis). aria-current 자동.
+- **breadcrumb** — 경로 내비게이션 — separate exports: Breadcrumb / BreadcrumbList / BreadcrumbItem / BreadcrumbLink / BreadcrumbPage / BreadcrumbSeparator / BreadcrumbEllipsis. dot syntax 아님. aria-current 자동.
 - **pagination** — 페이지 단위 내비게이션 — compound (PaginationContent/Item/Link/Previous/Next/Ellipsis). getPaginationRange 유틸 동봉. aria-current 자동.
 - **avatar** — 프로필 아바타 — 이미지 fallback → initials (Base UI).
 - **badge** — 상태 뱃지 — variant, size.
 - **progress** — 선형 진행률 — value 0~100, indeterminate.
 - **spinner** — 로딩 스피너 — size.
 - **separator** — 구분선 — orientation(horizontal/vertical).
-- **theme** — 테마 프로바이더 + useTheme 훅 — light/dark/system.
 - **checkbox** — 체크박스 — indeterminate 지원 (Base UI).
 - **radio** — 라디오 그룹 — RadioGroup + RadioGroupItem (Base UI).
 - **switch** — 토글 스위치 — controlled/uncontrolled 모두 지원 (Base UI).

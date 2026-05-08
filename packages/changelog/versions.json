@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.64.1",
+      "date": "2026-05-08",
+      "title": "patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시",
+      "type": "patch",
+      "highlights": [
+        "**summary 5건 정정 (card / select / dialog / tabs / breadcrumb)** — `compound (Card.Header / ...)` 같이 dot syntax 가 있는 것처럼 적혀 있었지만 실제 구현은 namespace attach 없이 separate export(`CardHeader`, `DialogTitle` 등). MCP `sh_ui_list_components` 와 `apps/docs/public/llms.txt` 가 같은 source 를 읽어 AI 가 잘못된 API 로 코드 생성하던 문제를 차단. card 의 `Body` 도 실제로는 `CardContent` 였던 부분 같이 정정.",
+        "**Dialog summary 에 `render` prop 함정 명시** — `DialogTrigger` / `DialogClose` 는 자체로 `<button>` 을 렌더하므로 자식으로 커스텀 Button 을 넣으면 button 중첩(invalid HTML). Base UI 의 `render` prop 으로 슬롯 교체하는 패턴 (`<DialogClose render={<Button>닫기</Button>} />`) 을 summary 에 박아 AI 가 onClick 우회 대신 정석을 사용하도록. SelectTrigger 도 동일 노트."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.1"
+    },
+    {
       "version": "0.64.0",
       "date": "2026-05-08",
       "title": "minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix",
