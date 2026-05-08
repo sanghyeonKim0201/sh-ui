@@ -12,10 +12,22 @@ type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
  */
 export const Dialog = BaseDialog.Root;
 
-/** Dialog를 여는 트리거. 보통 Button을 감싸 사용. */
+/**
+ * Dialog 를 여는 트리거. 자체로 `<button>` 을 렌더하므로 자식으로 또 다른
+ * button (예: 커스텀 Button) 을 넣지 말 것 — button 중첩은 invalid HTML.
+ * 다른 엘리먼트로 슬롯하려면 Base UI 의 `render` prop 사용:
+ *
+ *   <DialogTrigger render={<Button>열기</Button>} />
+ */
 export const DialogTrigger = BaseDialog.Trigger;
 
-/** 클릭 시 Dialog를 닫는 요소. footer의 취소 버튼 등에 사용. */
+/**
+ * 클릭 시 Dialog 를 닫는 요소 (예: footer 취소 버튼). 자체로 `<button>` 을
+ * 렌더하므로 자식으로 또 다른 button 을 넣지 말 것 — 커스텀 Button 슬롯은
+ * `render` prop 사용:
+ *
+ *   <DialogClose render={<Button variant='ghost'>취소</Button>} />
+ */
 export const DialogClose = BaseDialog.Close;
 
 /** 우상단에 배치되는 X 닫기 버튼. `aria-label="닫기"`가 자동 부여된다. */

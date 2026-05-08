@@ -14,6 +14,13 @@ export const DropdownMenu = BaseMenu.Root;
 
 /* ───────── Trigger ───────── */
 
+/**
+ * DropdownMenu 를 여는 트리거. 자체로 `<button>` 을 렌더 — 자식으로 또 다른
+ * button (예: 커스텀 Button) 을 넣지 말 것. 다른 엘리먼트로 슬롯하려면 Base
+ * UI 의 `render` prop:
+ *
+ *   <DropdownMenuTrigger render={<Button variant='ghost'>메뉴</Button>} />
+ */
 export const DropdownMenuTrigger = React.forwardRef<
   HTMLButtonElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Trigger>>
@@ -193,6 +200,10 @@ export const DropdownMenuSeparator = React.forwardRef<
 
 export const DropdownMenuSub = BaseMenu.SubmenuRoot;
 
+/**
+ * 서브메뉴 트리거. 부모 메뉴 항목으로 동작하며 hover/우향 화살표로 서브를
+ * 연다. 다른 엘리먼트로 슬롯하려면 Base UI 의 `render` prop 사용.
+ */
 export const DropdownMenuSubTrigger = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<

@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.1 (2026-05-08) — patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시
+**최신 버전**: v0.64.2 (2026-05-08) — patch — llms summary 13건 정확성 audit + Base UI render-prop 함정 일괄 명시
 
 ## React Components
 
@@ -67,7 +67,7 @@
 - **textarea** — 여러 행 텍스트 입력 — rows. autoResize 같은 추가 prop 없음.
 - **toast** — 임시 알림 — `toast()` 함수 호출 + `<Toaster />` 컴포넌트 (sonner-style). useToast 훅·ToastProvider 아님. aria-live 자동.
 - **calendar** — Calendar 컴포넌트.
-- **date-picker** — 날짜 선택 — separate exports: DatePicker / DatePickerTrigger / DatePickerContent / DatePickerCalendar / DatePickerFooter / DateRangePicker + useDatePicker 훅 (Base UI). DatePickerTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
+- **date-picker** — 날짜 선택 — separate exports: DatePicker / DatePickerTrigger / DatePickerContent / DatePickerCalendar / DatePickerFooter / DateRangePicker + useDatePicker 훅 (Base UI). DatePickerTrigger 는 sh-ui 자체 `<button>` 이라 자식 button 중첩 금지 — 외관 커스터마이즈는 `children` 함수 패턴(현재 값/포맷/placeholder 인자) 또는 `className` 직접 스타일링 사용 (Base UI 의 `render` prop 패턴 아님).
 - **skeleton** — 스켈레톤 로딩 플레이스홀더.
 - **accordion** — 펼침/접힘 아코디언 — separate exports: Accordion / AccordionItem / AccordionTrigger / AccordionContent (Base UI). single/multiple 모드. AccordionTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - **carousel** — 슬라이드 캐러셀 — Embla 기반, autoplay/autoscroll.

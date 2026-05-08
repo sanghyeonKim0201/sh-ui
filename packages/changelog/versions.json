@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.64.3",
+      "date": "2026-05-08",
+      "title": "patch — Trigger·Close 컴포넌트 7종 소스 JSDoc 에 render-prop 함정 명시",
+      "type": "patch",
+      "highlights": [
+        "**컴포넌트 소스 JSDoc 보강 (7종 × 4 변종)** — `sh_ui_get_component` 와 사용자 프로젝트에 설치된 컴포넌트 모두 소스의 JSDoc 만 보이는데 `render` prop 안내가 거기 없어 AI 가 button 중첩 워크어라운드를 반복하던 문제를 차단. dialog / popover / select / dropdown-menu / accordion / combobox 의 Trigger·Close·SubTrigger·Clear 위에 \"`<button>` 자체 렌더 → 자식 button 중첩 금지 → 다른 엘리먼트 슬롯은 `render` prop\" 패턴을 일관 톤으로 박음.",
+        "**`render` 와 `children` 패턴 구분 명시** — date-picker 의 DatePickerTrigger 는 sh-ui 자체 `<button>` 이라 Base UI 의 `render` prop 이 아닌 `children` 함수 패턴(value/formatted/placeholder 인자) + `className` 직접 스타일링이 정석. 이 차이를 JSDoc + summary 양쪽에 명시.",
+        "**plain / tailwind / vanilla-extract / module 4 변종 + apps/docs 듀얼카피본 모두 동기화** — 28 파일. v0.64.1·v0.64.2 의 summary 정정과 합쳐 AI 가 쓸 수 있는 모든 정보 채널(MCP list/get, llms.txt, 설치 후 IDE 호버) 에서 동일한 가이드 노출."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.3"
+    },
+    {
       "version": "0.64.2",
       "date": "2026-05-08",
       "title": "patch — llms summary 13건 정확성 audit + Base UI render-prop 함정 일괄 명시",

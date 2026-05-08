@@ -246,8 +246,15 @@ export interface DatePickerTriggerProps
 }
 
 /**
- * 캘린더 popover를 여는 트리거 버튼. children에 함수를 넘기면 현재 값/포맷 문자열/placeholder를
- * 받아 직접 렌더할 수 있다.
+ * 캘린더 popover 를 여는 트리거 버튼. 자체로 `<button>` 을 렌더하므로 자식
+ * 으로 또 다른 button (예: 커스텀 Button) 을 넣지 말 것 — button 중첩은
+ * invalid HTML. 트리거 외관 커스터마이즈는 두 가지 방법:
+ *
+ * 1) `children` 에 함수 — 내부 텍스트만 커스터마이즈 (현재 값/포맷/placeholder 받아 직접 렌더):
+ *      <DatePickerTrigger>{({ formatted, placeholder }) => formatted ?? placeholder}</DatePickerTrigger>
+ *
+ * 2) `className` 으로 직접 스타일링 — 별도 Button 컴포넌트로 감싸지 말고
+ *    버튼 자체에 클래스 부여.
  */
 export const DatePickerTrigger = React.forwardRef<HTMLButtonElement, DatePickerTriggerProps>(
   function DatePickerTrigger({ className, children, onClick, ...props }, ref) {

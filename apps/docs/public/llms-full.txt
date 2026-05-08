@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.1 (2026-05-08) — patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시
+**최신 버전**: v0.64.2 (2026-05-08) — patch — llms summary 13건 정확성 audit + Base UI render-prop 함정 일괄 명시
 
 ## React — Components
 
@@ -419,7 +419,7 @@
 ### date-picker
 
 - Type: component
-- Summary: 날짜 선택 — separate exports: DatePicker / DatePickerTrigger / DatePickerContent / DatePickerCalendar / DatePickerFooter / DateRangePicker + useDatePicker 훅 (Base UI). DatePickerTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
+- Summary: 날짜 선택 — separate exports: DatePicker / DatePickerTrigger / DatePickerContent / DatePickerCalendar / DatePickerFooter / DateRangePicker + useDatePicker 훅 (Base UI). DatePickerTrigger 는 sh-ui 자체 `<button>` 이라 자식 button 중첩 금지 — 외관 커스터마이즈는 `children` 함수 패턴(현재 값/포맷/placeholder 인자) 또는 `className` 직접 스타일링 사용 (Base UI 의 `render` prop 패턴 아님).
 - Install: `npx sh-ui-cli add date-picker`
 - npm/pub deps: @base-ui/react
 - Registry deps: calendar, utils (자동 설치됨)
@@ -873,6 +873,12 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.64.2 — patch — llms summary 13건 정확성 audit + Base UI render-prop 함정 일괄 명시 (2026-05-08)
+- **summary 사실관계 정정 5건** — `radio` 의 'RadioGroupItem' (실제는 `Radio + RadioGroup`), `toast` 의 'useToast 훅 + ToastProvider' (실제는 `toast()` 함수 + `<Toaster />`, sonner-style), `textarea` 의 'autoResize' (실제 prop 없음), `cn` 의 'tailwind-merge 미사용' (tailwind 변종은 사용함), `pagination` 의 dot/축약 표기. AI 가 헛 import 하던 회귀 차단.
+- **`render` prop 함정 일괄 명시 (6건)** — popover / tooltip / dropdown-menu / accordion / date-picker / combobox 의 Trigger·Close 가 자체로 `<button>` 을 렌더한다는 점 + 자식 button 중첩 대신 Base UI 의 `render` prop 으로 슬롯하는 패턴을 summary 에 박음. (`<PopoverClose render={<Button>닫기</Button>} />`). v0.64.1 의 dialog/select 노트와 동일 톤으로 통일.
+- **exports 명시 보강 (8건)** — popover / tooltip / dropdown-menu / context-menu / menubar / accordion / date-picker / combobox 의 실제 export 이름을 summary 에 펼쳐 적음. AI 가 namespace attach (`Popover.Trigger` 등) 환각으로 import 하던 문제 해소.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.2
+
 ### v0.64.1 — patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시 (2026-05-08)
 - **summary 5건 정정 (card / select / dialog / tabs / breadcrumb)** — `compound (Card.Header / ...)` 같이 dot syntax 가 있는 것처럼 적혀 있었지만 실제 구현은 namespace attach 없이 separate export(`CardHeader`, `DialogTitle` 등). MCP `sh_ui_list_components` 와 `apps/docs/public/llms.txt` 가 같은 source 를 읽어 AI 가 잘못된 API 로 코드 생성하던 문제를 차단. card 의 `Body` 도 실제로는 `CardContent` 였던 부분 같이 정정.
 - **Dialog summary 에 `render` prop 함정 명시** — `DialogTrigger` / `DialogClose` 는 자체로 `<button>` 을 렌더하므로 자식으로 커스텀 Button 을 넣으면 button 중첩(invalid HTML). Base UI 의 `render` prop 으로 슬롯 교체하는 패턴 (`<DialogClose render={<Button>닫기</Button>} />`) 을 summary 에 박아 AI 가 onClick 우회 대신 정석을 사용하도록. SelectTrigger 도 동일 노트.
@@ -893,12 +899,6 @@
 - **마이그레이션 (v0.62.0 사용자)** — `import { useTheme } from '@workspace/ui-web/components/theme'` → `import { useTheme } from 'next-themes'`. 시그니처 차이: sh-ui 의 `theme` 은 light/dark 만, next-themes 는 `resolvedTheme` 사용 (`'system'` 가능). 토글은 `setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')` 패턴.
 - **docs 자체도 next-themes 직접 사용으로 마이그레이션** — `apps/docs/components/dark-mode-toggle.tsx`, `apps/docs/app/[locale]/layout.tsx` 가 더 이상 sh-ui registry 의 theme 에 의존하지 않음. 컴포넌트 문서 페이지·examples(theme-dashboard, theme-login) 도 함께 정리.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.0
-
-### v0.62.0 — minor — `theme` 컴포넌트가 next-themes 어댑터로 통합 (RootLayout 자동 wiring) (2026-05-08)
-- **`sh-ui add theme` 의 `useTheme` / `ThemeProvider` 가 next-themes 위에서 동작** — 템플릿이 RootLayout 에 이미 깔아둔 next-themes ThemeProvider 와 동일한 컨텍스트를 공유. 사용자가 add 후 어디서든 `useTheme` 호출 시 throw 없이 즉시 동작. 이전엔 templates 의 next-themes 와 sh-ui 자체 cookie ThemeProvider 두 시스템이 분리돼 있어 혼선.
-- **시그니처는 보존, 내부 영속화는 cookie → next-themes localStorage 로 이전** — `{ theme, setTheme, toggleTheme }` 와 `light`/`dark` 두 값만 노출하는 정책 그대로. 사용자 코드는 변경 불필요. 다만 기존 `sh-ui-theme` cookie 값은 새 키로 자동 마이그레이션되지 않음(첫 방문 시 defaultTheme 으로 초기화).
-- **registry.json `theme.dependencies` 에 `next-themes` 추가** — `sh-ui add theme` 시 외부 패키지 자동 설치 안내에 포함. peer-versions.json 에 `^0.4.6` 핀.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.62.0
 
 ## Resources
 
