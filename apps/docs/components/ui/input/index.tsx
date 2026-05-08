@@ -3,6 +3,9 @@
 import * as React from "react";
 import "./styles.css";
 
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> {
   /** input 우측에 부착할 보조 노드(아이콘·단위·버튼 등). 더 많은 슬롯이 필요하면 InputGroup 사용. */
   suffix?: React.ReactNode;
@@ -10,9 +13,6 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   prefix?: React.ReactNode;
 }
 
-function cx(...args: (string | undefined | null | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /* ───────── InputGroup + InputAdornment (compound) ─────────
  * <InputGroup>

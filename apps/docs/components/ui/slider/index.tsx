@@ -3,10 +3,10 @@
 import * as React from "react";
 import "./styles.css";
 
+
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }

@@ -1,6 +1,9 @@
 import * as React from "react";
 import "./styles.css";
 
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   /**
    * 필수 필드 표시. `true`면 `::after`로 `*` 표시가 붙는다.
@@ -11,9 +14,6 @@ export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> 
   isRequired?: boolean;
 }
 
-function cx(...args: (string | undefined | false)[]) {
-  return args.filter(Boolean).join(" ");
-}
 
 /**
  * 폼 컨트롤과 1:1로 연결되는 레이블. `htmlFor`로 컨트롤의 `id`와 매칭하거나

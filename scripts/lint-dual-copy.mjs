@@ -76,23 +76,11 @@ function diffLines(a, b) {
   return out;
 }
 
-// 현재 알려진 drift — 이번 lint 도입 시점에 이미 존재한 stale 카피본 목록.
-// 새 drift 가 추가되지 않도록만 가드하고, 베이스라인 항목은 별도 cleanup PR
-// 에서 차차 동기화 후 이 배열에서 제거한다.
+// 현재 알려진 drift — 의도적으로 통과시킬 항목. v0.64.6 에서 sync-docs.mjs
+// 로 전수 동기화 후 비워졌고, 향후 의도적 drift 가 생기면 여기에 추가.
 //
 // 항목 형식: 'component' (전체 컴포넌트) 또는 'component/styles.css' (특정 파일).
-const BASELINE_DRIFTS = new Set([
-  "button",
-  "card",
-  "card/styles.css",
-  "code-panel",
-  "color-picker",
-  "file-upload",
-  "input",
-  "numeric-input",
-  "page-toc",
-  "sidebar",
-]);
+const BASELINE_DRIFTS = new Set([]);
 
 const errors = [];
 const baselineHits = new Set();

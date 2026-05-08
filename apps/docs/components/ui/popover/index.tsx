@@ -2,11 +2,11 @@ import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import "./styles.css";
 
-type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
-
-function cx(...args: (string | undefined | false)[]) {
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
+
 
 /**
  * 트리거 요소에 떠다니는 가벼운 패널을 띄우는 비모달 컨테이너. 포커스를 가두지 않으므로

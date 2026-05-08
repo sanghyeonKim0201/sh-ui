@@ -2,10 +2,10 @@ import * as React from "react";
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
+
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 /* ───────────── Switch ───────────── */
 
 export type SwitchProps = Omit<

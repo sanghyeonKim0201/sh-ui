@@ -1,10 +1,10 @@
 import * as React from "react";
 import "./styles.css";
 
+
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 /**
  * 로딩 중 콘텐츠 자리를 채우는 placeholder 박스. 폭/높이는 인라인 스타일이나
  * 클래스로 직접 지정한다. `aria-hidden`이 기본 적용되므로 스크린리더에 노출되지

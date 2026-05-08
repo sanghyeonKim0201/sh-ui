@@ -1,10 +1,10 @@
 import * as React from "react";
 import "./styles.css";
 
+
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 export type BadgeVariant =
   | "primary"
   | "secondary"

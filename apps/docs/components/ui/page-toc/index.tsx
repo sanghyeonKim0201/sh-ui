@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import "./styles.css";
 
 export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -52,8 +55,6 @@ interface TocItem {
   level: HeadingLevel;
 }
 
-const cx = (...args: (string | undefined | false | null)[]) =>
-  args.filter(Boolean).join(" ");
 
 /**
  * 페이지 내 자동 목차 (On this page).

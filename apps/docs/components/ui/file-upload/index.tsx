@@ -3,10 +3,10 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | false | undefined)[]) {
+
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;

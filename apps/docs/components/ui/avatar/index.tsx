@@ -2,11 +2,11 @@ import * as React from "react";
 import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import "./styles.css";
 
-type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
-
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
+
 
 export type AvatarSize = "sm" | "md" | "lg" | "xl";
 

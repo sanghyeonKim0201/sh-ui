@@ -1,15 +1,15 @@
 import * as React from "react";
+function cx(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import "./styles.css";
 
 type DivProps = React.HTMLAttributes<HTMLDivElement>;
 
-function mergeClass(base: string, extra?: string) {
-  return extra ? `${base} ${extra}` : base;
-}
 
 export const Card = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={mergeClass("sh-ui-card", className)} {...props} />
+    <div ref={ref} className={cx("sh-ui-card", className)} {...props} />
   ),
 );
 Card.displayName = "Card";
@@ -19,7 +19,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, DivProps>(
     <div
       ref={ref}
       data-slot="card-header"
-      className={mergeClass("sh-ui-card__header", className)}
+      className={cx("sh-ui-card__header", className)}
       {...props}
     />
   ),
@@ -30,7 +30,7 @@ export const CardTitle = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass("sh-ui-card__title", className)}
+      className={cx("sh-ui-card__title", className)}
       {...props}
     />
   ),
@@ -41,7 +41,7 @@ export const CardDescription = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass("sh-ui-card__description", className)}
+      className={cx("sh-ui-card__description", className)}
       {...props}
     />
   ),
@@ -56,7 +56,7 @@ export const CardAction = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass("sh-ui-card__action", className)}
+      className={cx("sh-ui-card__action", className)}
       {...props}
     />
   ),
@@ -67,7 +67,7 @@ export const CardContent = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass("sh-ui-card__content", className)}
+      className={cx("sh-ui-card__content", className)}
       {...props}
     />
   ),
@@ -78,7 +78,7 @@ export const CardFooter = React.forwardRef<HTMLDivElement, DivProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={mergeClass("sh-ui-card__footer", className)}
+      className={cx("sh-ui-card__footer", className)}
       {...props}
     />
   ),

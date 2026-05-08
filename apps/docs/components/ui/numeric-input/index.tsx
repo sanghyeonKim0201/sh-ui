@@ -3,10 +3,10 @@
 import * as React from "react";
 import "./styles.css";
 
-function cx(...args: (string | undefined | null | false)[]) {
+
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 export interface NumericInputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,

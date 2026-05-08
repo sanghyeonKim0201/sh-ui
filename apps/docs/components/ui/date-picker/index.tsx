@@ -5,11 +5,10 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Calendar, DEFAULT_LOCALE, type CalendarMessages, type DateRange } from "../calendar";
 import "./styles.css";
 
-export type { DateRange };
-
-function cx(...args: (string | undefined | false)[]) {
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
+export type { DateRange };
 
 /* ───────── Helpers ───────── */
 

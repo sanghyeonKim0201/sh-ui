@@ -4,10 +4,10 @@ import * as React from "react";
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
+
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 type WithStringClassName<T> = Omit<T, "className"> & { className?: string };
 
 export type TabsVariant = "underline" | "pill" | "plain";

@@ -4,10 +4,10 @@ import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import "./styles.css";
 
-function cx(...args: (string | undefined | false)[]) {
+
+function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
-
 export const Select = BaseSelect.Root;
 
 /** shadcn 호환: <SelectValue placeholder="..." /> */
