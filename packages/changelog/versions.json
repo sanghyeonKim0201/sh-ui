@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.63.0",
+      "date": "2026-05-08",
+      "title": "minor — `theme` 컴포넌트 제거, 사용자가 next-themes 직접 사용",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui add theme` 제거** — registry/react/components/theme 폴더와 registry.json 의 theme 항목 삭제. v0.62.0 의 어댑터는 결국 next-themes 의 얇은 wrapper 였고, 이중 layer 가 외부 deps 안내 누락 같은 잔버그를 부르던 구조. 사용자는 templates RootLayout 에 깔린 next-themes 의 ThemeProvider 위에서 `useTheme` 를 직접 import 해 쓴다.",
+        "**마이그레이션 (v0.62.0 사용자)** — `import { useTheme } from '@workspace/ui-web/components/theme'` → `import { useTheme } from 'next-themes'`. 시그니처 차이: sh-ui 의 `theme` 은 light/dark 만, next-themes 는 `resolvedTheme` 사용 (`'system'` 가능). 토글은 `setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')` 패턴.",
+        "**docs 자체도 next-themes 직접 사용으로 마이그레이션** — `apps/docs/components/dark-mode-toggle.tsx`, `apps/docs/app/[locale]/layout.tsx` 가 더 이상 sh-ui registry 의 theme 에 의존하지 않음. 컴포넌트 문서 페이지·examples(theme-dashboard, theme-login) 도 함께 정리."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.0"
+    },
+    {
       "version": "0.62.0",
       "date": "2026-05-08",
       "title": "minor — `theme` 컴포넌트가 next-themes 어댑터로 통합 (RootLayout 자동 wiring)",

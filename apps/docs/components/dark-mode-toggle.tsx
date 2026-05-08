@@ -1,19 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/components/ui/theme";
 
 export function DarkModeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const t = useTranslations("chrome");
-  const isDark = theme === "dark";
+  const isDark = resolvedTheme === "dark";
 
   return (
     <Button
       variant="ghost"
       size="sm"
-      onClick={toggleTheme}
+      onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={t("darkModeToggle")}
       aria-pressed={isDark}
     >

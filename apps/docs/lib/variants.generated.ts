@@ -1405,15 +1405,6 @@ export const VARIANTS: Record<string, ComponentVariants> = {
       }
     ]
   },
-  "theme": {
-    "plain": [
-      {
-        "filename": "index.tsx",
-        "code": "\"use client\";\n\nimport * as React from \"react\";\nimport {\n  ThemeProvider as NextThemesProvider,\n  useTheme as useNextTheme,\n} from \"next-themes\";\n\ntype Theme = \"light\" | \"dark\";\n\n/* ───────────── Context ───────────── */\n\ntype ThemeContextValue = {\n  theme: Theme;\n  setTheme: (theme: Theme) => void;\n  toggleTheme: () => void;\n};\n\n/**\n * 현재 테마와 setter 를 반환한다. ThemeProvider (또는 next-themes 의\n * ThemeProvider) 안에서만 호출 가능.\n *\n * 내부적으로 next-themes 의 useTheme 를 어댑팅 — `resolvedTheme` 을\n * `light`/`dark` 로 좁혀 노출하고, system 모드는 감추는 형태.\n */\nexport function useTheme(): ThemeContextValue {\n  const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();\n  const theme: Theme = resolvedTheme === \"dark\" ? \"dark\" : \"light\";\n\n  const setTheme = React.useCallback(\n    (next: Theme) => setNextTheme(next),\n    [setNextTheme],\n  );\n  const toggleTheme = React.useCallback(\n    () => setNextTheme(theme === \"dark\" ? \"light\" : \"dark\"),\n    [setNextTheme, theme],\n  );\n\n  return React.useMemo(\n    () => ({ theme, setTheme, toggleTheme }),\n    [theme, setTheme, toggleTheme],\n  );\n}\n\n/* ───────────── Provider ───────────── */\n\nexport interface ThemeProviderProps {\n  /**\n   * 비제어 모드의 초기 테마. next-themes 가 storage(localStorage) 에 저장된\n   * 값을 우선하므로, 사용자가 한 번 선택한 후에는 이 값이 무시된다.\n   *\n   * @default \"light\"\n   */\n  defaultTheme?: Theme;\n  /**\n   * 제어 모드 — 지정 시 강제 테마로 고정 (next-themes `forcedTheme`).\n   * 보통 `defaultTheme` 비제어로 충분.\n   */\n  theme?: Theme;\n  /**\n   * 테마 변경 콜백. next-themes 자체는 setter 호출 시 콜백을 노출하지 않으므로\n   * 내부 effect 로 변화를 감지해 호출한다.\n   */\n  onThemeChange?: (theme: Theme) => void;\n  children: React.ReactNode;\n}\n\n/**\n * 다크/라이트 테마와 `<html class=\"dark\">` 토글을 담당하는 Provider 어댑터.\n *\n * 내부 구현은 next-themes — `attribute='class'`, `enableSystem={false}`,\n * `disableTransitionOnChange` 로 고정. SSR/hydration mismatch 방지를 위해\n * `<html suppressHydrationWarning>` 을 RootLayout 에 함께 둘 것.\n */\nexport function ThemeProvider({\n  defaultTheme = \"light\",\n  theme,\n  onThemeChange,\n  children,\n}: ThemeProviderProps) {\n  return (\n    <NextThemesProvider\n      attribute=\"class\"\n      defaultTheme={defaultTheme}\n      enableSystem={false}\n      disableTransitionOnChange\n      forcedTheme={theme}\n      themes={[\"light\", \"dark\"]}\n    >\n      {onThemeChange ? <ThemeChangeBridge onThemeChange={onThemeChange} /> : null}\n      {children}\n    </NextThemesProvider>\n  );\n}\n\nfunction ThemeChangeBridge({\n  onThemeChange,\n}: {\n  onThemeChange: (theme: Theme) => void;\n}) {\n  const { theme } = useTheme();\n  const last = React.useRef<Theme | null>(null);\n  React.useEffect(() => {\n    if (last.current === theme) return;\n    last.current = theme;\n    onThemeChange(theme);\n  }, [theme, onThemeChange]);\n  return null;\n}\n",
-        "language": "tsx"
-      }
-    ]
-  },
   "toast": {
     "plain": [
       {
