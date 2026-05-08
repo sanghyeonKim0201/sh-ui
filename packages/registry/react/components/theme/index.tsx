@@ -1,11 +1,12 @@
 "use client";
 
 import * as React from "react";
+import {
+  ThemeProvider as NextThemesProvider,
+  useTheme as useNextTheme,
+} from "next-themes";
 
 type Theme = "light" | "dark";
-
-const THEME_COOKIE_NAME = "sh-ui-theme";
-const THEME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 /* ───────────── Context ───────────── */
 
@@ -15,94 +16,94 @@ type ThemeContextValue = {
   toggleTheme: () => void;
 };
 
-const ThemeContext = React.createContext<ThemeContextValue | null>(null);
+/**
+ * 현재 테마와 setter 를 반환한다. ThemeProvider (또는 next-themes 의
+ * ThemeProvider) 안에서만 호출 가능.
+ *
+ * 내부적으로 next-themes 의 useTheme 를 어댑팅 — `resolvedTheme` 을
+ * `light`/`dark` 로 좁혀 노출하고, system 모드는 감추는 형태.
+ */
+export function useTheme(): ThemeContextValue {
+  const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
+  const theme: Theme = resolvedTheme === "dark" ? "dark" : "light";
 
-/** 현재 테마와 setter를 반환한다. ThemeProvider 안에서만 호출 가능. */
-export function useTheme() {
-  const ctx = React.useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within a ThemeProvider.");
-  return ctx;
+  const setTheme = React.useCallback(
+    (next: Theme) => setNextTheme(next),
+    [setNextTheme],
+  );
+  const toggleTheme = React.useCallback(
+    () => setNextTheme(theme === "dark" ? "light" : "dark"),
+    [setNextTheme, theme],
+  );
+
+  return React.useMemo(
+    () => ({ theme, setTheme, toggleTheme }),
+    [theme, setTheme, toggleTheme],
+  );
 }
 
 /* ───────────── Provider ───────────── */
 
 export interface ThemeProviderProps {
   /**
-   * SSR 시 쿠키에서 읽은 초기 테마. 클라이언트 첫 렌더와 SSR 마크업이 일치하도록
-   * 서버에서 쿠키를 읽어 주입해야 hydration mismatch가 없다.
+   * 비제어 모드의 초기 테마. next-themes 가 storage(localStorage) 에 저장된
+   * 값을 우선하므로, 사용자가 한 번 선택한 후에는 이 값이 무시된다.
    *
    * @default "light"
-   * @example
-   * // Next.js App Router
-   * const t = (await cookies()).get("sh-ui-theme")?.value;
-   * <ThemeProvider defaultTheme={t === "dark" ? "dark" : "light"}>
    */
   defaultTheme?: Theme;
   /**
-   * 외부에서 테마를 제어할 때 사용. 지정하면 내부 state 대신 이 값이 우선한다.
-   * 보통 `defaultTheme` 비제어 모드로 충분.
+   * 제어 모드 — 지정 시 강제 테마로 고정 (next-themes `forcedTheme`).
+   * 보통 `defaultTheme` 비제어로 충분.
    */
   theme?: Theme;
-  /** 테마 변경 콜백. 제어 모드에서는 이 콜백 안에서 외부 상태를 업데이트해야 한다. */
+  /**
+   * 테마 변경 콜백. next-themes 자체는 setter 호출 시 콜백을 노출하지 않으므로
+   * 내부 effect 로 변화를 감지해 호출한다.
+   */
   onThemeChange?: (theme: Theme) => void;
   children: React.ReactNode;
 }
 
 /**
- * 다크/라이트 테마 컨텍스트와 `<html class="dark">` 토글, 쿠키 영속화를 담당하는 Provider.
- * SSR 하이드레이션 시프트를 피하려면 서버에서 쿠키를 읽어 `defaultTheme`로 주입할 것.
+ * 다크/라이트 테마와 `<html class="dark">` 토글을 담당하는 Provider 어댑터.
+ *
+ * 내부 구현은 next-themes — `attribute='class'`, `enableSystem={false}`,
+ * `disableTransitionOnChange` 로 고정. SSR/hydration mismatch 방지를 위해
+ * `<html suppressHydrationWarning>` 을 RootLayout 에 함께 둘 것.
  */
 export function ThemeProvider({
   defaultTheme = "light",
-  theme: themeProp,
+  theme,
   onThemeChange,
   children,
 }: ThemeProviderProps) {
-  const [_theme, _setTheme] = React.useState<Theme>(defaultTheme);
-  const theme = themeProp ?? _theme;
-
-  // SSR 폴백 보정 — force-static 페이지에서는 cookies() 가 throw 해 defaultTheme 이
-  // 항상 "light" 로 들어온다. mount 시 cookie 를 직접 읽어 React state 와 documentElement
-  // 클래스를 사용자가 마지막에 고른 값으로 동기화. 비제어 모드에서만.
-  React.useEffect(() => {
-    if (themeProp !== undefined) return;
-    if (typeof document === "undefined") return;
-    const m = document.cookie.match(/(?:^|; )sh-ui-theme=(dark|light)/);
-    if (!m) return;
-    const fromCookie = m[1] as Theme;
-    _setTheme(fromCookie);
-    const root = document.documentElement.classList;
-    root.toggle("dark", fromCookie === "dark");
-    root.toggle("light", fromCookie === "light");
-  }, [themeProp]);
-
-  const setTheme = React.useCallback(
-    (next: Theme) => {
-      if (onThemeChange) onThemeChange(next);
-      else _setTheme(next);
-
-      if (typeof document !== "undefined") {
-        const root = document.documentElement.classList;
-        root.toggle("dark", next === "dark");
-        root.toggle("light", next === "light");
-        document.cookie = `${THEME_COOKIE_NAME}=${next}; path=/; max-age=${THEME_COOKIE_MAX_AGE}`;
-      }
-    },
-    [onThemeChange],
-  );
-
-  const toggleTheme = React.useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  }, [theme, setTheme]);
-
-  const value = React.useMemo<ThemeContextValue>(
-    () => ({ theme, setTheme, toggleTheme }),
-    [theme, setTheme, toggleTheme],
-  );
-
   return (
-    <ThemeContext.Provider value={value}>
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme={defaultTheme}
+      enableSystem={false}
+      disableTransitionOnChange
+      forcedTheme={theme}
+      themes={["light", "dark"]}
+    >
+      {onThemeChange ? <ThemeChangeBridge onThemeChange={onThemeChange} /> : null}
       {children}
-    </ThemeContext.Provider>
+    </NextThemesProvider>
   );
+}
+
+function ThemeChangeBridge({
+  onThemeChange,
+}: {
+  onThemeChange: (theme: Theme) => void;
+}) {
+  const { theme } = useTheme();
+  const last = React.useRef<Theme | null>(null);
+  React.useEffect(() => {
+    if (last.current === theme) return;
+    last.current = theme;
+    onThemeChange(theme);
+  }, [theme, onThemeChange]);
+  return null;
 }

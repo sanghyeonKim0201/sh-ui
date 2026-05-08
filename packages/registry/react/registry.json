@@ -1777,7 +1777,9 @@
           "dest": "{components}/theme/index.tsx"
         }
       ],
-      "dependencies": [],
+      "dependencies": [
+        "next-themes"
+      ],
       "registryDependencies": []
     },
     "checkbox": {
