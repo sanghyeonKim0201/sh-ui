@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.63.1",
+      "date": "2026-05-08",
+      "title": "patch — templates ThemeProvider 옵션 정비",
+      "type": "patch",
+      "highlights": [
+        "**templates 의 `ThemeProvider` 4곳에 `disableTransitionOnChange` 추가** — 토글 순간 transition 깜빡임 차단. nextjs-app / nextjs-standalone × flat / fsd 변종 모두 동일.",
+        "**옵션 의도 코멘트 보강** — attribute='class', defaultTheme/enableSystem, disableTransitionOnChange 가 왜 들어 있는지 + useTheme 는 next-themes 에서 직접 import 한다는 점을 파일 상단에 명시. 사용자가 RootLayout 작업 시 어디를 만져야 하는지 한눈에."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.63.1"
+    },
+    {
       "version": "0.63.0",
       "date": "2026-05-08",
       "title": "minor — `theme` 컴포넌트 제거, 사용자가 next-themes 직접 사용",
