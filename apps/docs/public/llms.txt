@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.0 (2026-05-08) — minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix
+**최신 버전**: v0.64.1 (2026-05-08) — patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시
 
 ## React Components
 
@@ -46,30 +46,30 @@
 - **color-picker** — 색상 선택 — hex/rgb, 프리셋 팔레트.
 - **slider** — 수평 슬라이더 — 단일/범위 값, step.
 - **tabs** — 탭 — separate exports: Tabs / TabsList / TabsTrigger / TabsContent / TabsIndicator (Base UI). dot syntax(`Tabs.List`) 아님.
-- **combobox** — 검색 가능 셀렉트 — 자동 필터링, 키보드 내비 (Base UI).
-- **popover** — floating 팝오버 — 트리거 기준 위치 (Base UI).
+- **combobox** — 검색 가능 셀렉트 — separate exports: Combobox / ComboboxTrigger / ComboboxClear / ComboboxValue / ComboboxIcon / ComboboxInput / ComboboxContent / ComboboxList / ComboboxGroup / ComboboxChips (Base UI). 자동 필터링·키보드 내비. ComboboxTrigger·ComboboxClear 는 자체로 `<button>` — 자식 button 중첩 금지, 다른 엘리먼트로 슬롯하려면 Base UI 의 `render` prop 사용.
+- **popover** — floating 팝오버 — separate exports: Popover / PopoverTrigger / PopoverClose / PopoverContent / PopoverTitle / PopoverDescription (Base UI). PopoverTrigger·PopoverClose 는 자체로 `<button>` — 자식으로 button 중첩 금지, 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - **dialog** — 모달 다이얼로그 — separate exports: Dialog / DialogTrigger / DialogClose / DialogContent / DialogTitle / DialogDescription / DialogFooter / DialogCloseX (Base UI, 포커스 트랩). DialogTrigger·DialogClose 는 그 자체로 button 을 렌더 — 자식으로 다른 button 을 넣으면 button 중첩(invalid HTML). 다른 엘리먼트(예: 커스텀 Button)로 슬롯하려면 Base UI 의 `render` prop 사용: `<DialogClose render={<Button>닫기</Button>} />`.
-- **dropdown-menu** — 드롭다운 메뉴 — compound, sub-menu 지원 (Base UI).
-- **context-menu** — 우클릭 컨텍스트 메뉴 — DropdownMenu와 같은 구조 (Base UI).
-- **menubar** — 수평 메뉴바 — dropdown-menu 위에 구성 (Base UI).
-- **tooltip** — 짧은 힌트 — hover/focus 표시, delay/closeDelay (Base UI).
+- **dropdown-menu** — 드롭다운 메뉴 — separate exports: DropdownMenu / DropdownMenuTrigger / DropdownMenuContent / DropdownMenuItem / DropdownMenuCheckboxItem / DropdownMenuRadioGroup / DropdownMenuRadioItem / DropdownMenuGroup / DropdownMenuLabel / DropdownMenuSeparator / DropdownMenuSub / DropdownMenuSubTrigger / DropdownMenuSubContent (Base UI). DropdownMenuTrigger·SubTrigger 는 자체로 `<button>` — 자식 button 중첩 금지, 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
+- **context-menu** — 우클릭 컨텍스트 메뉴 — DropdownMenu 와 동일 export 패턴 (`Context-` 접두사: ContextMenu / ContextMenuTrigger / ContextMenuContent / ContextMenuItem 등). ContextMenuTrigger 는 임의 엘리먼트를 우클릭 수신 영역으로 지정하는 용도라 자체가 button 은 아니지만, 자식 슬롯이 필요하면 `render` prop 사용.
+- **menubar** — 수평 메뉴바 — Menubar 단일 export. 내부에 DropdownMenu 들을 나란히 배치하는 컨테이너로, 좌우 화살표로 메뉴 간 이동 (Base UI).
+- **tooltip** — 짧은 힌트 — separate exports: TooltipProvider (앱 루트에 한 번 두어 delay 공유) / Tooltip / TooltipTrigger / TooltipContent (Base UI). hover/focus 표시, delay/closeDelay. TooltipTrigger 는 임의 엘리먼트를 트리거로 슬롯하는 용도라 Button 등과 결합하려면 `render` prop 사용.
 - **breadcrumb** — 경로 내비게이션 — separate exports: Breadcrumb / BreadcrumbList / BreadcrumbItem / BreadcrumbLink / BreadcrumbPage / BreadcrumbSeparator / BreadcrumbEllipsis. dot syntax 아님. aria-current 자동.
-- **pagination** — 페이지 단위 내비게이션 — compound (PaginationContent/Item/Link/Previous/Next/Ellipsis). getPaginationRange 유틸 동봉. aria-current 자동.
+- **pagination** — 페이지 단위 내비게이션 — separate exports: Pagination / PaginationContent / PaginationItem / PaginationLink / PaginationPrevious / PaginationNext / PaginationEllipsis. getPaginationRange 유틸 동봉. aria-current 자동.
 - **avatar** — 프로필 아바타 — 이미지 fallback → initials (Base UI).
 - **badge** — 상태 뱃지 — variant, size.
 - **progress** — 선형 진행률 — value 0~100, indeterminate.
 - **spinner** — 로딩 스피너 — size.
 - **separator** — 구분선 — orientation(horizontal/vertical).
 - **checkbox** — 체크박스 — indeterminate 지원 (Base UI).
-- **radio** — 라디오 그룹 — RadioGroup + RadioGroupItem (Base UI).
+- **radio** — 라디오 그룹 — Radio (단일 선택지) + RadioGroup (컨테이너) (Base UI). `RadioGroupItem` 이름 아님. 단일 즉시 적용은 Switch, 다중은 Checkbox 권장.
 - **switch** — 토글 스위치 — controlled/uncontrolled 모두 지원 (Base UI).
 - **toggle** — 단일 토글 / 토글 그룹 — pressed 상태 (Base UI).
-- **textarea** — 여러 행 텍스트 입력 — rows, autoResize.
-- **toast** — 임시 알림 — useToast 훅 + ToastProvider. aria-live 자동.
+- **textarea** — 여러 행 텍스트 입력 — rows. autoResize 같은 추가 prop 없음.
+- **toast** — 임시 알림 — `toast()` 함수 호출 + `<Toaster />` 컴포넌트 (sonner-style). useToast 훅·ToastProvider 아님. aria-live 자동.
 - **calendar** — Calendar 컴포넌트.
-- **date-picker** — 날짜 선택 — 캘린더 팝업 (Base UI).
+- **date-picker** — 날짜 선택 — separate exports: DatePicker / DatePickerTrigger / DatePickerContent / DatePickerCalendar / DatePickerFooter / DateRangePicker + useDatePicker 훅 (Base UI). DatePickerTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - **skeleton** — 스켈레톤 로딩 플레이스홀더.
-- **accordion** — 펼침/접힘 아코디언 — single/multiple (Base UI).
+- **accordion** — 펼침/접힘 아코디언 — separate exports: Accordion / AccordionItem / AccordionTrigger / AccordionContent (Base UI). single/multiple 모드. AccordionTrigger 는 자체로 `<button>` — 다른 엘리먼트로 슬롯하려면 `render` prop 사용.
 - **carousel** — 슬라이드 캐러셀 — Embla 기반, autoplay/autoscroll.
 - **form-rhf** — FormRhf 컴포넌트.
 - **form-tanstack** — FormTanstack 컴포넌트.
@@ -81,7 +81,7 @@
 - **focus-ring** (utility) — 공용 포커스 링 스타일 — focus-ring.css.
 - **z-index** (utility) — z-index 레이어 토큰 — z-index.css.
 - **animations** (utility) — 공용 애니메이션 키프레임 — animations.css.
-- **cn** (lib) — className 머지 유틸 (tailwind-merge 미사용, 순수 concat).
+- **cn** (lib) — className 합성 헬퍼. plain 변종(`cn.ts`)은 순수 concat, tailwind 변종(`cn.tailwind.ts`)은 clsx + tailwind-merge 로 utility 충돌 자동 머지 (`cn('bg-red-500', 'bg-blue-500')` → `'bg-blue-500'`).
 - **use-media-query** (hook) — 미디어 쿼리 매칭 훅.
 - **use-active-section** (hook) — 스크롤 위치로 현재 섹션 감지 훅.
 - **utils** (lib) — (summary 누락)
