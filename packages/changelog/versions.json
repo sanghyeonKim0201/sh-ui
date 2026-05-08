@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.62.0",
+      "date": "2026-05-08",
+      "title": "minor — `theme` 컴포넌트가 next-themes 어댑터로 통합 (RootLayout 자동 wiring)",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui add theme` 의 `useTheme` / `ThemeProvider` 가 next-themes 위에서 동작** — 템플릿이 RootLayout 에 이미 깔아둔 next-themes ThemeProvider 와 동일한 컨텍스트를 공유. 사용자가 add 후 어디서든 `useTheme` 호출 시 throw 없이 즉시 동작. 이전엔 templates 의 next-themes 와 sh-ui 자체 cookie ThemeProvider 두 시스템이 분리돼 있어 혼선.",
+        "**시그니처는 보존, 내부 영속화는 cookie → next-themes localStorage 로 이전** — `{ theme, setTheme, toggleTheme }` 와 `light`/`dark` 두 값만 노출하는 정책 그대로. 사용자 코드는 변경 불필요. 다만 기존 `sh-ui-theme` cookie 값은 새 키로 자동 마이그레이션되지 않음(첫 방문 시 defaultTheme 으로 초기화).",
+        "**registry.json `theme.dependencies` 에 `next-themes` 추가** — `sh-ui add theme` 시 외부 패키지 자동 설치 안내에 포함. peer-versions.json 에 `^0.4.6` 핀."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.62.0"
+    },
+    {
       "version": "0.61.4",
       "date": "2026-05-08",
       "title": "fix — MCP 안내가 v0.61.2 의 `create` one-shot 흐름과 일치하도록 갱신",
