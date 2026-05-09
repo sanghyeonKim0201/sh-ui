@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.67.1",
+      "date": "2026-05-09",
+      "title": "patch — sh-ui add tokens 가 rose/emerald/violet preset 에서 throw 하던 회귀 수정",
+      "type": "patch",
+      "highlights": [
+        "**`sh-ui add tokens` 가 rose/emerald/violet preset 에서 `해석 실패: {color.rose.50}` 로 throw 하던 회귀 수정** — CLI 의 풍부한 preset (rose/emerald/violet) 은 packages/tokens 의 primitives.json 에 색 스케일이 없어 `buildTokens` 가 해석 불가. injectCssTheme 이 create 시점에 resolved hex 를 박아둔 tokens.css 를 단일 진실로 두고, 재실행 시 'custom' 과 동일하게 보존하도록 가드 확장.",
+        "**tokens.css 미존재 + non-buildable preset → 친절한 에러** — `sh-ui init --theme rose` 후 `sh-ui add tokens` 같은 흐름은 preset 사용법 안내와 함께 종료 (해결책: `sh-ui create --theme rose` 또는 theme.base 를 neutral/slate/zinc 로 변경).",
+        "**buildable bases (neutral/slate/zinc) 는 정상 빌드** — 회귀 가드 6개 (`add-tokens-presets.test.js`) — 보존 / 친절한 에러 / 정상 빌드 모두 검증."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.67.1"
+    },
+    {
       "version": "0.67.0",
       "date": "2026-05-09",
       "title": "monorepo 어디서든 sh-ui add — walk-up 컨텍스트 라우팅",
