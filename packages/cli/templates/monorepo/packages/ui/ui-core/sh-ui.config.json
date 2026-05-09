@@ -1,0 +1,15 @@
+{
+  "platform": "react",
+  "cssFramework": "plain",
+  "paths": {
+    "components": "src/components",
+    "hooks": "src/hooks",
+    "utils": "src/lib/utils.ts"
+  },
+  "aliases": {
+    "components": "@workspace/ui-core/components",
+    "hooks": "@workspace/ui-core/hooks",
+    "utils": "@workspace/ui-core/lib/utils",
+    "ui": "@workspace/ui-core/components"
+  }
+}
