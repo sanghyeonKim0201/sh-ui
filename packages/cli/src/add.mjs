@@ -11,6 +11,12 @@ import {
   findMissingTokens,
   loadDefinedVarsFromConfig,
 } from "./tokens-validate.mjs";
+import {
+  upsertSection,
+  stripStylesImport,
+  isStyleFile,
+  isTsxFile,
+} from "./css-bundle.mjs";
 
 /**
  * 기존 파일과 registry 파일 내용이 다를 때 keep/overwrite 결정.
@@ -225,6 +231,50 @@ async function addTokens(config, cwd, diffMode, summary, conflictResolver) {
 }
 
 /**
+ * bundled 모드 — config.paths.cssBundle 에 컴포넌트 섹션 upsert.
+ * 파일이 없으면 헤더 주석과 함께 새로 만든다.
+ *
+ * 마커 사이만 sh-ui 가 관리하므로 conflict resolver 를 거치지 않는다 — 사용자가
+ * 손댄 다른 섹션 / 마커 밖 custom CSS 는 보존되고, 같은 이름 섹션만 교체.
+ */
+async function writeBundleSection({ name, css, config, cwd, diffMode, summary }) {
+  const bundleRel = config.paths?.cssBundle;
+  if (!bundleRel) {
+    throw new Error(
+      "cssStrategy='bundled' 인데 paths.cssBundle 이 sh-ui.config.json 에 없습니다.\n" +
+        "  예: \"paths\": { ..., \"cssBundle\": \"src/shared/styles/sh-ui-components.css\" }",
+    );
+  }
+  const bundlePath = resolve(cwd, bundleRel);
+  const exists = existsSync(bundlePath);
+  const existingText = exists
+    ? await readFile(bundlePath, "utf8")
+    : `/* sh-ui — 컴포넌트 CSS 번들 (cssStrategy: bundled). 마커 사이는 sh-ui 가 관리, 그 밖은 사용자 자유. */\n\n`;
+  const nextText = upsertSection(existingText, name, css);
+
+  if (existingText === nextText) {
+    return; // 변경 없음
+  }
+
+  if (diffMode) {
+    const rel = relative(cwd, bundlePath);
+    const { text, addCount, delCount } = formatUnifiedDiff(existingText, nextText, {
+      useColor: canUseColor(),
+    });
+    summary.push(
+      exists
+        ? { kind: "modified", rel, addCount, delCount, diff: text }
+        : { kind: "new", rel },
+    );
+    return;
+  }
+
+  await ensureDir(bundlePath);
+  await writeFile(bundlePath, nextText, "utf8");
+  console.log(`✓ ${name} → bundle ${relative(cwd, bundlePath)}`);
+}
+
+/**
  * registry 엔트리의 frameworks 필드와 현재 cssFramework 가 호환되는지.
  * 필드가 없으면 "모든 프레임워크에 적용" — 기본 케이스.
  */
@@ -297,18 +347,39 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
     await addOne(dep, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, validationCtx);
   }
 
+  // bundled 모드 여부. plain 변종에서만 의미 있음 (tailwind/css-modules/vanilla-extract
+  // 는 자체 스코프가 있어 단일 파일 합산이 부적절).
+  const bundled = config.cssStrategy === "bundled" && cssFramework === "plain";
+  let bundleAccumulated = "";
+
   for (const file of entry.files) {
     if (!frameworkMatches(file, cssFramework)) continue;
     const src = resolve(registryRoot, file.src);
-    const dest = resolve(cwd, resolveDest(file.dest, config));
     const raw = await readFile(src, "utf8");
-    const content = substitutePlaceholders(raw, config, file.src);
+    let content = substitutePlaceholders(raw, config, file.src);
+
+    if (bundled && isStyleFile(file)) {
+      // 컴포넌트별 styles.css 파일은 쓰지 않고 누적만 — 마지막에 bundle 에 upsert.
+      bundleAccumulated += (bundleAccumulated ? "\n\n" : "") + content.trim();
+      continue;
+    }
+    if (bundled && isTsxFile(file)) {
+      // .tsx 의 `import "./styles.css";` 제거 — bundled 모드는 사용자가 globals.css 에서
+      // bundle 을 한 번 import 하는 책임을 진다.
+      content = stripStylesImport(content);
+    }
+
+    const dest = resolve(cwd, resolveDest(file.dest, config));
     const result = await writeOrDiff({ dest, content, cwd, diffMode, summary, conflictResolver });
     if (!diffMode && result !== "unchanged") {
       const prefix = result === "kept" ? "↷" : "✓";
       const suffix = result === "kept" ? " (kept)" : "";
       console.log(`${prefix} ${name} → ${relative(cwd, dest)}${suffix}`);
     }
+  }
+
+  if (bundled && bundleAccumulated) {
+    await writeBundleSection({ name, css: bundleAccumulated, config, cwd, diffMode, summary, conflictResolver });
   }
 
   for (const dep of entry.dependencies ?? []) {

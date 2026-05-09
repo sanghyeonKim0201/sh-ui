@@ -526,6 +526,54 @@ npx sh-ui-cli tokens upgrade --replace`}
         Flutter platform 은 v0.69 시점 미지원.
       </p>
 
+      <h3>cssStrategy: bundled — 단일 CSS 번들 모드 (v0.71.0+)</h3>
+      <p>
+        기본은 컴포넌트별 <code>styles.css</code> 가 컴포넌트 폴더에 함께 떨어진다 (per-component).
+        <code>sh-ui.config.json</code> 의 <code>cssStrategy: "bundled"</code> 옵션을 켜면 모든 컴포넌트 CSS 가 단일 번들 파일에
+        마커 기반 섹션으로 누적된다.
+      </p>
+      <CodePanel
+        language="json"
+        showLineNumbers={false}
+        code={`{
+  "platform": "react",
+  "cssFramework": "plain",
+  "cssStrategy": "bundled",
+  "theme": { ... },
+  "paths": {
+    "tokens": "src/styles/tokens.css",
+    "cssBundle": "src/styles/sh-ui-components.css",
+    "components": "src/components/ui",
+    "utils": "src/lib/utils.ts"
+  }
+}`}
+      />
+      <p>섹션 포맷:</p>
+      <CodePanel
+        language="css"
+        showLineNumbers={false}
+        code={`/* sh-ui:component:button-start */
+.sh-ui-button { ... }
+/* sh-ui:component:button-end */
+
+/* sh-ui:component:card-start */
+.sh-ui-card { ... }
+/* sh-ui:component:card-end */`}
+      />
+      <p>동작 차이:</p>
+      <PropsTable
+        rows={[
+          { prop: "add <name>", type: "behavior", description: "컴포넌트의 styles.css 를 쓰지 않고 cssBundle 에 섹션 upsert. 기존 섹션은 안 내용만 교체, 마커 밖 사용자 custom CSS 보존." },
+          { prop: "add <name> .tsx", type: "behavior", description: "컴포넌트 .tsx 에서 `import \"./styles.css\";` 라인을 자동 제거 (번들이 한 번 import 되므로 불필요)." },
+          { prop: "remove <name>", type: "behavior", description: ".tsx 삭제 + cssBundle 에서 해당 섹션 제거. 마커 밖 사용자 CSS 는 보존." },
+          { prop: "doctor", type: "behavior", description: "paths.cssBundle 존재 검증." },
+        ]}
+      />
+      <p className="muted">
+        제약: <code>cssFramework: "plain"</code> 에서만 동작. tailwind / css-modules / vanilla-extract 변종은 자체 스코프 메커니즘이 있어 단일 파일 합산이 부적절 — bundled 옵션이 무시되고 per-component 동작.
+        사용자가 <code>cssBundle</code> 파일을 한 번 import (예: <code>app/globals.css</code> 의 <code>@import './sh-ui-components.css';</code>) 해야 스타일 적용.
+      </p>
+
       <h3>sh-ui theme extract</h3>
       <p>
         현재 <code>tokens.css</code> 의 색과 <code>--radius</code> 값을 sh-ui base64 테마 문자열로 추출.
