@@ -462,8 +462,19 @@
   transform: rotate(90deg);
 }
 
+/* grid-template-rows 0fr→1fr 트릭 — height 를 모르는 채로 부드럽게 펼침/접힘.
+ * inner 는 overflow:hidden + min-height:0 으로 grid track 에 맞춰 잘려나간다. */
+.sh-ui-sidebar__collapsible-content {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 200ms ease;
+}
 .sh-ui-sidebar__collapsible-content[data-state="closed"] {
-  display: none;
+  grid-template-rows: 0fr;
+}
+.sh-ui-sidebar__collapsible-content-inner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* ───── Flyout (collapsed=icon 상태의 서브메뉴) ─────
@@ -493,7 +504,8 @@
   .sh-ui-sidebar__menu-button,
   .sh-ui-sidebar__menu-sub-button,
   .sh-ui-sidebar__panel-close,
-  .sh-ui-sidebar__chevron {
+  .sh-ui-sidebar__chevron,
+  .sh-ui-sidebar__collapsible-content {
     transition: none;
   }
   .sh-ui-sidebar__panel {

@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.67.3",
+      "date": "2026-05-09",
+      "title": "fix(sidebar) — Collapsible 하위 메뉴 펼침/접힘 애니메이션",
+      "type": "patch",
+      "highlights": [
+        "**Sidebar Collapsible 애니메이션 회귀 fix** — chevron 회전은 부드러운데 본문은 `display:none` 토글이라 즉시 사라지던 어색함. `grid-template-rows: 0fr ↔ 1fr` 트릭으로 height 를 모르는 채로 200ms ease 트랜지션. inner wrapper + `overflow:hidden`/`min-height:0` 으로 grid track 에 맞춰 잘림.",
+        "**a11y 보존** — `hidden={!open}` 대신 `inert` + `aria-hidden` 사용. 닫힌 상태에서도 DOM 은 살아 있어 트랜지션이 가능하면서, 포커스/스크린리더 접근은 정상적으로 차단.",
+        "**reduced-motion 가드** — `prefers-reduced-motion: reduce` 일 때 `__collapsible-content` 트랜지션 비활성. 모션 민감 사용자는 즉시 토글 (기존 동작) 유지.",
+        "**collapsed=icon flyout 모드 영향 없음** — icon 모드에서는 inline content 가 아닌 Popover 로 전환되므로 기존 flyout UX 그대로."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.67.3"
+    },
+    {
       "version": "0.67.2",
       "date": "2026-05-09",
       "title": "patch — MCP instructions 에 v0.65~0.67 신규 툴/라우팅 가이드 반영 + migrations 노트",
