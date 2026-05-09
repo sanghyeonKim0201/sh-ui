@@ -92,12 +92,20 @@ const DART_FIELD_SOURCES = [
   { field: 'primaryHover',         key: 'primary-hover' },
   { field: 'danger',               key: 'danger' },
   { field: 'dangerForeground',     key: 'danger-foreground' },
+  // 아래 둘은 v0.68.1+ 신설. theme 객체에 없으면 fallback 키의 값으로 안전하게 채움 —
+  // 기존 base64 테마(이전 버전이 만든 것)도 깨지지 않도록.
+  { field: 'dangerHover',          key: 'danger-hover', fallback: 'danger' },
+  { field: 'ring',                 key: 'ring',         fallback: 'foreground-subtle' },
 ];
 
 const buildDartStaticConst = (mode, self) => {
-  const lines = DART_FIELD_SOURCES.map(({ field, key }) =>
-    `    ${field}: ${toDartColor(self[key])},`,
-  ).join('\n');
+  const lines = DART_FIELD_SOURCES.map(({ field, key, fallback }) => {
+    const value = self[key] ?? (fallback ? self[fallback] : undefined);
+    if (!value) {
+      throw new Error(`inject: ${mode}.${key} 누락 (fallback ${fallback ?? '없음'} 도 없음)`);
+    }
+    return `    ${field}: ${toDartColor(value)},`;
+  }).join('\n');
   return [
     `  static const ${mode} = ShUiColorTokens(`,
     lines,

@@ -20,6 +20,8 @@ class ShUiColorTokens {
   final Color primaryHover;
   final Color danger;
   final Color dangerForeground;
+  final Color dangerHover;
+  final Color ring;
 
   const ShUiColorTokens({
     required this.background,
@@ -37,6 +39,8 @@ class ShUiColorTokens {
     required this.primaryHover,
     required this.danger,
     required this.dangerForeground,
+    required this.dangerHover,
+    required this.ring,
   });
 
   // sh-ui:theme-colors-start
@@ -56,6 +60,8 @@ class ShUiColorTokens {
     primaryHover: Color(0xFF262626),
     danger: Color(0xFFDC2626),
     dangerForeground: Color(0xFFFFFFFF),
+    dangerHover: Color(0xFFB91C1C),
+    ring: Color(0xFFA3A3A3),
   );
 
   static const dark = ShUiColorTokens(
@@ -74,6 +80,8 @@ class ShUiColorTokens {
     primaryHover: Color(0xFFE5E5E5),
     danger: Color(0xFFDC2626),
     dangerForeground: Color(0xFFFFFFFF),
+    dangerHover: Color(0xFFEF4444),
+    ring: Color(0xFF737373),
   );
   // sh-ui:theme-colors-end
 }

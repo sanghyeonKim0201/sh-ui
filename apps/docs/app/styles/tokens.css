@@ -15,10 +15,10 @@
   --primary: #171717;
   --primary-foreground: #FAFAFA;
   --primary-hover: #262626;
-  --ring: color-mix(in srgb, var(--primary) 50%, transparent);
   --danger: #DC2626;
-  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
+  --danger-hover: #B91C1C;
+  --ring: #A3A3A3;
   --radius: 0.5rem;
   --space-0: 0;
   --space-1: 0.25rem;
@@ -47,7 +47,7 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.18);
-  --shadow-menu: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-menu: 0 8px 24px rgba(0, 0, 0, 0.15);
   --duration-fast: 120ms;
   --duration-base: 160ms;
   --duration-slow: 200ms;
@@ -89,8 +89,9 @@
     --primary-foreground: #171717;
     --primary-hover: #E5E5E5;
     --danger: #DC2626;
-  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
     --danger-foreground: #FFFFFF;
+    --danger-hover: #EF4444;
+    --ring: #737373;
   }
 }
 
@@ -109,8 +110,9 @@
   --primary-foreground: #171717;
   --primary-hover: #E5E5E5;
   --danger: #DC2626;
-  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
+  --danger-hover: #EF4444;
+  --ring: #737373;
 }
 
 @theme inline {
@@ -127,42 +129,12 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-hover: var(--primary-hover);
-  --color-ring: var(--ring);
   --color-danger: var(--danger);
-  --color-danger-hover: var(--danger-hover);
   --color-danger-foreground: var(--danger-foreground);
+  --color-danger-hover: var(--danger-hover);
+  --color-ring: var(--ring);
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);
   --radius-xl: calc(var(--radius) + 4px);
-}
-
-/* WCAG 2.5.5 — 터치 타겟 최소 44×44px. 마우스/스타일러스 대신 손가락 입력 시 control 높이를 보정. */
-@media (hover: none) and (pointer: coarse) {
-  :root {
-    --control-sm: 2.75rem;
-    --control-md: 2.75rem;
-  }
-}
-
-/* WCAG AA 보장 — 사용자가 OS/브라우저에서 "고대비" 접근성 옵션 켰을 때.
- * foreground-subtle, border, border-strong 만 강화 (다른 토큰은 이미 AA 통과). */
-@media (prefers-contrast: high) {
-  :root {
-    --foreground-subtle: #767676;
-    --border: #767676;
-    --border-strong: #595959;
-  }
-  .dark {
-    --foreground-subtle: #B3B3B3;
-    --border: #757575;
-    --border-strong: #999999;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not(.light):not(.dark) {
-      --foreground-subtle: #B3B3B3;
-      --border: #757575;
-      --border-strong: #999999;
-    }
-  }
 }

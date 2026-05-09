@@ -25,8 +25,10 @@
     },
     "danger": {
       "default":    { "$value": "{color.red.600}", "$type": "color" },
-      "foreground": { "$value": "{color.white}", "$type": "color" }
-    }
+      "foreground": { "$value": "{color.white}", "$type": "color" },
+      "hover":      { "$value": "{color.red.700}", "$type": "color" }
+    },
+    "ring": { "$value": "{color.{base}.400}", "$type": "color" }
   },
 
   "dark": {
@@ -53,8 +55,10 @@
     },
     "danger": {
       "default":    { "$value": "{color.red.600}", "$type": "color" },
-      "foreground": { "$value": "{color.white}", "$type": "color" }
-    }
+      "foreground": { "$value": "{color.white}", "$type": "color" },
+      "hover":      { "$value": "{color.red.500}", "$type": "color" }
+    },
+    "ring": { "$value": "{color.{base}.500}", "$type": "color" }
   },
 
   "radius": {
@@ -94,10 +98,11 @@
   },
 
   "shadow": {
-    "sm": { "$value": "{shadow.sm}", "$type": "shadow" },
-    "md": { "$value": "{shadow.md}", "$type": "shadow" },
-    "lg": { "$value": "{shadow.lg}", "$type": "shadow" },
-    "xl": { "$value": "{shadow.xl}", "$type": "shadow" }
+    "sm":   { "$value": "{shadow.sm}", "$type": "shadow" },
+    "md":   { "$value": "{shadow.md}", "$type": "shadow" },
+    "lg":   { "$value": "{shadow.lg}", "$type": "shadow" },
+    "xl":   { "$value": "{shadow.xl}", "$type": "shadow" },
+    "menu": { "$value": "{shadow.lg}", "$type": "shadow" }
   },
 
   "duration": {

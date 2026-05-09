@@ -10,11 +10,15 @@ const TOKEN_KEYS = [
 
 // 옵셔널 색 토큰 — 누락 OK. 입력에 들어 있으면 hex 검증 + inject 시 CSS 변수로 emit.
 // 사용자가 success/warning/info 상태 컬러를 커스텀하고 싶을 때 사용.
-// Dart 측 ShUiColorTokens 는 아직 미반영(웹 한정).
+// v0.68.1+ 부터 ring / danger-hover 도 옵셔널로 — 기존 base64 theme 은 누락된 상태로
+// 디코드되고, 신규 preset 은 light/dark 모두 정의해 inject 가 emit (DART 도 OPTIONAL 키
+// 가 light/dark 양쪽에 있으면 ShUiColorTokens 의 ring/dangerHover 필드에 자동 매핑).
 const OPTIONAL_TOKEN_KEYS = [
   'success', 'success-foreground',
   'warning', 'warning-foreground',
   'info', 'info-foreground',
+  'danger-hover',
+  'ring',
 ];
 
 /**
