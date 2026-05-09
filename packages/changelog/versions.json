@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.70.0",
+      "date": "2026-05-09",
+      "title": "sh-ui theme extract — tokens.css → base64 라운드트립 (Phase C)",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui theme extract` 신설** — 사용자가 손본 tokens.css 의 색·radius 를 sh-ui base64 테마 문자열로 추출. stdout 출력 (또는 `--out <path>` 로 파일 저장). 추출 정보는 stderr 로 분리되어 pipe-friendly.",
+        "**라운드트립 검증** — 추출 → `sh-ui create --theme <base64>` 또는 MCP `sh_ui_create_project` 의 theme 인자로 그대로 재사용. encodeTheme 이 즉시 decodeTheme 으로 round-trip 검증해 잘못된 입력은 실패 시점이 빠름.",
+        "**옵셔널 토큰 보수적 처리** — light/dark 양쪽에 모두 hex 가 정의된 옵셔널 키 (success/warning/info/danger-hover/ring) 만 emit. 한쪽만 있으면 디자인 어긋남 위험 — 둘 다 skip.",
+        "**hex-only 정책** — 모든 필수 색이 `#RRGGBB` 여야 함. `color-mix() / var() / rgba()` 등이 섞이면 친절 에러로 종료 + `sh-ui tokens upgrade --replace` 또는 직접 hex 화 권장. 파싱 실패가 정적 vs 동적 색 의도를 흐리지 않게.",
+        "**활용 패턴** — custom brand 색을 한 번 박은 뒤 다른 앱에도 같은 색으로 스캐폴드 / 디자인 시스템 문서에 토큰 스냅샷 보존 / 색 살짝 바꾼 후 새 base64 추출해 brand 변형판 만들기."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.70.0"
+    },
+    {
       "version": "0.69.0",
       "date": "2026-05-09",
       "title": "sh-ui tokens diff / upgrade — incremental 토큰 마이그레이션 (Phase B)",
