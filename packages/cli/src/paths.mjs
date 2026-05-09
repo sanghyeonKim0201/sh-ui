@@ -40,6 +40,17 @@ export function getPeerVersionsPath(platform) {
     : resolve(MONOREPO_PACKAGES, "registry", platform, "peer-versions.json");
 }
 
+/**
+ * 컴포넌트별 토큰 의존성 매니페스트.
+ * scripts/build-registry-tokens.mjs 가 컴포넌트 CSS 의 var(--*) 참조를 추출해 생성.
+ * add 시점 검증 + sh-ui doctor 가 사용.
+ */
+export function getTokensUsedPath(platform) {
+  return isBundled
+    ? resolve(BUNDLED_DATA, "registry", platform, "tokens-used.json")
+    : resolve(MONOREPO_PACKAGES, "registry", platform, "tokens-used.json");
+}
+
 /** llms 요약 JSON (platform별) */
 export function getSummariesPath(platform) {
   return isBundled

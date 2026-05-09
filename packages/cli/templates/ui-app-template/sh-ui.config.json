@@ -9,6 +9,7 @@
   },
   "paths": {
     "tokens": "src/styles/tokens.css",
+    "cssEntry": "src/styles/globals.css",
     "styles": "src/styles"
   }
 }

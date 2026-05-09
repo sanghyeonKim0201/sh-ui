@@ -15,6 +15,7 @@ const usage = `사용법:
                                    필요한 외부 패키지를 자동 설치
                                    특수값: tokens → 설정 기반 토큰 파일 생성
   sh-ui list                       현재 설치된 컴포넌트 목록 표시
+  sh-ui doctor                     프로젝트 정합성 점검 (config / tokens / 설치된 컴포넌트)
   sh-ui remove <component...>      설치된 컴포넌트 파일 삭제
   sh-ui rename-app <old> <new>     monorepo 의 앱 이름 일괄 변경
                                    (apps/<old>/, packages/ui/ui-apps/ui-<old>/
@@ -97,6 +98,11 @@ try {
     case "list": {
       const all = rest.includes("--all");
       await list({ cwd: process.cwd(), all });
+      break;
+    }
+    case "doctor": {
+      const { doctor } = await import("../src/doctor.mjs");
+      await doctor({ cwd: process.cwd() });
       break;
     }
     case "mcp": {

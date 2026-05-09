@@ -272,6 +272,7 @@ npx sh-ui-cli create add-component button --app web`,
           { prop: "sh-ui add <name...>", type: "command", description: "레지스트리에서 컴포넌트 소스를 복사하고 필요한 외부 패키지를 자동 설치." },
           { prop: "sh-ui add tokens", type: "special", description: "설정 값을 치환해 토큰 파일 생성 (CSS 또는 Dart)." },
           { prop: "sh-ui list", type: "command", description: "현재 설치된 컴포넌트 목록 표시." },
+          { prop: "sh-ui doctor", type: "command", description: "프로젝트 정합성 점검. config / tokens.css / 설치된 컴포넌트의 토큰 의존성을 한 번에 검사." },
           { prop: "sh-ui remove <name...>", type: "command", description: "설치된 컴포넌트 파일 삭제 (별칭 sh-ui rm)." },
         ]}
       />
@@ -458,6 +459,24 @@ npx sh-ui-cli list --all`}
           { prop: "--all", type: "boolean", description: "레지스트리의 모든 컴포넌트 중 아직 설치되지 않은 것도 함께 표시." },
         ]}
       />
+
+      <h3>sh-ui doctor</h3>
+      <p>
+        프로젝트의 토큰·컴포넌트 정합성을 한 번에 검사한다. v0.68.0+ 부터 제공.
+      </p>
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli doctor`} />
+      <p>점검 항목:</p>
+      <PropsTable
+        rows={[
+          { prop: "sh-ui.config.json", type: "check", description: "파일 존재 + platform/theme/paths 필수 필드." },
+          { prop: "paths.tokens", type: "check", description: "tokens.css(또는 .dart) 파일이 실제로 있는지." },
+          { prop: "paths.cssEntry", type: "check", description: "(설정 시) globals.css 가 tokens.css 를 import 하는지. 미설정이면 검사 스킵." },
+          { prop: "설치된 컴포넌트", type: "check", description: "각 컴포넌트가 요구하는 CSS 변수가 tokens.css 에 정의돼 있는지. 누락은 fail (visual 회귀 사전 차단)." },
+        ]}
+      />
+      <p className="muted">
+        모든 검사 통과 시 exit 0, 하나라도 fail 이면 exit 1 — CI 통합 가능. 컴포넌트가 요구하는 토큰 메타는 <code>packages/registry/react/tokens-used.json</code> 에서 자동 추출 (script: <code>scripts/build-registry-tokens.mjs</code>).
+      </p>
 
       <h3>sh-ui remove</h3>
       <p>
