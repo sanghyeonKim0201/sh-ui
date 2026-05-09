@@ -920,8 +920,13 @@ export function SidebarCollapsibleContent({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="sh-ui-sidebar__collapsible-content" data-state={open ? "open" : "closed"} hidden={!open}>
-      {children}
+    <div
+      className="sh-ui-sidebar__collapsible-content"
+      data-state={open ? "open" : "closed"}
+      inert={!open}
+      aria-hidden={!open || undefined}
+    >
+      <div className="sh-ui-sidebar__collapsible-content-inner">{children}</div>
     </div>
   );
 }
