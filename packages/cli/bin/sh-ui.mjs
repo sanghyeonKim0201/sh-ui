@@ -16,6 +16,10 @@ const usage = `사용법:
                                    특수값: tokens → 설정 기반 토큰 파일 생성
   sh-ui list                       현재 설치된 컴포넌트 목록 표시
   sh-ui doctor                     프로젝트 정합성 점검 (config / tokens / 설치된 컴포넌트)
+  sh-ui tokens diff                tokens.css 와 buildTokens 결과 비교 (added/changed/removed)
+  sh-ui tokens upgrade [--apply|--replace]
+                                   --apply: 추가만 incremental (사용자 편집 보존)
+                                   --replace: 통째 덮어쓰기 (add tokens --force 와 동일)
   sh-ui remove <component...>      설치된 컴포넌트 파일 삭제
   sh-ui rename-app <old> <new>     monorepo 의 앱 이름 일괄 변경
                                    (apps/<old>/, packages/ui/ui-apps/ui-<old>/
@@ -103,6 +107,37 @@ try {
     case "doctor": {
       const { doctor } = await import("../src/doctor.mjs");
       await doctor({ cwd: process.cwd() });
+      break;
+    }
+    case "tokens": {
+      // sh-ui tokens diff
+      // sh-ui tokens upgrade --apply | --replace
+      const sub = rest[0];
+      const flags = rest.slice(1);
+      const { runTokensDiff, runTokensUpgrade } = await import("../src/tokens-cmd.mjs");
+      if (sub === "diff") {
+        await runTokensDiff({ cwd: process.cwd() });
+      } else if (sub === "upgrade") {
+        const apply = flags.includes("--apply");
+        const replace = flags.includes("--replace");
+        if (apply && replace) {
+          console.error("에러: --apply 와 --replace 은 함께 쓸 수 없습니다.\n");
+          process.exit(1);
+        }
+        if (!apply && !replace) {
+          console.error(
+            "에러: `sh-ui tokens upgrade` 는 --apply 또는 --replace 가 필요합니다.\n" +
+              "  --apply   추가된 변수만 적용 (사용자 편집 보존)\n" +
+              "  --replace buildTokens 결과로 통째 덮어쓰기\n" +
+              "미리보기는 `sh-ui tokens diff`.",
+          );
+          process.exit(1);
+        }
+        await runTokensUpgrade({ cwd: process.cwd(), mode: apply ? "apply" : "replace" });
+      } else {
+        console.error(`에러: 알 수 없는 tokens 서브명령 '${sub ?? ""}'. 'diff' 또는 'upgrade'.\n`);
+        process.exit(1);
+      }
       break;
     }
     case "mcp": {

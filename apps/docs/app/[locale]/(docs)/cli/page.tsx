@@ -273,6 +273,8 @@ npx sh-ui-cli create add-component button --app web`,
           { prop: "sh-ui add tokens", type: "special", description: "설정 값을 치환해 토큰 파일 생성 (CSS 또는 Dart)." },
           { prop: "sh-ui list", type: "command", description: "현재 설치된 컴포넌트 목록 표시." },
           { prop: "sh-ui doctor", type: "command", description: "프로젝트 정합성 점검. config / tokens.css / 설치된 컴포넌트의 토큰 의존성을 한 번에 검사." },
+          { prop: "sh-ui tokens diff", type: "command", description: "tokens.css 와 buildTokens 결과를 비교 — added/changed/removed 미리보기." },
+          { prop: "sh-ui tokens upgrade", type: "command", description: "--apply (incremental, 사용자 편집 보존) 또는 --replace (통째 덮어쓰기)." },
           { prop: "sh-ui remove <name...>", type: "command", description: "설치된 컴포넌트 파일 삭제 (별칭 sh-ui rm)." },
         ]}
       />
@@ -476,6 +478,51 @@ npx sh-ui-cli list --all`}
       />
       <p className="muted">
         모든 검사 통과 시 exit 0, 하나라도 fail 이면 exit 1 — CI 통합 가능. 컴포넌트가 요구하는 토큰 메타는 <code>packages/registry/react/tokens-used.json</code> 에서 자동 추출 (script: <code>scripts/build-registry-tokens.mjs</code>).
+      </p>
+
+      <h3>sh-ui tokens diff / upgrade</h3>
+      <p>
+        sh-ui 가 제공하는 토큰 (<code>buildTokens</code> 결과) 과 사용자 <code>tokens.css</code> 의 변수 정의를 비교해
+        added / changed / removed 를 보여주고, 추가만 incremental 적용. v0.69.0+ 부터 제공.
+      </p>
+      <p>주 사용 시점:</p>
+      <ul>
+        <li>sh-ui 버전 업그레이드 후 신규 토큰이 들어왔는지 확인</li>
+        <li>커스텀 색을 손댄 채로 새 토큰만 받고 싶을 때 (<code>--apply</code>)</li>
+        <li>사용자 편집을 모두 버리고 표준값으로 리셋 (<code>--replace</code>)</li>
+      </ul>
+
+      <h4>sh-ui tokens diff — 미리보기</h4>
+      <CodePanel language="bash" showLineNumbers={false} code={`npx sh-ui-cli tokens diff`} />
+      <p>출력 분류:</p>
+      <PropsTable
+        rows={[
+          { prop: "+ 추가", type: "added", description: "buildTokens 결과에만 존재 — 사용자 tokens.css 가 못 받은 신규 토큰." },
+          { prop: "~ 변경", type: "changed", description: "양쪽 모두 정의되었지만 값이 다름 — 사용자가 손댔거나 sh-ui 가 새 권장값으로 갱신." },
+          { prop: "- 제거", type: "removed", description: "사용자 tokens.css 에만 존재 — 의도적 custom 추가 또는 deprecated 토큰." },
+        ]}
+      />
+
+      <h4>sh-ui tokens upgrade — 적용</h4>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# 추가만 incremental (사용자 편집 보존)
+npx sh-ui-cli tokens upgrade --apply
+
+# buildTokens 결과로 통째 덮어쓰기 (모든 사용자 편집 손실)
+npx sh-ui-cli tokens upgrade --replace`}
+      />
+      <PropsTable
+        rows={[
+          { prop: "--apply", type: "mode", description: "added 변수만 매칭 selector 블록 끝에 삽입. changed/removed 는 건드리지 않음." },
+          { prop: "--replace", type: "mode", description: "buildTokens 결과로 tokens.css 통째 교체. `add tokens --force` 와 동일하지만 명령 의미가 명시적." },
+        ]}
+      />
+      <p className="muted">
+        제약: <code>theme.base</code> 가 buildable preset (neutral / zinc / slate) 일 때만 동작.
+        custom (base64) / rich preset (rose / emerald / violet) 은 buildTokens 가 throw — 안내 메시지로 일찍 종료.
+        Flutter platform 은 v0.69 시점 미지원.
       </p>
 
       <h3>sh-ui remove</h3>
