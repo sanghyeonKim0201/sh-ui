@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.71.2",
+      "date": "2026-05-09",
+      "title": "fix(doctor) — monorepo walk-up + 컴포넌트-only 패키지 인식",
+      "type": "patch",
+      "highlights": [
+        "**doctor 의 walk-up + monorepo 라우팅** — `add` 와 같은 정책을 적용. monorepo 어느 디렉토리 (apps/web, ui-core 안 등) 에서 실행해도 `packages/ui/ui-core` 와 모든 `packages/ui/ui-apps/ui-*` 를 자동 순회. 각 패키지마다 헤더 출력 + 결과 집계, 하나라도 fail 이면 exit 1.",
+        "**컴포넌트-only 패키지 인식** — ui-core 처럼 `paths.tokens` 가 없는 패키지는 의도된 형태. 이전엔 'theme 미설정 / 토큰 검증 스킵' 로 fail/warn 폭발 → 이제 ✓ '(컴포넌트 only — 토큰 없음, 검증 스킵)' 한 줄로 정리.",
+        "**doctor 함수 시그니처** — `process.exit()` 직접 호출 대신 `{ ok, failCount, warnCount }` 반환. 호출부 (bin) 가 monorepo 순회 후 집계 exit. API consumer (테스트, 향후 lint:doctor 등) 도 활용 가능."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.71.2"
+    },
+    {
       "version": "0.71.1",
       "date": "2026-05-09",
       "title": "chore(mcp): instructions 에 v0.68~0.71 신규 명령 가이드 반영",

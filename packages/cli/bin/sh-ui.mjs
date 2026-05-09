@@ -109,7 +109,47 @@ try {
     }
     case "doctor": {
       const { doctor } = await import("../src/doctor.mjs");
-      await doctor({ cwd: process.cwd() });
+      const { existsSync, readdirSync } = await import("node:fs");
+      const { resolve } = await import("node:path");
+      // add 와 같은 walk-up + monorepo 라우팅. standalone 이면 그 root 1개,
+      // monorepo 면 packages/ui/ui-core + ui-apps/ui-* 모두 순회.
+      const ctx = findShUiContext(process.cwd());
+      if (!ctx) {
+        console.error(
+          "✗ sh-ui.config.json 또는 pnpm-workspace.yaml 을 cwd 부터 부모 트리에서 찾지 못했습니다.",
+        );
+        process.exit(1);
+      }
+      let anyFailed = false;
+      const targets = [];
+      if (ctx.kind === "config") {
+        targets.push(ctx.root);
+      } else {
+        const uiCore = resolve(ctx.root, "packages/ui/ui-core");
+        if (existsSync(resolve(uiCore, "sh-ui.config.json"))) targets.push(uiCore);
+        const uiAppsRoot = resolve(ctx.root, "packages/ui/ui-apps");
+        if (existsSync(uiAppsRoot)) {
+          for (const name of readdirSync(uiAppsRoot)) {
+            const dir = resolve(uiAppsRoot, name);
+            if (existsSync(resolve(dir, "sh-ui.config.json"))) targets.push(dir);
+          }
+        }
+        if (targets.length === 0) {
+          console.error(
+            "✗ monorepo 에서 sh-ui.config.json 가지는 패키지를 찾지 못했습니다.\n" +
+              "  packages/ui/ui-core/ 또는 packages/ui/ui-apps/ui-*/ 에 있어야 합니다.",
+          );
+          process.exit(1);
+        }
+      }
+      for (const target of targets) {
+        if (targets.length > 1) {
+          console.log(`\n────  ${target.replace(ctx.root + "/", "")}  ────`);
+        }
+        const result = await doctor({ cwd: target });
+        if (!result.ok) anyFailed = true;
+      }
+      if (anyFailed) process.exit(1);
       break;
     }
     case "theme": {
