@@ -3,6 +3,21 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.68.1",
+      "date": "2026-05-09",
+      "title": "fix(tokens) — --ring / --danger-hover / --shadow-menu 정식 등록 (Phase A 후속)",
+      "type": "patch",
+      "highlights": [
+        "**`--ring` 토큰 신설** — 58 개 컴포넌트가 focus outline 으로 사용하던 변수가 미정의였음 (시각적으로 outline 색이 빈 값으로 들어가 거의 안 보이던 silent breakage). v0.68.0 doctor 가 발견. 이번 릴리즈로 light=neutral.400 / dark=neutral.500 (preset 별 derive) 으로 정식 매핑.",
+        "**`--danger-hover` 토큰 신설** — Button danger 변종 hover 색 변화가 없던 silent breakage. light=red.700 / dark=red.500 추가, 기존 `--danger` 와 자연스러운 진/연 차이.",
+        "**`--shadow-menu` 토큰 의미화** — DropdownMenu / Select / ContextMenu 그림자. 이전엔 inject 단계 hardcode 였는데 semantic.json 의 `{shadow.lg}` 참조로 정식화 — `sh-ui add tokens` (buildTokens 경로) 와 `sh-ui create` (inject 경로) 둘 다 동일하게 emit.",
+        "**Flutter 측 `ShUiColorTokens.ring` / `.dangerHover` 필드 추가** — DART_FIELD_SOURCES 에 `fallback` 메타 추가, 옛 base64 theme 처럼 키가 누락된 경우 `danger` / `foreground-subtle` 로 안전하게 폴백. 기존 `sh_ui_encode_theme` 산출물도 깨지지 않음.",
+        "**옵셔널 키 정책** — `ring`, `danger-hover` 는 OPTIONAL_TOKEN_KEYS 로 등록. light/dark 모두 정의된 preset 만 inject 시 emit (NEUTRAL/slate 정식 정의, rose/emerald/violet 은 NEUTRAL spread 로 자동 상속). 옛 base64 theme 디코드는 strict 검증을 우회해 backward 호환.",
+        "**v0.68.0 doctor 가 즉시 활용** — fresh `sh-ui create` + `sh-ui doctor` 가 ✓ 모든 검사 통과."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.68.1"
+    },
+    {
       "version": "0.68.0",
       "date": "2026-05-09",
       "title": "토큰 의존 검증 + sh-ui doctor — silent breakage 가시화 (Phase A)",

@@ -22,6 +22,8 @@ const NEUTRAL_LIGHT = {
   'primary-hover': '#262626',
   'danger': '#DC2626',
   'danger-foreground': '#FFFFFF',
+  'danger-hover': '#B91C1C',
+  'ring': '#A3A3A3',
 };
 
 const NEUTRAL_DARK = {
@@ -40,6 +42,8 @@ const NEUTRAL_DARK = {
   'primary-hover': '#E5E5E5',
   'danger': '#DC2626',
   'danger-foreground': '#FFFFFF',
+  'danger-hover': '#EF4444',
+  'ring': '#737373',
 };
 
 export const THEME_PRESETS = {
@@ -67,6 +71,8 @@ export const THEME_PRESETS = {
       'primary-hover': '#4338CA',
       'danger': '#DC2626',
       'danger-foreground': '#FFFFFF',
+      'danger-hover': '#B91C1C',
+      'ring': '#94A3B8',
     },
     dark: {
       'background': '#0F172A',
@@ -84,6 +90,8 @@ export const THEME_PRESETS = {
       'primary-hover': '#A5B4FC',
       'danger': '#F87171',
       'danger-foreground': '#450A0A',
+      'danger-hover': '#FCA5A5',
+      'ring': '#64748B',
     },
     radius: 0.375,
     // 정보 밀도 ↑ — 본문 14px 부터, 컨트롤 36px (대시보드/관리자 인상)

@@ -20,6 +20,8 @@ class ShUiColorTokens {
   final Color primaryHover;
   final Color danger;
   final Color dangerForeground;
+  final Color dangerHover;
+  final Color ring;
 
   const ShUiColorTokens({
     required this.background,
@@ -37,6 +39,8 @@ class ShUiColorTokens {
     required this.primaryHover,
     required this.danger,
     required this.dangerForeground,
+    required this.dangerHover,
+    required this.ring,
   });
 
   static const light = ShUiColorTokens(
@@ -55,6 +59,8 @@ class ShUiColorTokens {
     primaryHover: Color(0xFF262626),
     danger: Color(0xFFDC2626),
     dangerForeground: Color(0xFFFFFFFF),
+    dangerHover: Color(0xFFB91C1C),
+    ring: Color(0xFFA3A3A3),
   );
 
   static const dark = ShUiColorTokens(
@@ -73,6 +79,8 @@ class ShUiColorTokens {
     primaryHover: Color(0xFFE5E5E5),
     danger: Color(0xFFDC2626),
     dangerForeground: Color(0xFFFFFFFF),
+    dangerHover: Color(0xFFEF4444),
+    ring: Color(0xFF737373),
   );
 }
 
@@ -194,12 +202,14 @@ class ShUiShadowTokens {
   final List<BoxShadow> md;
   final List<BoxShadow> lg;
   final List<BoxShadow> xl;
+  final List<BoxShadow> menu;
 
   const ShUiShadowTokens({
     required this.sm,
     required this.md,
     required this.lg,
     required this.xl,
+    required this.menu,
   });
 
   static const tokens = ShUiShadowTokens(
@@ -207,6 +217,7 @@ class ShUiShadowTokens {
     md: <BoxShadow>[BoxShadow(offset: Offset(0.0, 4.0), blurRadius: 12.0, spreadRadius: 0.0, color: Color(0x1F000000))],
     lg: <BoxShadow>[BoxShadow(offset: Offset(0.0, 8.0), blurRadius: 24.0, spreadRadius: 0.0, color: Color(0x26000000))],
     xl: <BoxShadow>[BoxShadow(offset: Offset(0.0, 16.0), blurRadius: 48.0, spreadRadius: 0.0, color: Color(0x2E000000))],
+    menu: <BoxShadow>[BoxShadow(offset: Offset(0.0, 8.0), blurRadius: 24.0, spreadRadius: 0.0, color: Color(0x26000000))],
   );
 }
 
