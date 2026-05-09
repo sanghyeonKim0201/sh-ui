@@ -1,6 +1,7 @@
 {
   "platform": "react",
   "cssFramework": "plain",
+  "role": "tokens-only",
   "theme": {
     "base": "neutral",
     "radius": "md",

@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.65.0",
+      "date": "2026-05-09",
+      "title": "monorepo 컴포넌트 단일 SoT — ui-core 도입, ui-app 은 tokens-only",
+      "type": "minor",
+      "highlights": [
+        "**컴포넌트 중복 emit 제거** — monorepo 에서 `sh-ui add <component>` 가 `packages/ui/ui-core` 한 곳에만 컴포넌트/훅을 떨어뜨림. 이전엔 ui-{app} 마다 같은 파일이 복제돼 sync 비용이 컸다.",
+        "**역할 분리** — `ui-core` 가 컴포넌트/훅/lib SoT, `ui-{app}` 은 토큰/스타일 전용 (`role: \"tokens-only\"` 마커). `sh-ui add tokens` 만 ui-app 으로 라우팅, 그 외는 모두 ui-core.",
+        "**친절한 거부 메시지** — 사용자가 ui-app 에서 직접 `sh-ui add button` 을 실행하면 \"ui-core 에 추가하세요\" 안내 후 종료. 잘못된 위치에 컴포넌트 누적 차단.",
+        "**v0.64.x 호환 fallback** — 기존 monorepo 레이아웃(ui-core 부재)에서는 자동으로 ui-apps 직접 라우팅으로 폴백. 마이그레이션 자동 도구는 후속 v0.66.0 (PR-D)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.65.0"
+    },
+    {
       "version": "0.64.7",
       "date": "2026-05-08",
       "title": "patch — MCP instructions 에 \"UI 짤 때 사고 순서\" 섹션 추가 (raw HTML 기본값 회피)",
