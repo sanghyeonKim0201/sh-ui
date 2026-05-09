@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.66.0",
+      "date": "2026-05-09",
+      "title": "monorepo: sh_ui_add_app MCP 툴 + sh_ui_migrate_to_v065 자동 마이그레이션",
+      "type": "minor",
+      "highlights": [
+        "**`sh_ui_add_app` MCP 툴 신규** — 기존 모노레포에 새 Next.js 앱 추가 (`apps/{name}/` + `packages/ui/ui-apps/ui-{name}/` 동시 생성). v0.65 ui-core/ui-app 분리 레이아웃 자동 준수, theme/css 인자로 새 앱 별 톤/프레임워크 지정 가능. CLI 진입점 `sh-ui create add-app [name] [--port/--plugins/--theme/--css]` 도 동시 확장.",
+        "**`sh_ui_migrate_to_v065` 자동 마이그레이션** — v0.64.x → v0.65 monorepo 컴포넌트 통합 도구. ui-{app}/src/{components,hooks,lib}/ 의 파일을 ui-core 단일 SoT 로 이동, ui-app 에 `role: \"tokens-only\"` 마커 + paths/aliases/exports 정리, `apps/*` 의 `@workspace/ui-{app}/(components|hooks|lib)/` 임포트를 `@workspace/ui-core/...` 로 일괄 재작성. dryRun 기본, 컨텐츠 충돌 시 abort (자동 병합 안 함).",
+        "**`apps/docs/migrations/v0.65.md`** — 자동 도구 사용법 + 충돌 해결 가이드 + 수동 마이그레이션 6 단계 + 호환성 노트.",
+        "**addApp 옵션 객체 시그니처** — `addApp({ name, port, plugins, theme, css, cwd })`. 비대화형 (MCP daemon, CI) 지원 + 새 ui-app 의 tokens.css 에 theme 주입까지 createProject 흐름과 통일."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.66.0"
+    },
+    {
       "version": "0.65.0",
       "date": "2026-05-09",
       "title": "monorepo 컴포넌트 단일 SoT — ui-core 도입, ui-app 은 tokens-only",

@@ -18,6 +18,8 @@ const usage = `사용법:
   sh-ui rename-app <old> <new>     monorepo 의 앱 이름 일괄 변경
                                    (apps/<old>/, packages/ui/ui-apps/ui-<old>/
                                    디렉토리 + 모든 import/path 패턴)
+  sh-ui migrate-v065               v0.64.x → v0.65 자동 마이그레이션
+                                   (--dry-run 기본, --apply 로 실제 적용)
   sh-ui mcp                        MCP 서버(stdio) 시작 — IDE-내 AI용
   sh-ui mcp init --client <name>   IDE MCP 설정 파일에 sh-ui 엔트리 자동 추가
                                    (claude-code | cursor | claude-desktop)
@@ -91,6 +93,18 @@ try {
       const [oldName, newName] = positional;
       const { renameApp } = await import("../src/rename-app.mjs");
       await renameApp({ cwd: process.cwd(), oldName, newName, yes, dryRun, skipInstall });
+      break;
+    }
+    case "migrate-v065": {
+      const apply = rest.includes("--apply");
+      const skipImportRewrite = rest.includes("--skip-import-rewrite");
+      const { migrateToV065 } = await import("../src/migrate-v065.mjs");
+      const { summary } = await migrateToV065({
+        cwd: process.cwd(),
+        dryRun: !apply,
+        skipImportRewrite,
+      });
+      console.log(summary);
       break;
     }
     case "remove":

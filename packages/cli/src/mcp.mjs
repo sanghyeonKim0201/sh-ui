@@ -17,6 +17,7 @@
 //   sh_ui_encode_theme     - 토큰 객체 → base64 (사용자가 손본 톤을 영구 보관)
 //   sh_ui_decode_theme     - base64 → 토큰 객체 (기존 테마 일부만 수정 후 재인코딩)
 //   sh_ui_rename_app       - monorepo 의 앱 이름 일괄 변경 (디렉토리 + import/path)
+//   sh_ui_migrate_to_v065  - v0.64.x → v0.65 자동 마이그레이션 (컴포넌트 ui-core 단일화)
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -30,6 +31,7 @@ import { add } from "./add.mjs";
 import { list } from "./list.mjs";
 import { remove } from "./remove.mjs";
 import { renameApp } from "./rename-app.mjs";
+import { migrateToV065 } from "./migrate-v065.mjs";
 import { createProject, addApp } from "./create/generator.js";
 import {
   getRegistryRoot,
@@ -643,6 +645,37 @@ export async function startMcpServer() {
         }),
       );
       return textResult(result || "✓ rename-app 완료");
+    },
+  );
+
+  // v0.64.x → v0.65 monorepo 자동 마이그레이션.
+  server.registerTool(
+    "sh_ui_migrate_to_v065",
+    {
+      description:
+        "v0.64.x → v0.65 monorepo 자동 마이그레이션 — 컴포넌트/훅/lib 를 ui-{app} 들에서 ui-core 단일 SoT 로 통합 + ui-app 을 tokens-only role 로 정리 + apps/* 의 import (`@workspace/ui-{app}/components/...` → `@workspace/ui-core/...`) 재작성. " +
+        "**dryRun 기본 — 안전 우선**. 컨텐츠 충돌(같은 logical path 의 파일이 ui-app 마다 다른 내용) 검출 시 abort + 충돌 목록 반환 (자동 병합 안 함, 사용자가 손본 컴포넌트 보호). " +
+        "monorepo 전용 (pnpm-workspace.yaml + packages/ui/ui-apps 필요). 적용 후 사용자에게 `pnpm install` 안내 필수.",
+      inputSchema: {
+        cwd: z.string().optional().describe("monorepo 루트. 기본 process.cwd()"),
+        dryRun: z.boolean().optional().describe("plan 만 반환, 실제 변경 X. 기본 true (안전)"),
+        skipImportRewrite: z.boolean().optional().describe("apps/* import 재작성 생략. 기본 false"),
+      },
+    },
+    async (input) => {
+      try {
+        const { summary } = await migrateToV065({
+          cwd: resolveCwd(input),
+          dryRun: input.dryRun !== false,
+          skipImportRewrite: input.skipImportRewrite === true,
+        });
+        return textResult(summary);
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: e.message }],
+        };
+      }
     },
   );
 
