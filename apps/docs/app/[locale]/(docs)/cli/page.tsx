@@ -275,6 +275,7 @@ npx sh-ui-cli create add-component button --app web`,
           { prop: "sh-ui doctor", type: "command", description: "프로젝트 정합성 점검. config / tokens.css / 설치된 컴포넌트의 토큰 의존성을 한 번에 검사." },
           { prop: "sh-ui tokens diff", type: "command", description: "tokens.css 와 buildTokens 결과를 비교 — added/changed/removed 미리보기." },
           { prop: "sh-ui tokens upgrade", type: "command", description: "--apply (incremental, 사용자 편집 보존) 또는 --replace (통째 덮어쓰기)." },
+          { prop: "sh-ui theme extract", type: "command", description: "현재 tokens.css 의 색·radius 를 base64 로 추출 (sh-ui create --theme 입력으로 재사용 가능)." },
           { prop: "sh-ui remove <name...>", type: "command", description: "설치된 컴포넌트 파일 삭제 (별칭 sh-ui rm)." },
         ]}
       />
@@ -523,6 +524,38 @@ npx sh-ui-cli tokens upgrade --replace`}
         제약: <code>theme.base</code> 가 buildable preset (neutral / zinc / slate) 일 때만 동작.
         custom (base64) / rich preset (rose / emerald / violet) 은 buildTokens 가 throw — 안내 메시지로 일찍 종료.
         Flutter platform 은 v0.69 시점 미지원.
+      </p>
+
+      <h3>sh-ui theme extract</h3>
+      <p>
+        현재 <code>tokens.css</code> 의 색과 <code>--radius</code> 값을 sh-ui base64 테마 문자열로 추출.
+        v0.70.0+ 부터 제공.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# stdout 으로 base64 출력 (stderr 로 추출 정보)
+npx sh-ui-cli theme extract
+
+# 파일에 저장
+npx sh-ui-cli theme extract --out theme.txt`}
+      />
+      <p>주 사용 시점:</p>
+      <ul>
+        <li>
+          custom 테마를 손본 후 새 프로젝트에 동일한 색을 박을 때 — 추출 결과를{" "}
+          <code>sh-ui create --theme &lt;base64&gt;</code> 또는 <code>sh_ui_create_project</code> MCP 의{" "}
+          <code>theme</code> 인자에 전달.
+        </li>
+        <li>팀/디자인 시스템 문서에 brand 토큰 스냅샷을 보존 (텍스트로 share 가능).</li>
+        <li>
+          색만 살짝 바꾼 후 <code>extract</code>로 새 base64 받아 동일 brand 의 새 앱을 동일 색으로 스캐폴드.
+        </li>
+      </ul>
+      <p className="muted">
+        제약: <code>tokens.css</code> 의 모든 필수 색 토큰이 <code>#RRGGBB</code> 형식이어야 한다.
+        <code>color-mix() / var() / rgba()</code> 가 섞여 있으면 친절 에러로 종료 —{" "}
+        <code>sh-ui tokens upgrade --replace</code> 로 표준값을 적용해 hex 화한 뒤 다시 시도.
       </p>
 
       <h3>sh-ui remove</h3>

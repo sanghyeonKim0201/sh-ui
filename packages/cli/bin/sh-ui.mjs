@@ -20,6 +20,9 @@ const usage = `사용법:
   sh-ui tokens upgrade [--apply|--replace]
                                    --apply: 추가만 incremental (사용자 편집 보존)
                                    --replace: 통째 덮어쓰기 (add tokens --force 와 동일)
+  sh-ui theme extract [--out <path>]
+                                   현재 tokens.css 의 색·radius 를 base64 로 추출
+                                   stdout 출력, --out 으로 파일 저장
   sh-ui remove <component...>      설치된 컴포넌트 파일 삭제
   sh-ui rename-app <old> <new>     monorepo 의 앱 이름 일괄 변경
                                    (apps/<old>/, packages/ui/ui-apps/ui-<old>/
@@ -107,6 +110,20 @@ try {
     case "doctor": {
       const { doctor } = await import("../src/doctor.mjs");
       await doctor({ cwd: process.cwd() });
+      break;
+    }
+    case "theme": {
+      const sub = rest[0];
+      const flags = rest.slice(1);
+      if (sub === "extract") {
+        const outIdx = flags.indexOf("--out");
+        const output = outIdx !== -1 ? flags[outIdx + 1] : null;
+        const { runThemeExtract } = await import("../src/theme-extract.mjs");
+        await runThemeExtract({ cwd: process.cwd(), output });
+      } else {
+        console.error(`에러: 알 수 없는 theme 서브명령 '${sub ?? ""}'. 'extract' 만 지원.\n`);
+        process.exit(1);
+      }
       break;
     }
     case "tokens": {
