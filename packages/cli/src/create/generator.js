@@ -423,108 +423,163 @@ export async function addApp(options = {}) {
 
 // ─── Add component to ui packages ───
 
-export async function addComponent(componentName, appName) {
-  const cwd = process.cwd();
-  const isMonorepo = await fs.pathExists(path.join(cwd, 'pnpm-workspace.yaml'));
+/**
+ * 컴포넌트/토큰 추가 오케스트레이터 — monorepo 의 어느 디렉토리에서든 의도대로 라우팅.
+ *
+ * **v0.67+ 시그니처**: 옵션 객체 받음. `bin/sh-ui.mjs` 가 walk-up 으로 monorepo 루트를 찾아
+ * 호출하고, `add()` 를 in-process 로 호출 (npx subprocess 없음 — 외부 sh-ui-cli 설치 의존 X).
+ *
+ * 라우팅 (monorepo, v0.65+):
+ *   - `tokens` → `packages/ui/ui-apps/ui-{hintApp 또는 app 또는 prompt 또는 단일}`
+ *   - 그 외(컴포넌트/훅/lib) → `packages/ui/ui-core` 단일 SoT
+ *
+ * v0.64.x 호환: ui-core/sh-ui.config.json 부재 시 모든 add 는 ui-apps/ui-{app} 으로 폴백.
+ *
+ * @param {Object} options
+ * @param {string} [options.cwd]                  monorepo 루트. 기본 process.cwd()
+ * @param {string[]} options.names                추가할 이름들 (예: ['button', 'tokens'])
+ * @param {string|null} [options.app]             명시적 --app 플래그 (있으면 hintApp 무시)
+ * @param {string|null} [options.hintApp]         walk-up 결과의 힌트 (apps/web → 'web')
+ * @param {boolean} [options.skipInstall]
+ * @param {boolean} [options.diffMode]
+ * @param {string} [options.onConflict]           'prompt' | 'keep' | 'overwrite'
+ */
+export async function addComponent(options = {}) {
+  const { add } = await import('../add.mjs');
 
-  if (!isMonorepo) {
-    // Standalone: 현재 디렉토리에서 바로 실행
-    if (!componentName) {
-      componentName = await input({ message: '컴포넌트 이름:' });
+  const cwd = options.cwd ? path.resolve(options.cwd) : process.cwd();
+  const names = (options.names ?? []).filter(Boolean);
+  const app = options.app ?? null;
+  const hintApp = options.hintApp ?? null;
+  const skipInstall = options.skipInstall === true;
+  const diffMode = options.diffMode === true;
+  const onConflict = options.onConflict ?? 'prompt';
+
+  if (names.length === 0) {
+    if (!process.stdin.isTTY) {
+      throw new Error('비대화형 환경(TTY 없음)에서는 추가할 이름이 필요합니다.');
     }
-    console.log(`\n📦 sh-ui 컴포넌트 추가: ${componentName}`);
-    execSync(`npx sh-ui add ${componentName}`, { cwd, stdio: 'inherit' });
-    console.log(`\n✅ ${componentName} 추가 완료!`);
+    const single = await input({ message: '컴포넌트 이름:' });
+    names.push(single);
+  }
+
+  const isMonorepo = await fs.pathExists(path.join(cwd, 'pnpm-workspace.yaml'));
+  if (!isMonorepo) {
+    // Standalone: cwd 자체가 sh-ui.config.json 보유 — 그대로 add 호출.
+    await add({ cwd, names, skipInstall, diffMode, onConflict });
     return;
   }
 
-  // Monorepo (v0.65+): tokens 는 packages/ui/ui-apps/ui-{app} 으로, 그 외 컴포넌트/훅은
-  // packages/ui/ui-core 단일 SoT 로 라우팅. 컴포넌트 중복 emit 제거가 v0.65 의 핵심.
-  // v0.64.x 호환: ui-core/sh-ui.config.json 미존재 시 (구 모노레포 레이아웃) 기존 ui-apps
-  //   직접 라우팅 분기로 내려감.
   const uiCoreDir = path.join(cwd, 'packages', 'ui', 'ui-core');
   const uiAppsDir = path.join(cwd, 'packages', 'ui', 'ui-apps');
   const hasUiCore = await fs.pathExists(path.join(uiCoreDir, 'sh-ui.config.json'));
   const hasUiApps = await fs.pathExists(uiAppsDir);
 
   if (!hasUiCore && !hasUiApps) {
-    console.log('❌ packages/ui/ui-core 또는 packages/ui/ui-apps/ 디렉토리가 없습니다.');
-    return;
+    throw new Error('packages/ui/ui-core 또는 packages/ui/ui-apps/ 디렉토리가 없습니다.');
   }
 
-  if (!componentName) {
-    componentName = await input({ message: '컴포넌트 이름:' });
-  }
+  // 이름을 라우팅 그룹별로 분리: tokens → ui-app, 그 외 → ui-core.
+  const tokenNames = names.filter((n) => n === 'tokens');
+  const componentNames = names.filter((n) => n !== 'tokens');
 
-  const isTokens = componentName === 'tokens';
-
-  // ─── 비-tokens (컴포넌트/훅/lib) → ui-core 단일 라우팅 ───
-  if (!isTokens && hasUiCore) {
-    if (appName) {
-      console.log(
-        `ℹ️  v0.65+ 에서 컴포넌트는 packages/ui/ui-core 에 단일 emit 됩니다 (--app ${appName} 무시).`,
-      );
+  // ─── 비-tokens → ui-core (또는 v0.64.x fallback 시 ui-apps) ───
+  if (componentNames.length > 0) {
+    if (hasUiCore) {
+      if (app) {
+        console.log(
+          `ℹ️  v0.65+ 에서 컴포넌트는 packages/ui/ui-core 에 단일 emit (--app ${app} 무시).`,
+        );
+      }
+      console.log(`\n📦 packages/ui/ui-core ← ${componentNames.join(', ')}`);
+      await add({ cwd: uiCoreDir, names: componentNames, skipInstall, diffMode, onConflict });
+    } else {
+      // v0.64.x 호환: ui-core 없으니 모든 ui-app 에 컴포넌트 직접 emit (구 동작).
+      const targets = await pickUiAppTargets({ uiAppsDir, app, hintApp, kind: 'component' });
+      for (const pkg of targets) {
+        const pkgDir = path.join(uiAppsDir, pkg);
+        console.log(`\n📦 packages/ui/ui-apps/${pkg} ← ${componentNames.join(', ')}`);
+        await add({ cwd: pkgDir, names: componentNames, skipInstall, diffMode, onConflict });
+      }
     }
-    console.log(`\n📦 packages/ui/ui-core 에 ${componentName} 추가 중...`);
-    try {
-      execSync(`npx sh-ui add ${componentName}`, { cwd: uiCoreDir, stdio: 'inherit' });
-      console.log(`✅ packages/ui/ui-core 완료`);
-    } catch (error) {
-      console.log(`❌ packages/ui/ui-core 실패: ${error.message}`);
+  }
+
+  // ─── tokens → ui-app(s) ───
+  if (tokenNames.length > 0) {
+    if (!hasUiApps) {
+      throw new Error('tokens 추가에는 packages/ui/ui-apps/ 가 필요합니다.');
     }
-    return;
+    const targets = await pickUiAppTargets({ uiAppsDir, app, hintApp, kind: 'tokens' });
+    for (const pkg of targets) {
+      const pkgDir = path.join(uiAppsDir, pkg);
+      console.log(`\n📦 packages/ui/ui-apps/${pkg} ← tokens`);
+      await add({ cwd: pkgDir, names: tokenNames, skipInstall, diffMode, onConflict });
+    }
   }
 
-  // ─── tokens → ui-apps/ui-{app}(s), 또는 v0.64.x 호환 fallback (ui-core 없음) ───
-  if (!hasUiApps) {
-    console.log('❌ packages/ui/ui-apps/ 디렉토리가 없습니다.');
-    return;
-  }
+  console.log('\n✅ 추가 완료');
+}
 
+/**
+ * monorepo 의 ui-app 패키지 후보를 정해 1+ 개 반환.
+ *
+ * 우선순위:
+ *   1. 명시적 `--app` 플래그
+ *   2. walk-up 결과의 hintApp (apps/<name>/ 또는 ui-apps/ui-<name>/ 컨텍스트)
+ *   3. 단일 ui-app 만 존재 → 자동 선택
+ *   4. TTY → 사용자에게 select prompt
+ *   5. 비대화형 + 다중 ui-app → tokens 는 'all', 컴포넌트(v0.64.x fallback)는 throw
+ */
+async function pickUiAppTargets({ uiAppsDir, app, hintApp, kind }) {
   const entries = await fs.readdir(uiAppsDir, { withFileTypes: true });
   const uiPackages = entries
     .filter((e) => e.isDirectory() && e.name.startsWith('ui-') && e.name !== 'ui-app-template')
     .map((e) => e.name);
 
   if (uiPackages.length === 0) {
-    console.log('❌ ui-* 패키지가 없습니다.');
-    return;
+    throw new Error('packages/ui/ui-apps/ui-* 패키지가 없습니다.');
   }
 
-  let targets;
-  if (appName) {
-    const pkgName = `ui-${appName}`;
+  if (app) {
+    const pkgName = `ui-${app}`;
     if (!uiPackages.includes(pkgName)) {
-      console.log(`❌ packages/ui/ui-apps/${pkgName} 이 존재하지 않습니다.`);
-      console.log(`   사용 가능: ${uiPackages.join(', ')}`);
-      return;
+      throw new Error(
+        `packages/ui/ui-apps/${pkgName} 이 존재하지 않습니다. 사용 가능: ${uiPackages.join(', ')}`,
+      );
     }
-    targets = [pkgName];
-  } else if (uiPackages.length === 1) {
-    targets = uiPackages;
-  } else {
-    const choice = await select({
-      message: isTokens ? '어느 ui 패키지에 토큰을 추가할까요?' : '어디에 추가할까요?',
-      choices: [
-        { name: '모든 ui 패키지', value: 'all' },
-        ...uiPackages.map((name) => ({ name: `packages/ui/ui-apps/${name}`, value: name })),
-      ],
-    });
-    targets = choice === 'all' ? uiPackages : [choice];
+    return [pkgName];
   }
 
-  for (const pkg of targets) {
-    const pkgDir = path.join(uiAppsDir, pkg);
-    console.log(`\n📦 packages/ui/ui-apps/${pkg}에 ${componentName} 추가 중...`);
-    try {
-      execSync(`npx sh-ui add ${componentName}`, { cwd: pkgDir, stdio: 'inherit' });
-      console.log(`✅ packages/ui/ui-apps/${pkg} 완료`);
-    } catch (error) {
-      console.log(`❌ packages/ui/ui-apps/${pkg} 실패: ${error.message}`);
+  if (hintApp) {
+    const pkgName = `ui-${hintApp}`;
+    if (uiPackages.includes(pkgName)) {
+      return [pkgName];
     }
+    // hintApp 이 가리키는 앱의 ui-패키지가 없으면 일반 흐름으로 떨어짐 (드문 케이스).
   }
 
-  console.log('\n✅ 컴포넌트 추가 완료!');
+  if (uiPackages.length === 1) {
+    return uiPackages;
+  }
+
+  if (!process.stdin.isTTY) {
+    if (kind === 'tokens') {
+      // 비대화형 + 다중 ui-app + tokens: 모든 앱에 적용 (가장 안전한 기본값).
+      return uiPackages;
+    }
+    throw new Error(
+      `여러 ui-app 후보 (${uiPackages.join(', ')}) — 비대화형 환경에서는 --app 으로 명시하세요.`,
+    );
+  }
+
+  const choice = await select({
+    message: kind === 'tokens' ? '어느 ui 패키지에 토큰을 추가할까요?' : '어디에 추가할까요?',
+    choices: [
+      { name: '모든 ui 패키지', value: 'all' },
+      ...uiPackages.map((name) => ({ name: `packages/ui/ui-apps/${name}`, value: name })),
+    ],
+  });
+  return choice === 'all' ? uiPackages : [choice];
 }
 
 // ─── Generators ───

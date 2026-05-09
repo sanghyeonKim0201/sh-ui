@@ -75,7 +75,11 @@ export async function runCreate(rest) {
       css: flags.css,
     });
   } else if (command === 'add-component') {
-    await addComponent(positional[0], flags.app);
+    // 호환 별칭 — 신규 진입점은 `sh-ui add <name>` (bin/sh-ui.mjs 가 walk-up 으로 라우팅).
+    await addComponent({
+      names: positional.filter(Boolean),
+      app: flags.app ?? null,
+    });
   } else {
     await createProject({
       name: positional[0],
