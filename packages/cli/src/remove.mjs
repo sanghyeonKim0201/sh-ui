@@ -1,7 +1,14 @@
-import { readFile, rm, rmdir, readdir } from "node:fs/promises";
+import { readFile, rm, rmdir, readdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, resolve, relative } from "node:path";
 import { getRegistryRoot } from "./paths.mjs";
+import { removeSection, isStyleFile, stripStylesImport, isTsxFile } from "./css-bundle.mjs";
+
+/** registry file 엔트리가 현재 cssFramework 와 호환되는지 (add.mjs 와 동일 규칙). */
+function frameworkMatches(entry, cssFramework) {
+  if (!entry.frameworks) return true;
+  return entry.frameworks.includes(cssFramework);
+}
 
 function resolveDest(template, config) {
   return template.replace(/\{([a-zA-Z0-9_]+)\}/g, (m, key) => {
@@ -27,13 +34,16 @@ async function loadRegistry(platform) {
   return JSON.parse(await readFile(registryPath, "utf8"));
 }
 
-/** 설치된 파일이 레지스트리 원본과 동일한지(= 사용자가 수정하지 않았는지). */
-async function isUnmodified(srcAbs, destAbs) {
+/**
+ * 설치된 파일이 레지스트리 원본과 동일한지(= 사용자가 수정하지 않았는지).
+ * bundled 모드에서 .tsx 는 add 시 `import "./styles.css";` 가 제거된 상태로 저장됐으므로
+ * 비교 전에 같은 변환을 src 에 적용해 false positive 회피.
+ */
+async function isUnmodified(srcAbs, destAbs, { transform } = {}) {
   try {
-    const [src, dest] = await Promise.all([
-      readFile(srcAbs, "utf8"),
-      readFile(destAbs, "utf8"),
-    ]);
+    let src = await readFile(srcAbs, "utf8");
+    if (transform) src = transform(src);
+    const dest = await readFile(destAbs, "utf8");
     return src === dest;
   } catch {
     return false;
@@ -71,13 +81,34 @@ export async function remove({ cwd, names, force = false, dryRun = false }) {
     }
 
     const registryRoot = getRegistryRoot(config.platform);
+    const bundled = config.cssStrategy === "bundled";
+    const cssFramework = config.cssFramework ?? "plain";
+    const seenDest = new Set();
     for (const file of entry.files) {
+      if (!frameworkMatches(file, cssFramework)) continue;
+      // bundled 모드에선 CSS 파일이 sh-ui-components.css 내 섹션이라 개별 파일이 없음.
+      // .tsx 만 일반 삭제 흐름을 타고, 섹션 제거는 별도 단계에서 처리.
+      if (bundled && isStyleFile(file)) continue;
       const srcAbs = resolve(registryRoot, file.src);
       const destAbs = resolve(cwd, resolveDest(file.dest, config));
+      // 같은 dest 가 여러 file 변종에서 나올 수 있음 (예: index.tsx 와 index.tailwind.tsx
+      // 가 동일 dest 로 매핑) — 한 번만 처리.
+      if (seenDest.has(destAbs)) continue;
+      seenDest.add(destAbs);
 
       if (!existsSync(destAbs)) continue;
 
-      const unmodified = await isUnmodified(srcAbs, destAbs);
+      // dest 는 add 시 substitutePlaceholders + (bundled.tsx 면) stripStylesImport 가
+      // 적용된 채로 저장됐다. unmodified 비교는 같은 변환을 src 에 먹여 false positive 회피.
+      const transform = (text) => {
+        let out = text;
+        if (config.aliases?.utils) {
+          out = out.replaceAll("@SH_UI_UTILS@", config.aliases.utils);
+        }
+        if (bundled && isTsxFile(file)) out = stripStylesImport(out);
+        return out;
+      };
+      const unmodified = await isUnmodified(srcAbs, destAbs, { transform });
       if (!unmodified && !force) {
         modifiedBlocked.push({ name, dest: destAbs });
         continue;
@@ -125,6 +156,24 @@ export async function remove({ cwd, names, force = false, dryRun = false }) {
     await rm(d.dest);
     console.log(`✓ 삭제: ${relative(cwd, d.dest)}`);
     touchedDirs.add(dirname(d.dest));
+  }
+
+  // bundled 모드 — 각 컴포넌트의 CSS 섹션을 번들에서 제거.
+  if (config.cssStrategy === "bundled" && config.paths?.cssBundle) {
+    const bundlePath = resolve(cwd, config.paths.cssBundle);
+    if (existsSync(bundlePath)) {
+      let text = await readFile(bundlePath, "utf8");
+      let removedAny = false;
+      for (const name of names) {
+        const next = removeSection(text, name);
+        if (next !== text) {
+          text = next;
+          removedAny = true;
+          console.log(`✓ 번들 섹션 제거: ${name} → ${relative(cwd, bundlePath)}`);
+        }
+      }
+      if (removedAny) await writeFile(bundlePath, text, "utf8");
+    }
   }
 
   // 컴포넌트 폴더가 비면 정리 (paths.components 상위까지)

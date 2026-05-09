@@ -3,6 +3,21 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.71.0",
+      "date": "2026-05-09",
+      "title": "cssStrategy: bundled — 단일 CSS 번들 모드 (Phase D)",
+      "type": "minor",
+      "highlights": [
+        "**`cssStrategy: \"bundled\"` 옵션 신설** — `sh-ui.config.json` 에서 켜면 모든 컴포넌트 CSS 가 `paths.cssBundle` 에 지정된 단일 파일로 누적. 컴포넌트별 `styles.css` 파일이 컴포넌트 폴더에 떨어지지 않음. 기본값은 `per-component` (기존 동작) — 옵트인.",
+        "**마커 기반 섹션 — `/* sh-ui:component:NAME-start ... -end */`** — sh-ui 가 마커 사이만 관리. 사용자 custom CSS 를 마커 밖에 추가해도 add/remove 가 그대로 보존. 같은 컴포넌트 재 add 면 안 내용만 교체.",
+        "**add 동작** — bundled 모드에서 컴포넌트 .tsx 의 `import \"./styles.css\";` 라인을 자동 제거 (번들이 한 번 import 되므로 불필요). conflict resolver 우회 (마커 사이는 sh-ui 영역).",
+        "**remove 동작** — .tsx 삭제 + 번들에서 해당 섹션 제거. 사용자 수정 검사도 stripStylesImport 변환 적용해 false positive 회피. 같은 dest 의 변종 중복 처리 fix.",
+        "**doctor 통합** — bundled 모드일 때 `paths.cssBundle` 존재 검증. 미설정/누락 시 fail.",
+        "**제약** — `cssFramework: \"plain\"` 에서만 동작 (tailwind/css-modules/vanilla-extract 는 자체 스코프 메커니즘). 사용자가 번들 파일을 globals.css 같은 곳에서 한 번 import 해야 스타일 적용 — 자동화 안 함."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.71.0"
+    },
+    {
       "version": "0.70.0",
       "date": "2026-05-09",
       "title": "sh-ui theme extract — tokens.css → base64 라운드트립 (Phase C)",

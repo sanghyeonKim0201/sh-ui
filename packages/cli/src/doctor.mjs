@@ -256,6 +256,32 @@ function resolveDest(template, config) {
   });
 }
 
+/**
+ * cssStrategy='bundled' 인 경우 paths.cssBundle 파일 존재 + 마커 sanity 검사.
+ * per-component 모드면 검사 자체를 스킵 (필드가 없어도 정상).
+ */
+function checkCssBundle(config, cwd, report) {
+  if (config.cssStrategy !== "bundled") return;
+  const rel = config.paths?.cssBundle;
+  if (!rel) {
+    report.fail(
+      "paths.cssBundle",
+      "cssStrategy='bundled' 인데 paths.cssBundle 이 미설정. " +
+        "예: \"cssBundle\": \"src/shared/styles/sh-ui-components.css\"",
+    );
+    return;
+  }
+  const bundlePath = resolve(cwd, rel);
+  if (!existsSync(bundlePath)) {
+    report.warn(
+      `paths.cssBundle — ${rel}`,
+      "파일 없음 — 컴포넌트를 add 하면 자동 생성됩니다.",
+    );
+    return;
+  }
+  report.ok(`paths.cssBundle — ${rel}`, "(bundled 모드)");
+}
+
 function effectiveFramework(entry, cssFramework) {
   if (cssFramework === "plain") return cssFramework;
   const hasVariant = (entry.files ?? []).some(
@@ -276,6 +302,7 @@ export async function doctor({ cwd }) {
 
   const tokensPath = checkTokensFile(config, cwd, report);
   await checkCssEntry(config, cwd, tokensPath, report);
+  checkCssBundle(config, cwd, report);
 
   let definedVars = null;
   if (tokensPath) {
