@@ -48,15 +48,10 @@ const VALID_CONFIG = {
 };
 
 describe('sh-ui doctor', () => {
-  it('config 누락 시 fail 후 exit 1', async () => {
-    let exitCode = null;
-    try {
-      await doctor({ cwd: tmpDir });
-    } catch (e) {
-      const m = /__exit:(\d+)/.exec(e.message);
-      if (m) exitCode = Number(m[1]);
-    }
-    expect(exitCode).toBe(1);
+  it('config 누락 시 fail 결과 반환', async () => {
+    const result = await doctor({ cwd: tmpDir });
+    expect(result.ok).toBe(false);
+    expect(result.failCount).toBeGreaterThan(0);
     expect(output()).toContain('sh-ui.config.json');
   });
 
@@ -66,14 +61,8 @@ describe('sh-ui doctor', () => {
       VALID_CONFIG,
       { spaces: 2 },
     );
-    let exitCode = null;
-    try {
-      await doctor({ cwd: tmpDir });
-    } catch (e) {
-      const m = /__exit:(\d+)/.exec(e.message);
-      if (m) exitCode = Number(m[1]);
-    }
-    expect(exitCode).toBe(1);
+    const result = await doctor({ cwd: tmpDir });
+    expect(result.ok).toBe(false);
     expect(output()).toMatch(/paths\.tokens.*src\/styles\/tokens\.css/);
     expect(output()).toContain('파일이 없습니다');
   });

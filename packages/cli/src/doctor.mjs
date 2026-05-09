@@ -72,16 +72,18 @@ async function loadConfig(cwd, report) {
     const config = JSON.parse(await readFile(configPath, "utf8"));
     const issues = [];
     if (!config.platform) issues.push("platform 미설정");
-    if (!config.theme) issues.push("theme 미설정");
     if (!config.paths) issues.push("paths 미설정");
+    // theme 은 컴포넌트-only 패키지 (monorepo ui-core, paths.tokens 없음) 에서는
+    // 의도적으로 비어 있다 — 그땐 누락이라고 보지 않음.
+    if (!config.theme && config.paths?.tokens) issues.push("theme 미설정");
     if (issues.length > 0) {
       report.fail("sh-ui.config.json", `필수 필드 누락: ${issues.join(", ")}`);
       return null;
     }
+    const themeInfo = config.theme?.base ? `theme.base=${config.theme.base}` : "(컴포넌트 only)";
     report.ok(
       "sh-ui.config.json",
-      `platform=${config.platform} theme.base=${config.theme?.base ?? "?"} ` +
-        `cssFramework=${config.cssFramework ?? "(기본 plain)"}`,
+      `platform=${config.platform} ${themeInfo} cssFramework=${config.cssFramework ?? "(기본 plain)"}`,
     );
     return config;
   } catch (err) {
@@ -93,10 +95,11 @@ async function loadConfig(cwd, report) {
 function checkTokensFile(config, cwd, report) {
   const rel = config.paths?.tokens;
   if (!rel) {
-    // 모노레포 ui-core 처럼 tokens 를 가지지 않는 패키지 — 이 경우 검사 스킵.
-    report.warn(
+    // 모노레포 ui-core 처럼 토큰을 가지지 않는 컴포넌트-only 패키지 — 이 케이스는
+    // 정상이라 안내 한 줄만 ok 로 표시 (warn 으로 노이즈 만들지 않음).
+    report.ok(
       "paths.tokens",
-      "config 에 paths.tokens 가 없습니다 — 토큰 검증 스킵.",
+      "(컴포넌트 only — 토큰 없음, 검증 스킵)",
     );
     return null;
   }
@@ -171,6 +174,14 @@ async function checkCssEntry(config, cwd, tokensPath, report) {
  */
 async function checkInstalledComponents(config, cwd, definedVars, report) {
   if (!definedVars) {
+    // tokens 없는 컴포넌트-only 패키지 — 의존성 검증은 의미 없음. 조용히 ok.
+    if (!config.paths?.tokens) {
+      report.ok(
+        "컴포넌트 토큰 의존성",
+        "(컴포넌트 only — 검증 스킵)",
+      );
+      return;
+    }
     report.warn(
       "컴포넌트 토큰 의존성",
       "tokens.css 가 없어 검증 스킵.",
@@ -290,6 +301,10 @@ function effectiveFramework(entry, cssFramework) {
   return hasVariant ? cssFramework : "plain";
 }
 
+/**
+ * @returns {Promise<{ ok: boolean, failCount: number, warnCount: number }>}
+ *          호출부가 exit code 결정. 한 cwd 에서 다른 cwd 로 이어 호출 가능 (monorepo 순회).
+ */
 export async function doctor({ cwd }) {
   console.log(`sh-ui doctor — ${relative(process.cwd(), cwd) || "."}\n`);
   const report = new Report();
@@ -297,7 +312,7 @@ export async function doctor({ cwd }) {
   const config = await loadConfig(cwd, report);
   if (!config) {
     report.render();
-    process.exit(1);
+    return { ok: false, failCount: report.failCount, warnCount: report.warnCount };
   }
 
   const tokensPath = checkTokensFile(config, cwd, report);
@@ -312,5 +327,5 @@ export async function doctor({ cwd }) {
   await checkInstalledComponents(config, cwd, definedVars, report);
 
   report.render();
-  if (report.failCount > 0) process.exit(1);
+  return { ok: report.failCount === 0, failCount: report.failCount, warnCount: report.warnCount };
 }
