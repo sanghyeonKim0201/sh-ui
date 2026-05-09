@@ -18,7 +18,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 
 사용법:
   sh-ui create [name] [options]
-  sh-ui create add-app
+  sh-ui create add-app [name] [--port <n>] [--plugins ..] [--theme ..] [--css ..]
   sh-ui create add-component <name> [--app <name>]
 
 옵션:
@@ -67,7 +67,13 @@ export async function runCreate(rest) {
   }
 
   if (command === 'add-app') {
-    await addApp();
+    await addApp({
+      name: positional[0],
+      port: flags.port,
+      plugins: flags.plugins,
+      theme: flags.theme,
+      css: flags.css,
+    });
   } else if (command === 'add-component') {
     await addComponent(positional[0], flags.app);
   } else {

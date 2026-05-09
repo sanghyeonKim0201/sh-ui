@@ -196,6 +196,47 @@ describe('sh-ui create smoke tests', () => {
       await fs.pathExists(path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin', 'src', 'components')),
     ).toBe(false);
   });
+  it('scenario 4b — addApp 옵션 객체 (비대화형 — MCP/CI 경로)', async () => {
+    // v0.66: addApp 이 옵션 객체를 받아 MCP sh_ui_add_app 와 CLI 양쪽이 같은 진입점 사용.
+    // 핵심 검증: name/port/css 옵션이 prompt 없이 전달되고 결과물에 반영되는지.
+    await fs.writeFile(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'apps/*'\n  - 'packages/*'\n",
+    );
+
+    await addApp({
+      name: 'studio',
+      port: '4000',
+      plugins: [],
+      css: 'plain',
+    });
+
+    const appPkg = await fs.readJson(path.join(tmpDir, 'apps', 'studio', 'package.json'));
+    expect(appPkg.name).toBe('studio');
+    expect(appPkg.scripts.dev).toContain('-p 4000');
+
+    const uiPkgCfg = await fs.readJson(
+      path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-studio', 'sh-ui.config.json'),
+    );
+    expect(uiPkgCfg.role).toBe('tokens-only');
+    expect(uiPkgCfg.cssFramework).toBe('plain');
+
+    // prompt 가 호출되지 않았어야 함 — 옵션 객체로 모두 전달.
+    expect(prompts.input).not.toHaveBeenCalled();
+    expect(prompts.checkbox).not.toHaveBeenCalled();
+  });
+  it('scenario 4c — addApp 비대화형 + name 누락 → 에러', async () => {
+    await fs.writeFile(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'apps/*'\n  - 'packages/*'\n",
+    );
+    Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+    try {
+      await expect(addApp({ port: '3000' })).rejects.toThrow(/name/);
+    } finally {
+      Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    }
+  });
   it('scenario 5 — flutter standalone', async () => {
     prompts.input.mockResolvedValueOnce('my-flutter-app');
     prompts.select

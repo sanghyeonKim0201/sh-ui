@@ -12,7 +12,7 @@ const VALID_STRUCTURES = CREATE_STRUCTURES;
 const VALID_PLUGINS = allPlugins.map((p) => p.name);
 const VALID_ARCHES = allArchitectures.map((a) => a.name);
 
-const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch'];
+const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch', 'port'];
 const BOOL_FLAGS = ['yes', 'help', 'dry-run'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];

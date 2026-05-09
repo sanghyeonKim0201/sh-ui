@@ -7,6 +7,7 @@
 // 노출 툴:
 //   sh_ui_describe_init    - init 4개 축(platform/base/radius/mode) enum + 한글 설명
 //   sh_ui_create_project   - 빈 폴더에 Next.js/Flutter 프로젝트 스캐폴드
+//   sh_ui_add_app          - 기존 모노레포에 새 Next.js 앱 추가
 //   sh_ui_init             - sh-ui.config.json 생성 (비대화형)
 //   sh_ui_list_components  - 플랫폼 전체 컴포넌트 + 요약
 //   sh_ui_get_component    - 단일 컴포넌트의 메타·소스·deps
@@ -16,6 +17,7 @@
 //   sh_ui_encode_theme     - 토큰 객체 → base64 (사용자가 손본 톤을 영구 보관)
 //   sh_ui_decode_theme     - base64 → 토큰 객체 (기존 테마 일부만 수정 후 재인코딩)
 //   sh_ui_rename_app       - monorepo 의 앱 이름 일괄 변경 (디렉토리 + import/path)
+//   sh_ui_migrate_to_v065  - v0.64.x → v0.65 자동 마이그레이션 (컴포넌트 ui-core 단일화)
 
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -29,7 +31,8 @@ import { add } from "./add.mjs";
 import { list } from "./list.mjs";
 import { remove } from "./remove.mjs";
 import { renameApp } from "./rename-app.mjs";
-import { createProject } from "./create/generator.js";
+import { migrateToV065 } from "./migrate-v065.mjs";
+import { createProject, addApp } from "./create/generator.js";
 import {
   getRegistryRoot,
   getSummariesPath,
@@ -326,6 +329,44 @@ export async function startMcpServer() {
   );
 
   server.registerTool(
+    "sh_ui_add_app",
+    {
+      description:
+        "기존 모노레포에 새 Next.js 앱 추가 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 동시 생성. " +
+        "사용자가 '앱 추가' / 'monorepo 에 새 앱' / 'add admin app' 류 요청을 하면 이 툴 사용 (Bash 로 npx " + cliName + " add-app 직접 호출보다 우선). " +
+        "v0.65+ 레이아웃 준수 — ui-{name} 은 tokens-only role, 컴포넌트는 sibling ui-core 가 SoT. " +
+        "theme/css 는 새 ui-app 에만 적용 (다른 앱 영향 없음). monorepo 가 아니면 (pnpm-workspace.yaml 없음) 에러.",
+      inputSchema: {
+        name: z.string().min(1)
+          .describe("앱 이름 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 디렉토리명. 영숫자 + 하이픈."),
+        port: z.string().optional()
+          .describe("개발 서버 포트. 기본 3000. 다른 앱과 겹치면 사용자가 직접 다르게 지정."),
+        plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
+          .describe(`Next.js 플러그인 (${PLUGIN_NAMES.join(', ')}). 미지정시 빈 배열`),
+        theme: z.string().optional()
+          .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 base64 테마 코드. 새 ui-app 의 tokens.css 에만 주입.`),
+        cssFramework: z.enum(CSS_FRAMEWORKS).optional()
+          .describe("CSS 프레임워크. 기본 plain. 새 앱의 컴포넌트 변종 결정 — 같은 모노레포 내 다른 앱과 다른 값 가능."),
+        cwd: z.string().optional()
+          .describe("모노레포 루트 (pnpm-workspace.yaml 있는 곳). 기본 process.cwd()"),
+      },
+    },
+    async (input) => {
+      const text = await captureConsole(() =>
+        addApp({
+          name: input.name,
+          port: input.port,
+          plugins: input.plugins,
+          theme: input.theme,
+          css: input.cssFramework,
+          cwd: resolveCwd(input),
+        }),
+      );
+      return textResult(text || "✓ 앱 추가 완료");
+    },
+  );
+
+  server.registerTool(
     "sh_ui_init",
     {
       description:
@@ -604,6 +645,37 @@ export async function startMcpServer() {
         }),
       );
       return textResult(result || "✓ rename-app 완료");
+    },
+  );
+
+  // v0.64.x → v0.65 monorepo 자동 마이그레이션.
+  server.registerTool(
+    "sh_ui_migrate_to_v065",
+    {
+      description:
+        "v0.64.x → v0.65 monorepo 자동 마이그레이션 — 컴포넌트/훅/lib 를 ui-{app} 들에서 ui-core 단일 SoT 로 통합 + ui-app 을 tokens-only role 로 정리 + apps/* 의 import (`@workspace/ui-{app}/components/...` → `@workspace/ui-core/...`) 재작성. " +
+        "**dryRun 기본 — 안전 우선**. 컨텐츠 충돌(같은 logical path 의 파일이 ui-app 마다 다른 내용) 검출 시 abort + 충돌 목록 반환 (자동 병합 안 함, 사용자가 손본 컴포넌트 보호). " +
+        "monorepo 전용 (pnpm-workspace.yaml + packages/ui/ui-apps 필요). 적용 후 사용자에게 `pnpm install` 안내 필수.",
+      inputSchema: {
+        cwd: z.string().optional().describe("monorepo 루트. 기본 process.cwd()"),
+        dryRun: z.boolean().optional().describe("plan 만 반환, 실제 변경 X. 기본 true (안전)"),
+        skipImportRewrite: z.boolean().optional().describe("apps/* import 재작성 생략. 기본 false"),
+      },
+    },
+    async (input) => {
+      try {
+        const { summary } = await migrateToV065({
+          cwd: resolveCwd(input),
+          dryRun: input.dryRun !== false,
+          skipImportRewrite: input.skipImportRewrite === true,
+        });
+        return textResult(summary);
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: e.message }],
+        };
+      }
     },
   );
 
