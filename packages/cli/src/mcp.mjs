@@ -164,6 +164,22 @@ function buildServerInstructions(cliName) {
 
 \`create-next-app\` + \`sh_ui_init\` 조합은 **쓰지 말 것** — 위 두 경로가 더 짧고 sh-ui 관용에 맞다.
 
+## 기존 모노레포에 새 앱 추가하는 경우 (v0.66+)
+
+이미 sh-ui monorepo 가 있고 사용자가 "admin 앱 추가", "dashboard 같은 앱 더 만들고 싶어" 류 요청을 하면 \`sh_ui_add_app\` MCP 툴 사용 (Bash 직접 호출보다 우선).
+
+  - 인자: name (필수), port, plugins (선택), theme (앱별 다른 톤 가능), cssFramework, cwd
+  - 산출물: \`apps/{name}/\` (Next.js + arch overlay) + \`packages/ui/ui-apps/ui-{name}/\` (tokens-only role, v0.65 layout). 새 ui-app 만 theme/css 적용 — 다른 앱 영향 X.
+  - 앱별로 다른 톤을 원하면 각 앱 별도 호출 (예: 마케팅 사이트 = rose, admin = emerald). 컴포넌트는 ui-core 단일 SoT 라 두 앱이 자동 공유.
+
+## v0.64.x → v0.65 마이그레이션 (v0.66+)
+
+사용자가 "v0.64 모노레포에서 컴포넌트 중복 emit 정리하고 싶어" / "ui-app 들에 같은 컴포넌트가 N 번 있어" 류 요청 또는 사용자가 v0.64.x 시절 만든 모노레포라면 \`sh_ui_migrate_to_v065\` 사용:
+
+  - **dryRun 기본** — 변경 plan 미리보기 후 사용자 확인. 컨텐츠 충돌 시 abort (자동 병합 안 함).
+  - apply: 모든 ui-app 의 \`src/{components,hooks,lib}/\` → \`packages/ui/ui-core/\` 단일 SoT 로 dedup 이동, ui-app 에 \`role: "tokens-only"\` 마커, \`apps/*\` 의 \`@workspace/ui-{app}/components/...\` 임포트를 \`@workspace/ui-core/...\` 로 일괄 재작성.
+  - 적용 후 사용자에게 \`pnpm install\` 안내.
+
 ## 이미 있는 프로젝트에 sh-ui 를 얹는 경우 (MCP 툴 사용)
 
 기존 Next.js/Vite/Flutter 프로젝트에 sh-ui 컴포넌트만 추가하고 싶을 때:
@@ -177,6 +193,14 @@ function buildServerInstructions(cliName) {
 - \`sh_ui_get_component\` — props/소스 확인 (코드 작성 전)
 - \`sh_ui_add_component\` / \`sh_ui_remove_component\` — 설치/삭제
 - \`sh_ui_get_changelog\` — 최근 변경 내역
+
+### 모노레포 라우팅 (v0.65+)
+
+monorepo 에서 \`sh_ui_add_component\` 호출 시:
+- **컴포넌트/훅/lib** → \`packages/ui/ui-core/\` 단일 SoT (ui-app 마다 복제 X). 모든 앱이 \`@workspace/ui-core/components/<name>\` 으로 import.
+- **\`tokens\`** → 각 \`packages/ui/ui-apps/ui-{app}/\` (앱별 다른 톤 가능). \`--app <name>\` 으로 대상 명시 가능.
+
+CLI \`sh-ui add <name>\` 은 monorepo 의 어느 디렉토리에서든 (apps/web/, root, ui-core, ui-apps/ui-{app}) 실행해도 자동 라우팅 (v0.67+ walk-up). \`apps/web/\` 안에서 \`sh-ui add tokens\` 실행하면 hintApp='web' 으로 ui-web 자동 선택.
 
 ## UI 짤 때 사고 순서 (raw HTML 기본값 회피)
 
@@ -222,7 +246,7 @@ function buildServerInstructions(cliName) {
 
 ### 기존 프로젝트 톤만 바꾸고 싶을 때
 
-> v0.61.2 부터 \`theme.base: "custom"\` 인 프로젝트에서 \`sh_ui_add_component\` 의 \`tokens\` 는 no-op (보존). 색을 바꾸려면 새 base64 를 만들고 새 디렉토리로 \`force: true\` 재스캐폴드하는 게 정석. 부분 편집을 원해도 \`tokens.css\` 직접 수정 후 \`sh_ui_encode_theme\` 로 새 base64 백업까지 같이 — 그 base64 를 메모리에 갱신해야 다음 재스캐폴드와 일관됨.
+> v0.61.2 부터 \`theme.base: "custom"\` 인 프로젝트에서 \`sh_ui_add_component\` 의 \`tokens\` 는 no-op (보존). v0.67.1 부터 \`rose\`/\`emerald\`/\`violet\` 같은 풍부한 preset 도 동일 — tokens.css 단일 진실로 보존. 색을 바꾸려면 새 base64 를 만들고 새 디렉토리로 \`force: true\` 재스캐폴드하는 게 정석. 부분 편집을 원해도 \`tokens.css\` 직접 수정 후 \`sh_ui_encode_theme\` 로 새 base64 백업까지 같이 — 그 base64 를 메모리에 갱신해야 다음 재스캐폴드와 일관됨.
 `;
 }
 
