@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.69.0",
+      "date": "2026-05-09",
+      "title": "sh-ui tokens diff / upgrade — incremental 토큰 마이그레이션 (Phase B)",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui tokens diff` 신설** — 현재 tokens.css 와 buildTokens 결과를 비교해 added(신규) / changed(값 다름) / removed(사용자 전용) 를 selector 블록 단위로 표시. sh-ui 버전 업그레이드 후 어떤 토큰이 새로 들어왔는지 즉시 파악.",
+        "**`sh-ui tokens upgrade --apply`** — added 변수만 매칭 selector 블록 끝에 incremental 삽입. 사용자가 손댄 색 (changed) 과 추가한 custom 변수 (removed) 는 그대로 보존. 매칭 selector 가 없으면 파일 끝에 새 블록 append (`/* sh-ui upgrade — added */` 주석 표시).",
+        "**`sh-ui tokens upgrade --replace`** — buildTokens 결과로 tokens.css 통째 덮어쓰기. `add tokens --force` 와 동일한 동작이지만 의도가 명시적 (사용자가 모든 편집을 의도적으로 버릴 때만).",
+        "**CSS 블록 파서 자체 구현** — 의존성 없는 1-pass 스캐너 (`packages/cli/src/tokens-diff.mjs`). `:root`, `.dark`, `@media (...) { :root:not(.light):not(.dark) { ... } }` 같은 nested 까지 평탄화 (key 형식: `@media (...) > :root:not(...)`). 같은 selector 가 여러 번 나오면 vars 자동 병합 (CSS cascade 룰).",
+        "**제약** — buildable theme.base (neutral/zinc/slate) 에서만 동작. custom base64 / rich preset (rose/emerald/violet) 은 buildTokens 가 primitives 미정의로 throw — 친절 메시지로 일찍 종료. Flutter platform 은 미지원 (Dart 토큰 생성 형식이 달라 별도 도구 필요)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.69.0"
+    },
+    {
       "version": "0.68.1",
       "date": "2026-05-09",
       "title": "fix(tokens) — --ring / --danger-hover / --shadow-menu 정식 등록 (Phase A 후속)",
