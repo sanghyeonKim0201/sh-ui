@@ -3,6 +3,7 @@ import { init } from "../src/init.mjs";
 import { add } from "../src/add.mjs";
 import { list } from "../src/list.mjs";
 import { remove } from "../src/remove.mjs";
+import { findShUiContext } from "../src/resolve-context.mjs";
 
 const [, , cmd, ...rest] = process.argv;
 
@@ -29,6 +30,8 @@ const usage = `사용법:
     --force                        (add) 기존 파일을 모두 덮어쓰기 (prompt 없음)
                                    (remove) 사용자가 수정한 파일도 삭제
     --keep                         (add) 기존 파일을 모두 유지 (prompt 없음)
+    --app <name>                   (add) monorepo 라우팅 시 대상 ui-{name} 명시
+                                   (apps/<name>/ 안에서 실행하면 자동 추론)
     --all                          (list) 설치되지 않은 컴포넌트까지 표시
     --dry-run                      (remove, rename-app) 변경 대상만 출력하고 실행 안 함
     --yes                          (rename-app) 대화형 확인 생략
@@ -54,13 +57,41 @@ try {
         process.exit(1);
       }
       const onConflict = force ? "overwrite" : keepFlag ? "keep" : "prompt";
-      const names = rest.filter((a) => !a.startsWith("--"));
+      // --app 은 모노레포 라우팅 시 ui-{app} 명시 (tokens 또는 v0.64.x fallback).
+      const appIdx = rest.indexOf("--app");
+      const app = appIdx !== -1 ? rest[appIdx + 1] : null;
+      const names = rest.filter((a, i) => !a.startsWith("--") && rest[i - 1] !== "--app");
       if (names.length === 0) {
         console.error("에러: 추가할 컴포넌트 이름이 필요합니다.\n");
         console.error(usage);
         process.exit(1);
       }
-      await add({ cwd: process.cwd(), names, skipInstall, diffMode, onConflict });
+
+      // v0.67+: cwd 부터 walk-up 으로 sh-ui.config.json (standalone/ui-core/ui-app)
+      // 또는 pnpm-workspace.yaml (monorepo 루트) 발견. monorepo 면 자동 라우팅 (tokens →
+      // ui-app, 그 외 → ui-core), apps/<name>/ 안에서 실행하면 그 앱이 hintApp.
+      const ctx = findShUiContext(process.cwd());
+      if (!ctx) {
+        console.error(
+          "✗ sh-ui.config.json 또는 pnpm-workspace.yaml 을 cwd 부터 부모 트리에서 찾지 못했습니다.\n" +
+            "  먼저 `sh-ui init` 또는 `sh-ui create` 로 프로젝트를 초기화하세요.",
+        );
+        process.exit(1);
+      }
+      if (ctx.kind === "config") {
+        await add({ cwd: ctx.root, names, skipInstall, diffMode, onConflict });
+      } else {
+        const { addComponent } = await import("../src/create/generator.js");
+        await addComponent({
+          cwd: ctx.root,
+          names,
+          app,
+          hintApp: ctx.hintApp,
+          skipInstall,
+          diffMode,
+          onConflict,
+        });
+      }
       break;
     }
     case "list": {
