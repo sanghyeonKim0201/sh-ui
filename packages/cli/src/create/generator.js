@@ -401,9 +401,45 @@ export async function addComponent(componentName, appName) {
     return;
   }
 
-  // Monorepo: packages/ui/ui-apps/* 에서 실행
+  // Monorepo (v0.65+): tokens 는 packages/ui/ui-apps/ui-{app} 으로, 그 외 컴포넌트/훅은
+  // packages/ui/ui-core 단일 SoT 로 라우팅. 컴포넌트 중복 emit 제거가 v0.65 의 핵심.
+  // v0.64.x 호환: ui-core/sh-ui.config.json 미존재 시 (구 모노레포 레이아웃) 기존 ui-apps
+  //   직접 라우팅 분기로 내려감.
+  const uiCoreDir = path.join(cwd, 'packages', 'ui', 'ui-core');
   const uiAppsDir = path.join(cwd, 'packages', 'ui', 'ui-apps');
-  if (!(await fs.pathExists(uiAppsDir))) {
+  const hasUiCore = await fs.pathExists(path.join(uiCoreDir, 'sh-ui.config.json'));
+  const hasUiApps = await fs.pathExists(uiAppsDir);
+
+  if (!hasUiCore && !hasUiApps) {
+    console.log('❌ packages/ui/ui-core 또는 packages/ui/ui-apps/ 디렉토리가 없습니다.');
+    return;
+  }
+
+  if (!componentName) {
+    componentName = await input({ message: '컴포넌트 이름:' });
+  }
+
+  const isTokens = componentName === 'tokens';
+
+  // ─── 비-tokens (컴포넌트/훅/lib) → ui-core 단일 라우팅 ───
+  if (!isTokens && hasUiCore) {
+    if (appName) {
+      console.log(
+        `ℹ️  v0.65+ 에서 컴포넌트는 packages/ui/ui-core 에 단일 emit 됩니다 (--app ${appName} 무시).`,
+      );
+    }
+    console.log(`\n📦 packages/ui/ui-core 에 ${componentName} 추가 중...`);
+    try {
+      execSync(`npx sh-ui add ${componentName}`, { cwd: uiCoreDir, stdio: 'inherit' });
+      console.log(`✅ packages/ui/ui-core 완료`);
+    } catch (error) {
+      console.log(`❌ packages/ui/ui-core 실패: ${error.message}`);
+    }
+    return;
+  }
+
+  // ─── tokens → ui-apps/ui-{app}(s), 또는 v0.64.x 호환 fallback (ui-core 없음) ───
+  if (!hasUiApps) {
     console.log('❌ packages/ui/ui-apps/ 디렉토리가 없습니다.');
     return;
   }
@@ -418,10 +454,6 @@ export async function addComponent(componentName, appName) {
     return;
   }
 
-  if (!componentName) {
-    componentName = await input({ message: '컴포넌트 이름:' });
-  }
-
   let targets;
   if (appName) {
     const pkgName = `ui-${appName}`;
@@ -431,9 +463,11 @@ export async function addComponent(componentName, appName) {
       return;
     }
     targets = [pkgName];
+  } else if (uiPackages.length === 1) {
+    targets = uiPackages;
   } else {
     const choice = await select({
-      message: '어디에 추가할까요?',
+      message: isTokens ? '어느 ui 패키지에 토큰을 추가할까요?' : '어디에 추가할까요?',
       choices: [
         { name: '모든 ui 패키지', value: 'all' },
         ...uiPackages.map((name) => ({ name: `packages/ui/ui-apps/${name}`, value: name })),

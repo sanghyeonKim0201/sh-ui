@@ -363,6 +363,19 @@ export async function add({
     );
   }
 
+  // role: "tokens-only" 패키지 (v0.65+ ui-app) 는 tokens 만 허용.
+  // 컴포넌트는 sibling ui-core 패키지로 라우팅되도록 친절한 에러로 안내.
+  if (config.role === "tokens-only") {
+    const offending = names.filter((n) => n !== "tokens");
+    if (offending.length > 0) {
+      throw new Error(
+        `이 패키지는 'tokens-only' role 입니다 — ${offending.map((n) => `'${n}'`).join(', ')} 컴포넌트를 추가할 수 없습니다.\n` +
+          `컴포넌트는 sibling ui-core 패키지에 추가하세요 (예: cd ../ui-core && sh-ui add ${offending[0]}).\n` +
+          `또는 monorepo 루트에서 \`sh-ui add ${offending[0]}\` 실행 시 자동으로 ui-core 로 라우팅됩니다.`,
+      );
+    }
+  }
+
   // 비대화형(non-TTY)이면 prompt 를 못 띄우니 안전하게 keep 으로 강등.
   const effectiveStrategy =
     onConflict === "prompt" && !process.stdin.isTTY ? "keep" : onConflict;

@@ -1,6 +1,7 @@
 {
   "platform": "react",
   "cssFramework": "plain",
+  "role": "tokens-only",
   "theme": {
     "base": "neutral",
     "radius": "md",
@@ -8,13 +9,6 @@
   },
   "paths": {
     "tokens": "src/styles/tokens.css",
-    "styles": "src/styles",
-    "components": "src/components",
-    "utils": "src/lib/utils.ts"
-  },
-  "aliases": {
-    "components": "@workspace/ui-app-name/components",
-    "utils": "@workspace/ui-app-name/lib/utils",
-    "ui": "@workspace/ui-app-name/components"
+    "styles": "src/styles"
   }
 }

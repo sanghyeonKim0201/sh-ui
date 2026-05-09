@@ -90,6 +90,23 @@ describe('sh-ui create smoke tests', () => {
     const appPkg = await fs.readJson(path.join(monoDir, 'apps', 'web', 'package.json'));
     expect(appPkg.name).toBe('web');
     expect(appPkg.scripts.dev).toContain('-p 3000');
+
+    // v0.65: ui-core 가 컴포넌트 SoT — sh-ui.config.json + components/hooks 디렉토리
+    const uiCoreDir = path.join(monoDir, 'packages', 'ui', 'ui-core');
+    expect(await fs.pathExists(path.join(uiCoreDir, 'sh-ui.config.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(uiCoreDir, 'src', 'components'))).toBe(true);
+    expect(await fs.pathExists(path.join(uiCoreDir, 'src', 'hooks'))).toBe(true);
+    const uiCoreCfg = await fs.readJson(path.join(uiCoreDir, 'sh-ui.config.json'));
+    expect(uiCoreCfg.role).toBeUndefined();
+    expect(uiCoreCfg.paths?.components).toBe('src/components');
+
+    // v0.65: ui-app 은 tokens-only role 마커
+    const uiAppCfg = await fs.readJson(
+      path.join(monoDir, 'packages', 'ui', 'ui-apps', 'ui-web', 'sh-ui.config.json'),
+    );
+    expect(uiAppCfg.role).toBe('tokens-only');
+    expect(uiAppCfg.paths?.tokens).toBe('src/styles/tokens.css');
+    expect(uiAppCfg.paths?.components).toBeUndefined();
   });
   it('scenario 3 — standalone + sentry + next-intl', async () => {
     // 플러그인은 이제 prompt 가 없고 --plugins 플래그로만 지정
@@ -169,6 +186,15 @@ describe('sh-ui create smoke tests', () => {
     expect(
       await fs.pathExists(path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin')),
     ).toBe(true);
+
+    // v0.65: 새로 추가된 ui-app 도 tokens-only role 마커 — 컴포넌트 디렉토리 없음
+    const uiAdminCfg = await fs.readJson(
+      path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin', 'sh-ui.config.json'),
+    );
+    expect(uiAdminCfg.role).toBe('tokens-only');
+    expect(
+      await fs.pathExists(path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin', 'src', 'components')),
+    ).toBe(false);
   });
   it('scenario 5 — flutter standalone', async () => {
     prompts.input.mockResolvedValueOnce('my-flutter-app');
@@ -654,6 +680,19 @@ describe('sh-ui create smoke tests', () => {
     expect(css).toContain('--radius: 0.25rem;');
     // 마커 바깥 토큰(spacing 등) 는 그대로
     expect(css).toContain('--space-0: 0;');
+
+    // v0.65: 테마는 ui-app 만 — ui-core 는 컴포넌트 SoT 라 tokens.css 보유 안 함
+    const uiCoreTokens = path.join(
+      tmpDir,
+      'mono-themed',
+      'packages',
+      'ui',
+      'ui-core',
+      'src',
+      'styles',
+      'tokens.css',
+    );
+    expect(await fs.pathExists(uiCoreTokens)).toBe(false);
   });
 
   describe('비대화형 환경 가드 (no-TTY)', () => {
