@@ -194,6 +194,43 @@ function buildServerInstructions(cliName) {
 - \`sh_ui_add_component\` / \`sh_ui_remove_component\` — 설치/삭제
 - \`sh_ui_get_changelog\` — 최근 변경 내역
 
+## 진단 — sh-ui doctor (v0.68+)
+
+UI 작업이 끝났는데 컴포넌트가 시각적으로 깨졌거나 ("focus outline 안 보임", "hover 색 변화 없음" 류) 사용자가 sh-ui 버전을 올린 직후 / 토큰을 손댄 직후라면 \`npx ${cliName} doctor\` 를 Bash 로 실행해 한 번에 점검:
+- sh-ui.config.json / paths.tokens / paths.cssEntry import / 설치된 컴포넌트의 토큰 의존성 검증
+- 누락 토큰 (silent breakage) 을 fail 로 표시 — 화면이 깨진 이유를 즉시 파악
+- exit 1 이면 사용자에게 어떤 토큰이 누락됐는지 보고 + \`sh-ui tokens upgrade --apply\` 권장
+
+## 토큰 마이그레이션 — tokens diff / upgrade (v0.69+)
+
+사용자가 sh-ui 버전을 올린 뒤 "새 토큰이 들어왔어?" / "tokens.css 업그레이드해줘" 류 요청 또는 doctor 가 누락 토큰을 신호하면:
+
+1. **\`npx ${cliName} tokens diff\`** — 현재 tokens.css vs buildTokens 결과의 added/changed/removed 미리보기. 사용자에게 결과를 보여주고 어떤 모드로 적용할지 확인.
+2. **\`npx ${cliName} tokens upgrade --apply\`** — added 변수만 incremental 추가 (사용자가 손댄 색은 보존). 대부분의 경우 이쪽.
+3. **\`npx ${cliName} tokens upgrade --replace\`** — 사용자가 "표준값으로 리셋" 명시할 때만. 모든 편집이 사라짐.
+
+제약: theme.base 가 buildable preset (neutral/zinc/slate) 일 때만 동작. custom (base64) / rich preset (rose/emerald/violet) 은 친절 에러로 종료 — 그땐 \`sh_ui_decode_theme\` → 객체 수정 → \`sh_ui_encode_theme\` round-trip 으로 새 base64 만들어 재스캐폴드.
+
+## 테마 추출 — theme extract (v0.70+)
+
+사용자가 "지금 색 그대로 다른 앱에 박고 싶어" / "현재 토큰 base64 로 뽑아줘" / "디자인 시스템 문서에 색 스냅샷 저장" 같은 요청에는 \`npx ${cliName} theme extract\` (Bash):
+- 현재 tokens.css 의 light/dark + radius 를 sh-ui base64 로 추출 (stdout, stderr 에 정보 분리)
+- 추출된 base64 를 \`sh_ui_create_project\` 의 \`theme\` 인자에 그대로 넘기면 동일 톤의 새 앱 생성
+- \`sh_ui_encode_theme\` 의 역방향 — 사용자가 tokens.css 를 직접 손댄 결과를 다시 base64 화
+
+제약: tokens.css 모든 필수 색이 #RRGGBB 여야 함. color-mix() / var() / rgba() 가 섞이면 친절 에러 — 먼저 \`tokens upgrade --replace\` 로 표준값 hex 화 후 재시도 권장.
+
+## CSS 번들 모드 — cssStrategy: bundled (v0.71+)
+
+사용자가 "컴포넌트 폴더에 styles.css 너무 많이 떨어진다" / "한 파일로 합치고 싶어" 류 요청 또는 50개+ 컴포넌트 깐 모노레포에서 파일 폭증을 호소하면:
+
+1. **\`sh-ui.config.json\` 에 \`cssStrategy: "bundled"\` + \`paths.cssBundle: "src/styles/sh-ui-components.css"\` 추가**.
+2. 사용자가 \`paths.cssBundle\` 을 globals.css 에서 한 번 import (자동화 안 함 — 사용자에게 안내).
+3. 이후 \`sh_ui_add_component\` 가 컴포넌트 styles.css 를 cssBundle 의 \`/* sh-ui:component:NAME-start ... -end */\` 마커 섹션으로 누적. 컴포넌트 .tsx 의 styles.css import 는 자동 제거.
+4. \`sh_ui_remove_component\` 도 .tsx + 번들 섹션을 같이 정리.
+
+제약: \`cssFramework: "plain"\` 에서만 동작. tailwind/css-modules/vanilla-extract 는 자체 스코프가 있어 bundled 무시. 기존 per-component 프로젝트에서 bundled 로 마이그레이션은 자동화 없음 — config 추가 후 모든 컴포넌트 \`sh_ui_add_component force=true\` 재실행 안내.
+
 ### 모노레포 라우팅 (v0.65+)
 
 monorepo 에서 \`sh_ui_add_component\` 호출 시:
