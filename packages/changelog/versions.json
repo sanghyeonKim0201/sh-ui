@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.71.1",
+      "date": "2026-05-09",
+      "title": "chore(mcp): instructions 에 v0.68~0.71 신규 명령 가이드 반영",
+      "type": "patch",
+      "highlights": [
+        "**MCP `instructions` 갱신** — `sh-ui doctor` (v0.68), `sh-ui tokens diff/upgrade --apply/--replace` (v0.69), `sh-ui theme extract` (v0.70), `cssStrategy: bundled` (v0.71) 사용 시점을 명시. AI 가 사용자 의도 (\"focus 표시 안 보임\", \"새 토큰 받아줘\", \"색 base64 로 뽑아줘\", \"styles.css 너무 많아\") 와 Bash 명령 호출을 직접 매핑.",
+        "**진단 흐름** — UI 작업 후 시각적 깨짐 또는 사용자가 토큰을 손댄 직후 doctor 권장. 누락 토큰 신호 시 tokens upgrade --apply 로 incremental 적용.",
+        "**토큰 마이그레이션 가이드** — tokens diff 로 미리보기 → --apply (사용자 편집 보존) 또는 --replace (리셋) 선택. buildable preset 제약 + custom/rich preset 은 encode/decode round-trip 으로 우회.",
+        "**theme extract 활용 패턴** — encode 의 역방향. tokens.css 직접 편집 후 base64 추출 → 다른 앱에 동일 톤 박기 또는 디자인 시스템 문서 보존.",
+        "**cssStrategy: bundled 전환 가이드** — config 옵션 + paths.cssBundle 안내 + globals.css import 책임 + 마이그레이션 시 force=true 재실행."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.71.1"
+    },
+    {
       "version": "0.71.0",
       "date": "2026-05-09",
       "title": "cssStrategy: bundled — 단일 CSS 번들 모드 (Phase D)",
