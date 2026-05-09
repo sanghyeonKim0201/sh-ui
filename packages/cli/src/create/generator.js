@@ -337,47 +337,84 @@ async function listAllFiles(targetDir) {
 
 // ─── Add app to existing monorepo ───
 
-export async function addApp() {
-  const isMonorepo = await fs.pathExists(
-    path.resolve(process.cwd(), 'pnpm-workspace.yaml'),
-  );
+/**
+ * 기존 monorepo 에 새 Next.js 앱 추가 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 동시 생성.
+ *
+ * 옵션 객체 시그니처 (v0.66+) — MCP `sh_ui_add_app` 와 CLI `sh-ui add-app` 모두 같은 진입점.
+ * 미지정 옵션은 TTY 면 prompt, 비대화형(MCP/CI)이면 기본값 또는 에러.
+ *
+ * 산출물: apps/{name}/ (Next.js + arch overlay) + packages/ui/ui-apps/ui-{name}/ (tokens-only,
+ * v0.65 layout) — theme 인자 주면 ui-app 의 tokens.css 에 주입, css 인자는 컴포넌트 변종 결정.
+ */
+export async function addApp(options = {}) {
+  const cwd = options.cwd ? path.resolve(options.cwd) : process.cwd();
+  const isMonorepo = await fs.pathExists(path.resolve(cwd, 'pnpm-workspace.yaml'));
   if (!isMonorepo) {
-    console.log('❌ 현재 디렉토리가 모노레포가 아닙니다. pnpm-workspace.yaml이 없습니다.');
+    const msg = '현재 디렉토리가 모노레포가 아닙니다. pnpm-workspace.yaml 이 없습니다.';
+    if (!process.stdin.isTTY) throw new Error(msg);
+    console.log(`❌ ${msg}`);
     return;
   }
 
-  const appName = await input({
+  // 비대화형 (MCP daemon, CI) 가드 — name 만 필수. port/plugins 는 기본값.
+  if (!process.stdin.isTTY && !options.name) {
+    throw new Error('비대화형 환경(TTY 없음)에서는 name 이 필요합니다.');
+  }
+
+  const appName = options.name ?? await input({
     message: '앱 이름:',
     default: 'web',
   });
 
-  const port = await input({
-    message: '포트 번호:',
-    default: '3000',
-  });
+  const port = options.port ?? (process.stdin.isTTY
+    ? await input({ message: '포트 번호:', default: '3000' })
+    : '3000');
 
-  const selectedPlugins = await checkbox({
-    message: '추가 기능 선택 (Space로 선택):',
-    choices: getPluginChoices(),
-  });
-
-  const plugins = getPluginsByNames(selectedPlugins);
+  let plugins;
+  if (options.plugins) {
+    plugins = getPluginsByNames(options.plugins);
+  } else if (process.stdin.isTTY) {
+    const selected = await checkbox({
+      message: '추가 기능 선택 (Space로 선택):',
+      choices: getPluginChoices(),
+    });
+    plugins = getPluginsByNames(selected);
+  } else {
+    plugins = [];
+  }
   plugins.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
 
-  const appsDir = path.resolve(process.cwd(), 'apps', appName);
+  // theme/css resolve — createProject 와 같은 패턴.
+  let theme = null;
+  let themeBase = null;
+  if (options.theme) {
+    theme = resolveTheme(options.theme);
+    themeBase = THEME_PRESET_NAMES.includes(options.theme) ? options.theme : 'custom';
+  }
+  const css = options.css ?? CSS_FRAMEWORK_DEFAULT;
 
+  const appsDir = path.resolve(cwd, 'apps', appName);
   if (await fs.pathExists(appsDir)) {
-    console.log(`❌ apps/${appName} 디렉토리가 이미 존재합니다.`);
+    const msg = `apps/${appName} 디렉토리가 이미 존재합니다.`;
+    if (!process.stdin.isTTY) throw new Error(msg);
+    console.log(`❌ ${msg}`);
     return;
   }
 
-  // addApp 은 기존 monorepo 의 새 앱 추가 — arch 는 일관성을 위해 모노레포가 처음
-  // 만들어질 때 정한 값과 같아야 한다. 현재는 root sh-ui.config.json 등에 별도 저장
-  // 안 해 두므로 일단 DEFAULT_ARCH (fsd) 로 fallback. 향후 root config 에 arch 박아두고
-  // 여기서 읽어오는 흐름으로 개선 가능.
+  // arch 는 모노레포가 처음 만들어질 때 정한 값과 같아야 한다. root config 에 별도
+  // 저장 안 해 두므로 일단 DEFAULT_ARCH (fsd) fallback. 향후 root config 에 arch
+  // 박아두고 여기서 읽어오는 흐름으로 개선 가능.
   const arch = assertArchPlatformCompat(DEFAULT_ARCH, 'next');
 
-  await generateApp(appsDir, appName, port, plugins, arch);
+  await generateApp(appsDir, appName, port, plugins, arch, css);
+
+  // monorepo 의 새 ui-app 패키지 — tokens-only role + theme 주입 + cssFramework 패치.
+  // generateMonorepo 의 흐름과 정확히 동일.
+  const uiAppDir = path.resolve(cwd, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
+  if (theme) {
+    await injectCssTheme(uiAppDir, theme);
+  }
+  await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css, themeBase);
 
   console.log(`\n✅ apps/${appName} 이 추가되었습니다!`);
   console.log('\n  pnpm install');

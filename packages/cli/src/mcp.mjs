@@ -7,6 +7,7 @@
 // 노출 툴:
 //   sh_ui_describe_init    - init 4개 축(platform/base/radius/mode) enum + 한글 설명
 //   sh_ui_create_project   - 빈 폴더에 Next.js/Flutter 프로젝트 스캐폴드
+//   sh_ui_add_app          - 기존 모노레포에 새 Next.js 앱 추가
 //   sh_ui_init             - sh-ui.config.json 생성 (비대화형)
 //   sh_ui_list_components  - 플랫폼 전체 컴포넌트 + 요약
 //   sh_ui_get_component    - 단일 컴포넌트의 메타·소스·deps
@@ -29,7 +30,7 @@ import { add } from "./add.mjs";
 import { list } from "./list.mjs";
 import { remove } from "./remove.mjs";
 import { renameApp } from "./rename-app.mjs";
-import { createProject } from "./create/generator.js";
+import { createProject, addApp } from "./create/generator.js";
 import {
   getRegistryRoot,
   getSummariesPath,
@@ -322,6 +323,44 @@ export async function startMcpServer() {
       } finally {
         process.chdir(origCwd);
       }
+    },
+  );
+
+  server.registerTool(
+    "sh_ui_add_app",
+    {
+      description:
+        "기존 모노레포에 새 Next.js 앱 추가 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 동시 생성. " +
+        "사용자가 '앱 추가' / 'monorepo 에 새 앱' / 'add admin app' 류 요청을 하면 이 툴 사용 (Bash 로 npx " + cliName + " add-app 직접 호출보다 우선). " +
+        "v0.65+ 레이아웃 준수 — ui-{name} 은 tokens-only role, 컴포넌트는 sibling ui-core 가 SoT. " +
+        "theme/css 는 새 ui-app 에만 적용 (다른 앱 영향 없음). monorepo 가 아니면 (pnpm-workspace.yaml 없음) 에러.",
+      inputSchema: {
+        name: z.string().min(1)
+          .describe("앱 이름 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 디렉토리명. 영숫자 + 하이픈."),
+        port: z.string().optional()
+          .describe("개발 서버 포트. 기본 3000. 다른 앱과 겹치면 사용자가 직접 다르게 지정."),
+        plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
+          .describe(`Next.js 플러그인 (${PLUGIN_NAMES.join(', ')}). 미지정시 빈 배열`),
+        theme: z.string().optional()
+          .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 base64 테마 코드. 새 ui-app 의 tokens.css 에만 주입.`),
+        cssFramework: z.enum(CSS_FRAMEWORKS).optional()
+          .describe("CSS 프레임워크. 기본 plain. 새 앱의 컴포넌트 변종 결정 — 같은 모노레포 내 다른 앱과 다른 값 가능."),
+        cwd: z.string().optional()
+          .describe("모노레포 루트 (pnpm-workspace.yaml 있는 곳). 기본 process.cwd()"),
+      },
+    },
+    async (input) => {
+      const text = await captureConsole(() =>
+        addApp({
+          name: input.name,
+          port: input.port,
+          plugins: input.plugins,
+          theme: input.theme,
+          css: input.cssFramework,
+          cwd: resolveCwd(input),
+        }),
+      );
+      return textResult(text || "✓ 앱 추가 완료");
     },
   );
 
