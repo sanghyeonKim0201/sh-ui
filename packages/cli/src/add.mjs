@@ -6,6 +6,7 @@ import { spawn } from "node:child_process";
 import { select } from "@inquirer/prompts";
 import { formatUnifiedDiff } from "./diff.mjs";
 import { getRegistryRoot, getTokensRoot, getPeerVersionsPath } from "./paths.mjs";
+import { THEME_BASES } from "./constants.js";
 
 /**
  * 기존 파일과 registry 파일 내용이 다를 때 keep/overwrite 결정.
@@ -180,6 +181,29 @@ async function addTokens(config, cwd, diffMode, summary, conflictResolver) {
       console.log(
         `↷ tokens → ${relative(cwd, dest)} (custom 테마 — tokens.css 보존, ` +
         `색 조정은 파일 직접 편집 또는 sh_ui_encode_theme 으로 새 base64 생성 후 재스캐폴드)`
+      );
+    }
+    return;
+  }
+
+  // CLI 가 THEME_PRESETS 에서 알지만 primitives.json 의 THEME_BASES 에 없는 풍부한 preset
+  // (rose/emerald/violet 등) 도 buildTokens 가 `{color.rose.50}` 등을 해석할 수 없어 throw.
+  // create 시점에 injectCssTheme 이 resolved hex 를 박아둔 tokens.css 가 단일 진실 —
+  // sh-ui add tokens 는 보존만. base 가 buildable 하지 않으면 같은 정책 적용.
+  const base = config.theme?.base;
+  if (base && !THEME_BASES.includes(base)) {
+    if (!existsSync(dest)) {
+      throw new Error(
+        `'${base}' preset 의 tokens.css 가 아직 없습니다. 이 preset 은 ` +
+        `sh-ui add tokens 로 빌드 불가 (primitives 미정의 — buildable: ${THEME_BASES.join('/')}). ` +
+        `해결: sh-ui create --theme ${base} 로 새 프로젝트 스캐폴드, 또는 ` +
+        `sh-ui.config.json 의 theme.base 를 ${THEME_BASES.join('/')} 중 하나로 변경 후 재실행.`,
+      );
+    }
+    if (!diffMode) {
+      console.log(
+        `↷ tokens → ${relative(cwd, dest)} ('${base}' preset — tokens.css 보존, ` +
+        `색 조정은 파일 직접 편집 또는 sh-ui create --theme <new> 로 재스캐폴드)`
       );
     }
     return;
