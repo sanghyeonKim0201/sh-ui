@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.67.2",
+      "date": "2026-05-09",
+      "title": "patch — MCP instructions 에 v0.65~0.67 신규 툴/라우팅 가이드 반영 + migrations 노트",
+      "type": "patch",
+      "highlights": [
+        "**MCP `instructions` 갱신** — `sh_ui_add_app` (모노레포에 앱 추가), `sh_ui_migrate_to_v065` (v0.64.x → v0.65 자동 마이그레이션) 사용 시점을 명시. AI 가 사용자 의도 (\"admin 앱 추가\", \"컴포넌트 중복 emit 정리\") 와 툴 호출을 직접 매핑.",
+        "**모노레포 라우팅 가이드 추가** — `sh_ui_add_component` 가 monorepo 에선 컴포넌트는 ui-core 단일 SoT, tokens 는 각 ui-app 으로 라우팅. CLI `sh-ui add` 는 v0.67+ walk-up 으로 어느 디렉토리에서든 자동 라우팅 (apps/web 에서 tokens → ui-web hintApp 추론).",
+        "**v0.67.1 preset 보존 정책 명시** — rose/emerald/violet 등 풍부한 preset 도 'custom' 과 동일하게 tokens.css 단일 진실로 보존. `sh_ui_add_component` 의 `tokens` 가 rebuild 대신 보존하는 케이스 확장.",
+        "**`apps/docs/migrations/v0.65.md`** 에 v0.66/0.67 후속 개선 섹션 추가 — sh_ui_add_app, walk-up 라우팅, preset 회귀 fix 까지 한 페이지에서 흐름 파악 가능."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.67.2"
+    },
+    {
       "version": "0.67.1",
       "date": "2026-05-09",
       "title": "patch — sh-ui add tokens 가 rose/emerald/violet preset 에서 throw 하던 회귀 수정",
