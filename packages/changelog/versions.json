@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.68.0",
+      "date": "2026-05-09",
+      "title": "토큰 의존 검증 + sh-ui doctor — silent breakage 가시화 (Phase A)",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui doctor` 추가** — 프로젝트 정합성 점검. config/tokens.css/cssEntry/설치된 컴포넌트의 토큰 의존성을 한 번에 검사하고 ✓⚠✗ 로 리포트. CI 통합 가능 (실패 시 exit 1).",
+        "**컴포넌트 토큰 의존 메타** — `packages/registry/react/tokens-used.json` 자동 생성 (`scripts/build-registry-tokens.mjs`). 컴포넌트 CSS 의 `var(--*)` 참조를 framework 별로 추출하고 fallback 있는 var 와 컴포넌트 자체 정의 변수는 외부 의존에서 제외. `pnpm lint:tokens-used` 가 drift 검출.",
+        "**add-time 토큰 검증** — `sh-ui add <component>` 가 destination tokens.css 의 변수 정의를 비교해 누락이면 한 번에 친절한 경고 (silent breakage 사전 차단). 실패가 아닌 안내 — 실제 실행은 그대로.",
+        "**`paths.cssEntry` 옵션 신설** — `sh-ui.config.json` 의 paths 에 `cssEntry` (globals.css 위치) 추가. doctor 가 tokens.css import 정합성을 검증. init/create 가 자동 채움 (Next.js fsd/flat → `app/globals.css`, monorepo ui-app → `src/styles/globals.css`). 기존 config 는 미설정 시 검사 스킵."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.68.0"
+    },
+    {
       "version": "0.67.3",
       "date": "2026-05-09",
       "title": "fix(sidebar) — Collapsible 하위 메뉴 펼침/접힘 애니메이션",

@@ -7,6 +7,10 @@ import { select } from "@inquirer/prompts";
 import { formatUnifiedDiff } from "./diff.mjs";
 import { getRegistryRoot, getTokensRoot, getPeerVersionsPath } from "./paths.mjs";
 import { THEME_BASES } from "./constants.js";
+import {
+  findMissingTokens,
+  loadDefinedVarsFromConfig,
+} from "./tokens-validate.mjs";
 
 /**
  * 기존 파일과 registry 파일 내용이 다를 때 keep/overwrite 결정.
@@ -245,7 +249,7 @@ function effectiveFramework(entry, cssFramework) {
   return hasVariant ? cssFramework : "plain";
 }
 
-async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver) {
+async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, validationCtx) {
   const registryRoot = getRegistryRoot(config.platform);
   const registry = JSON.parse(
     await readFile(resolve(registryRoot, "registry.json"), "utf8"),
@@ -259,6 +263,20 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
 
   const requestedFw = config.cssFramework ?? "plain";
   const cssFramework = effectiveFramework(entry, requestedFw);
+
+  // 컴포넌트가 요구하는 CSS 변수가 사용자 tokens.css 에 정의돼 있는지 검증.
+  // tokens.css 자체가 없거나, registry 에 메타가 없으면 검사 스킵 (정상 케이스).
+  if (validationCtx?.definedVars && !diffMode) {
+    const missing = await findMissingTokens({
+      platform: config.platform,
+      name,
+      framework: cssFramework,
+      defined: validationCtx.definedVars,
+    });
+    if (missing && missing.length > 0) {
+      validationCtx.missingTokenReports.push({ name, framework: cssFramework, missing });
+    }
+  }
 
   // 사용자가 plain 외 변종을 골랐는데 이 컴포넌트는 plain 으로 fallback 된 경우 한 줄 알림.
   // 동작에 문제는 없지만 일관성에 대한 기대를 정확히 셋업하기 위함.
@@ -276,7 +294,7 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   }
 
   for (const dep of entry.registryDependencies ?? []) {
-    await addOne(dep, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver);
+    await addOne(dep, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, validationCtx);
   }
 
   for (const file of entry.files) {
@@ -408,8 +426,21 @@ export async function add({
   const installed = new Set();
   const pendingDeps = new Set();
   const summary = [];
+  // tokens.css 정의 변수는 한 번만 읽어서 모든 컴포넌트 검증에 재사용.
+  // tokens 가 같이 add 되는 경우엔 처리 후 컴포넌트가 add 되도록 names 가 보통
+  // [tokens, …components…] 순이라 미리 읽어도 OK — 누락 경고는 사용자가 실제로
+  // tokens.css 를 안 만들었을 때만 의미 있으므로.
+  const definedVars = await loadDefinedVarsFromConfig(config, cwd);
+  const missingTokenReports = [];
   for (const name of names) {
-    await addOne(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver);
+    await addOne(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, {
+      definedVars,
+      missingTokenReports,
+    });
+  }
+
+  if (!diffMode && missingTokenReports.length > 0) {
+    renderMissingTokenReport(missingTokenReports, config);
   }
 
   if (diffMode) {
@@ -452,14 +483,31 @@ export async function add({
   }
 }
 
-async function addOne(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver) {
+async function addOne(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, validationCtx) {
   if (installed.has(name)) return;
   installed.add(name);
   if (name === "tokens") {
     await addTokens(config, cwd, diffMode, summary, conflictResolver);
   } else {
-    await addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver);
+    await addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, validationCtx);
   }
+}
+
+/**
+ * 컴포넌트가 요구하는 CSS 변수 중 사용자 tokens.css 에 없는 것들을 한 번에 안내.
+ * fatal 이 아닌 경고 — 실제 silent breakage 는 시각적으로만 나타나므로 미리 짚어 준다.
+ */
+function renderMissingTokenReport(reports, config) {
+  const tokensRel = config.paths?.tokens ?? "(paths.tokens 미설정)";
+  console.log(`\n⚠ 일부 컴포넌트가 요구하는 CSS 변수가 ${tokensRel} 에 없습니다:`);
+  for (const r of reports) {
+    const preview = r.missing.slice(0, 6).join(", ");
+    const more = r.missing.length > 6 ? ` (+${r.missing.length - 6} more)` : "";
+    console.log(`  · ${r.name} [${r.framework}] — ${preview}${more}`);
+  }
+  console.log(
+    `  → 해결: \`sh-ui add tokens\` 로 토큰을 다시 빌드하거나, ${tokensRel} 을 직접 수정.`,
+  );
 }
 
 function renderDiffReport(summary) {

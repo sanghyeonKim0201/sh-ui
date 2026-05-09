@@ -8,6 +8,7 @@
   },
   "paths": {
     "tokens": "src/shared/styles/tokens.css",
+    "cssEntry": "app/globals.css",
     "styles": "src/shared/styles",
     "components": "src/shared/ui",
     "utils": "src/shared/lib/utils.ts"

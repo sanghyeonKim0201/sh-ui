@@ -26,6 +26,10 @@ const DEFAULTS = INIT_DEFAULTS;
 const PATHS = {
   react: {
     tokens: "src/styles/tokens.css",
+    // cssEntry — tokens.css 를 import 하는 글로벌 CSS 진입점.
+    // doctor 가 import 정합성 검증에 사용. Next.js App Router 기본값 가정 —
+    // 다른 위치라면 사용자가 sh-ui.config.json 에서 수정.
+    cssEntry: "app/globals.css",
     styles: "src/styles",
     components: "src/components/ui",
     utils: "src/lib/utils.ts",
