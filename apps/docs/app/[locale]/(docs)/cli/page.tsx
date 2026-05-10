@@ -523,7 +523,7 @@ npx sh-ui-cli tokens upgrade --replace`}
       <p className="muted">
         제약: <code>theme.base</code> 가 buildable preset (neutral / zinc / slate) 일 때만 동작.
         custom (base64) / rich preset (rose / emerald / violet) 은 buildTokens 가 throw — 안내 메시지로 일찍 종료.
-        Flutter platform 은 v0.69 시점 미지원.
+        Flutter (v0.73+) — diff 와 <code>--replace</code> 만 지원, <code>--apply</code> 는 Dart 클래스 구조상 위험해서 미지원.
       </p>
 
       <h3>cssStrategy: bundled — 단일 CSS 번들 모드 (v0.71.0+)</h3>
@@ -628,9 +628,13 @@ npx sh-ui-cli theme extract --out theme.txt`}
         </li>
       </ul>
       <p className="muted">
-        제약: <code>tokens.css</code> 의 모든 필수 색 토큰이 <code>#RRGGBB</code> 형식이어야 한다.
+        제약 (React): <code>tokens.css</code> 의 모든 필수 색 토큰이 <code>#RRGGBB</code> 형식이어야 한다.
         <code>color-mix() / var() / rgba()</code> 가 섞여 있으면 친절 에러로 종료 —{" "}
         <code>sh-ui tokens upgrade --replace</code> 로 표준값을 적용해 hex 화한 뒤 다시 시도.
+      </p>
+      <p className="muted">
+        Flutter (v0.73+) — <code>sh_ui_tokens.dart</code> 의 <code>static const light/dark</code> 블록의 <code>Color(0xFFRRGGBB)</code> 를 추출.
+        alpha 채널은 무시 (#RRGGBB 만 인코딩). <code>defaultRadius</code> 픽셀값을 16 으로 나눠 rem 으로 변환.
       </p>
 
       <h3>sh-ui remove</h3>

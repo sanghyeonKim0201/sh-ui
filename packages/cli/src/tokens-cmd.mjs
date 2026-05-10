@@ -15,6 +15,7 @@ import { pathToFileURL } from "node:url";
 import { getTokensRoot } from "./paths.mjs";
 import { THEME_BASES } from "./constants.js";
 import { parseBlocks, diffBlocks, applyAdditions } from "./tokens-diff.mjs";
+import { parseDartTokens, diffDartTokens } from "./tokens-diff-dart.mjs";
 
 async function loadTokensBuilder() {
   const url = pathToFileURL(resolve(getTokensRoot(), "build.mjs")).href;
@@ -48,12 +49,6 @@ async function buildExpected(config) {
         "diff/upgrade 는 base 가 neutral/zinc/slate 일 때만 사용 가능합니다.",
     );
   }
-  if (config.platform !== "react") {
-    throw new Error(
-      `tokens diff/upgrade 는 React 만 지원합니다 (현재: ${config.platform}). ` +
-        "Flutter 는 향후 추가 예정.",
-    );
-  }
   const { buildTokens } = await loadTokensBuilder();
   return buildTokens(config);
 }
@@ -74,7 +69,7 @@ function renderDiffReport({ added, removed, changed, unchangedCount }, rel) {
   console.log(`\nsh-ui tokens diff — ${rel}\n`);
 
   if (added.length === 0 && removed.length === 0 && changed.length === 0) {
-    console.log(`✓ 변경 없음 — 사용자 tokens.css 가 buildTokens 결과와 동일 (${unchangedCount} 변수).`);
+    console.log(`✓ 변경 없음 — 사용자 토큰 파일이 buildTokens 결과와 동일 (${unchangedCount} 항목).`);
     return;
   }
 
@@ -113,7 +108,10 @@ export async function runTokensDiff({ cwd }) {
   const config = await loadConfig(cwd);
   const expectedText = await buildExpected(config);
   const { text: currentText, rel } = await loadCurrent(config, cwd);
-  const diff = diffBlocks(parseBlocks(currentText), parseBlocks(expectedText));
+  const diff =
+    config.platform === "flutter"
+      ? diffDartTokens(parseDartTokens(currentText), parseDartTokens(expectedText))
+      : diffBlocks(parseBlocks(currentText), parseBlocks(expectedText));
   renderDiffReport(diff, rel);
 }
 
@@ -121,7 +119,19 @@ export async function runTokensUpgrade({ cwd, mode }) {
   const config = await loadConfig(cwd);
   const expectedText = await buildExpected(config);
   const current = await loadCurrent(config, cwd);
-  const diff = diffBlocks(parseBlocks(current.text), parseBlocks(expectedText));
+  const isFlutter = config.platform === "flutter";
+
+  if (isFlutter && mode === "apply") {
+    throw new Error(
+      "Flutter 에선 `tokens upgrade --apply` 미지원 — Dart 클래스에 필드 추가는 " +
+        "선언/생성자/static const 3 군데를 동시에 수정해야 해서 incremental 적용이 위험합니다.\n" +
+        "  대신 `sh-ui tokens upgrade --replace` 로 통째 재생성하세요.",
+    );
+  }
+
+  const diff = isFlutter
+    ? diffDartTokens(parseDartTokens(current.text), parseDartTokens(expectedText))
+    : diffBlocks(parseBlocks(current.text), parseBlocks(expectedText));
 
   console.log(`\nsh-ui tokens upgrade — ${current.rel} (${mode})\n`);
 

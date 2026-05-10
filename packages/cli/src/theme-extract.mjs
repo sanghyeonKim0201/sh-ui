@@ -17,6 +17,30 @@ import { resolve, relative } from "node:path";
 import { parseBlocks } from "./tokens-diff.mjs";
 import { encodeTheme } from "./create/theme/encode.js";
 
+/**
+ * Dart 의 ShUiColorTokens 필드명 ↔ TOKEN_KEYS (hyphen) 매핑.
+ * inject.js 의 DART_FIELD_SOURCES 와 같은 매핑을 reverse 로 사용.
+ */
+const DART_FIELD_TO_KEY = {
+  background: "background",
+  backgroundSubtle: "background-subtle",
+  backgroundMuted: "background-muted",
+  backgroundInverse: "background-inverse",
+  foreground: "foreground",
+  foregroundMuted: "foreground-muted",
+  foregroundSubtle: "foreground-subtle",
+  foregroundInverse: "foreground-inverse",
+  border: "border",
+  borderStrong: "border-strong",
+  primary: "primary",
+  primaryForeground: "primary-foreground",
+  primaryHover: "primary-hover",
+  danger: "danger",
+  dangerForeground: "danger-foreground",
+  dangerHover: "danger-hover",
+  ring: "ring",
+};
+
 const TOKEN_KEYS_REQUIRED = [
   "background", "background-subtle", "background-muted", "background-inverse",
   "foreground", "foreground-muted", "foreground-subtle", "foreground-inverse",
@@ -150,6 +174,79 @@ export function extractThemeFromCss(cssText) {
   };
 }
 
+/**
+ * Dart sh_ui_tokens.dart 텍스트에서 light/dark + radius 추출 → base64.
+ *
+ * 파싱 전략:
+ *   - `static const light = ShUiColorTokens(...)` 블록 찾기 (dark 도 동일)
+ *   - 본문에서 `field: Color(0xAARRGGBB)` 추출, alpha 무시 (#RRGGBB 만 인코딩)
+ *   - `static const tokens = ShUiRadiusTokens(...)` 에서 `defaultRadius: X.X,` 추출,
+ *     X.X / 16 를 rem 으로 사용 (buildTokensDart 가 rem×16 으로 픽셀화한 값)
+ */
+export function extractThemeFromDart(dartText) {
+  const light = extractDartColorBlock(dartText, "light");
+  const dark = extractDartColorBlock(dartText, "dark");
+
+  const radiusMatch = /ShUiRadiusTokens\s*\([^)]*defaultRadius:\s*(\d+(?:\.\d+)?)/s.exec(
+    dartText,
+  );
+  if (!radiusMatch) {
+    throw new Error(
+      "theme extract 실패: ShUiRadiusTokens.defaultRadius 를 찾지 못했습니다.",
+    );
+  }
+  const radiusPx = parseFloat(radiusMatch[1]);
+  const radius = Number((radiusPx / 16).toFixed(4));
+
+  const theme = { light, dark, radius };
+  const base64 = encodeTheme(theme);
+  return {
+    base64,
+    theme,
+    summary: {
+      requiredKeys: Object.keys(light).length,
+      optionalKeys: 0,
+      optionalEmitted: [],
+      radius,
+    },
+  };
+}
+
+/**
+ * `static const light = ShUiColorTokens(...)` 의 본문에서 field: hex 맵 빌드.
+ * Dart `Color(0xFFRRGGBB)` 또는 `Color(0xAARRGGBB)` (alpha 비-FF 는 의미 손실되지만
+ * sh-ui base64 는 #RRGGBB 만 지원해 alpha 잘라냄).
+ */
+function extractDartColorBlock(dartText, mode) {
+  const blockRe = new RegExp(
+    `static\\s+const\\s+${mode}\\s*=\\s*ShUiColorTokens\\s*\\(([\\s\\S]*?)\\);`,
+    "m",
+  );
+  const m = blockRe.exec(dartText);
+  if (!m) {
+    throw new Error(
+      `theme extract 실패: \`static const ${mode} = ShUiColorTokens(...)\` 블록을 찾지 못했습니다.`,
+    );
+  }
+  const body = m[1];
+  const fieldRe = /([a-zA-Z_]\w*):\s*Color\(0x([0-9a-fA-F]{8})\)/g;
+  const out = {};
+  let fm;
+  while ((fm = fieldRe.exec(body))) {
+    const field = fm[1];
+    const hexFull = fm[2].toUpperCase();
+    const key = DART_FIELD_TO_KEY[field];
+    if (!key) continue; // 알 수 없는 필드는 무시 (사용자가 ShUiColorTokens 확장한 경우)
+    out[key] = `#${hexFull.slice(2)}`;
+  }
+  if (Object.keys(out).length === 0) {
+    throw new Error(
+      `theme extract 실패: ${mode} 블록에서 Color 필드를 추출하지 못했습니다.`,
+    );
+  }
+  return out;
+}
+
 async function loadConfig(cwd) {
   const configPath = resolve(cwd, "sh-ui.config.json");
   if (!existsSync(configPath)) {
@@ -162,22 +259,21 @@ async function loadConfig(cwd) {
 
 export async function runThemeExtract({ cwd, output }) {
   const config = await loadConfig(cwd);
-  if (config.platform !== "react") {
-    throw new Error(
-      `theme extract 는 React 만 지원합니다 (현재: ${config.platform}). Flutter 는 별도 도구 필요.`,
-    );
-  }
   const tokensRel = config.paths?.tokens;
   if (!tokensRel) throw new Error("paths.tokens 가 sh-ui.config.json 에 없습니다.");
   const tokensPath = resolve(cwd, tokensRel);
   if (!existsSync(tokensPath)) {
     throw new Error(
-      `tokens.css 가 없습니다 (${tokensRel}). \`sh-ui add tokens\` 로 먼저 생성하세요.`,
+      `토큰 파일이 없습니다 (${tokensRel}). \`sh-ui add tokens\` 로 먼저 생성하세요.`,
     );
   }
 
-  const cssText = await readFile(tokensPath, "utf8");
-  const { base64, summary } = extractThemeFromCss(cssText);
+  const tokensText = await readFile(tokensPath, "utf8");
+  const result =
+    config.platform === "flutter"
+      ? extractThemeFromDart(tokensText)
+      : extractThemeFromCss(tokensText);
+  const { base64, summary } = result;
 
   if (output) {
     await writeFile(resolve(cwd, output), base64 + "\n", "utf8");
