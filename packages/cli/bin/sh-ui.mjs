@@ -16,6 +16,7 @@ const usage = `사용법:
                                    특수값: tokens → 설정 기반 토큰 파일 생성
   sh-ui list                       현재 설치된 컴포넌트 목록 표시
   sh-ui doctor                     프로젝트 정합성 점검 (config / tokens / 설치된 컴포넌트)
+  sh-ui upgrade-cli [--apply]      sh-ui-cli 자체를 최신으로 업그레이드 + 설치 후 진단
   sh-ui tokens diff                tokens.css 와 buildTokens 결과 비교 (added/changed/removed)
   sh-ui tokens upgrade [--apply|--replace]
                                    --apply: 추가만 incremental (사용자 편집 보존)
@@ -153,6 +154,12 @@ try {
         if (!result.ok) anyFailed = true;
       }
       if (anyFailed) process.exit(1);
+      break;
+    }
+    case "upgrade-cli": {
+      const apply = rest.includes("--apply");
+      const { runUpgradeCli } = await import("../src/upgrade-cli.mjs");
+      await runUpgradeCli({ cwd: process.cwd(), apply });
       break;
     }
     case "theme": {

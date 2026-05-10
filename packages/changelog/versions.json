@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.74.0",
+      "date": "2026-05-10",
+      "title": "DX — sh-ui.config.json JSON Schema + sh-ui upgrade-cli",
+      "type": "minor",
+      "highlights": [
+        "**JSON Schema for sh-ui.config.json** — `packages/cli/sh-ui.schema.json` 신설. `$schema` 필드를 GitHub raw URL 로 통일 (`https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json`). VS Code / Cursor 등이 자동 fetch 해서 키 자동완성 + enum 값 제안 + 오타 빨간 줄. platform / cssFramework / cssStrategy / theme.base / paths.* / aliases.* 모두 description 과 examples 포함.",
+        "**조건부 require** — `cssStrategy: \"bundled\"` 면 `paths.cssBundle` 필수, JSON Schema if/then 으로 자동 검증.",
+        "**`sh-ui upgrade-cli` 명령** — npm registry 의 latest 버전과 사용자 node_modules 의 설치본 비교. 사이의 changelog highlights (versions.json) 자동 출력. `--apply` 시 사용자 패키지 매니저로 자동 install + 설치 후 doctor / tokens diff 권장 흐름 안내.",
+        "**모든 템플릿 + init/create + apps/docs 의 sh-ui.config.json 에 \\$schema 일괄 적용** — 신규 프로젝트는 처음부터 IDE validation 동작."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.74.0"
+    },
+    {
       "version": "0.73.0",
       "date": "2026-05-10",
       "title": "Flutter — theme extract + tokens diff/upgrade Dart 지원",

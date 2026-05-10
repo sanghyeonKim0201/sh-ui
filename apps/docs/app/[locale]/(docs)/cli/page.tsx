@@ -273,6 +273,7 @@ npx sh-ui-cli create add-component button --app web`,
           { prop: "sh-ui add tokens", type: "special", description: "설정 값을 치환해 토큰 파일 생성 (CSS 또는 Dart)." },
           { prop: "sh-ui list", type: "command", description: "현재 설치된 컴포넌트 목록 표시." },
           { prop: "sh-ui doctor", type: "command", description: "프로젝트 정합성 점검. config / tokens.css / 설치된 컴포넌트의 토큰 의존성을 한 번에 검사." },
+          { prop: "sh-ui upgrade-cli", type: "command", description: "sh-ui-cli 자체를 최신으로 업그레이드. npm latest 비교 + 변경 highlights + 자동 install (--apply)." },
           { prop: "sh-ui tokens diff", type: "command", description: "tokens.css 와 buildTokens 결과를 비교 — added/changed/removed 미리보기." },
           { prop: "sh-ui tokens upgrade", type: "command", description: "--apply (incremental, 사용자 편집 보존) 또는 --replace (통째 덮어쓰기)." },
           { prop: "sh-ui theme extract", type: "command", description: "현재 tokens.css 의 색·radius 를 base64 로 추출 (sh-ui create --theme 입력으로 재사용 가능)." },
@@ -479,6 +480,44 @@ npx sh-ui-cli list --all`}
       />
       <p className="muted">
         모든 검사 통과 시 exit 0, 하나라도 fail 이면 exit 1 — CI 통합 가능. 컴포넌트가 요구하는 토큰 메타는 <code>packages/registry/react/tokens-used.json</code> 에서 자동 추출 (script: <code>scripts/build-registry-tokens.mjs</code>).
+      </p>
+
+      <h3>sh-ui upgrade-cli (v0.74.0+)</h3>
+      <p>
+        sh-ui-cli 자체를 최신으로 업그레이드. npm registry 의 latest 와 사용자{" "}
+        <code>node_modules</code> 의 설치본을 비교하고 사이의 변경 highlights 를 보여준다.
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# 미리보기 — 어떤 변경이 있는지만
+npx sh-ui-cli upgrade-cli
+
+# 자동 install (현 패키지 매니저 감지) + 설치 후 next-step 안내
+npx sh-ui-cli upgrade-cli --apply`}
+      />
+      <p className="muted">
+        설치 후 이어 권장: <code>sh-ui doctor</code> → <code>sh-ui tokens diff</code> →{" "}
+        <code>sh-ui tokens upgrade --apply</code>. 이 흐름이 신버전이 추가한 토큰을 사용자 편집 보존하며 incrementally 받아오는 정석.
+      </p>
+
+      <h3>sh-ui.config.json JSON Schema (v0.74.0+)</h3>
+      <p>
+        모든 템플릿이 <code>$schema</code> 필드로 GitHub raw URL 을 가리킨다.
+        VS Code / Cursor 가 자동 fetch 해 키 자동완성 + enum 값 제안 + 오타 빨간 줄을 띄움.
+      </p>
+      <CodePanel
+        language="json"
+        showLineNumbers={false}
+        code={`{
+  "$schema": "https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json",
+  "platform": "react",
+  "cssFramework": "plain",
+  ...
+}`}
+      />
+      <p className="muted">
+        조건부 require — <code>cssStrategy: "bundled"</code> 이면 <code>paths.cssBundle</code> 필수. schema if/then 이 자동으로 빨간 줄.
       </p>
 
       <h3>sh-ui tokens diff / upgrade</h3>

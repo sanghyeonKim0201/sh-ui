@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json",
   "platform": "flutter",
   "theme": {
     "base": "neutral",
