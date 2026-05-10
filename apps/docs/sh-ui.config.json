@@ -1,5 +1,5 @@
 {
-  "$schema": "../../sh-ui.schema.json",
+  "$schema": "https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json",
   "platform": "react",
   "cssFramework": "plain",
   "theme": {

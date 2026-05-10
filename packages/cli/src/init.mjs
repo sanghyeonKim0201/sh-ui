@@ -152,7 +152,7 @@ function labelFor(key) {
 
 function buildConfig({ platform, base, radius, mode, cssFramework }) {
   return {
-    $schema: "https://your-ds.dev/sh-ui.schema.json",
+    $schema: "https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json",
     platform,
     cssFramework,
     theme: { base, radius, mode },

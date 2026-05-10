@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json",
+  "title": "sh-ui project configuration",
+  "description": "sh-ui CLI 가 읽는 프로젝트 설정. 컴포넌트 추가/제거/토큰 빌드의 모든 동작이 이 파일을 따라간다.",
+  "type": "object",
+  "required": ["platform", "paths"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema URL — IDE 자동완성용. 그대로 두는 게 안전."
+    },
+    "platform": {
+      "enum": ["react", "flutter"],
+      "description": "타겟 플랫폼. React (웹) 또는 Flutter."
+    },
+    "cssFramework": {
+      "enum": ["plain", "tailwind", "css-modules", "vanilla-extract"],
+      "description": "CSS 변종. plain = 표준 CSS + var(--*), tailwind = utility class, css-modules = .module.css, vanilla-extract = .css.ts (실험). React 전용 — Flutter 면 무시.",
+      "default": "plain"
+    },
+    "cssStrategy": {
+      "enum": ["per-component", "bundled"],
+      "description": "컴포넌트 CSS 전략. per-component = 각 컴포넌트 폴더에 styles.css (기본). bundled = paths.cssBundle 단일 파일에 마커 섹션 (v0.71+). React + plain 만 지원.",
+      "default": "per-component"
+    },
+    "role": {
+      "enum": ["tokens-only"],
+      "description": "v0.65+ 모노레포 ui-app 에 부여 — 컴포넌트 추가는 sibling ui-core 로 라우팅하고 tokens 만 허용."
+    },
+    "theme": {
+      "type": "object",
+      "description": "디자인 토큰의 색·radius·모드 설정. buildTokens 가 이 값으로 tokens.css 또는 sh_ui_tokens.dart 를 생성.",
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "type": "string",
+          "description": "기본 색 스케일. buildable preset (neutral/zinc/slate) 은 buildTokens 로 재생성 가능. rich preset (rose/emerald/violet) 또는 'custom' (base64 originated) 은 보존-only.",
+          "examples": ["neutral", "zinc", "slate", "rose", "emerald", "violet", "custom"]
+        },
+        "radius": {
+          "enum": ["none", "sm", "md", "lg", "xl", "full"],
+          "description": "기본 코너 반경 — buildTokens 가 --radius CSS 변수로 emit."
+        },
+        "mode": {
+          "enum": ["light", "dark", "light-dark"],
+          "description": "다크 모드 전략. light-dark = OS 자동 + .light/.dark 클래스 토글, light/dark = 강제 단일 모드."
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "description": "프로젝트 내 파일/디렉토리 위치. CLI 가 컴포넌트 dest, tokens 위치, alias placeholder 해석에 사용.",
+      "additionalProperties": false,
+      "properties": {
+        "tokens": {
+          "type": "string",
+          "description": "tokens.css (React) 또는 sh_ui_tokens.dart (Flutter) 파일 경로.",
+          "examples": ["src/styles/tokens.css", "src/shared/styles/tokens.css", "lib/styles/tokens.css", "lib/sh_ui/foundation/sh_ui_tokens.dart"]
+        },
+        "cssEntry": {
+          "type": "string",
+          "description": "tokens.css 를 import 하는 globals.css 의 경로 (선택). doctor 가 import 정합성 검증에 사용. v0.68+.",
+          "examples": ["app/globals.css", "src/styles/globals.css"]
+        },
+        "cssBundle": {
+          "type": "string",
+          "description": "cssStrategy=bundled 일 때 컴포넌트 CSS 가 누적되는 단일 파일 경로. v0.71+.",
+          "examples": ["src/styles/sh-ui-components.css"]
+        },
+        "styles": {
+          "type": "string",
+          "description": "styles 디렉토리 (tokens, base 등 공유 CSS 위치).",
+          "examples": ["src/styles", "src/shared/styles"]
+        },
+        "components": {
+          "type": "string",
+          "description": "컴포넌트가 복사될 디렉토리. CLI 의 add 가 이 아래 <name>/index.tsx 등을 작성.",
+          "examples": ["src/components/ui", "src/shared/ui", "lib/sh_ui/widgets"]
+        },
+        "utils": {
+          "type": "string",
+          "description": "cn 유틸 등을 둘 utils 파일 경로 (React)."
+        },
+        "hooks": {
+          "type": "string",
+          "description": "hooks 디렉토리 (선택)."
+        },
+        "foundation": {
+          "type": "string",
+          "description": "Flutter foundation 디렉토리 (tokens.dart 등이 있는 곳)."
+        },
+        "widgets": {
+          "type": "string",
+          "description": "Flutter widgets 디렉토리."
+        }
+      }
+    },
+    "aliases": {
+      "type": "object",
+      "description": "TS module alias — 컴포넌트가 cn 유틸 등을 import 할 때 치환. tsconfig.json 의 paths 와 정합되어야 함.",
+      "additionalProperties": true,
+      "properties": {
+        "components": {
+          "type": "string",
+          "examples": ["@/components/ui", "@workspace/ui-core/components"]
+        },
+        "utils": {
+          "type": "string",
+          "examples": ["@/lib/utils", "@workspace/ui-core/lib/utils"]
+        },
+        "ui": {
+          "type": "string"
+        },
+        "hooks": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "cssStrategy": { "const": "bundled" } },
+        "required": ["cssStrategy"]
+      },
+      "then": {
+        "properties": {
+          "paths": { "required": ["cssBundle"] }
+        }
+      }
+    }
+  ]
+}
