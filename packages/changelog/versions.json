@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.72.0",
+      "date": "2026-05-10",
+      "title": "sh-ui migrate bundled — per-component → bundled 자동 전환 (Phase D 후속)",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui migrate bundled` 명령** — 기존 per-component 프로젝트를 bundled 로 한 번에 전환. paths.components 아래 모든 styles.css 를 bundle 의 마커 섹션으로 누적 + 원본 파일 삭제 + .tsx import 제거 + config 갱신.",
+        "**dry-run 기본** — 변경 매트릭스 (대상 컴포넌트 + 파일 목록) 출력 후 사용자 확인. `--apply` 로만 실제 변경.",
+        "**`--bundle <path>` 옵션** — bundle 파일 위치 명시. 미지정 시 paths.styles 또는 paths.tokens 디렉토리 + sh-ui-components.css 를 자동 사용.",
+        "**완료 후 안내** — globals.css 에 `@import './sh-ui-components.css';` 한 줄 추가하라는 메시지 (자동 편집 안 함 — 사용자 entry CSS 위치/스타일 다양해서).",
+        "**제약** — cssFramework: plain + React 만. tailwind/css-modules/vanilla-extract 면 친절 에러. 이미 bundled 면 noop."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.72.0"
+    },
+    {
       "version": "0.71.2",
       "date": "2026-05-09",
       "title": "fix(doctor) — monorepo walk-up + 컴포넌트-only 패키지 인식",

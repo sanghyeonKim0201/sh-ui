@@ -29,6 +29,9 @@ const usage = `사용법:
                                    디렉토리 + 모든 import/path 패턴)
   sh-ui migrate-v065               v0.64.x → v0.65 자동 마이그레이션
                                    (--dry-run 기본, --apply 로 실제 적용)
+  sh-ui migrate bundled            cssStrategy=bundled 로 전환 (per-component
+                                   styles.css → 단일 sh-ui-components.css)
+                                   (--apply 로 실제 적용)
   sh-ui mcp                        MCP 서버(stdio) 시작 — IDE-내 AI용
   sh-ui mcp init --client <name>   IDE MCP 설정 파일에 sh-ui 엔트리 자동 추가
                                    (claude-code | cursor | claude-desktop)
@@ -222,6 +225,22 @@ try {
       const [oldName, newName] = positional;
       const { renameApp } = await import("../src/rename-app.mjs");
       await renameApp({ cwd: process.cwd(), oldName, newName, yes, dryRun, skipInstall });
+      break;
+    }
+    case "migrate": {
+      // sh-ui migrate bundled [--apply] [--bundle <path>]
+      const sub = rest[0];
+      const flags = rest.slice(1);
+      if (sub === "bundled") {
+        const apply = flags.includes("--apply");
+        const bIdx = flags.indexOf("--bundle");
+        const bundleArg = bIdx !== -1 ? flags[bIdx + 1] : null;
+        const { runMigrateBundled } = await import("../src/migrate-bundled.mjs");
+        await runMigrateBundled({ cwd: process.cwd(), apply, bundleArg });
+      } else {
+        console.error(`에러: 알 수 없는 migrate 서브명령 '${sub ?? ""}'. 'bundled' 만 지원.\n`);
+        process.exit(1);
+      }
       break;
     }
     case "migrate-v065": {
