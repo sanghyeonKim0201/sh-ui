@@ -574,6 +574,33 @@ npx sh-ui-cli tokens upgrade --replace`}
         사용자가 <code>cssBundle</code> 파일을 한 번 import (예: <code>app/globals.css</code> 의 <code>@import './sh-ui-components.css';</code>) 해야 스타일 적용.
       </p>
 
+      <h4>기존 프로젝트 마이그레이션 — sh-ui migrate bundled (v0.72.0+)</h4>
+      <p>
+        per-component 으로 운영하던 프로젝트를 bundled 로 전환할 때:
+      </p>
+      <CodePanel
+        language="bash"
+        showLineNumbers={false}
+        code={`# dry-run — 변경 매트릭스 미리보기
+npx sh-ui-cli migrate bundled
+
+# 실제 적용
+npx sh-ui-cli migrate bundled --apply
+
+# bundle 위치 명시 (기본은 paths.styles 또는 tokens 디렉토리)
+npx sh-ui-cli migrate bundled --apply --bundle src/styles/sh-ui.css`}
+      />
+      <p>적용 시 동작:</p>
+      <ul>
+        <li><code>paths.components</code> 아래 모든 컴포넌트의 <code>styles.css / styles.module.css</code> 를 <code>cssBundle</code> 의 마커 섹션으로 누적 후 원본 파일 삭제.</li>
+        <li>각 컴포넌트 <code>.tsx</code> 의 <code>import "./styles.css";</code> 라인 제거.</li>
+        <li><code>sh-ui.config.json</code> 에 <code>cssStrategy: "bundled"</code> + <code>paths.cssBundle</code> 추가.</li>
+        <li>완료 후 사용자가 <code>globals.css</code> 에 <code>@import './sh-ui-components.css';</code> 한 번 추가 — 안내 메시지 출력.</li>
+      </ul>
+      <p className="muted">
+        제약: <code>cssFramework: "plain"</code>, React 만. 이미 bundled 면 noop.
+      </p>
+
       <h3>sh-ui theme extract</h3>
       <p>
         현재 <code>tokens.css</code> 의 색과 <code>--radius</code> 값을 sh-ui base64 테마 문자열로 추출.
