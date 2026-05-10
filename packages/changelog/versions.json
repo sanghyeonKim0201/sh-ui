@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.73.0",
+      "date": "2026-05-10",
+      "title": "Flutter — theme extract + tokens diff/upgrade Dart 지원",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui theme extract` Flutter 지원** — `sh_ui_tokens.dart` 의 `static const light/dark` 블록에서 `Color(0xFFRRGGBB)` 를 추출해 sh-ui base64 로 인코딩. alpha 채널은 무시 (#RRGGBB 만 인코딩), `defaultRadius` 픽셀값을 16 으로 나눠 rem 변환.",
+        "**`sh-ui tokens diff` Flutter 지원** — Dart 의 `static const` 블록을 `<ClassName>.<staticName>` 키로 평탄화 후 field-level 비교. nested 함수 호출 (`Color(0x...)`, `Cubic(0.4, 0, 0.2, 1)`, `Duration(milliseconds: 120)`, `<BoxShadow>[...]`) 를 깊이 카운터로 안전하게 split — 간단 정규식 파서가 깨지지 않음.",
+        "**`sh-ui tokens upgrade --replace` Flutter 지원** — buildTokensDart 결과로 통째 덮어쓰기.",
+        "**`--apply` 는 Flutter 미지원** — Dart 클래스에 필드 추가는 (1) class field 선언, (2) constructor 파라미터, (3) 모든 static const 인스턴스화 3 군데를 동시에 수정해야 해서 incremental 적용이 위험. 친절 에러로 안내 + `--replace` 권장.",
+        "**dispatch 통합** — tokens-cmd / theme-extract 가 platform 으로 분기. React (CSS) 와 Flutter (Dart) 가 같은 명령 표면 공유."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.73.0"
+    },
+    {
       "version": "0.72.0",
       "date": "2026-05-10",
       "title": "sh-ui migrate bundled — per-component → bundled 자동 전환 (Phase D 후속)",
