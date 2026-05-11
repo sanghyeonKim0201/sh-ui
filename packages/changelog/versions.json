@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.76.0",
+      "date": "2026-05-11",
+      "title": "minor — `sh-ui mcp init` 가 codex CLI 도 자동 등록",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui mcp init --client codex` 신규 지원** — `~/.codex/config.toml` 의 `[mcp_servers.sh-ui]` 섹션을 자동 upsert. 이제 codex 사용자도 한 번에 sh-ui MCP 등록.",
+        "**TOML 텍스트 기반 머지** — 다른 섹션·주석·공백을 그대로 보존. `[mcp_servers.sh-ui]` 와 그 하위(`.env` 등)만 교체 후 새 블록을 append. 멱등 보장(연속 호출 결과 동일).",
+        "**inline-table 정의는 명시적 에러** — 기존 `[mcp_servers]` 부모 섹션 안에 `sh-ui = { ... }` 형태로 정의돼 있으면 자동 갱신 대신 명확한 메시지로 수동 정리 안내. 사용자 config 손상 방지.",
+        "claude-code / cursor / claude-desktop 동작은 변화 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.76.0"
+    },
+    {
       "version": "0.75.0",
       "date": "2026-05-11",
       "title": "minor — 슬롯 패턴 `render` 로 통일 (asChild 제거)",
