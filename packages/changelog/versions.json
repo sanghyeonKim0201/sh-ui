@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.76.1",
+      "date": "2026-05-11",
+      "title": "patch — Switch ON 상태 thumb 가시성 (다크모드)",
+      "type": "patch",
+      "highlights": [
+        "**Switch — checked thumb 가 `--primary-foreground` 로 전환** — 다크모드는 `--primary` 가 거의 흰색(`#FAFAFA`)인데 thumb 가 하드코딩 `white` 라 ON 상태에서 thumb 와 트랙이 같은 색으로 묻혀 위치를 알 수 없던 문제 수정.",
+        "변종 4종 동기화 — `styles.css` / `styles.module.css` / `index.tailwind.tsx` / docs 복사본.",
+        "라이트/다크 양쪽 모두 트랙과 thumb 가 항상 반전 대비를 유지."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.76.1"
+    },
+    {
       "version": "0.76.0",
       "date": "2026-05-11",
       "title": "minor — `sh-ui mcp init` 가 codex CLI 도 자동 등록",
