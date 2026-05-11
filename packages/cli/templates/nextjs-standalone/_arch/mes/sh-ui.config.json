@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json",
+  "platform": "react",
+  "cssFramework": "plain",
+  "theme": {
+    "base": "neutral",
+    "radius": "md",
+    "mode": "light-dark"
+  },
+  "paths": {
+    "tokens": "src/lib/styles/tokens.css",
+    "cssEntry": "app/globals.css",
+    "styles": "src/lib/styles",
+    "components": "src/components/common",
+    "utils": "src/lib/utils/utils.ts"
+  },
+  "aliases": {
+    "components": "@/components/common",
+    "utils": "@/lib/utils/utils",
+    "ui": "@/components/common"
+  }
+}

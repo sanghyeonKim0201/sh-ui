@@ -1,8 +1,9 @@
 import { fsdArch } from './fsd.js';
 import { flatArch } from './flat.js';
+import { mesArch } from './mes.js';
 import { validateArchitectures } from './archSchema.js';
 
-export const allArchitectures = [fsdArch, flatArch];
+export const allArchitectures = [fsdArch, flatArch, mesArch];
 
 // 모듈 로드 시점에 모든 arch 디스크립터를 schema 로 검증.
 // 누락된 키, 잘못된 형태가 있으면 즉시 에러.
