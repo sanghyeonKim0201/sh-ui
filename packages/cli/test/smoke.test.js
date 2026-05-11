@@ -107,6 +107,15 @@ describe('sh-ui create smoke tests', () => {
     expect(uiAppCfg.role).toBe('tokens-only');
     expect(uiAppCfg.paths?.tokens).toBe('src/styles/tokens.css');
     expect(uiAppCfg.paths?.components).toBeUndefined();
+
+    // apps/web 이 ui-core 를 의존성 + paths 로 갖고 있어야 — 사용자가 ui-core
+    // 컴포넌트 import 시 deps 수동 추가 필요 없도록 (templates 누락 회귀 가드)
+    expect(appPkg.dependencies?.['@workspace/ui-core']).toBe('workspace:*');
+    expect(appPkg.dependencies?.['@workspace/ui-web']).toBe('workspace:*');
+    const appTsconfig = await fs.readJson(path.join(monoDir, 'apps', 'web', 'tsconfig.json'));
+    expect(appTsconfig.compilerOptions?.paths?.['@workspace/ui-core/*']).toEqual([
+      '../../packages/ui/ui-core/src/*',
+    ]);
   });
   it('scenario 3 — standalone + sentry + next-intl', async () => {
     // 플러그인은 이제 prompt 가 없고 --plugins 플래그로만 지정

@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.74.1",
+      "date": "2026-05-11",
+      "title": "patch — apps/* templates 에 `@workspace/ui-core` 의존성/paths 누락 수정",
+      "type": "patch",
+      "highlights": [
+        "**templates 의 apps/* 가 ui-core 를 의존성으로 들고 있지 않던 회귀 수정** — v0.65 에서 컴포넌트 SoT 가 `ui-core` 로 이동했지만 `nextjs-app/package.json` 과 `_arch/{fsd,flat}/tsconfig.json`, `vitest.config.ts` 가 `@workspace/ui-app-name` 만 가리키고 `@workspace/ui-core` 는 박혀 있지 않았음. 결과: 사용자가 ui-core 컴포넌트(`@workspace/ui-core/components/sidebar` 등)를 import 하려면 매번 손으로 deps + tsconfig paths 추가해야 했음.",
+        "**fix 후 신규 스캐폴드/`sh_ui_add_app` 의 새 앱이 자동으로 ui-core dep + paths 보유** — `pnpm install` 하자마자 `@workspace/ui-core/components/*` import 동작.",
+        "**smoke scenario 2 회귀 가드** — `appPkg.dependencies['@workspace/ui-core']` 와 `tsconfig.compilerOptions.paths['@workspace/ui-core/*']` 단언 추가.",
+        "**`pretest` 훅으로 stale bundled data 자동 갱신** — `packages/cli/data/` 는 gitignored 라 개발자 머신에서 stale 일 수 있고, 그 상태에서 `pnpm test` 돌리면 `tokens-validate.test.js` 1건이 `tokens-used.json` 누락으로 false-fail 했음. `pretest` 가 `copy-data.mjs` 를 자동 실행해 회귀 차단."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.74.1"
+    },
+    {
       "version": "0.74.0",
       "date": "2026-05-10",
       "title": "DX — sh-ui.config.json JSON Schema + sh-ui upgrade-cli",

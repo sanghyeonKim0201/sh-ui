@@ -9,6 +9,10 @@ export default defineConfig({
         __dirname,
         '../../packages/ui/ui-apps/ui-app-name/src',
       ),
+      '@workspace/ui-core': path.resolve(
+        __dirname,
+        '../../packages/ui/ui-core/src',
+      ),
     },
   },
   test: {
