@@ -18,7 +18,7 @@ const switchRoot = cva(
 );
 
 const switchThumb = cva(
-  "block rounded-full bg-white shadow-[var(--shadow-sm)] transition-transform duration-150 ease-out motion-reduce:transition-none forced-colors:[background:ButtonText] forced-colors:data-[checked]:[background:HighlightText] forced-colors:data-[disabled]:[background:GrayText]",
+  "block rounded-full bg-white data-[checked]:bg-primary-foreground shadow-[var(--shadow-sm)] transition-transform duration-150 ease-out motion-reduce:transition-none forced-colors:[background:ButtonText] forced-colors:data-[checked]:[background:HighlightText] forced-colors:data-[disabled]:[background:GrayText]",
   {
     variants: {
       size: {

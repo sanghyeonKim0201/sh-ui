@@ -74,6 +74,12 @@
   transform: translateX(1.125rem);
 }
 
+/* checked 상태에서 thumb 와 트랙(--primary)이 같은 색으로 보이지 않도록
+   --primary-foreground 로 전환 (다크모드: primary=near-white → thumb=dark). */
+.switch[data-checked] .switch__thumb {
+  background: var(--primary-foreground);
+}
+
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .switch,
