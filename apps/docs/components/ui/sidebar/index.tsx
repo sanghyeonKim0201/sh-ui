@@ -957,7 +957,6 @@ export function SidebarCollapsibleContent({ children }: { children: React.ReactN
  *     <SidebarMenu>
  *       <SidebarMenuItem>
  *         <SidebarMenuButton sectionId="intro" render={<a href="#intro">Intro</a>} />
- *           {/* 또는 자식으로 inner text 전달 시: render={<a href="#intro" />}>Intro</SidebarMenuButton */}
  *       </SidebarMenuItem>
  *       ...
  *     </SidebarMenu>
