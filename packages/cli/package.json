@@ -48,6 +48,7 @@
   },
   "scripts": {
     "bundle-data": "node scripts/copy-data.mjs",
+    "pretest": "node scripts/copy-data.mjs",
     "test": "vitest run",
     "prepublishOnly": "node scripts/copy-data.mjs && node --check bin/sh-ui.mjs"
   },
