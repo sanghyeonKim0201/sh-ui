@@ -1219,6 +1219,72 @@ describe('sh-ui create smoke tests', () => {
     });
   });
 
+  // ─── arch=mes 매트릭스 ───
+  //
+  // MES (백오피스) 프리셋 — 페이지 격리 구조. src/pages/<name>/ 가 자기완결,
+  // 페이지 끼리는 import 안 함. flat 과 달리 모든 코드가 src/ 아래에 있고,
+  // app/ 라우트는 한 줄 위임으로 src/pages/<name>/ 에 연결.
+
+  describe('arch=mes 매트릭스', () => {
+    it('mes standalone — src/{pages,components,hooks,lib} 구조 (페이지 격리 슬롯만)', async () => {
+      await createProject({
+        name: 'mes-bare',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        arch: 'mes',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'mes-bare');
+
+      // 페이지 격리 구조: 모든 코드가 src/ 아래
+      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'pages'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'components', 'layouts', 'RootLayout.tsx'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'hooks', 'useAppMutation.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'lib', 'api', 'http.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'lib', 'styles', 'tokens.css'))).toBe(true);
+
+      // flat 의 root-level lib/components 는 부재
+      expect(await fs.pathExists(path.join(dir, 'lib'))).toBe(false);
+      expect(await fs.pathExists(path.join(dir, 'components'))).toBe(false);
+
+      // src/pages/sign-in/ — 슬롯 레이아웃 예시 (동작하는 코드 X, 컨벤션만).
+      // 새 페이지 추가 시 이 폴더 복사 → 이름 교체.
+      expect(await fs.pathExists(path.join(dir, 'app', 'sign-in', 'page.tsx'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'pages', 'sign-in', 'index.tsx'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'pages', 'sign-in', 'api.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'pages', 'sign-in', 'hooks.ts'))).toBe(true);
+      expect(await fs.pathExists(path.join(dir, 'src', 'pages', 'sign-in', 'schema.ts'))).toBe(true);
+
+      const routePage = await fs.readFile(path.join(dir, 'app', 'sign-in', 'page.tsx'), 'utf-8');
+      expect(routePage).toContain("from '@/pages/sign-in'");
+
+      // tsconfig 는 catch-all @/* → ./src/*
+      const tsconfig = await fs.readJson(path.join(dir, 'tsconfig.json'));
+      expect(tsconfig.compilerOptions.paths['@/*']).toEqual(['./src/*']);
+    });
+
+    it('mes standalone — globals.css 의 tokens import 가 src/lib/styles 를 가리킴', async () => {
+      // flat 의 v0.59.7 회귀와 같은 클래스의 가드 — base globals.css 가 fsd 경로를
+      // 박고 있으므로 mes overlay 의 globals.css 가 src/lib/styles/tokens.css 로
+      // 정확히 덮어쓰는지 확인.
+      await createProject({
+        name: 'mes-globals',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        arch: 'mes',
+        yes: true,
+      });
+      const dir = path.join(tmpDir, 'mes-globals');
+      const globals = await fs.readFile(path.join(dir, 'app', 'globals.css'), 'utf-8');
+      expect(globals).toContain("'../src/lib/styles/tokens.css'");
+      expect(globals).not.toContain("'../src/shared/styles/tokens.css'");
+      expect(globals).not.toContain("'../lib/styles/tokens.css'");
+    });
+  });
+
   // ─── FSD 회귀 가드 — Layer 1~3 변경 후에도 v0.57 까지의 출력과 동일해야 함 ───
 
   describe('arch=fsd 회귀 가드', () => {

@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.77.0",
+      "date": "2026-05-11",
+      "title": "minor — `--arch mes` 프리셋 — 백오피스용 페이지 격리 구조",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui-cli create ... --arch mes` 신규 지원** — 스마트팩토리 MES·ERP·관리자 도구처럼 페이지 간 상호작용이 적은 CRUD-heavy 앱을 위한 페이지 격리 프리셋. FSD 의 6 레이어가 과한 백오피스 시나리오 전용.",
+        "**페이지 격리 구조** — 각 `src/pages/<name>/` 가 자기완결 슬롯 (index.tsx + components/ + api.ts + hooks.ts + schema.ts + columns.ts). `app/<route>/page.tsx` 는 `export { default } from '@/pages/<name>'` 한 줄 위임. 페이지 끼리는 import 금지 (eslint boundaries 강제).",
+        "**`src/pages/sign-in/` 스텁 동봉** — 슬롯 레이아웃을 보여주는 빈 페이지 (동작 X, 폴더 모양만). 새 페이지 추가 = 이 폴더 복사 → 이름 교체.",
+        "**tsconfig** — catch-all `@/*` → `./src/*`. 모든 import 가 `@/pages/...`, `@/components/...`, `@/lib/...` 처럼 짧고 일관.",
+        "monorepo (`apps/<name>` + `packages/ui/...`) 에서도 `--arch mes` 동작. nextjs-standalone / nextjs-app 두 템플릿 모두 mes overlay 포함."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.0"
+    },
+    {
       "version": "0.76.1",
       "date": "2026-05-11",
       "title": "patch — Switch ON 상태 thumb 가시성 (다크모드)",

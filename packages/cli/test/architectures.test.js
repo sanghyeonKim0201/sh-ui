@@ -11,10 +11,11 @@ import { ArchSchema } from '../src/create/architectures/archSchema.js';
 
 describe('architectures — descriptor 시스템', () => {
   describe('등록된 디스크립터', () => {
-    it('fsd, flat 두 arch 가 모두 등록돼 있다', () => {
+    it('fsd, flat, mes 세 arch 가 모두 등록돼 있다', () => {
       const names = allArchitectures.map((a) => a.name);
       expect(names).toContain('fsd');
       expect(names).toContain('flat');
+      expect(names).toContain('mes');
     });
 
     it('DEFAULT_ARCH 가 fsd 다 (Layer 1 회귀 가드)', () => {
@@ -96,11 +97,36 @@ describe('architectures — descriptor 시스템', () => {
     });
   });
 
+  describe('mes 디스크립터', () => {
+    const mes = getArchByName('mes');
+
+    it('paths 는 모두 src/ 아래에 위치 (페이지 격리 구조)', () => {
+      expect(mes.paths.layouts).toBe('src/components/layouts');
+      expect(mes.paths.providers).toBe('src/components/providers');
+      expect(mes.paths.api).toBe('src/lib/api');
+      expect(mes.paths.config).toBe('src/lib/config');
+      expect(mes.paths.hooks).toBe('src/hooks');
+      expect(mes.paths.utils).toBe('src/lib/utils');
+      expect(mes.paths.ui).toBe('src/components/common');
+    });
+
+    it('aliases 는 @/ catch-all (src 접두사 없음)', () => {
+      expect(mes.aliases.layouts).toBe('@/components/layouts');
+      expect(mes.aliases.api).toBe('@/lib/api');
+      expect(mes.aliases.hooks).toBe('@/hooks');
+    });
+
+    it('tsconfigPaths 는 @/* → ./src/*', () => {
+      expect(mes.tsconfigPaths).toEqual({ '@/*': ['./src/*'] });
+    });
+  });
+
   describe('platform/arch 호환성', () => {
-    it('fsd, flat 모두 next 플랫폼 지원', () => {
+    it('fsd, flat, mes 모두 next 플랫폼 지원', () => {
       const nextArches = getArchesForPlatform('next').map((a) => a.name);
       expect(nextArches).toContain('fsd');
       expect(nextArches).toContain('flat');
+      expect(nextArches).toContain('mes');
     });
 
     it('flutter 플랫폼은 현재 arch 디스크립터 없음', () => {
