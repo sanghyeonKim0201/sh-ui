@@ -387,19 +387,13 @@ ShUiSidebarProvider(
               code: `<SidebarTOC sectionIds={["intro", "install", "usage"]}>
   <SidebarMenu>
     <SidebarMenuItem>
-      <SidebarMenuButton sectionId="intro" asChild>
-        <a href="#intro">Intro</a>
-      </SidebarMenuButton>
+      <SidebarMenuButton sectionId="intro" render={<a href="#intro">Intro</a>} />
     </SidebarMenuItem>
     <SidebarMenuItem>
-      <SidebarMenuButton sectionId="install" asChild>
-        <a href="#install">Install</a>
-      </SidebarMenuButton>
+      <SidebarMenuButton sectionId="install" render={<a href="#install">Install</a>} />
     </SidebarMenuItem>
     <SidebarMenuItem>
-      <SidebarMenuButton sectionId="usage" asChild>
-        <a href="#usage">Usage</a>
-      </SidebarMenuButton>
+      <SidebarMenuButton sectionId="usage" render={<a href="#usage">Usage</a>} />
     </SidebarMenuItem>
   </SidebarMenu>
 </SidebarTOC>`,
@@ -652,7 +646,7 @@ ShUiSidebarProvider(
 
       <h3>일반 메뉴 + 보조 패널 혼합</h3>
       <p className="muted">
-        한 <code>SidebarMenu</code> 안에서 <strong>페이지 이동 버튼</strong>과 <strong>패널 트리거</strong>를 섞어 쓸 수 있습니다. <code>panelId</code>를 주면 보조 패널을 열고, 주지 않으면 일반 버튼으로 동작(링크는 <code>asChild</code>).
+        한 <code>SidebarMenu</code> 안에서 <strong>페이지 이동 버튼</strong>과 <strong>패널 트리거</strong>를 섞어 쓸 수 있습니다. <code>panelId</code>를 주면 보조 패널을 열고, 주지 않으면 일반 버튼으로 동작(링크는 <code>render</code> prop 으로 Next Link 슬롯).
       </p>
       <Preview>
         <Preview.Demo>
@@ -667,9 +661,10 @@ ShUiSidebarProvider(
               code: `<SidebarMenu>
   {/* 라우팅 */}
   <SidebarMenuItem>
-    <SidebarMenuButton asChild isActive={pathname === "/"}>
-      <Link href="/"><HomeIcon /><span>홈</span></Link>
-    </SidebarMenuButton>
+    <SidebarMenuButton
+      isActive={pathname === "/"}
+      render={<Link href="/"><HomeIcon /><span>홈</span></Link>}
+    />
   </SidebarMenuItem>
 
   {/* 보조 패널 */}
@@ -804,7 +799,7 @@ ShUiSidebarProvider(
           { name: "SidebarGroupContent", description: "그룹 내부 콘텐츠 래퍼." },
           { name: "SidebarMenu", description: "메뉴 ul." },
           { name: "SidebarMenuItem", description: "메뉴 li." },
-          { name: "SidebarMenuButton", description: "메뉴 버튼. asChild로 Link 등과 결합 가능." },
+          { name: "SidebarMenuButton", description: "메뉴 버튼. render prop 으로 Link 등과 결합." },
           { name: "SidebarMenuSub", description: "서브 메뉴 ul (들여쓰기 + 좌측 라인)." },
           { name: "SidebarMenuSubItem", description: "서브 메뉴 li." },
           { name: "SidebarMenuSubButton", description: "서브 메뉴 버튼/링크." },
@@ -847,7 +842,7 @@ ShUiSidebarProvider(
           { prop: "sectionId", type: "string", description: "SidebarTOC 안에서 활성 섹션 id와 같을 때 자동 활성화." },
           { prop: "panelId", type: "string", description: "클릭 시 같은 id의 SidebarPanel을 토글. activePanel이 일치하면 자동 활성화." },
           { prop: "size", type: `"sm" | "md" | "lg"`, default: `"md"` },
-          { prop: "asChild", type: "boolean", description: "단일 자식 엘리먼트(예: Next Link)에 props를 합쳐 전달." },
+          { prop: "render", type: "React.ReactElement", description: "다른 엘리먼트(예: Next Link)로 대체. cloneElement 로 props/className/ref 자동 머지." },
         ]}
       />
 
@@ -892,7 +887,7 @@ ShUiSidebarProvider(
         <li>모바일 드로어 — <code>role=&quot;dialog&quot;</code> + <code>aria-modal=&quot;true&quot;</code> + 포커스 트랩(<code>Tab</code> 순환 경계), <code>Esc</code> 닫기, 열기 트리거로 포커스 복귀</li>
         <li>데스크탑 collapsible — <code>SidebarCollapsibleTrigger</code>가 <code>aria-expanded</code> 자동 관리</li>
         <li>드로어 backdrop은 <code>aria-hidden</code> 처리</li>
-        <li>menu-button / menu-sub-button은 네이티브 <code>&lt;a&gt;</code> 또는 <code>&lt;button&gt;</code> 시맨틱을 유지 (<code>asChild</code>로 Link 래핑 가능)</li>
+        <li>menu-button / menu-sub-button은 네이티브 <code>&lt;a&gt;</code> 또는 <code>&lt;button&gt;</code> 시맨틱을 유지 (<code>render</code> prop 으로 Next Link 래핑 가능)</li>
       </ul>
 
       <h2>스타일 커스터마이즈</h2>

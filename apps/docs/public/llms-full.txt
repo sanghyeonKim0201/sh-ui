@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.64.4 (2026-05-08) — patch — Flutter summary 16건 정확성 audit
+**최신 버전**: v0.74.1 (2026-05-11) — patch — apps/* templates 에 `@workspace/ui-core` 의존성/paths 누락 수정
 
 ## React — Components
 
@@ -163,7 +163,7 @@
 ### sidebar
 
 - Type: component
-- Summary: 앱 사이드바 — collapsible, SidebarMenu/SidebarGroup 조합.
+- Summary: 앱 사이드바 — SidebarProvider / Sidebar / SidebarInset / SidebarTrigger / SidebarHeader/Content/Footer / SidebarGroup·GroupLabel·GroupContent / SidebarMenu·MenuItem·MenuButton / SidebarMenuSub·SubItem·SubButton / SidebarCollapsible 등. SidebarMenuButton·SidebarMenuSubButton 은 자체 button/anchor — Next Link 등 다른 엘리먼트로 슬롯하려면 `render` prop 사용 (`<SidebarMenuButton render={<Link href='/'>홈</Link>} />`). asChild 는 v0.75 에서 제거됨.
 - Install: `npx sh-ui-cli add sidebar`
 - npm/pub deps: lucide-react
 - Registry deps: popover, utils (자동 설치됨)
@@ -289,7 +289,7 @@
 ### breadcrumb
 
 - Type: component
-- Summary: 경로 내비게이션 — separate exports: Breadcrumb / BreadcrumbList / BreadcrumbItem / BreadcrumbLink / BreadcrumbPage / BreadcrumbSeparator / BreadcrumbEllipsis. dot syntax 아님. aria-current 자동.
+- Summary: 경로 내비게이션 — separate exports: Breadcrumb / BreadcrumbList / BreadcrumbItem / BreadcrumbLink / BreadcrumbPage / BreadcrumbSeparator / BreadcrumbEllipsis. BreadcrumbLink 는 자체 `<a>` — Next Link 등 다른 엘리먼트로 슬롯하려면 `render` prop 사용 (`<BreadcrumbLink render={<Link href='/...'>Projects</Link>} />`). aria-current 자동.
 - Install: `npx sh-ui-cli add breadcrumb`
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/breadcrumb`
@@ -878,33 +878,41 @@
 
 ## 최근 릴리즈 (최대 5개)
 
-### v0.64.4 — patch — Flutter summary 16건 정확성 audit (2026-05-08)
-- **사실관계 정정 6건** — `card`/`dialog` 의 'header/body/footer named slot' (실제는 separate widget, Body 가 아니라 Content), `dialog` 의 'showDialog 로 호출' (실제는 `ShUiDialog.show<T>()` static, Flutter 빌트인 `showDialog` 와 다름), `checkbox` 의 'tristate' (실제 prop 은 `indeterminate`), `toast` 의 'ShUiToastOverlay' (실재 X — `ShUiToaster` + `ShUiToast.show()`), `tabs` 의 'ShUiTabsController' (실재 X — `ShUiTabs` + `ShUiTab` 데이터).
-- **exports 명시 보강 10건** — select/combobox 의 Multi 변종 (`ShUiMultiSelect<T>`, `ShUiMultiCombobox<T>`), date-picker 의 `ShUiDateRangePicker`, dropdown-menu 의 sealed `ShUiDropdownMenuEntry<T>` 자식들 (Item / CheckboxItem / RadioItem / Divider / Label), menubar 의 `ShUiMenubarMenu`, sidebar 의 Provider/Trigger/Header/Footer/Inset + `.of(ctx)` 패턴, app-shell 의 `ShUiAppShellGroup`/`Item`, header 의 `ShUiHeaderItem`, breadcrumb 의 `ShUiBreadcrumbItem`, popover 의 Title/Description, checkbox 의 `ShUiCheckboxGroup`. v0.64.1·v0.64.2 의 React audit 과 동일 톤으로 통일.
-- **MCP 양 플랫폼 정보 일관성 마무리** — React (v0.64.1·v0.64.2·v0.64.3) + Flutter (이번) 모두 source-of-truth 정확도 확보. AI 가 sh-ui MCP 로 컴포넌트 요청 시 환각으로 잘못된 위젯명·prop·호출 패턴을 만들어 내던 실패 모드 해소.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.4
+### v0.74.1 — patch — apps/* templates 에 `@workspace/ui-core` 의존성/paths 누락 수정 (2026-05-11)
+- **templates 의 apps/* 가 ui-core 를 의존성으로 들고 있지 않던 회귀 수정** — v0.65 에서 컴포넌트 SoT 가 `ui-core` 로 이동했지만 `nextjs-app/package.json` 과 `_arch/{fsd,flat}/tsconfig.json`, `vitest.config.ts` 가 `@workspace/ui-app-name` 만 가리키고 `@workspace/ui-core` 는 박혀 있지 않았음. 결과: 사용자가 ui-core 컴포넌트(`@workspace/ui-core/components/sidebar` 등)를 import 하려면 매번 손으로 deps + tsconfig paths 추가해야 했음.
+- **fix 후 신규 스캐폴드/`sh_ui_add_app` 의 새 앱이 자동으로 ui-core dep + paths 보유** — `pnpm install` 하자마자 `@workspace/ui-core/components/*` import 동작.
+- **smoke scenario 2 회귀 가드** — `appPkg.dependencies['@workspace/ui-core']` 와 `tsconfig.compilerOptions.paths['@workspace/ui-core/*']` 단언 추가.
+- **`pretest` 훅으로 stale bundled data 자동 갱신** — `packages/cli/data/` 는 gitignored 라 개발자 머신에서 stale 일 수 있고, 그 상태에서 `pnpm test` 돌리면 `tokens-validate.test.js` 1건이 `tokens-used.json` 누락으로 false-fail 했음. `pretest` 가 `copy-data.mjs` 를 자동 실행해 회귀 차단.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.74.1
 
-### v0.64.3 — patch — Trigger·Close 컴포넌트 7종 소스 JSDoc 에 render-prop 함정 명시 (2026-05-08)
-- **컴포넌트 소스 JSDoc 보강 (7종 × 4 변종)** — `sh_ui_get_component` 와 사용자 프로젝트에 설치된 컴포넌트 모두 소스의 JSDoc 만 보이는데 `render` prop 안내가 거기 없어 AI 가 button 중첩 워크어라운드를 반복하던 문제를 차단. dialog / popover / select / dropdown-menu / accordion / combobox 의 Trigger·Close·SubTrigger·Clear 위에 "`<button>` 자체 렌더 → 자식 button 중첩 금지 → 다른 엘리먼트 슬롯은 `render` prop" 패턴을 일관 톤으로 박음.
-- **`render` 와 `children` 패턴 구분 명시** — date-picker 의 DatePickerTrigger 는 sh-ui 자체 `<button>` 이라 Base UI 의 `render` prop 이 아닌 `children` 함수 패턴(value/formatted/placeholder 인자) + `className` 직접 스타일링이 정석. 이 차이를 JSDoc + summary 양쪽에 명시.
-- **plain / tailwind / vanilla-extract / module 4 변종 + apps/docs 듀얼카피본 모두 동기화** — 28 파일. v0.64.1·v0.64.2 의 summary 정정과 합쳐 AI 가 쓸 수 있는 모든 정보 채널(MCP list/get, llms.txt, 설치 후 IDE 호버) 에서 동일한 가이드 노출.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.3
+### v0.74.0 — DX — sh-ui.config.json JSON Schema + sh-ui upgrade-cli (2026-05-10)
+- **JSON Schema for sh-ui.config.json** — `packages/cli/sh-ui.schema.json` 신설. `$schema` 필드를 GitHub raw URL 로 통일 (`https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json`). VS Code / Cursor 등이 자동 fetch 해서 키 자동완성 + enum 값 제안 + 오타 빨간 줄. platform / cssFramework / cssStrategy / theme.base / paths.* / aliases.* 모두 description 과 examples 포함.
+- **조건부 require** — `cssStrategy: "bundled"` 면 `paths.cssBundle` 필수, JSON Schema if/then 으로 자동 검증.
+- **`sh-ui upgrade-cli` 명령** — npm registry 의 latest 버전과 사용자 node_modules 의 설치본 비교. 사이의 changelog highlights (versions.json) 자동 출력. `--apply` 시 사용자 패키지 매니저로 자동 install + 설치 후 doctor / tokens diff 권장 흐름 안내.
+- **모든 템플릿 + init/create + apps/docs 의 sh-ui.config.json 에 \$schema 일괄 적용** — 신규 프로젝트는 처음부터 IDE validation 동작.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.74.0
 
-### v0.64.2 — patch — llms summary 13건 정확성 audit + Base UI render-prop 함정 일괄 명시 (2026-05-08)
-- **summary 사실관계 정정 5건** — `radio` 의 'RadioGroupItem' (실제는 `Radio + RadioGroup`), `toast` 의 'useToast 훅 + ToastProvider' (실제는 `toast()` 함수 + `<Toaster />`, sonner-style), `textarea` 의 'autoResize' (실제 prop 없음), `cn` 의 'tailwind-merge 미사용' (tailwind 변종은 사용함), `pagination` 의 dot/축약 표기. AI 가 헛 import 하던 회귀 차단.
-- **`render` prop 함정 일괄 명시 (6건)** — popover / tooltip / dropdown-menu / accordion / date-picker / combobox 의 Trigger·Close 가 자체로 `<button>` 을 렌더한다는 점 + 자식 button 중첩 대신 Base UI 의 `render` prop 으로 슬롯하는 패턴을 summary 에 박음. (`<PopoverClose render={<Button>닫기</Button>} />`). v0.64.1 의 dialog/select 노트와 동일 톤으로 통일.
-- **exports 명시 보강 (8건)** — popover / tooltip / dropdown-menu / context-menu / menubar / accordion / date-picker / combobox 의 실제 export 이름을 summary 에 펼쳐 적음. AI 가 namespace attach (`Popover.Trigger` 등) 환각으로 import 하던 문제 해소.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.2
+### v0.73.0 — Flutter — theme extract + tokens diff/upgrade Dart 지원 (2026-05-10)
+- **`sh-ui theme extract` Flutter 지원** — `sh_ui_tokens.dart` 의 `static const light/dark` 블록에서 `Color(0xFFRRGGBB)` 를 추출해 sh-ui base64 로 인코딩. alpha 채널은 무시 (#RRGGBB 만 인코딩), `defaultRadius` 픽셀값을 16 으로 나눠 rem 변환.
+- **`sh-ui tokens diff` Flutter 지원** — Dart 의 `static const` 블록을 `<ClassName>.<staticName>` 키로 평탄화 후 field-level 비교. nested 함수 호출 (`Color(0x...)`, `Cubic(0.4, 0, 0.2, 1)`, `Duration(milliseconds: 120)`, `<BoxShadow>[...]`) 를 깊이 카운터로 안전하게 split — 간단 정규식 파서가 깨지지 않음.
+- **`sh-ui tokens upgrade --replace` Flutter 지원** — buildTokensDart 결과로 통째 덮어쓰기.
+- **`--apply` 는 Flutter 미지원** — Dart 클래스에 필드 추가는 (1) class field 선언, (2) constructor 파라미터, (3) 모든 static const 인스턴스화 3 군데를 동시에 수정해야 해서 incremental 적용이 위험. 친절 에러로 안내 + `--replace` 권장.
+- **dispatch 통합** — tokens-cmd / theme-extract 가 platform 으로 분기. React (CSS) 와 Flutter (Dart) 가 같은 명령 표면 공유.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.73.0
 
-### v0.64.1 — patch — llms summary 5종 dot-syntax 정정 + Dialog render-prop 함정 명시 (2026-05-08)
-- **summary 5건 정정 (card / select / dialog / tabs / breadcrumb)** — `compound (Card.Header / ...)` 같이 dot syntax 가 있는 것처럼 적혀 있었지만 실제 구현은 namespace attach 없이 separate export(`CardHeader`, `DialogTitle` 등). MCP `sh_ui_list_components` 와 `apps/docs/public/llms.txt` 가 같은 source 를 읽어 AI 가 잘못된 API 로 코드 생성하던 문제를 차단. card 의 `Body` 도 실제로는 `CardContent` 였던 부분 같이 정정.
-- **Dialog summary 에 `render` prop 함정 명시** — `DialogTrigger` / `DialogClose` 는 자체로 `<button>` 을 렌더하므로 자식으로 커스텀 Button 을 넣으면 button 중첩(invalid HTML). Base UI 의 `render` prop 으로 슬롯 교체하는 패턴 (`<DialogClose render={<Button>닫기</Button>} />`) 을 summary 에 박아 AI 가 onClick 우회 대신 정석을 사용하도록. SelectTrigger 도 동일 노트.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.1
+### v0.72.0 — sh-ui migrate bundled — per-component → bundled 자동 전환 (Phase D 후속) (2026-05-10)
+- **`sh-ui migrate bundled` 명령** — 기존 per-component 프로젝트를 bundled 로 한 번에 전환. paths.components 아래 모든 styles.css 를 bundle 의 마커 섹션으로 누적 + 원본 파일 삭제 + .tsx import 제거 + config 갱신.
+- **dry-run 기본** — 변경 매트릭스 (대상 컴포넌트 + 파일 목록) 출력 후 사용자 확인. `--apply` 로만 실제 변경.
+- **`--bundle <path>` 옵션** — bundle 파일 위치 명시. 미지정 시 paths.styles 또는 paths.tokens 디렉토리 + sh-ui-components.css 를 자동 사용.
+- **완료 후 안내** — globals.css 에 `@import './sh-ui-components.css';` 한 줄 추가하라는 메시지 (자동 편집 안 함 — 사용자 entry CSS 위치/스타일 다양해서).
+- **제약** — cssFramework: plain + React 만. tailwind/css-modules/vanilla-extract 면 친절 에러. 이미 bundled 면 noop.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.72.0
 
-### v0.64.0 — minor — proxy.ts 에 `HOME_REDIRECT` 자리 + input strict-indexing 회귀 fix (2026-05-08)
-- **templates proxy.ts 에 `HOME_REDIRECT` 상수 추가** — `/` 진입 시 redirect 할 path 를 사용자가 한 줄로 지정. 빈 문자열이 기본이라 동작 변화 없음(= `app/page.tsx` 그대로 노출). `auth-jwt` 단독 / `next-intl` 단독 / `auth-jwt + next-intl` 합성 세 케이스 모두 동일 패턴. `/[locale]/page.tsx` 에 redirect RSC 를 따로 만들 필요 없이 미들웨어 한 곳에서 라우팅 게이트 처리.
-- **fix(input)**: `isValidBRN` 의 배열 인덱싱 4곳에 non-null assertion 추가 — `noUncheckedIndexedAccess: true` 인 사용자 프로젝트에서 `parseInt(d[i], 10)` 가 `string | undefined` 로 접혀 typecheck 실패하던 회귀. 직전 길이 가드(`d.length !== 10`) 로 모든 접근이 안전한 구간이라 런타임 동작 변경 없음. plain / tailwind / vanilla-extract / css-modules + `apps/docs` 듀얼카피본 동기화.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.64.0
+### v0.71.2 — fix(doctor) — monorepo walk-up + 컴포넌트-only 패키지 인식 (2026-05-09)
+- **doctor 의 walk-up + monorepo 라우팅** — `add` 와 같은 정책을 적용. monorepo 어느 디렉토리 (apps/web, ui-core 안 등) 에서 실행해도 `packages/ui/ui-core` 와 모든 `packages/ui/ui-apps/ui-*` 를 자동 순회. 각 패키지마다 헤더 출력 + 결과 집계, 하나라도 fail 이면 exit 1.
+- **컴포넌트-only 패키지 인식** — ui-core 처럼 `paths.tokens` 가 없는 패키지는 의도된 형태. 이전엔 'theme 미설정 / 토큰 검증 스킵' 로 fail/warn 폭발 → 이제 ✓ '(컴포넌트 only — 토큰 없음, 검증 스킵)' 한 줄로 정리.
+- **doctor 함수 시그니처** — `process.exit()` 직접 호출 대신 `{ ok, failCount, warnCount }` 반환. 호출부 (bin) 가 monorepo 순회 후 집계 exit. API consumer (테스트, 향후 lint:doctor 등) 도 활용 가능.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.71.2
 
 ## Resources
 
