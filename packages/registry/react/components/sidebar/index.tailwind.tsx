@@ -350,7 +350,12 @@ export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HT
 export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isActive?: boolean;
   size?: "sm" | "md" | "lg";
-  asChild?: boolean;
+  /**
+   * 다른 엘리먼트(예: Next.js `Link`)로 대체. sh-ui 의 슬롯 패턴은 `render` 로 통일.
+   *
+   *   <SidebarMenuButton render={<Link href='/'>홈</Link>} />
+   */
+  render?: React.ReactElement;
   sectionId?: string;
   panelId?: string;
 }
@@ -365,7 +370,7 @@ const menuButtonSize = {
 };
 
 export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
-  function SidebarMenuButton({ className, isActive, size = "md", asChild, sectionId, panelId, onClick, children, ...props }, ref) {
+  function SidebarMenuButton({ className, isActive, size = "md", render, sectionId, panelId, onClick, children, ...props }, ref) {
     const tocActive = useTOCActiveId();
     const ctx = React.useContext(SidebarContext);
     const panelActive = panelId != null && ctx?.activePanel === panelId;
@@ -378,15 +383,19 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
 
     const cls = cn(menuButtonBase, menuButtonSize[size], className);
 
-    if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<Record<string, unknown>>;
-      const merged: Record<string, unknown> = {
-        ...props,
-        onClick: handleClick,
-        className: cn((child.props.className as string) || "", cls),
-        "data-active": resolvedIsActive || undefined,
-      };
-      return React.cloneElement(child, merged);
+    if (render && React.isValidElement(render)) {
+      const child = render as React.ReactElement<{ className?: string; children?: React.ReactNode }>;
+      return React.cloneElement(
+        child,
+        {
+          ref,
+          ...props,
+          onClick: handleClick,
+          className: cn(child.props.className, cls),
+          "data-active": resolvedIsActive || undefined,
+        } as Record<string, unknown>,
+        children ?? child.props.children,
+      );
     }
 
     return (
@@ -414,7 +423,10 @@ export function SidebarMenuSubItem({ className, ...props }: React.HTMLAttributes
 export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   isActive?: boolean;
   size?: "sm" | "md";
-  asChild?: boolean;
+  /**
+   * 다른 anchor 컴포넌트(예: Next.js `Link`)로 대체. sh-ui 의 슬롯 패턴은 `render` 로 통일.
+   */
+  render?: React.ReactElement;
   sectionId?: string;
 }
 
@@ -422,19 +434,23 @@ const menuSubButtonBase =
   "flex items-center gap-[var(--space-2)] h-7 px-[var(--space-2)] rounded-[calc(var(--radius)-2px)] text-[0.8125rem] text-[var(--sidebar-fg)] no-underline transition-[background-color,color] duration-[var(--duration-fast)] min-w-0 [&>span]:flex-1 [&>span]:min-w-0 [&>span]:overflow-hidden [&>span]:[text-overflow:ellipsis] [&>span]:whitespace-nowrap hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-fg)] data-[active]:bg-primary data-[active]:text-primary-foreground data-[active]:font-semibold data-[active]:hover:bg-primary-hover motion-reduce:transition-none";
 
 export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarMenuSubButtonProps>(
-  function SidebarMenuSubButton({ className, isActive, size = "md", asChild, sectionId, children, ...props }, ref) {
+  function SidebarMenuSubButton({ className, isActive, size = "md", render, sectionId, children, ...props }, ref) {
     const tocActive = useTOCActiveId();
     const resolvedIsActive = isActive ?? (sectionId != null ? tocActive === sectionId : undefined);
     const cls = cn(menuSubButtonBase, size === "sm" && "text-[length:var(--text-xs)]", className);
 
-    if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<Record<string, unknown>>;
-      const merged: Record<string, unknown> = {
-        ...props,
-        className: cn((child.props.className as string) || "", cls),
-        "data-active": resolvedIsActive || undefined,
-      };
-      return React.cloneElement(child, merged);
+    if (render && React.isValidElement(render)) {
+      const child = render as React.ReactElement<{ className?: string; children?: React.ReactNode }>;
+      return React.cloneElement(
+        child,
+        {
+          ref,
+          ...props,
+          className: cn(child.props.className, cls),
+          "data-active": resolvedIsActive || undefined,
+        } as Record<string, unknown>,
+        children ?? child.props.children,
+      );
     }
 
     return <a ref={ref} className={cls} data-active={resolvedIsActive || undefined} {...props}>{children}</a>;

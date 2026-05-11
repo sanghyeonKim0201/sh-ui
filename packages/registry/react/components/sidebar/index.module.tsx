@@ -591,12 +591,13 @@ export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLB
    */
   size?: "sm" | "md" | "lg";
   /**
-   * Radix asChild 패턴. children에 `<a>` 등 다른 요소를 넘겨 button 스타일만 입힐 때 사용.
-   * Next.js Link와 결합 시 유용 (`<SidebarMenuButton asChild><Link href=...>`).
+   * 다른 엘리먼트(예: Next.js `Link`)로 대체. 자체로 `<button>` 을 렌더하므로
+   * 자식으로 또 다른 button/anchor 를 넣지 말 것. sh-ui 의 모든 슬롯 패턴은
+   * `render` 로 통일 (Base UI 표준).
    *
-   * @default false
+   *   <SidebarMenuButton render={<Link href='/'>홈</Link>} />
    */
-  asChild?: boolean;
+  render?: React.ReactElement;
   /**
    * `SidebarTOC` 안에서 활성 섹션 id를 자동 동기화. 이 값과 TOC active id가 일치하면
    * `isActive`가 자동으로 `true`가 된다.
@@ -610,12 +611,13 @@ export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLB
 }
 
 /**
- * 메뉴 한 줄을 누를 수 있는 버튼. `asChild`로 `<a>` 등 다른 요소에 스타일만 입힐 수 있고,
- * `sectionId`(SidebarTOC 활성 동기화) / `panelId`(SidebarPanel 토글)를 지정해 활성 상태를 자동 결정한다.
+ * 메뉴 한 줄을 누를 수 있는 버튼. `render` prop 으로 `<a>` 등 다른 엘리먼트로
+ * 슬롯 가능. `sectionId`(SidebarTOC 활성 동기화) / `panelId`(SidebarPanel 토글)를
+ * 지정해 활성 상태를 자동 결정한다.
  */
 export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
   function SidebarMenuButton(
-    { className, isActive, size = "md", asChild, sectionId, panelId, onClick, children, ...props },
+    { className, isActive, size = "md", render, sectionId, panelId, onClick, children, ...props },
     ref
   ) {
     const tocActive = useTOCActiveId();
@@ -640,15 +642,19 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
       styles[`sidebar__menu-button--${size}`],
       className);
 
-    if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<Record<string, unknown>>;
-      const merged: Record<string, unknown> = {
-        ...props,
-        onClick: handleClick,
-        className: cn((child.props.className as string) || "", cls),
-        "data-active": resolvedIsActive || undefined,
-      };
-      return React.cloneElement(child, merged);
+    if (render && React.isValidElement(render)) {
+      const child = render as React.ReactElement<{ className?: string; children?: React.ReactNode }>;
+      return React.cloneElement(
+        child,
+        {
+          ref,
+          ...props,
+          onClick: handleClick,
+          className: cn(child.props.className, cls),
+          "data-active": resolvedIsActive || undefined,
+        } as Record<string, unknown>,
+        children ?? child.props.children,
+      );
     }
 
     return (
@@ -697,18 +703,17 @@ export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HT
    */
   size?: "sm" | "md";
   /**
-   * Radix asChild 패턴. children에 다른 anchor 컴포넌트(예: Next.js Link)를 넘길 때 사용.
-   * @default false
+   * 다른 anchor 컴포넌트(예: Next.js `Link`)로 대체. sh-ui 의 슬롯 패턴은 `render` 로 통일.
    */
-  asChild?: boolean;
+  render?: React.ReactElement;
   /** `SidebarTOC`의 활성 섹션 id 자동 동기화. 일치하면 `isActive`가 자동으로 `true`. */
   sectionId?: string;
 }
 
-/** 서브 메뉴 항목 내부의 링크(`<a>`). `sectionId`로 SidebarTOC 활성 상태와 연동. */
+/** 서브 메뉴 항목 내부의 링크. `render` prop 으로 다른 엘리먼트 슬롯 가능. `sectionId`로 TOC 활성 연동. */
 export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarMenuSubButtonProps>(
   function SidebarMenuSubButton(
-    { className, isActive, size = "md", asChild, sectionId, children, ...props },
+    { className, isActive, size = "md", render, sectionId, children, ...props },
     ref
   ) {
     const tocActive = useTOCActiveId();
@@ -718,14 +723,18 @@ export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarM
       styles[`sidebar__menu-sub-button--${size}`],
       className);
 
-    if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<Record<string, unknown>>;
-      const merged: Record<string, unknown> = {
-        ...props,
-        className: cn((child.props.className as string) || "", cls),
-        "data-active": resolvedIsActive || undefined,
-      };
-      return React.cloneElement(child, merged);
+    if (render && React.isValidElement(render)) {
+      const child = render as React.ReactElement<{ className?: string; children?: React.ReactNode }>;
+      return React.cloneElement(
+        child,
+        {
+          ref,
+          ...props,
+          className: cn(child.props.className, cls),
+          "data-active": resolvedIsActive || undefined,
+        } as Record<string, unknown>,
+        children ?? child.props.children,
+      );
     }
 
     return (
@@ -930,9 +939,7 @@ export function SidebarCollapsibleContent({ children }: { children: React.ReactN
  *   <SidebarTOC sectionIds={["intro", "install", "usage"]}>
  *     <SidebarMenu>
  *       <SidebarMenuItem>
- *         <SidebarMenuButton sectionId="intro" asChild>
- *           <a href="#intro">Intro</a>
- *         </SidebarMenuButton>
+ *         <SidebarMenuButton sectionId="intro" render={<a href="#intro">Intro</a>} />
  *       </SidebarMenuItem>
  *       ...
  *     </SidebarMenu>

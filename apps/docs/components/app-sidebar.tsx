@@ -146,12 +146,15 @@ export function AppSidebar() {
             <SidebarMenu>
               {topLinks.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={isActive(item.href)}>
-                    <Link href={item.href}>
-                      <item.icon />
-                      <span>{tSidebar(`links.${item.key}`)}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                  <SidebarMenuButton
+                    isActive={isActive(item.href)}
+                    render={
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{tSidebar(`links.${item.key}`)}</span>
+                      </Link>
+                    }
+                  />
                 </SidebarMenuItem>
               ))}
 
@@ -164,19 +167,25 @@ export function AppSidebar() {
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={withoutLocale === "/architectures"}>
-                          <Link href="/architectures">
-                            <span>{tCommon("viewAll")}</span>
-                          </Link>
-                        </SidebarMenuSubButton>
+                        <SidebarMenuSubButton
+                          isActive={withoutLocale === "/architectures"}
+                          render={
+                            <Link href="/architectures">
+                              <span>{tCommon("viewAll")}</span>
+                            </Link>
+                          }
+                        />
                       </SidebarMenuSubItem>
                       {architectures.map((a) => (
                         <SidebarMenuSubItem key={a.href}>
-                          <SidebarMenuSubButton asChild isActive={isActive(a.href)}>
-                            <Link href={a.href}>
-                              <span>{a.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
+                          <SidebarMenuSubButton
+                            isActive={isActive(a.href)}
+                            render={
+                              <Link href={a.href}>
+                                <span>{a.title}</span>
+                              </Link>
+                            }
+                          />
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>
@@ -193,19 +202,25 @@ export function AppSidebar() {
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={withoutLocale === "/plugins"}>
-                          <Link href="/plugins">
-                            <span>{tCommon("viewAll")}</span>
-                          </Link>
-                        </SidebarMenuSubButton>
+                        <SidebarMenuSubButton
+                          isActive={withoutLocale === "/plugins"}
+                          render={
+                            <Link href="/plugins">
+                              <span>{tCommon("viewAll")}</span>
+                            </Link>
+                          }
+                        />
                       </SidebarMenuSubItem>
                       {plugins.map((p) => (
                         <SidebarMenuSubItem key={p.href}>
-                          <SidebarMenuSubButton asChild isActive={isActive(p.href)}>
-                            <Link href={p.href}>
-                              <span>{p.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
+                          <SidebarMenuSubButton
+                            isActive={isActive(p.href)}
+                            render={
+                              <Link href={p.href}>
+                                <span>{p.title}</span>
+                              </Link>
+                            }
+                          />
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>
@@ -222,19 +237,25 @@ export function AppSidebar() {
                   <SidebarCollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={withoutLocale === "/components"}>
-                          <Link href="/components">
-                            <span>{tCommon("viewAll")}</span>
-                          </Link>
-                        </SidebarMenuSubButton>
+                        <SidebarMenuSubButton
+                          isActive={withoutLocale === "/components"}
+                          render={
+                            <Link href="/components">
+                              <span>{tCommon("viewAll")}</span>
+                            </Link>
+                          }
+                        />
                       </SidebarMenuSubItem>
                       {components.map((c) => (
                         <SidebarMenuSubItem key={c.href}>
-                          <SidebarMenuSubButton asChild isActive={isActive(c.href)}>
-                            <Link href={c.href}>
-                              <span>{c.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
+                          <SidebarMenuSubButton
+                            isActive={isActive(c.href)}
+                            render={
+                              <Link href={c.href}>
+                                <span>{c.title}</span>
+                              </Link>
+                            }
+                          />
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>

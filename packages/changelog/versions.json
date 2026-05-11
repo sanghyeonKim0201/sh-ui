@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.75.0",
+      "date": "2026-05-11",
+      "title": "minor — 슬롯 패턴 `render` 로 통일 (asChild 제거)",
+      "type": "minor",
+      "highlights": [
+        "**모든 슬롯 패턴이 `render` prop 으로 통일** — Base UI 가 표준으로 사용하는 패턴. 이전엔 Base UI 기반 컴포넌트(Dialog/Popover/Select/DropdownMenu/Accordion/Combobox/Tabs)는 `render`, sh-ui 자체 컴포넌트(Sidebar/Breadcrumb)는 `asChild` 로 혼재. 이번에 후자도 `render` 로 통일해 사용자 mental model 단순화.",
+        "**BreadcrumbLink 에 `render` prop 신규 추가** — 이전엔 슬롯 패턴 자체가 없어 Next Link 와 결합하려면 className 만 수동 복사해야 했음. 이제 `<BreadcrumbLink render={<Link href='/projects'>Projects</Link>} />` 정석.",
+        "**SidebarMenuButton·SidebarMenuSubButton 의 `asChild` 제거 → `render` 로 마이그레이션** — children 으로 자식 element 넘기던 패턴 대신 `render` prop. cloneElement 로 props/className/ref 자동 머지 동작은 동일. apps/docs 의 app-sidebar / sidebar-toc demo / sidebar API 문서까지 일괄 마이그.",
+        "**summary + JSDoc 갱신** — sidebar / breadcrumb summary 에 render prop 사용 패턴 명시. MCP `sh_ui_list_components` 와 `sh_ui_get_component` 둘 다 일관."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.75.0"
+    },
+    {
       "version": "0.74.1",
       "date": "2026-05-11",
       "title": "patch — apps/* templates 에 `@workspace/ui-core` 의존성/paths 누락 수정",

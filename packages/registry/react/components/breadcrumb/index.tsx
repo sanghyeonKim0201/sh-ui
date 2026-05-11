@@ -59,17 +59,45 @@ export const BreadcrumbItem = React.forwardRef<
 
 /* ───────── Link ───────── */
 
-/** 상위 단계로 이동하는 링크. 라우터 사용 시 `asChild` 패턴 대신 직접 `<a>` 속성으로 전달. */
+export interface BreadcrumbLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /**
+   * 다른 anchor 컴포넌트(예: Next.js `Link`)로 대체. 자체로 `<a>` 를 렌더
+   * 하므로 자식으로 또 다른 `<a>` 를 넣으면 anchor 중첩(invalid HTML). 정석은
+   * Base UI 패턴과 동일한 `render` prop:
+   *
+   *   <BreadcrumbLink render={<Link href='/projects'>Projects</Link>} />
+   *
+   * sh-ui 의 모든 슬롯 패턴은 `render` 로 통일 (Base UI 표준 따름).
+   */
+  render?: React.ReactElement;
+}
+
+/** 상위 단계로 이동하는 링크. `render` prop 으로 다른 엘리먼트(Next Link 등) 슬롯 가능. */
 export const BreadcrumbLink = React.forwardRef<
   HTMLAnchorElement,
-  React.AnchorHTMLAttributes<HTMLAnchorElement>
->(function BreadcrumbLink({ className, ...props }, ref) {
+  BreadcrumbLinkProps
+>(function BreadcrumbLink({ className, render, children, ...props }, ref) {
+  const mergedClass = cn("sh-ui-breadcrumb__link", className);
+  if (render && React.isValidElement(render)) {
+    const child = render as React.ReactElement<{
+      className?: string;
+      children?: React.ReactNode;
+    }>;
+    return React.cloneElement(
+      child,
+      {
+        ref,
+        className: cn(child.props.className, mergedClass),
+        ...props,
+      } as Record<string, unknown>,
+      children ?? child.props.children,
+    );
+  }
   return (
-    <a
-      ref={ref}
-      className={cn("sh-ui-breadcrumb__link", className)}
-      {...props}
-    />
+    <a ref={ref} className={mergedClass} {...props}>
+      {children}
+    </a>
   );
 });
 

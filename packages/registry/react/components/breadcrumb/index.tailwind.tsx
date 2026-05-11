@@ -45,19 +45,44 @@ export const BreadcrumbItem = React.forwardRef<
   );
 });
 
+export interface BreadcrumbLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /**
+   * 다른 anchor 컴포넌트(예: Next.js `Link`)로 대체. anchor 중첩 방지 + 라우터
+   * 결합용. sh-ui 의 모든 슬롯 패턴은 `render` 로 통일 (Base UI 표준).
+   *
+   *   <BreadcrumbLink render={<Link href='/projects'>Projects</Link>} />
+   */
+  render?: React.ReactElement;
+}
+
 export const BreadcrumbLink = React.forwardRef<
   HTMLAnchorElement,
-  React.AnchorHTMLAttributes<HTMLAnchorElement>
->(function BreadcrumbLink({ className, ...props }, ref) {
+  BreadcrumbLinkProps
+>(function BreadcrumbLink({ className, render, children, ...props }, ref) {
+  const mergedClass = cn(
+    "text-foreground-muted no-underline rounded-[calc(var(--radius)-2px)] px-0.5 transition-colors duration-[var(--duration-fast)] hover:text-foreground hover:underline hover:underline-offset-[3px] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 motion-reduce:transition-none",
+    className,
+  );
+  if (render && React.isValidElement(render)) {
+    const child = render as React.ReactElement<{
+      className?: string;
+      children?: React.ReactNode;
+    }>;
+    return React.cloneElement(
+      child,
+      {
+        ref,
+        className: cn(child.props.className, mergedClass),
+        ...props,
+      } as Record<string, unknown>,
+      children ?? child.props.children,
+    );
+  }
   return (
-    <a
-      ref={ref}
-      className={cn(
-        "text-foreground-muted no-underline rounded-[calc(var(--radius)-2px)] px-0.5 transition-colors duration-[var(--duration-fast)] hover:text-foreground hover:underline hover:underline-offset-[3px] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring focus-visible:outline-offset-2 motion-reduce:transition-none",
-        className,
-      )}
-      {...props}
-    />
+    <a ref={ref} className={mergedClass} {...props}>
+      {children}
+    </a>
   );
 });
 

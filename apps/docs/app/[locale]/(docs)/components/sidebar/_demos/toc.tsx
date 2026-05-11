@@ -55,9 +55,10 @@ export function SidebarTOCDemo() {
                   <SidebarMenu>
                     {sections.map((s) => (
                       <SidebarMenuItem key={s.id}>
-                        <SidebarMenuButton sectionId={s.id} asChild>
-                          <a href={`#${s.id}`}>{s.title}</a>
-                        </SidebarMenuButton>
+                        <SidebarMenuButton
+                          sectionId={s.id}
+                          render={<a href={`#${s.id}`}>{s.title}</a>}
+                        />
                       </SidebarMenuItem>
                     ))}
                   </SidebarMenu>
