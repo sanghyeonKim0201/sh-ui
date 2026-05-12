@@ -32,6 +32,7 @@ export default function McpPage() {
         code={`npx -y sh-ui-cli mcp init --client claude-code      # → .mcp.json
 npx -y sh-ui-cli mcp init --client cursor           # → .cursor/mcp.json
 npx -y sh-ui-cli mcp init --client claude-desktop   # → 사용자 전역
+npx -y sh-ui-cli mcp init --client codex            # → ~/.codex/config.toml (user 만)
 
 # 사용자 전역 설정에 등록하려면
 npx -y sh-ui-cli mcp init --client claude-code --scope user`}
@@ -90,6 +91,15 @@ npx -y sh-ui-cli mcp init --client claude-code --scope user`}
     }
   }
 }`,
+          },
+          {
+            value: "codex",
+            label: "Codex",
+            language: "toml",
+            code: `# ~/.codex/config.toml (user 전역만 지원)
+[mcp_servers.sh-ui]
+command = "npx"
+args = ["-y", "sh-ui-cli", "mcp"]`,
           },
         ]}
       />
