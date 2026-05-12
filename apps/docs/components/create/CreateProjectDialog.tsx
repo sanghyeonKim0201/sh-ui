@@ -2,11 +2,7 @@
 
 import { useMemo, useState } from "react";
 import {
-  allPlugins,
-  getArchesForPlatform,
   DEFAULT_ARCH,
-  CSS_FRAMEWORKS_SUPPORTED,
-  CSS_FRAMEWORKS_PLANNED,
   CSS_FRAMEWORK_DEFAULT,
 } from "sh-ui-cli/api";
 
@@ -21,7 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   composeCommand,
@@ -33,7 +28,7 @@ import {
   type Plugin,
   type Structure,
 } from "./useCommandComposer";
-import { TemplatePreview } from "./TemplatePreview";
+import { ProjectOptionsForm } from "./ProjectOptionsForm";
 import { encodeTheme, type TokenKey, type Mode, type ThemeConfig } from "./encodeTheme";
 import {
   borderDefaults,
@@ -272,115 +267,18 @@ export function CreateProjectDialog({
             )}
           </div>
 
-          {/* platform */}
-          <div>
-            <Label>플랫폼</Label>
-            <ToggleGroup
-              value={[platform]}
-              onValueChange={(v: any[]) => {
-                const next = v[0] as Platform | undefined;
-                if (next) setPlatform(next);
-              }}
-            >
-              <ToggleGroupItem value="next">Next.js</ToggleGroupItem>
-              <ToggleGroupItem value="flutter">Flutter</ToggleGroupItem>
-            </ToggleGroup>
-          </div>
-
-          {/* next-only */}
-          {platform === "next" && (
-            <>
-              <div>
-                <Label>구조</Label>
-                <ToggleGroup
-                  value={[structure]}
-                  onValueChange={(v: any[]) => {
-                    const next = v[0] as Structure | undefined;
-                    if (next) setStructure(next);
-                  }}
-                >
-                  <ToggleGroupItem value="standalone">Standalone</ToggleGroupItem>
-                  <ToggleGroupItem value="monorepo">Monorepo</ToggleGroupItem>
-                </ToggleGroup>
-              </div>
-              <div>
-                <Label>아키텍처</Label>
-                <ToggleGroup
-                  value={[arch]}
-                  onValueChange={(v: any[]) => {
-                    const next = v[0] as Arch | undefined;
-                    if (next) setArch(next);
-                  }}
-                >
-                  {getArchesForPlatform("next").map((a) => (
-                    <ToggleGroupItem key={a.name} value={a.name} title={a.description}>
-                      {a.name}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-                <div
-                  style={{
-                    marginTop: "0.25rem",
-                    fontSize: "0.6875rem",
-                    color: "var(--foreground-muted)",
-                  }}
-                >
-                  프로젝트 모양 (폴더 구조 / import alias). 자세한 비교는{" "}
-                  <a href="/architectures">Architectures</a> 참고.
-                </div>
-              </div>
-              <div>
-                <Label>CSS 프레임워크</Label>
-                <ToggleGroup
-                  value={[cssFramework]}
-                  onValueChange={(v: any[]) => {
-                    const next = v[0] as CssFramework | undefined;
-                    if (next) setCssFramework(next);
-                  }}
-                >
-                  {CSS_FRAMEWORKS_SUPPORTED.map((fw) => (
-                    <ToggleGroupItem key={fw} value={fw}>{fw}</ToggleGroupItem>
-                  ))}
-                  {CSS_FRAMEWORKS_PLANNED.map((fw) => (
-                    <ToggleGroupItem
-                      key={fw}
-                      value={fw}
-                      disabled
-                      title="곧 지원 예정"
-                    >
-                      {fw}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-                <div
-                  style={{
-                    marginTop: "0.25rem",
-                    fontSize: "0.6875rem",
-                    color: "var(--foreground-muted)",
-                  }}
-                >
-                  변종 미제공 컴포넌트는 add 시 plain 으로 자동 fallback. 모든 styled 컴포넌트는 plain · tailwind · css-modules 3 변종을 보유 (vanilla-extract 는 button/card/input 파일럿만).
-                </div>
-              </div>
-              <div role="group" aria-labelledby="plugins-label">
-                <Label id="plugins-label">플러그인</Label>
-                <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
-                  {allPlugins.map((p) => (
-                    <Button
-                      key={p.name}
-                      type="button"
-                      variant={plugins.has(p.name) ? "primary" : "secondary"}
-                      size="sm"
-                      aria-pressed={plugins.has(p.name)}
-                      onClick={() => togglePlugin(p.name)}
-                    >
-                      {plugins.has(p.name) ? "✓ " : ""}{p.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
+          <ProjectOptionsForm
+            platform={platform}
+            onPlatformChange={setPlatform}
+            structure={structure}
+            onStructureChange={setStructure}
+            arch={arch}
+            onArchChange={setArch}
+            cssFramework={cssFramework}
+            onCssFrameworkChange={setCssFramework}
+            plugins={plugins}
+            onTogglePlugin={togglePlugin}
+          />
 
           {/* package manager + command preview */}
           <div>
@@ -414,19 +312,6 @@ export function CreateProjectDialog({
               </TabsContent>
             </Tabs>
           </div>
-
-          {/* 파일 트리 미리보기 — describeTemplate() 결과를 요약/상세 토글로 표시 */}
-          <TemplatePreview
-            options={{
-              platform,
-              structure,
-              arch,
-              plugins: Array.from(plugins),
-              cssFramework,
-              projectName: projectName || "my-app",
-              appName: "web",
-            }}
-          />
 
           {/* aria-live for copy feedback */}
           <div role="status" aria-live="polite" style={{ position: "absolute", left: -10000 }}>

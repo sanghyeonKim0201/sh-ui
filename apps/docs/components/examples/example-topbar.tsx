@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 import type { ExampleCategory } from "@/examples/types";
 import { ExampleSourcePanel } from "./example-source-panel";
 
@@ -28,13 +29,15 @@ export function ExampleTopBar({ category, title, sources }: ExampleTopBarProps) 
         <h1 className="sh-ui-showcase-topbar__title">{title}</h1>
       </div>
       <div className="sh-ui-showcase-topbar__actions">
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           className="sh-ui-showcase-topbar__code"
           onClick={() => setOpen(true)}
         >
           {"</>"} 코드 보기
-        </button>
+        </Button>
       </div>
       <ExampleSourcePanel sources={sources} open={open} onOpenChange={setOpen} />
     </header>

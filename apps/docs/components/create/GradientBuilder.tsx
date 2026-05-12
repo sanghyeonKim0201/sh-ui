@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Slider } from "@/components/ui/slider";
 import { NumericInput } from "@/components/ui/numeric-input";
@@ -45,21 +46,20 @@ export function GradientBuilder({ value, onChange }: Props) {
               background: "var(--background)",
             }}
           >
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setOpenSlot(isOpen ? null : name)}
               aria-expanded={isOpen}
               style={{
+                height: "auto",
                 display: "grid",
                 gridTemplateColumns: "auto 1fr auto",
-                alignItems: "center",
                 gap: "0.5rem",
-                background: "transparent",
-                border: "none",
                 padding: 0,
+                fontWeight: 400,
                 textAlign: "left",
-                cursor: "pointer",
-                color: "var(--foreground)",
               }}
             >
               <span
@@ -79,7 +79,7 @@ export function GradientBuilder({ value, onChange }: Props) {
               <span style={{ fontSize: "0.6875rem", color: "var(--foreground-muted)" }}>
                 {slot.angle}°
               </span>
-            </button>
+            </Button>
             {isOpen && (
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "0.25rem" }}>
                 {/* angle */}
@@ -120,8 +120,10 @@ export function GradientBuilder({ value, onChange }: Props) {
                           gap: "0.5rem",
                         }}
                       >
-                        <button
+                        <Button
                           type="button"
+                          variant="secondary"
+                          size="sm"
                           onClick={() =>
                             setOpenStop(
                               stopOpen ? null : { slot: name, idx: idx as 0 | 1 },
@@ -134,9 +136,7 @@ export function GradientBuilder({ value, onChange }: Props) {
                             height: "1.5rem",
                             padding: 0,
                             border: stopOpen ? "2px solid var(--foreground)" : "1px solid var(--border)",
-                            borderRadius: "calc(var(--radius) - 4px)",
                             background: stop.color,
-                            cursor: "pointer",
                           }}
                         />
                         <code style={{ fontSize: "0.6875rem", color: "var(--foreground-muted)" }}>

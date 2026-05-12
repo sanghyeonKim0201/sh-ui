@@ -44,7 +44,8 @@
     "./api": {
       "types": "./src/api.d.ts",
       "default": "./src/api.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "bundle-data": "node scripts/copy-data.mjs",

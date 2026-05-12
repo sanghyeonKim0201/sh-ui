@@ -880,8 +880,10 @@
 
 ### v0.80.0 — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기 (2026-05-12)
 - **`sh-ui-cli/api` 에 `describeTemplate()` 추가** — 옵션 조합(platform/structure/arch/plugins/cssFramework/appName) 으로 실제 생성 없이 emit 될 파일 경로 트리를 사전 계산. 베이스 템플릿 + arch 오버레이 + `plugin.files` + cssFramework 분기 + `plugin.transforms` (이동/삭제) 까지 정확히 반영. fs 접근 없는 순수 함수라 브라우저 번들 가능.
-- **docs `/create` 다이얼로그에 파일 미리보기 패널** — 옵션을 토글할 때마다 생성될 파일 목록이 실시간 갱신. 요약(그룹별 카운트) ↔ 상세(폴더 트리) 토글 제공. base / arch / plugin / css / transform 출처가 컬러로 구분.
-- **MCP `sh_ui_describe_template` 툴 노출** — "플러그인 켜면 어떤 파일 추가돼?" 류 질문에 IDE-내 에이전트가 실제 스캐폴드 없이 답할 수 있게. `sh_ui_create_project` 의 dry-run 대용.
+- **`/create` 페이지 헤더에 파일 미리보기 별도 다이얼로그** — `FolderSearch` 아이콘 + 별도 진입. 옵션 picker(`ProjectOptionsForm` 으로 추출) + 요약/상세 토글 + 출처별 lucide 아이콘 분류(base=Package, arch=Layers, sentry=ShieldAlert, intl=Languages, …) + hover/진행막대 시각화. 상세 트리는 폴더/파일 lucide 아이콘 + 컴팩트 indent.
+- **상세 트리에서 파일 클릭 → 내용 viewer** — `/api/template-content` route 가 lazy fetch. 베이스/arch 오버레이 디스크 파일은 readFile, plugin.files 는 plugin 모듈 호출 결과, cssFramework 동적 변종은 placeholder. 출처 라벨 표시.
+- **MCP `sh_ui_describe_template` 툴 노출** — "플러그인 켜면 어떤 파일 추가돼?" 류 질문에 IDE-내 에이전트가 실제 스캐폴드 없이 답할 수 있게.
+- **docs UI raw 컴포넌트 일소** — `/create` 헤더 / TokenEditor / ShowcasePicker / ShowcaseCanvas / ExportBlock / ShadowBuilder / GradientBuilder / 검색 다이얼로그 / examples 갤러리의 raw `<button>`·`<input>` 을 sh-ui `Button`/`Input` 으로 통일. 풀 커스텀 className 영역도 `Button + className` 조합으로 base 동작(hover/focus/active) 받으면서 디자인 유지.
 - **빌드 인프라** — `scripts/build-template-manifest.mjs` 가 `packages/cli/templates/` 를 스캔해 `src/create/templateManifest.js` 로 emit (pretest / prepublishOnly 에서 자동 실행). 템플릿 변경 시 drift 없음.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.80.0
 

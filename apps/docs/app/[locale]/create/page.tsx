@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { FolderSearch, Plus, Settings2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { CreateProjectDialog } from "@/components/create/CreateProjectDialog";
+import { TemplatePreviewDialog } from "@/components/create/TemplatePreview";
 import { TokenEditor } from "@/components/create/TokenEditor";
 import { ShowcasePicker } from "@/components/create/ShowcasePicker";
 import { ShowcaseCanvas } from "@/components/create/ShowcaseCanvas";
@@ -57,6 +60,7 @@ export default function CreateProjectPage() {
   const [hydrated, setHydrated] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [editorDrawerOpen, setEditorDrawerOpen] = useState(false);
   const previewRef = useRef<HTMLElement>(null);
 
@@ -208,46 +212,37 @@ export default function CreateProjectPage() {
         </Link>
         <h1 className="sh-create-header__title">프로젝트 생성</h1>
         <div className="sh-create-header__spacer" />
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           className="sh-create-drawer-toggle"
           onClick={() => setEditorDrawerOpen((v) => !v)}
           aria-expanded={editorDrawerOpen}
-          style={{
-            alignItems: "center",
-            gap: "0.375rem",
-            padding: "0.375rem 0.625rem",
-            fontSize: "0.8125rem",
-            border: "1px solid var(--border)",
-            borderRadius: "calc(var(--radius) - 2px)",
-            background: "var(--background)",
-            color: "var(--foreground)",
-            cursor: "pointer",
-          }}
         >
-          <span aria-hidden>⚙</span>
+          <Settings2 aria-hidden size={14} />
           토큰
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
-          onClick={() => setCreateOpen(true)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.375rem",
-            padding: "0.4375rem 0.875rem",
-            fontSize: "0.8125rem",
-            fontWeight: 500,
-            border: "none",
-            borderRadius: "calc(var(--radius) - 2px)",
-            background: "var(--primary)",
-            color: "var(--primary-foreground)",
-            cursor: "pointer",
-          }}
+          variant="secondary"
+          size="sm"
+          onClick={() => setPreviewOpen(true)}
+          style={{ minWidth: "9.5rem" }}
         >
-          <span aria-hidden>＋</span>
+          <FolderSearch aria-hidden size={14} />
+          파일 미리보기
+        </Button>
+        <Button
+          type="button"
+          variant="primary"
+          size="sm"
+          onClick={() => setCreateOpen(true)}
+          style={{ minWidth: "9.5rem" }}
+        >
+          <Plus aria-hidden size={14} />
           프로젝트 만들기
-        </button>
+        </Button>
       </header>
 
       <div className="sh-create-grid">
@@ -298,6 +293,11 @@ export default function CreateProjectPage() {
         data-open={editorDrawerOpen}
         onClick={() => setEditorDrawerOpen(false)}
         aria-hidden
+      />
+
+      <TemplatePreviewDialog
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
       />
 
       <CreateProjectDialog

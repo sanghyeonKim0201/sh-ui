@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties, RefObject } from "react";
+import { Button } from "@/components/ui/button";
 import { SHOWCASE_BY_ID } from "./showcases";
 
 type Props = {
@@ -81,27 +82,22 @@ export function ShowcaseCanvas({ selectedIds, onRemove, previewVars, containerRe
                 >
                   {s.label}
                 </h3>
-                <button
+                <Button
                   type="button"
+                  variant="secondary"
+                  size="sm"
                   onClick={() => onRemove(s.id)}
                   aria-label={`${s.label} 제거`}
                   style={{
                     width: "1.5rem",
                     height: "1.5rem",
-                    display: "grid",
-                    placeItems: "center",
                     padding: 0,
-                    border: "1px solid var(--border)",
-                    borderRadius: "calc(var(--radius) - 2px)",
-                    background: "transparent",
-                    color: "var(--foreground-muted)",
-                    cursor: "pointer",
                     fontSize: "0.875rem",
                     lineHeight: 1,
                   }}
                 >
                   ×
-                </button>
+                </Button>
               </div>
               <div
                 style={{

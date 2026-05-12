@@ -151,7 +151,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 .sh-create-grid > .sh-create-pane--editor {
   border-left: 1px solid var(--border);
 }
-.sh-create-drawer-toggle {
+/* sh-ui Button 컴포넌트(.sh-ui-button { display: inline-flex }) 의 specificity
+ * (0,1,0) 를 이기기 위해 element selector 추가 (0,1,1). */
+button.sh-create-drawer-toggle {
   display: none;
 }
 .sh-create-drawer-backdrop {
@@ -176,7 +178,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
   .sh-create-pane--editor[data-open="true"] {
     transform: translateX(0);
   }
-  .sh-create-drawer-toggle {
+  button.sh-create-drawer-toggle {
     display: inline-flex;
   }
   .sh-create-drawer-backdrop[data-open="true"] {
