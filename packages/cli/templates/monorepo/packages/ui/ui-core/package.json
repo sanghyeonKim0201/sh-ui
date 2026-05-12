@@ -30,6 +30,7 @@
   "exports": {
     "./components/*": "./src/components/*/index.tsx",
     "./hooks/*": "./src/hooks/*.ts",
-    "./lib/*": "./src/lib/*.ts"
+    "./lib/*": "./src/lib/*.ts",
+    "./styles/*": "./src/styles/*"
   }
 }

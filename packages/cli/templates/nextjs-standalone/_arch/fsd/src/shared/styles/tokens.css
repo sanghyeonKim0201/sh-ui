@@ -20,6 +20,17 @@
   --danger: #DC2626;
   --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
+  --success: #16A34A;
+  --success-foreground: #FFFFFF;
+  --warning: #D97706;
+  --warning-foreground: #FFFFFF;
+  --info: #2563EB;
+  --info-foreground: #FFFFFF;
+  --sidebar-bg: #FAFAFA;
+  --sidebar-fg: #0A0A0A;
+  --sidebar-border: #E5E5E5;
+  --sidebar-accent: #F5F5F5;
+  --sidebar-accent-fg: #0A0A0A;
 }
 @media (prefers-color-scheme: dark) {
   :root:not(.light):not(.dark) {
@@ -37,8 +48,19 @@
     --primary-foreground: #171717;
     --primary-hover: #E5E5E5;
     --danger: #DC2626;
-  --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
+    --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
     --danger-foreground: #FFFFFF;
+    --success: #22C55E;
+    --success-foreground: #052E16;
+    --warning: #F59E0B;
+    --warning-foreground: #451A03;
+    --info: #3B82F6;
+    --info-foreground: #172554;
+    --sidebar-bg: #171717;
+    --sidebar-fg: #FAFAFA;
+    --sidebar-border: #262626;
+    --sidebar-accent: #262626;
+    --sidebar-accent-fg: #FAFAFA;
   }
 }
 .dark {
@@ -58,6 +80,17 @@
   --danger: #DC2626;
   --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;
+  --success: #22C55E;
+  --success-foreground: #052E16;
+  --warning: #F59E0B;
+  --warning-foreground: #451A03;
+  --info: #3B82F6;
+  --info-foreground: #172554;
+  --sidebar-bg: #171717;
+  --sidebar-fg: #FAFAFA;
+  --sidebar-border: #262626;
+  --sidebar-accent: #262626;
+  --sidebar-accent-fg: #FAFAFA;
 }
 /* sh-ui:theme-colors-end */
 

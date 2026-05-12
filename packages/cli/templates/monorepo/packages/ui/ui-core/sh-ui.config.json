@@ -5,7 +5,8 @@
   "paths": {
     "components": "src/components",
     "hooks": "src/hooks",
-    "utils": "src/lib/utils.ts"
+    "utils": "src/lib/utils.ts",
+    "styles": "src/styles"
   },
   "aliases": {
     "components": "@workspace/ui-core/components",
