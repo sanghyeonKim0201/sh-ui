@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.80.1",
+      "date": "2026-05-12",
+      "title": "monorepo create_project P0 fix — paths.styles · sidebar 토큰 · sidebar import",
+      "type": "patch",
+      "highlights": [
+        "**A1/A2: `create_project --structure monorepo` ui-core 가 styles 경로 누락하던 결함 수정** — `sh-ui.config.json` 에 `paths.styles: \"src/styles\"`, `package.json` `exports` 에 `\"./styles/*\": \"./src/styles/*\"` 추가. 이전엔 직후 `add base focus-ring …` 호출이 `paths.styles 가 sh-ui.config.json에 없습니다` 로 즉시 실패.",
+        "**A3: 신규 프로젝트 tokens.css 에 sidebar/success/warning/info 토큰 emit** — sidebar 컴포넌트가 요구하는 `--sidebar-bg / --sidebar-fg / --sidebar-border / --sidebar-accent / --sidebar-accent-fg` 가 신규 프로젝트 tokens.css 에 빠져 sidebar 가 `@theme inline` 매핑에서 undefined 로 풀리던 결함 수정. presets(neutral · slate · rose · emerald · violet) light/dark 양쪽에 5+6 토큰 추가, `OPTIONAL_TOKEN_KEYS` 에 sidebar 키 등록. 베이스라인 3개 tokens.css 템플릿도 동기화.",
+        "**B1: registry/docs sidebar `.tsx` 확장자 import 제거** — `import { Popover } from \"../popover/index.tsx\"` 가 TS5097 (allowImportingTsExtensions) 로 docs typecheck 실패하던 결함 수정. 듀얼 카피본 양쪽 수정."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.80.1"
+    },
+    {
       "version": "0.80.0",
       "date": "2026-05-12",
       "title": "describeTemplate — 프로젝트 생성 전 파일 트리 미리보기",

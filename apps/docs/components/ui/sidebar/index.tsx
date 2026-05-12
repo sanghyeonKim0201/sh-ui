@@ -5,7 +5,7 @@ function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
 import { ChevronRightIcon, PanelLeftIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover/index.tsx";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import "./styles.css";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
