@@ -41,6 +41,7 @@ export const TEMPLATE_MANIFEST = {
       "packages/ui/ui-core/src/components/.gitkeep",
       "packages/ui/ui-core/src/hooks/.gitkeep",
       "packages/ui/ui-core/src/lib/utils.ts",
+      "packages/ui/ui-core/src/styles/.gitkeep",
       "packages/ui/ui-core/tsconfig.json",
       "pnpm-workspace.yaml",
       "tsconfig.json",

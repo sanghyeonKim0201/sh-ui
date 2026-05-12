@@ -19,6 +19,11 @@ const OPTIONAL_TOKEN_KEYS = [
   'info', 'info-foreground',
   'danger-hover',
   'ring',
+  // v0.80.1+ — sidebar cascade 색. 5개 모두 light/dark 양쪽에 정의되어야 emit.
+  // sidebar 컴포넌트의 styles.css 가 .sh-ui-sidebar-wrapper 에 var(--background-subtle) 등으로
+  // fallback 을 두지만, Tailwind @theme inline 의 --color-sidebar-* 가 :root 에서 해석되도록
+  // tokens.css 에도 끌어올린다.
+  'sidebar-bg', 'sidebar-fg', 'sidebar-border', 'sidebar-accent', 'sidebar-accent-fg',
 ];
 
 /**
