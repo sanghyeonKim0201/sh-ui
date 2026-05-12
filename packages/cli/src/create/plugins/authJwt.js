@@ -16,10 +16,14 @@ export const authJwtPlugin = {
   envVars: [
     '# Auth (auth-jwt)',
     'COOKIE_SECURE=false',
+    '# Dev 시 인증 가드 우회 — proxy.ts 가 이 flag 를 보면 /sign-in 으로 redirect 안 함.',
+    '# 실제 백엔드 연동 후엔 반드시 비워야 함 (또는 NODE_ENV 가 production 이면 무시).',
+    'NEXT_PUBLIC_DEV_AUTH_BYPASS=false',
   ],
 
   turboEnvVars: [
     'COOKIE_SECURE',
+    'NEXT_PUBLIC_DEV_AUTH_BYPASS',
   ],
 
   providerImports: [],
@@ -101,10 +105,15 @@ const HOME_REDIRECT = '';
  * - \`/\` + HOME_REDIRECT 설정 → 해당 경로로 리다이렉트
  * - AT 쿠키 없음 + 인증 라우트 아님 → /sign-in 으로 리다이렉트
  * - AT 쿠키 있음 또는 인증 라우트 → 통과
+ * - dev + \`NEXT_PUBLIC_DEV_AUTH_BYPASS=true\` → 가드 전체 우회 (개발용)
  *
  * AT 가 만료된 채 통과한 요청은 BFF (/api/proxy) 가 401 을 받아
  * refreshSession 으로 갱신을 시도한다.
  */
+const DEV_BYPASS =
+  process.env.NODE_ENV !== 'production' &&
+  process.env.NEXT_PUBLIC_DEV_AUTH_BYPASS === 'true';
+
 export default function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const hasToken = !!req.cookies.get('accessToken')?.value;
@@ -114,6 +123,7 @@ export default function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL(HOME_REDIRECT, req.url));
   }
 
+  if (DEV_BYPASS) return NextResponse.next();
   if (isAuthRoute) return NextResponse.next();
   if (!hasToken) return NextResponse.redirect(new URL('/sign-in', req.url));
 

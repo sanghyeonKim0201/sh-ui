@@ -7,18 +7,31 @@ import { Select as BaseSelect } from "@base-ui/react/select";
 import { cn } from "@SH_UI_UTILS@";
 export const Select = BaseSelect.Root;
 
-export function SelectValue({ placeholder, className, ...props }: { placeholder?: string; className?: string } & Omit<
+/**
+ * Select 트리거 안에 현재 선택값을 표시. children 으로 value→label 매핑 함수
+ * 전달 가능 (i18n / 다른 표시 텍스트). 미지정 시 value 를 그대로 렌더.
+ */
+export function SelectValue({
+  placeholder,
+  className,
+  children,
+  ...props
+}: {
+  placeholder?: string;
+  className?: string;
+  children?: (value: unknown) => React.ReactNode;
+} & Omit<
   React.ComponentPropsWithoutRef<typeof BaseSelect.Value>, "children"
 >) {
   return (
     <BaseSelect.Value className={cn("flex-1 text-left overflow-hidden text-ellipsis whitespace-nowrap", className)} {...props}>
-      {(value) =>
-        value !== null && value !== undefined && value !== "" ? (
-          (value as React.ReactNode)
-        ) : (
-          <span className="text-foreground-subtle">{placeholder}</span>
-        )
-      }
+      {(value) => {
+        if (value === null || value === undefined || value === "") {
+          return <span className="text-foreground-subtle">{placeholder}</span>;
+        }
+        if (children) return children(value);
+        return value as React.ReactNode;
+      }}
     </BaseSelect.Value>
   );
 }

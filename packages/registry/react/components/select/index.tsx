@@ -8,24 +8,43 @@ import "./styles.css";
 import { cn } from "@SH_UI_UTILS@";
 export const Select = BaseSelect.Root;
 
-/** shadcn 호환: <SelectValue placeholder="..." /> */
+/**
+ * Select 트리거 안에 현재 선택값을 표시. shadcn 호환 형태.
+ *
+ * 기본은 raw value 를 그대로 렌더. value 와 label 이 다르면 (예: 다국어 라벨)
+ * children 으로 매핑 함수를 전달해 직접 표시할 노드를 만든다.
+ *
+ *   // 1) 기본: value 그대로 표시
+ *   <SelectValue placeholder="선택" />
+ *
+ *   // 2) value → label 매핑 (i18n)
+ *   <SelectValue placeholder="모드">
+ *     {(v) => ({ light: "라이트", dark: "다크" })[v as string] ?? null}
+ *   </SelectValue>
+ */
 export function SelectValue({
   placeholder,
   className,
+  children,
   ...props
-}: { placeholder?: string; className?: string } & Omit<
+}: {
+  placeholder?: string;
+  className?: string;
+  /** value 를 표시 노드로 매핑. 미지정 시 value 를 그대로 렌더. */
+  children?: (value: unknown) => React.ReactNode;
+} & Omit<
   React.ComponentPropsWithoutRef<typeof BaseSelect.Value>,
   "children"
 >) {
   return (
     <BaseSelect.Value className={cn("sh-ui-select__value", className)} {...props}>
-      {(value) =>
-        value !== null && value !== undefined && value !== "" ? (
-          (value as React.ReactNode)
-        ) : (
-          <span className="sh-ui-select__placeholder">{placeholder}</span>
-        )
-      }
+      {(value) => {
+        if (value === null || value === undefined || value === "") {
+          return <span className="sh-ui-select__placeholder">{placeholder}</span>;
+        }
+        if (children) return children(value);
+        return value as React.ReactNode;
+      }}
     </BaseSelect.Value>
   );
 }

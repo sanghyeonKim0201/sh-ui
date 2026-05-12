@@ -3,6 +3,25 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.78.0",
+      "date": "2026-05-12",
+      "title": "minor — Next.js 호환성 fixes (exports map · relative imports · FOUC · SelectValue label · sidebar tokens)",
+      "type": "minor",
+      "highlights": [
+        "**ui-core `package.json` exports map 수정** — `./components/*: ./src/components/*.tsx` → `./src/components/*/index.tsx`. 폴더+index 패턴에 맞춰 `@workspace/ui-core/components/<name>` import 가 즉시 resolve. v0.77 까지 scaffold 직후 매번 손으로 패치해야 했던 버그.",
+        "**registry typecheck 통과** — `markdown-editor` / `sidebar` 의 inter-component 상대 import 에 `/index.tsx` 명시 (node16/nodenext + bundler 둘 다 동작). `sidebar` 의 `PopoverTrigger` render callback 의 implicit `any` 도 명시 타입.",
+        "**`SidebarMenuButton` render 자식 `data-active` 보존** — `cloneElement` 가 사용자가 박은 `data-active` 를 sh-ui 자동값으로 덮어쓰던 버그. 이제 자식 명시값이 우선. 자기 디자인 시스템 active state 를 `[data-active]` 셀렉터로 다루는 흐름 가능.",
+        "**`SelectValue` children render 패턴 추가** — `<SelectValue>{(v) => labels[v as string]}</SelectValue>` 형태로 value → label 매핑. i18n 라벨 노출에 필수 (예: `light` → `라이트`).",
+        "**`CodeEditor` 에 `yaml` / `plaintext` 추가** — `@codemirror/lang-yaml` deps + language enum 확장. YAML convention 파일에 syntax highlighting.",
+        "**Sidebar 토큰 1급 노출** — `--sidebar-bg` / `--sidebar-fg` / `--sidebar-border` / `--sidebar-accent` / `--sidebar-accent-fg` 가 `tokens.css` 메인 셋과 globals.css 의 `@theme inline` 매핑에 정식 등재. Tailwind `bg-sidebar-bg` utility 직접 사용 가능.",
+        "**RootLayout FOUC 차단 inline script** — next-themes mount 전 첫 paint 에 dark/light class 적용. 다크모드 진입 시 light 한 frame 깜빡임 해소. 모든 arch (fsd/flat/mes) × (nextjs-app/nextjs-standalone) 템플릿에 적용.",
+        "**auth-jwt dev bypass flag** — `NEXT_PUBLIC_DEV_AUTH_BYPASS=true` 시 dev 환경에서 proxy.ts 가드 우회. `.env.example` 에 자리표시자 포함, production 빌드에선 무시.",
+        "**i18n boilerplate 확장** — `nav` / `app` / `form` 네임스페이스 + `common` 에 create/name/description/empty 추가.",
+        "**MCP 가이드 추가** — Base UI 합성 함정 (SSR hydration mismatch, `DropdownMenuItem` 안 `DialogTrigger` 가 안 열리는 패턴) 회피 코드 예시를 sh_ui_* 툴 description 에 박음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.78.0"
+    },
+    {
       "version": "0.77.1",
       "date": "2026-05-12",
       "title": "security — `sh_ui_create_project` / `sh_ui_add_app` path traversal 차단",

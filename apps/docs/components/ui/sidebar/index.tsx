@@ -5,7 +5,7 @@ function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
 }
 import { ChevronRightIcon, PanelLeftIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover/index.tsx";
 import "./styles.css";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
@@ -649,7 +649,16 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
       const child = render as React.ReactElement<{
         className?: string;
         children?: React.ReactNode;
+        "data-active"?: string | boolean;
       }>;
+      // 자식이 명시한 data-active 가 있으면 보존 (사용자가 자기 디자인 시스템의
+      // active state 를 data-active 셀렉터로 다루는 경우). 그 외엔 sh-ui 의
+      // 자동 추론값 사용.
+      const childDataActive = child.props["data-active"];
+      const dataActive =
+        childDataActive !== undefined
+          ? childDataActive
+          : resolvedIsActive || undefined;
       return React.cloneElement(
         child,
         {
@@ -657,7 +666,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
           ...props,
           onClick: handleClick,
           className: cx(child.props.className, cls),
-          "data-active": resolvedIsActive || undefined,
+          "data-active": dataActive,
         } as Record<string, unknown>,
         children ?? child.props.children,
       );
@@ -736,14 +745,21 @@ export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarM
       const child = render as React.ReactElement<{
         className?: string;
         children?: React.ReactNode;
+        "data-active"?: string | boolean;
       }>;
+      // 자식이 명시한 data-active 우선 (자기 디자인 시스템 호환).
+      const childDataActive = child.props["data-active"];
+      const dataActive =
+        childDataActive !== undefined
+          ? childDataActive
+          : resolvedIsActive || undefined;
       return React.cloneElement(
         child,
         {
           ref,
           ...props,
           className: cx(child.props.className, cls),
-          "data-active": resolvedIsActive || undefined,
+          "data-active": dataActive,
         } as Record<string, unknown>,
         children ?? child.props.children,
       );
@@ -888,7 +904,7 @@ export function SidebarCollapsibleTrigger({
         openOnHover
         delay={0}
         closeDelay={150}
-        render={(triggerProps) => (
+        render={(triggerProps: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
           <button
             {...triggerProps}
             {...props}
