@@ -3,6 +3,23 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.81.0",
+      "date": "2026-05-13",
+      "title": "atlas P0/P1 일괄 — monorepo create_project · registry · 디자인 톤",
+      "type": "minor",
+      "highlights": [
+        "**monorepo `create_project` 자동완성 흐름** — (1) ui-core `sh-ui.config.json` 의 `cssFramework` 가 항상 `plain` 으로 emit 되던 결함 수정 (호출 시점 인자가 ui-core/ui-app 양쪽에 반영), (2) ui-app `globals.css` 의 `@source` 에 ui-core 경로 누락 수정 (`../../../../ui-core/src/**/*.{ts,tsx}` 자동 박힘), (3) utility CSS 5종 (`base · focus-ring · animations · breakpoints · z-index`) 을 스캐폴드 시점에 ui-core 에 자동 emit + ui-app `globals.css` 에 sentinel-bounded `@import` 자동 박기. `create → dev` 가 매뉴얼 보정 없이 굴러감.",
+        "**registry `.tsx` cross-import 잔존 6건 일괄 제거** — v0.80.1 에서 sidebar/plain 한 개만 고쳤던 누락 후속. sidebar `tailwind/module` + markdown-editor `plain/tailwind/module` + docs 듀얼카피 markdown-editor 의 `../code-editor/index.tsx` / `../popover/index.tsx` 를 확장자 없는 형태로 통일. Next.js + TS 디폴트(`allowImportingTsExtensions: false`) 에서 빌드 깨지던 결함 해소.",
+        "**DropdownMenu / Select / Combobox / ContextMenu z-index `--z-dropdown` (200) → `--z-popover` (500)** — Sidebar offcanvas drawer 의 `--z-overlay` (300) 아래로 깔려 안 보이던 결함 수정. 드로어 안에 있는 메뉴/콤보가 정상 위로 뜸. 듀얼 카피본까지 일괄.",
+        "**DropdownMenuLabel free-standing 자동 self-wrap** — Base UI 의 `Menu.GroupLabel` 이 `Menu.Group` 부재 시 \"MenuGroupRootContext is missing\" 으로 런타임 throw 하던 마이그레이션 함정 해소. 자체 Context 로 부모 Group 감지, 없으면 Label 이 스스로 `Menu.Group` 으로 wrap. 명시적 Group 안에 두면 중첩 없이 그대로 동작 — shadcn 코드 그대로 옮겨와도 OK.",
+        "**디폴트 control 사이즈 다운 (40 → 36)** — `--control-md` 가 데스크탑 SaaS/대시보드 톤에 비해 통통하다는 atlas 측정(`size='sm'` 24건, `size='lg'` 0건) 반영. `--control-sm/md/lg` 를 `2rem / 2.25rem / 2.5rem` (32/36/40) 로. 모바일 터치 점프(44) 는 그대로. 기존 프로젝트의 `tokens.css` 는 미변경 — 신규 프로젝트만 새 디폴트.",
+        "**Button `white-space: nowrap`** — 좁은 컨테이너에서 한글 라벨이 줄바꿈되며 버튼 높이 60px+ 로 부풀던 결함 수정. 4 변종 (plain/tailwind/module/vanilla-extract) + 듀얼카피 일괄.",
+        "**`noUncheckedIndexedAccess` 디폴트 off** — 스캐폴드의 `typescript-config/base.json` + nextjs-standalone 3 arch 의 tsconfig 에서 제거. registry 컴포넌트들이 index access 결과를 narrowing 없이 쓰는 패턴이라 신규 사용자가 첫 `typecheck` 부터 실패하던 결함 해소.",
+        "**`add tokens` 가 ui-core 에 대해 던지는 에러 메시지에 가이드 추가** — `paths.tokens 가 설정에 없습니다` 만 던지던 것을 v0.65 layout 설명 + `cwd` 를 `packages/ui/ui-apps/ui-<name>` 로 바꾸라는 한 줄 안내로 보강."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.81.0"
+    },
+    {
       "version": "0.80.1",
       "date": "2026-05-12",
       "title": "monorepo create_project P0 fix — paths.styles · sidebar 토큰 · sidebar import",

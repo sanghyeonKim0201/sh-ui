@@ -139,7 +139,7 @@ describe('Phase 2 — 옵셔널 카테고리 빌더', () => {
   const spacing = { '0': 0, '1': 4, '2': 8, '3': 12, '4': 16, '5': 20, '6': 24, '8': 32, '10': 40, '12': 48, '16': 64 };
   const typography = { xs: 12, sm: 14, base: 16, lg: 18, xl: 20, '2xl': 24, '3xl': 30, '4xl': 36 };
   const weights = { regular: 400, medium: 500, semibold: 600, bold: 700 };
-  const controls = { sm: 32, md: 40, lg: 48 };
+  const controls = { sm: 32, md: 36, lg: 40 };
   const borders = { width: 1, widthStrong: 2 };
   const durations = { fast: 120, base: 160, slow: 200 };
 
@@ -159,7 +159,7 @@ describe('Phase 2 — 옵셔널 카테고리 빌더', () => {
 
   it('CSS weights / controls / borders / durations', () => {
     expect(buildCssWeightsBlock(weights)).toContain('--weight-regular: 400;');
-    expect(buildCssControlsBlock(controls)).toContain('--control-md: 2.5rem;');
+    expect(buildCssControlsBlock(controls)).toContain('--control-md: 2.25rem;');
     expect(buildCssBordersBlock(borders)).toContain('--border-width: 1px;');
     expect(buildCssBordersBlock(borders)).toContain('--border-width-strong: 2px;');
     expect(buildCssDurationsBlock(durations)).toContain('--duration-fast: 120ms;');
@@ -191,7 +191,7 @@ describe('Phase 2 — 옵셔널 카테고리 빌더', () => {
   });
 
   it('Dart controls / borders — 소수점 1자리', () => {
-    expect(buildDartControlsBlock(controls)).toContain('md: 40.0,');
+    expect(buildDartControlsBlock(controls)).toContain('md: 36.0,');
     expect(buildDartBordersBlock(borders)).toContain('normal: 1.0,');
     expect(buildDartBordersBlock(borders)).toContain('strong: 2.0,');
   });

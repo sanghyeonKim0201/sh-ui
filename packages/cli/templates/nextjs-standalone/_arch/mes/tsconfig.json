@@ -13,7 +13,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "noUncheckedIndexedAccess": true,
     "allowJs": true,
     "jsx": "preserve",
     "noEmit": true,

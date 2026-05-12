@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cn } from "@SH_UI_UTILS@";
 import { ChevronRightIcon, PanelLeftIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover/index.tsx";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

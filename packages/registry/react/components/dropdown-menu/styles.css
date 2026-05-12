@@ -17,7 +17,7 @@
 
 .sh-ui-dm__positioner {
   outline: none;
-  z-index: var(--z-dropdown);
+  z-index: var(--z-popover);
 }
 
 .sh-ui-dm__content {

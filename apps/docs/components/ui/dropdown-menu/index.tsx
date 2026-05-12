@@ -151,18 +151,28 @@ export const DropdownMenuRadioItem = React.forwardRef<
   );
 });
 
-/* ───────── Group / Label ───────── */
+/* ───────── Group / Label ─────────
+ *
+ * Base UI Menu.GroupLabel 은 Menu.Group 안에 있어야만 동작 (없으면 런타임 throw —
+ * "MenuGroupRootContext is missing"). shadcn 등에선 Label 이 free-standing 으로도
+ * 쓰여서 마이그레이션 시 사용자가 잘 찔린다. DropdownMenuLabel 이 부모 Group 부재 시
+ * 자체로 Group 으로 self-wrap 하도록 Context 로 감지.
+ */
+
+const InDmGroupContext = React.createContext(false);
 
 export const DropdownMenuGroup = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Group>>
 >(function DropdownMenuGroup({ className, ...props }, ref) {
   return (
-    <BaseMenu.Group
-      ref={ref}
-      className={cx("sh-ui-dm__group", className)}
-      {...props}
-    />
+    <InDmGroupContext.Provider value={true}>
+      <BaseMenu.Group
+        ref={ref}
+        className={cx("sh-ui-dm__group", className)}
+        {...props}
+      />
+    </InDmGroupContext.Provider>
   );
 });
 
@@ -170,12 +180,19 @@ export const DropdownMenuLabel = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.GroupLabel>>
 >(function DropdownMenuLabel({ className, ...props }, ref) {
-  return (
+  const inGroup = React.useContext(InDmGroupContext);
+  const label = (
     <BaseMenu.GroupLabel
       ref={ref}
       className={cx("sh-ui-dm__label", className)}
       {...props}
     />
+  );
+  if (inGroup) return label;
+  return (
+    <InDmGroupContext.Provider value={true}>
+      <BaseMenu.Group>{label}</BaseMenu.Group>
+    </InDmGroupContext.Provider>
   );
 });
 

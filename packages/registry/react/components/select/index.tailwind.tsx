@@ -76,7 +76,7 @@ export const SelectContent = React.forwardRef<
   }
 >(({ className, children, container, ...props }, ref) => (
   <BaseSelect.Portal container={container}>
-    <BaseSelect.Positioner className="outline-none z-[var(--z-dropdown)]" sideOffset={4} align="start">
+    <BaseSelect.Positioner className="outline-none z-[var(--z-popover)]" sideOffset={4} align="start">
       <BaseSelect.Popup
         ref={ref}
         className={cn(
