@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   code: string;
@@ -41,21 +42,21 @@ export function ExportBlock({ code, filename = "tokens.css" }: Props) {
         }}
       >
         <code style={{ color: "var(--foreground)" }}>{filename}</code>
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           onClick={onCopy}
           style={{
+            height: "auto",
             padding: "0.25rem 0.5rem",
-            background: "var(--background)",
-            color: "var(--foreground-muted)",
-            border: "1px solid var(--border)",
-            borderRadius: "calc(var(--radius) - 2px)",
             fontSize: "0.75rem",
-            cursor: "pointer",
+            fontWeight: 400,
+            color: "var(--foreground-muted)",
           }}
         >
           {copied ? "Copied" : "Copy"}
-        </button>
+        </Button>
       </div>
       <pre
         style={{

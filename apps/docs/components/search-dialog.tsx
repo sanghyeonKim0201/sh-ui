@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import "./search-dialog.css";
 
 type IndexRecord = {
@@ -207,8 +208,10 @@ export function SearchDialog() {
 
   return (
     <>
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="md"
         className="sh-ui-search-trigger"
         onClick={() => setOpen(true)}
         aria-label={t("triggerLabel")}
@@ -216,7 +219,7 @@ export function SearchDialog() {
         <SearchIcon size={14} aria-hidden className="sh-ui-search-trigger__icon" />
         <span className="sh-ui-search-trigger__label">{t("triggerPlaceholder")}</span>
         <kbd className="sh-ui-search-trigger__kbd">{mac ? "⌘ K" : "Ctrl K"}</kbd>
-      </button>
+      </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sh-ui-search-dialog">
@@ -268,8 +271,10 @@ export function SearchDialog() {
                           : buildSnippet(rec?.body ?? "", query);
                         return (
                           <li key={hit.id}>
-                            <button
+                            <Button
                               type="button"
+                              variant="ghost"
+                              size="md"
                               id={`sh-ui-search-result-${idx}`}
                               role="option"
                               aria-selected={idx === active}
@@ -286,7 +291,7 @@ export function SearchDialog() {
                                   {highlight(sub, query)}
                                 </span>
                               )}
-                            </button>
+                            </Button>
                           </li>
                         );
                       })}

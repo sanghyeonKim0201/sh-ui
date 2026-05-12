@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { type KeyboardEvent, type ReactNode, useMemo } from "react";
+import { Button } from "@/components/ui/button";
 import type { ExampleCategory } from "@/examples/types";
 
 const CATEGORIES: { value: ExampleCategory | "all"; label: string }[] = [
@@ -82,8 +83,10 @@ export function ExampleGallery({ cards }: ExampleGalleryProps) {
         {CATEGORIES.map((c, index) => {
           const isActive = activeCat === c.value;
           return (
-            <button
+            <Button
               key={c.value}
+              variant={isActive ? "primary" : "ghost"}
+              size="sm"
               role="tab"
               aria-selected={isActive}
               tabIndex={isActive ? 0 : -1}
@@ -94,7 +97,7 @@ export function ExampleGallery({ cards }: ExampleGalleryProps) {
               type="button"
             >
               {c.label}
-            </button>
+            </Button>
           );
         })}
       </div>
@@ -102,13 +105,15 @@ export function ExampleGallery({ cards }: ExampleGalleryProps) {
       {filtered.length === 0 ? (
         <div className="sh-ui-example-gallery__empty" role="status">
           <p>해당 카테고리의 예제가 아직 없습니다.</p>
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={reset}
             className="sh-ui-example-gallery__reset"
           >
             전체 예제 보기
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="sh-ui-example-gallery__grid">

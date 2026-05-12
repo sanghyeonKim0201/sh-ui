@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { NumericInput } from "@/components/ui/numeric-input";
 
@@ -311,8 +312,10 @@ export function ShadowBuilder({
 
       {/* Color + Alpha */}
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           onClick={() => setColorOpen((v) => !v)}
           aria-label={`${label} color`}
           aria-expanded={colorOpen}
@@ -321,9 +324,7 @@ export function ShadowBuilder({
             height: "1.5rem",
             padding: 0,
             border: colorOpen ? "2px solid var(--foreground)" : "1px solid var(--border)",
-            borderRadius: "calc(var(--radius) - 4px)",
             background: parts.color,
-            cursor: "pointer",
             flexShrink: 0,
           }}
         />

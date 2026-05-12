@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { THEME_PRESETS } from "sh-ui-cli/api";
+import { Button } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -166,28 +167,23 @@ export function TokenEditor({
         <strong style={{ fontSize: "0.875rem" }}>토큰 편집</strong>
         <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
           {onClose && (
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
               aria-label="닫기"
               className="sh-create-drawer-toggle"
               style={{
                 width: "1.5rem",
                 height: "1.5rem",
-                display: "grid",
-                placeItems: "center",
                 padding: 0,
-                border: "1px solid var(--border)",
-                borderRadius: "calc(var(--radius) - 2px)",
-                background: "transparent",
-                color: "var(--foreground-muted)",
-                cursor: "pointer",
                 fontSize: "0.875rem",
                 lineHeight: 1,
               }}
             >
               ×
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -224,9 +220,11 @@ export function TokenEditor({
           {Object.entries(THEME_PRESETS).map(([name, preset]) => {
             const swatch = mode === "light" ? preset.light.primary : preset.dark.primary;
             return (
-              <button
+              <Button
                 key={name}
                 type="button"
+                variant="secondary"
+                size="sm"
                 onClick={() =>
                   onApplyPreset({
                     light: preset.light as Record<TokenKey, string>,
@@ -236,16 +234,11 @@ export function TokenEditor({
                 }
                 title={preset.label}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.375rem",
+                  height: "auto",
                   padding: "0.25rem 0.5rem",
                   fontSize: "0.75rem",
-                  border: "1px solid var(--border)",
-                  borderRadius: "calc(var(--radius) - 2px)",
-                  background: "transparent",
+                  fontWeight: 400,
                   color: "var(--foreground-muted)",
-                  cursor: "pointer",
                 }}
               >
                 <span
@@ -258,7 +251,7 @@ export function TokenEditor({
                   }}
                 />
                 {name}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -284,23 +277,19 @@ export function TokenEditor({
               {(Object.entries(BASE_TONES) as [BaseToneName, BaseTone][]).map(([name, tone]) => {
                 const active = activeBaseTone === name;
                 return (
-                  <button
+                  <Button
                     key={name}
                     type="button"
+                    variant={active ? "primary" : "secondary"}
+                    size="sm"
                     onClick={() => onApplyBaseTone(tone)}
                     aria-pressed={active}
                     title={tone.label}
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.375rem",
+                      height: "auto",
                       padding: "0.25rem 0.5rem",
                       fontSize: "0.75rem",
-                      border: active ? "1px solid var(--foreground)" : "1px solid var(--border)",
-                      borderRadius: "calc(var(--radius) - 2px)",
-                      background: active ? "var(--background-muted)" : "transparent",
-                      color: active ? "var(--foreground)" : "var(--foreground-muted)",
-                      cursor: "pointer",
+                      fontWeight: 400,
                     }}
                   >
                     <span
@@ -313,7 +302,7 @@ export function TokenEditor({
                       }}
                     />
                     {tone.label}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
@@ -546,22 +535,21 @@ export function TokenEditor({
           {RADIUS_PRESETS.map((p) => {
             const active = Math.abs(radius - p.value) < 0.001;
             return (
-              <button
+              <Button
                 key={p.label}
                 type="button"
+                variant={active ? "primary" : "secondary"}
+                size="sm"
                 onClick={() => onRadiusChange(p.value)}
                 style={{
+                  height: "auto",
                   padding: "0.25rem 0.5rem",
                   fontSize: "0.75rem",
-                  border: "1px solid var(--border)",
-                  borderRadius: "calc(var(--radius) - 2px)",
-                  background: active ? "var(--background-muted)" : "transparent",
-                  color: active ? "var(--foreground)" : "var(--foreground-muted)",
-                  cursor: "pointer",
+                  fontWeight: 400,
                 }}
               >
                 {p.label}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -600,22 +588,22 @@ function ResetButton({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <Button
       type="button"
+      variant="secondary"
+      size="sm"
       onClick={onClick}
       style={{
+        height: "auto",
         fontSize: "0.6875rem",
         padding: "0.25rem 0.375rem",
-        background: "transparent",
-        border: "1px solid var(--border)",
-        borderRadius: "calc(var(--radius) - 2px)",
-        cursor: "pointer",
+        fontWeight: 400,
         color: "var(--foreground-muted)",
         whiteSpace: "nowrap",
       }}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 
@@ -644,26 +632,22 @@ function SegmentedTabs<T extends string>({
       }}
     >
       {options.map((o) => (
-        <button
+        <Button
           key={o.value}
           type="button"
           role="tab"
+          variant={active === o.value ? "primary" : "ghost"}
+          size="sm"
           aria-selected={active === o.value}
           onClick={() => onChange(o.value)}
           style={{
+            height: "auto",
             padding: "0.375rem",
-            border: "none",
-            borderRadius: "calc(var(--radius) - 4px)",
             fontSize: "0.75rem",
-            fontWeight: 500,
-            cursor: "pointer",
-            background: active === o.value ? "var(--background)" : "transparent",
-            color: active === o.value ? "var(--foreground)" : "var(--foreground-muted)",
-            transition: "background 120ms, color 120ms",
           }}
         >
           {o.label}
-        </button>
+        </Button>
       ))}
     </div>
   );
@@ -693,8 +677,10 @@ function ColorRow({
           fontSize: "0.8125rem",
         }}
       >
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           onClick={onToggle}
           aria-expanded={open}
           aria-label={`--${name} 편집`}
@@ -703,9 +689,7 @@ function ColorRow({
             height: "1.75rem",
             padding: 0,
             border: open ? "2px solid var(--foreground)" : "1px solid var(--border)",
-            borderRadius: "calc(var(--radius) - 2px)",
             background: value,
-            cursor: "pointer",
           }}
         />
         <code

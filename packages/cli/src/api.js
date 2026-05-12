@@ -31,3 +31,5 @@ export {
   isKnownArch,
 } from './create/architectures/index.js';
 export { THEME_PRESETS, THEME_PRESET_NAMES } from './create/theme/presets.js';
+export { describeTemplate } from './create/describeTemplate.js';
+export { TEMPLATE_MANIFEST } from './create/templateManifest.js';

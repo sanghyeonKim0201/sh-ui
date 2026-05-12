@@ -120,3 +120,51 @@ export interface ThemePreset {
 
 export const THEME_PRESETS: Record<ThemePresetName, ThemePreset>;
 export const THEME_PRESET_NAMES: readonly ThemePresetName[];
+
+/* ─────── 템플릿 트리 미리보기 ─────── */
+
+/**
+ * 옵션 조합으로 프로젝트 생성 시 어떤 파일이 emit 되는지 사전 계산.
+ * fs 접근 없는 순수 함수 — 브라우저 사용 가능.
+ */
+export interface DescribeTemplateOptions {
+  platform?: CreatePlatform;
+  /** next 일 때만 의미. */
+  structure?: CreateStructure;
+  /** next 일 때 'fsd' | 'flat' | 'mes'. */
+  arch?: string;
+  /** 플러그인 name 배열. */
+  plugins?: string[];
+  cssFramework?: CssFrameworkSupported;
+  projectName?: string;
+  /** monorepo 첫 앱 이름. 기본 'web'. */
+  appName?: string;
+}
+
+export interface DescribeTemplateGroup {
+  /** 'base' | 'arch' | `plugin-${name}` | 'css' | 'transform' | 'monorepo' | 'ui-app' | `app-${id}` */
+  id: string;
+  label: string;
+  paths: string[];
+}
+
+export interface DescribeTemplateResult {
+  /** 모든 파일 경로 (POSIX, 정렬). */
+  files: string[];
+  /** 출처별 분류 — 빈 그룹은 제외. */
+  groups: DescribeTemplateGroup[];
+}
+
+export function describeTemplate(
+  options?: DescribeTemplateOptions,
+): DescribeTemplateResult;
+
+/**
+ * 빌드 타임에 emit 되는 raw 템플릿 인덱스. describeTemplate() 가 내부적으로 사용.
+ * 외부 노출은 디버깅 / 마이그레이션 도구용.
+ */
+export interface TemplateManifestEntry {
+  base: string[];
+  arches?: Record<string, string[]>;
+}
+export const TEMPLATE_MANIFEST: Record<string, TemplateManifestEntry>;

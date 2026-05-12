@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.74.1 (2026-05-11) — patch — apps/* templates 에 `@workspace/ui-core` 의존성/paths 누락 수정
+**최신 버전**: v0.80.0 (2026-05-12) — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기
 
 ## React Components
 
