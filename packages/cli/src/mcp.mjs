@@ -32,7 +32,7 @@ import { list } from "./list.mjs";
 import { remove } from "./remove.mjs";
 import { renameApp } from "./rename-app.mjs";
 import { migrateToV065 } from "./migrate-v065.mjs";
-import { createProject, addApp } from "./create/generator.js";
+import { createProject, addApp, validateProjectName } from "./create/generator.js";
 import {
   getRegistryRoot,
   getSummariesPath,
@@ -354,6 +354,13 @@ export async function startMcpServer() {
           ],
         };
       }
+      // path traversal 차단 — existsSync probe / fs.remove 흐름이 임의 경로로
+      // 흘러가지 않도록 입력 검증을 가장 먼저.
+      try {
+        validateProjectName(input.name, "name");
+      } catch (e) {
+        return { isError: true, content: [{ type: "text", text: e.message }] };
+      }
       const targetParent = resolveCwd(input);
       const targetDir = resolve(targetParent, input.name);
       if (existsSync(targetDir) && !input.force) {
@@ -413,6 +420,11 @@ export async function startMcpServer() {
       },
     },
     async (input) => {
+      try {
+        validateProjectName(input.name, "name");
+      } catch (e) {
+        return { isError: true, content: [{ type: "text", text: e.message }] };
+      }
       const text = await captureConsole(() =>
         addApp({
           name: input.name,
