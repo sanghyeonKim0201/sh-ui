@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.79.0",
+      "date": "2026-05-12",
+      "title": "no-restricted toLocaleDateString — SSR hydration mismatch 회귀 가드",
+      "type": "minor",
+      "highlights": [
+        "**ESLint `no-restricted-syntax` 룰 추가** — 인자 0개의 `.toLocaleDateString()` / `.toLocaleString()` / `.toLocaleTimeString()` 호출을 error 로 차단. Node 기본 로케일(en-US) 과 브라우저 로케일(ko-KR) 이 달라 SSR 출력이 hydrate 시 mismatch 나던 함정의 회귀 가드.",
+        "**대체 경로 안내가 에러 메시지에 박힘** — `@/src/shared/lib/formatDate` 의 `formatDate` / `formatDateTime` (default `ko-KR`), next-intl locale 추종이면 `useFormatDate` 훅, 숫자는 `formatPrice`. AST selector 가 `arguments.length === 0` 만 매칭하므로 의도된 locale 명시 호출 (`toLocaleDateString('ko-KR', { ... })`) 은 통과.",
+        "**적용 범위** — monorepo `@workspace/eslint-config/base` (next.js · react-internal 등 모든 워크스페이스 config 가 상속) + `nextjs-standalone` 의 fsd / flat / mes arch 오버레이 3종.",
+        "**템플릿 CLAUDE.md 추가** — `nextjs-standalone` / `monorepo` 시작 템플릿에 `CLAUDE.md` 신규. 날짜·숫자 포맷 컨벤션 + sh-ui 컴포넌트 우선 + 토큰 사용 원칙 명시. AI 에이전트가 코드 작성 시점에 컨텍스트로 읽고 미리 피할 수 있게."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.79.0"
+    },
+    {
       "version": "0.78.0",
       "date": "2026-05-12",
       "title": "minor — Next.js 호환성 fixes (exports map · relative imports · FOUC · SelectValue label · sidebar tokens)",
