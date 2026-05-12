@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.80.0",
+      "date": "2026-05-12",
+      "title": "describeTemplate — 프로젝트 생성 전 파일 트리 미리보기",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui-cli/api` 에 `describeTemplate()` 추가** — 옵션 조합(platform/structure/arch/plugins/cssFramework/appName) 으로 실제 생성 없이 emit 될 파일 경로 트리를 사전 계산. 베이스 템플릿 + arch 오버레이 + `plugin.files` + cssFramework 분기 + `plugin.transforms` (이동/삭제) 까지 정확히 반영. fs 접근 없는 순수 함수라 브라우저 번들 가능.",
+        "**docs `/create` 다이얼로그에 파일 미리보기 패널** — 옵션을 토글할 때마다 생성될 파일 목록이 실시간 갱신. 요약(그룹별 카운트) ↔ 상세(폴더 트리) 토글 제공. base / arch / plugin / css / transform 출처가 컬러로 구분.",
+        "**MCP `sh_ui_describe_template` 툴 노출** — \"플러그인 켜면 어떤 파일 추가돼?\" 류 질문에 IDE-내 에이전트가 실제 스캐폴드 없이 답할 수 있게. `sh_ui_create_project` 의 dry-run 대용.",
+        "**빌드 인프라** — `scripts/build-template-manifest.mjs` 가 `packages/cli/templates/` 를 스캔해 `src/create/templateManifest.js` 로 emit (pretest / prepublishOnly 에서 자동 실행). 템플릿 변경 시 drift 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.80.0"
+    },
+    {
       "version": "0.79.0",
       "date": "2026-05-12",
       "title": "no-restricted toLocaleDateString — SSR hydration mismatch 회귀 가드",

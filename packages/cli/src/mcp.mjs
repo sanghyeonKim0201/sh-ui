@@ -49,6 +49,7 @@ import {
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
 import { allArchitectures } from "./create/architectures/index.js";
+import { describeTemplate } from "./create/describeTemplate.js";
 import { THEME_PRESET_NAMES } from "./create/theme/presets.js";
 import { decodeTheme } from "./create/theme/decode.js";
 import { encodeTheme } from "./create/theme/encode.js";
@@ -796,6 +797,51 @@ export async function startMcpServer() {
           skipImportRewrite: input.skipImportRewrite === true,
         });
         return textResult(summary);
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: e.message }],
+        };
+      }
+    },
+  );
+
+  // 템플릿 트리 사전 미리보기 — 실제 생성 없이 옵션 조합으로 어떤 파일이 emit 되는지.
+  // apps/docs 의 CreateProjectDialog 와 같은 출력 (sh-ui-cli/api 의 describeTemplate).
+  server.registerTool(
+    "sh_ui_describe_template",
+    {
+      description:
+        "sh-ui create 호출 시 어떤 파일이 생기는지 사전 계산 — 실제 fs 변경 없음. " +
+        "사용자가 '미리 보고 싶다' / '어떤 파일 생기는지' / '플러그인 켜면 뭐가 추가돼?' 류 질문을 하면 이 툴 사용 (sh_ui_create_project 의 dry-run 대용). " +
+        "베이스 템플릿 + arch 오버레이 + plugin.files + cssFramework 분기 + plugin.transforms (이동/삭제) 까지 정확히 반영. " +
+        "반환: { files: 정렬된 전체 경로, groups: 출처별 분류 (base/arch/plugin-*/css/transform) }.",
+      inputSchema: {
+        platform: z.enum(CREATE_PLATFORMS)
+          .describe("타겟 플랫폼"),
+        structure: z.enum(CREATE_STRUCTURES).optional()
+          .describe("Next.js 구조. platform=next 일 때 의미. 기본 standalone"),
+        arch: z.enum(ARCH_NAMES).optional()
+          .describe("아키텍처. platform=next 일 때 의미. 기본 fsd"),
+        plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
+          .describe(`Next.js 플러그인 배열 (${PLUGIN_NAMES.join(', ')}). 미지정 빈 배열`),
+        cssFramework: z.enum(CSS_FRAMEWORKS).optional()
+          .describe("CSS 프레임워크. 기본 plain. css-modules 면 page.module.css 등 추가"),
+        appName: z.string().optional()
+          .describe("monorepo 첫 앱 이름. 기본 web"),
+      },
+    },
+    async (input) => {
+      try {
+        const result = describeTemplate({
+          platform: input.platform,
+          structure: input.structure,
+          arch: input.arch,
+          plugins: input.plugins,
+          cssFramework: input.cssFramework,
+          appName: input.appName,
+        });
+        return jsonResult(result);
       } catch (e) {
         return {
           isError: true,

@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.74.1 (2026-05-11) — patch — apps/* templates 에 `@workspace/ui-core` 의존성/paths 누락 수정
+**최신 버전**: v0.80.0 (2026-05-12) — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기
 
 ## React — Components
 
@@ -125,7 +125,7 @@
 - Type: component
 - Summary: CodeMirror 6 기반 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.
 - Install: `npx sh-ui-cli add code-editor`
-- npm/pub deps: codemirror, @codemirror/state, @codemirror/view, @codemirror/lang-javascript, @codemirror/lang-json, @codemirror/lang-css, @codemirror/lang-html, @codemirror/lang-markdown
+- npm/pub deps: codemirror, @codemirror/state, @codemirror/view, @codemirror/lang-javascript, @codemirror/lang-json, @codemirror/lang-css, @codemirror/lang-html, @codemirror/lang-markdown, @codemirror/lang-yaml
 - Registry deps: utils (자동 설치됨)
 - Import: `@/components/ui/code-editor`
 - Docs: https://github.com/sanghyeonKim0201/sh-ui/tree/live/apps/docs/app/components/code-editor
@@ -878,41 +878,47 @@
 
 ## 최근 릴리즈 (최대 5개)
 
-### v0.74.1 — patch — apps/* templates 에 `@workspace/ui-core` 의존성/paths 누락 수정 (2026-05-11)
-- **templates 의 apps/* 가 ui-core 를 의존성으로 들고 있지 않던 회귀 수정** — v0.65 에서 컴포넌트 SoT 가 `ui-core` 로 이동했지만 `nextjs-app/package.json` 과 `_arch/{fsd,flat}/tsconfig.json`, `vitest.config.ts` 가 `@workspace/ui-app-name` 만 가리키고 `@workspace/ui-core` 는 박혀 있지 않았음. 결과: 사용자가 ui-core 컴포넌트(`@workspace/ui-core/components/sidebar` 등)를 import 하려면 매번 손으로 deps + tsconfig paths 추가해야 했음.
-- **fix 후 신규 스캐폴드/`sh_ui_add_app` 의 새 앱이 자동으로 ui-core dep + paths 보유** — `pnpm install` 하자마자 `@workspace/ui-core/components/*` import 동작.
-- **smoke scenario 2 회귀 가드** — `appPkg.dependencies['@workspace/ui-core']` 와 `tsconfig.compilerOptions.paths['@workspace/ui-core/*']` 단언 추가.
-- **`pretest` 훅으로 stale bundled data 자동 갱신** — `packages/cli/data/` 는 gitignored 라 개발자 머신에서 stale 일 수 있고, 그 상태에서 `pnpm test` 돌리면 `tokens-validate.test.js` 1건이 `tokens-used.json` 누락으로 false-fail 했음. `pretest` 가 `copy-data.mjs` 를 자동 실행해 회귀 차단.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.74.1
+### v0.80.0 — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기 (2026-05-12)
+- **`sh-ui-cli/api` 에 `describeTemplate()` 추가** — 옵션 조합(platform/structure/arch/plugins/cssFramework/appName) 으로 실제 생성 없이 emit 될 파일 경로 트리를 사전 계산. 베이스 템플릿 + arch 오버레이 + `plugin.files` + cssFramework 분기 + `plugin.transforms` (이동/삭제) 까지 정확히 반영. fs 접근 없는 순수 함수라 브라우저 번들 가능.
+- **docs `/create` 다이얼로그에 파일 미리보기 패널** — 옵션을 토글할 때마다 생성될 파일 목록이 실시간 갱신. 요약(그룹별 카운트) ↔ 상세(폴더 트리) 토글 제공. base / arch / plugin / css / transform 출처가 컬러로 구분.
+- **MCP `sh_ui_describe_template` 툴 노출** — "플러그인 켜면 어떤 파일 추가돼?" 류 질문에 IDE-내 에이전트가 실제 스캐폴드 없이 답할 수 있게. `sh_ui_create_project` 의 dry-run 대용.
+- **빌드 인프라** — `scripts/build-template-manifest.mjs` 가 `packages/cli/templates/` 를 스캔해 `src/create/templateManifest.js` 로 emit (pretest / prepublishOnly 에서 자동 실행). 템플릿 변경 시 drift 없음.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.80.0
 
-### v0.74.0 — DX — sh-ui.config.json JSON Schema + sh-ui upgrade-cli (2026-05-10)
-- **JSON Schema for sh-ui.config.json** — `packages/cli/sh-ui.schema.json` 신설. `$schema` 필드를 GitHub raw URL 로 통일 (`https://raw.githubusercontent.com/sanghyeonKim0201/sh-ui/live/packages/cli/sh-ui.schema.json`). VS Code / Cursor 등이 자동 fetch 해서 키 자동완성 + enum 값 제안 + 오타 빨간 줄. platform / cssFramework / cssStrategy / theme.base / paths.* / aliases.* 모두 description 과 examples 포함.
-- **조건부 require** — `cssStrategy: "bundled"` 면 `paths.cssBundle` 필수, JSON Schema if/then 으로 자동 검증.
-- **`sh-ui upgrade-cli` 명령** — npm registry 의 latest 버전과 사용자 node_modules 의 설치본 비교. 사이의 changelog highlights (versions.json) 자동 출력. `--apply` 시 사용자 패키지 매니저로 자동 install + 설치 후 doctor / tokens diff 권장 흐름 안내.
-- **모든 템플릿 + init/create + apps/docs 의 sh-ui.config.json 에 \$schema 일괄 적용** — 신규 프로젝트는 처음부터 IDE validation 동작.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.74.0
+### v0.79.0 — no-restricted toLocaleDateString — SSR hydration mismatch 회귀 가드 (2026-05-12)
+- **ESLint `no-restricted-syntax` 룰 추가** — 인자 0개의 `.toLocaleDateString()` / `.toLocaleString()` / `.toLocaleTimeString()` 호출을 error 로 차단. Node 기본 로케일(en-US) 과 브라우저 로케일(ko-KR) 이 달라 SSR 출력이 hydrate 시 mismatch 나던 함정의 회귀 가드.
+- **대체 경로 안내가 에러 메시지에 박힘** — `@/src/shared/lib/formatDate` 의 `formatDate` / `formatDateTime` (default `ko-KR`), next-intl locale 추종이면 `useFormatDate` 훅, 숫자는 `formatPrice`. AST selector 가 `arguments.length === 0` 만 매칭하므로 의도된 locale 명시 호출 (`toLocaleDateString('ko-KR', { ... })`) 은 통과.
+- **적용 범위** — monorepo `@workspace/eslint-config/base` (next.js · react-internal 등 모든 워크스페이스 config 가 상속) + `nextjs-standalone` 의 fsd / flat / mes arch 오버레이 3종.
+- **템플릿 CLAUDE.md 추가** — `nextjs-standalone` / `monorepo` 시작 템플릿에 `CLAUDE.md` 신규. 날짜·숫자 포맷 컨벤션 + sh-ui 컴포넌트 우선 + 토큰 사용 원칙 명시. AI 에이전트가 코드 작성 시점에 컨텍스트로 읽고 미리 피할 수 있게.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.79.0
 
-### v0.73.0 — Flutter — theme extract + tokens diff/upgrade Dart 지원 (2026-05-10)
-- **`sh-ui theme extract` Flutter 지원** — `sh_ui_tokens.dart` 의 `static const light/dark` 블록에서 `Color(0xFFRRGGBB)` 를 추출해 sh-ui base64 로 인코딩. alpha 채널은 무시 (#RRGGBB 만 인코딩), `defaultRadius` 픽셀값을 16 으로 나눠 rem 변환.
-- **`sh-ui tokens diff` Flutter 지원** — Dart 의 `static const` 블록을 `<ClassName>.<staticName>` 키로 평탄화 후 field-level 비교. nested 함수 호출 (`Color(0x...)`, `Cubic(0.4, 0, 0.2, 1)`, `Duration(milliseconds: 120)`, `<BoxShadow>[...]`) 를 깊이 카운터로 안전하게 split — 간단 정규식 파서가 깨지지 않음.
-- **`sh-ui tokens upgrade --replace` Flutter 지원** — buildTokensDart 결과로 통째 덮어쓰기.
-- **`--apply` 는 Flutter 미지원** — Dart 클래스에 필드 추가는 (1) class field 선언, (2) constructor 파라미터, (3) 모든 static const 인스턴스화 3 군데를 동시에 수정해야 해서 incremental 적용이 위험. 친절 에러로 안내 + `--replace` 권장.
-- **dispatch 통합** — tokens-cmd / theme-extract 가 platform 으로 분기. React (CSS) 와 Flutter (Dart) 가 같은 명령 표면 공유.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.73.0
+### v0.78.0 — minor — Next.js 호환성 fixes (exports map · relative imports · FOUC · SelectValue label · sidebar tokens) (2026-05-12)
+- **ui-core `package.json` exports map 수정** — `./components/*: ./src/components/*.tsx` → `./src/components/*/index.tsx`. 폴더+index 패턴에 맞춰 `@workspace/ui-core/components/<name>` import 가 즉시 resolve. v0.77 까지 scaffold 직후 매번 손으로 패치해야 했던 버그.
+- **registry typecheck 통과** — `markdown-editor` / `sidebar` 의 inter-component 상대 import 에 `/index.tsx` 명시 (node16/nodenext + bundler 둘 다 동작). `sidebar` 의 `PopoverTrigger` render callback 의 implicit `any` 도 명시 타입.
+- **`SidebarMenuButton` render 자식 `data-active` 보존** — `cloneElement` 가 사용자가 박은 `data-active` 를 sh-ui 자동값으로 덮어쓰던 버그. 이제 자식 명시값이 우선. 자기 디자인 시스템 active state 를 `[data-active]` 셀렉터로 다루는 흐름 가능.
+- **`SelectValue` children render 패턴 추가** — `<SelectValue>{(v) => labels[v as string]}</SelectValue>` 형태로 value → label 매핑. i18n 라벨 노출에 필수 (예: `light` → `라이트`).
+- **`CodeEditor` 에 `yaml` / `plaintext` 추가** — `@codemirror/lang-yaml` deps + language enum 확장. YAML convention 파일에 syntax highlighting.
+- **Sidebar 토큰 1급 노출** — `--sidebar-bg` / `--sidebar-fg` / `--sidebar-border` / `--sidebar-accent` / `--sidebar-accent-fg` 가 `tokens.css` 메인 셋과 globals.css 의 `@theme inline` 매핑에 정식 등재. Tailwind `bg-sidebar-bg` utility 직접 사용 가능.
+- **RootLayout FOUC 차단 inline script** — next-themes mount 전 첫 paint 에 dark/light class 적용. 다크모드 진입 시 light 한 frame 깜빡임 해소. 모든 arch (fsd/flat/mes) × (nextjs-app/nextjs-standalone) 템플릿에 적용.
+- **auth-jwt dev bypass flag** — `NEXT_PUBLIC_DEV_AUTH_BYPASS=true` 시 dev 환경에서 proxy.ts 가드 우회. `.env.example` 에 자리표시자 포함, production 빌드에선 무시.
+- **i18n boilerplate 확장** — `nav` / `app` / `form` 네임스페이스 + `common` 에 create/name/description/empty 추가.
+- **MCP 가이드 추가** — Base UI 합성 함정 (SSR hydration mismatch, `DropdownMenuItem` 안 `DialogTrigger` 가 안 열리는 패턴) 회피 코드 예시를 sh_ui_* 툴 description 에 박음.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.78.0
 
-### v0.72.0 — sh-ui migrate bundled — per-component → bundled 자동 전환 (Phase D 후속) (2026-05-10)
-- **`sh-ui migrate bundled` 명령** — 기존 per-component 프로젝트를 bundled 로 한 번에 전환. paths.components 아래 모든 styles.css 를 bundle 의 마커 섹션으로 누적 + 원본 파일 삭제 + .tsx import 제거 + config 갱신.
-- **dry-run 기본** — 변경 매트릭스 (대상 컴포넌트 + 파일 목록) 출력 후 사용자 확인. `--apply` 로만 실제 변경.
-- **`--bundle <path>` 옵션** — bundle 파일 위치 명시. 미지정 시 paths.styles 또는 paths.tokens 디렉토리 + sh-ui-components.css 를 자동 사용.
-- **완료 후 안내** — globals.css 에 `@import './sh-ui-components.css';` 한 줄 추가하라는 메시지 (자동 편집 안 함 — 사용자 entry CSS 위치/스타일 다양해서).
-- **제약** — cssFramework: plain + React 만. tailwind/css-modules/vanilla-extract 면 친절 에러. 이미 bundled 면 noop.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.72.0
+### v0.77.1 — security — `sh_ui_create_project` / `sh_ui_add_app` path traversal 차단 (2026-05-12)
+- **path traversal 차단** — MCP 호출자가 `name` 인자에 `../` / 절대경로 / 선행 `.` 을 넣어 부모 디렉토리 밖의 임의 경로를 지정하던 흐름 차단. 영숫자 + `_` / `-` / `.` 만 허용 (단, `.` 로 시작 불가).
+- **임의 디렉토리 삭제 봉쇄** — `force: true` + 내부 `yes: true` 조합으로 `fs.remove(targetDir)` 가 traversal 경로에 실행되던 흐름을 진입부 검증 + `assertWithin(parent, child)` 가드로 이중 차단.
+- CLI / MCP 두 경로 모두 `createProject` / `addApp` 진입부에서 일괄 검증 — 호출 표면 어느 쪽으로도 우회 불가.
+- 회귀 가드 — `test/name-validation.test.js` 추가 (traversal, 절대경로, 숨김 디렉토리, 셸 메타문자, NUL 바이트 등 29 케이스).
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.1
 
-### v0.71.2 — fix(doctor) — monorepo walk-up + 컴포넌트-only 패키지 인식 (2026-05-09)
-- **doctor 의 walk-up + monorepo 라우팅** — `add` 와 같은 정책을 적용. monorepo 어느 디렉토리 (apps/web, ui-core 안 등) 에서 실행해도 `packages/ui/ui-core` 와 모든 `packages/ui/ui-apps/ui-*` 를 자동 순회. 각 패키지마다 헤더 출력 + 결과 집계, 하나라도 fail 이면 exit 1.
-- **컴포넌트-only 패키지 인식** — ui-core 처럼 `paths.tokens` 가 없는 패키지는 의도된 형태. 이전엔 'theme 미설정 / 토큰 검증 스킵' 로 fail/warn 폭발 → 이제 ✓ '(컴포넌트 only — 토큰 없음, 검증 스킵)' 한 줄로 정리.
-- **doctor 함수 시그니처** — `process.exit()` 직접 호출 대신 `{ ok, failCount, warnCount }` 반환. 호출부 (bin) 가 monorepo 순회 후 집계 exit. API consumer (테스트, 향후 lint:doctor 등) 도 활용 가능.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.71.2
+### v0.77.0 — minor — `--arch mes` 프리셋 — 백오피스용 페이지 격리 구조 (2026-05-11)
+- **`sh-ui-cli create ... --arch mes` 신규 지원** — 스마트팩토리 MES·ERP·관리자 도구처럼 페이지 간 상호작용이 적은 CRUD-heavy 앱을 위한 페이지 격리 프리셋. FSD 의 6 레이어가 과한 백오피스 시나리오 전용.
+- **페이지 격리 구조** — 각 `src/pages/<name>/` 가 자기완결 슬롯 (index.tsx + components/ + api.ts + hooks.ts + schema.ts + columns.ts). `app/<route>/page.tsx` 는 `export { default } from '@/pages/<name>'` 한 줄 위임. 페이지 끼리는 import 금지 (eslint boundaries 강제).
+- **`src/pages/sign-in/` 스텁 동봉** — 슬롯 레이아웃을 보여주는 빈 페이지 (동작 X, 폴더 모양만). 새 페이지 추가 = 이 폴더 복사 → 이름 교체.
+- **tsconfig** — catch-all `@/*` → `./src/*`. 모든 import 가 `@/pages/...`, `@/components/...`, `@/lib/...` 처럼 짧고 일관.
+- monorepo (`apps/<name>` + `packages/ui/...`) 에서도 `--arch mes` 동작. nextjs-standalone / nextjs-app 두 템플릿 모두 mes overlay 포함.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.0
 
 ## Resources
 

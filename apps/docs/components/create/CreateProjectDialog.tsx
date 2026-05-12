@@ -33,6 +33,7 @@ import {
   type Plugin,
   type Structure,
 } from "./useCommandComposer";
+import { TemplatePreview } from "./TemplatePreview";
 import { encodeTheme, type TokenKey, type Mode, type ThemeConfig } from "./encodeTheme";
 import {
   borderDefaults,
@@ -413,6 +414,19 @@ export function CreateProjectDialog({
               </TabsContent>
             </Tabs>
           </div>
+
+          {/* 파일 트리 미리보기 — describeTemplate() 결과를 요약/상세 토글로 표시 */}
+          <TemplatePreview
+            options={{
+              platform,
+              structure,
+              arch,
+              plugins: Array.from(plugins),
+              cssFramework,
+              projectName: projectName || "my-app",
+              appName: "web",
+            }}
+          />
 
           {/* aria-live for copy feedback */}
           <div role="status" aria-live="polite" style={{ position: "absolute", left: -10000 }}>
