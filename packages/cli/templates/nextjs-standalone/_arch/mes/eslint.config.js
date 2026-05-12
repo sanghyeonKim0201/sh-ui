@@ -27,6 +27,15 @@ export default [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression[arguments.length=0][callee.type='MemberExpression'][callee.property.name=/^toLocale(Date|Time)?String$/]",
+          message:
+            "Argument-less .toLocaleDateString() / .toLocaleString() / .toLocaleTimeString() causes SSR hydration mismatch (Node default locale ≠ browser locale). Use `formatDate` from `src/lib/utils/formatDate`, or the `useFormatDate` hook for i18n-aware locale (numbers: `formatPrice`).",
+        },
+      ],
     },
   },
 
