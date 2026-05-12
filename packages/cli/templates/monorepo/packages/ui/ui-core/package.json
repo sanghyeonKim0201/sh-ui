@@ -28,7 +28,7 @@
     "typescript": "^5.9.3"
   },
   "exports": {
-    "./components/*": "./src/components/*.tsx",
+    "./components/*": "./src/components/*/index.tsx",
     "./hooks/*": "./src/hooks/*.ts",
     "./lib/*": "./src/lib/*.ts"
   }

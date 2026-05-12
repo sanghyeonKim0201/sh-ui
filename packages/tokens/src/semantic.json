@@ -28,7 +28,14 @@
       "foreground": { "$value": "{color.white}", "$type": "color" },
       "hover":      { "$value": "{color.red.700}", "$type": "color" }
     },
-    "ring": { "$value": "{color.{base}.400}", "$type": "color" }
+    "ring": { "$value": "{color.{base}.400}", "$type": "color" },
+    "sidebar": {
+      "bg":         { "$value": "{color.{base}.50}",  "$type": "color" },
+      "fg":         { "$value": "{color.{base}.950}", "$type": "color" },
+      "border":     { "$value": "{color.{base}.200}", "$type": "color" },
+      "accent":     { "$value": "{color.{base}.100}", "$type": "color" },
+      "accent-fg":  { "$value": "{color.{base}.950}", "$type": "color" }
+    }
   },
 
   "dark": {
@@ -58,7 +65,14 @@
       "foreground": { "$value": "{color.white}", "$type": "color" },
       "hover":      { "$value": "{color.red.500}", "$type": "color" }
     },
-    "ring": { "$value": "{color.{base}.500}", "$type": "color" }
+    "ring": { "$value": "{color.{base}.500}", "$type": "color" },
+    "sidebar": {
+      "bg":         { "$value": "{color.{base}.900}", "$type": "color" },
+      "fg":         { "$value": "{color.{base}.50}",  "$type": "color" },
+      "border":     { "$value": "{color.{base}.800}", "$type": "color" },
+      "accent":     { "$value": "{color.{base}.800}", "$type": "color" },
+      "accent-fg":  { "$value": "{color.{base}.50}",  "$type": "color" }
+    }
   },
 
   "radius": {

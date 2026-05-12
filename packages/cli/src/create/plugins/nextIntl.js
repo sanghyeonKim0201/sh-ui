@@ -271,8 +271,25 @@ export const { Link, redirect, usePathname, useRouter, getPathname } =
     "save": "저장",
     "delete": "삭제",
     "edit": "수정",
+    "create": "만들기",
     "search": "검색",
-    "back": "뒤로"
+    "back": "뒤로",
+    "name": "이름",
+    "description": "설명",
+    "empty": "아직 항목이 없습니다."
+  },
+  "nav": {
+    "home": "홈",
+    "settings": "설정"
+  },
+  "app": {
+    "title": "App"
+  },
+  "form": {
+    "required": "필수 항목입니다.",
+    "invalid": "올바른 값을 입력하세요.",
+    "submit": "제출",
+    "reset": "초기화"
   },
   "error": {
     "title": "오류가 발생했습니다",
@@ -302,8 +319,25 @@ export const { Link, redirect, usePathname, useRouter, getPathname } =
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
+    "create": "Create",
     "search": "Search",
-    "back": "Back"
+    "back": "Back",
+    "name": "Name",
+    "description": "Description",
+    "empty": "No items yet."
+  },
+  "nav": {
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "app": {
+    "title": "App"
+  },
+  "form": {
+    "required": "This field is required.",
+    "invalid": "Please enter a valid value.",
+    "submit": "Submit",
+    "reset": "Reset"
   },
   "error": {
     "title": "Something went wrong",

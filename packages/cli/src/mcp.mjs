@@ -263,6 +263,59 @@ CLI \`sh-ui add <name>\` 은 monorepo 의 어느 디렉토리에서든 (apps/web
 - 다이얼로그 cancel 버튼을 \`<Button onClick={() => setOpen(false)}>\` 로 우회 → 정석은 \`<DialogClose render={<Button>취소</Button>} />\` (Base UI render prop)
 - table 외관의 카드 그리드를 raw \`<div>\` 로 → \`Card\` / \`CardHeader\` / \`CardContent\` / \`CardFooter\` 사용
 
+## Base UI 합성 함정 (Next.js App Router)
+
+Base UI 위에 빌드된 sh-ui 컴포넌트 (\`DropdownMenu\` / \`Select\` / \`Dialog\` / \`Popover\` / \`Tooltip\` / \`Combobox\`) 두 가지 알려진 패턴:
+
+### 1. SSR hydration warning (auto-id)
+
+Base UI 의 \`useId()\` 가 서버/클라이언트 ID 가 다를 수 있어 hydration mismatch 경고. 동작은 무해하지만 콘솔 노이즈.
+
+**회피 패턴 — mounted gate** (sidebar header 등 항상 보이는 trigger 에 적용):
+
+\`\`\`tsx
+const [mounted, setMounted] = useState(false);
+useEffect(() => setMounted(true), []);
+
+if (!mounted) {
+  // trigger 외형만 그대로, dropdown wrapping 없이 placeholder 렌더
+  return <div className={TRIGGER_CLS}>…</div>;
+}
+return (
+  <DropdownMenu>
+    <DropdownMenuTrigger className={TRIGGER_CLS}>…</DropdownMenuTrigger>
+    <DropdownMenuContent>…</DropdownMenuContent>
+  </DropdownMenu>
+);
+\`\`\`
+
+### 2. \`DropdownMenuItem\` 안에 \`DialogTrigger\` render 시 dialog 안 열림
+
+두 Base UI primitive 의 render-prop 체인이 onClick / onSelect 충돌.
+
+**잘못된 패턴**:
+\`\`\`tsx
+<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+  <DialogTrigger render={<Button>…</Button>} />   // 안 열림
+</DropdownMenuItem>
+\`\`\`
+
+**정석 패턴 — controlled dialog 를 sibling 으로**:
+\`\`\`tsx
+const [open, setOpen] = useState(false);
+return (
+  <>
+    <DropdownMenu>
+      …
+      <DropdownMenuItem onClick={() => setOpen(true)}>…</DropdownMenuItem>
+    </DropdownMenu>
+    <MyDialog open={open} onOpenChange={setOpen} />
+  </>
+);
+\`\`\`
+
+다이얼로그 컴포넌트는 controlled (\`open\`/\`onOpenChange\`) 모드를 지원하도록 작성해 둘 것.
+
 ## 앱 이름 변경 (monorepo)
 
 사용자가 "apps/web 을 apps/dashboard 로 바꿔줘" 같이 모노레포 앱 이름 변경을 요청하면 \`sh_ui_rename_app\` 사용 — 손으로 6~10 군데 (디렉토리, package.json name, tsconfig paths, Dockerfile WORKDIR, next.config transpilePackages, sh-ui.config aliases, README, .github/workflows) 갈아엎지 않도록 자동화. \`dryRun: true\` 로 먼저 변경 매트릭스 보여주고 사용자 확인 후 실행 권장.

@@ -9,11 +9,12 @@ import { json } from "@codemirror/lang-json";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { markdown } from "@codemirror/lang-markdown";
+import { yaml } from "@codemirror/lang-yaml";
 
 import { cn } from "@SH_UI_UTILS@";
 export type CodeEditorLanguage =
-  | "text" | "javascript" | "typescript" | "jsx" | "tsx"
-  | "json" | "css" | "html" | "markdown";
+  | "text" | "plaintext" | "javascript" | "typescript" | "jsx" | "tsx"
+  | "json" | "css" | "html" | "markdown" | "yaml";
 
 export interface CodeEditorProps {
   value?: string;
@@ -42,7 +43,9 @@ function languageExtension(language: CodeEditorLanguage): Extension {
     case "css": return cssLang();
     case "html": return html();
     case "markdown": return markdown();
+    case "yaml": return yaml();
     case "text":
+    case "plaintext":
     default: return [];
   }
 }

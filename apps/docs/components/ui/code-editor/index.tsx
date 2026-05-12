@@ -9,6 +9,7 @@ import { json } from "@codemirror/lang-json";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { markdown } from "@codemirror/lang-markdown";
+import { yaml } from "@codemirror/lang-yaml";
 import "./styles.css";
 
 function cx(...args: (string | undefined | false | null)[]) {
@@ -16,6 +17,7 @@ function cx(...args: (string | undefined | false | null)[]) {
 }
 export type CodeEditorLanguage =
   | "text"
+  | "plaintext"
   | "javascript"
   | "typescript"
   | "jsx"
@@ -23,7 +25,8 @@ export type CodeEditorLanguage =
   | "json"
   | "css"
   | "html"
-  | "markdown";
+  | "markdown"
+  | "yaml";
 
 export interface CodeEditorProps {
   /**
@@ -81,7 +84,10 @@ function languageExtension(language: CodeEditorLanguage): Extension {
       return html();
     case "markdown":
       return markdown();
+    case "yaml":
+      return yaml();
     case "text":
+    case "plaintext":
     default:
       return [];
   }

@@ -8,24 +8,35 @@ import styles from "./styles.module.css";
 import { cn } from "@SH_UI_UTILS@";
 export const Select = BaseSelect.Root;
 
-/** shadcn 호환: <SelectValue placeholder="..." /> */
+/**
+ * shadcn 호환 SelectValue. children 으로 value → label 매핑 함수 전달 가능.
+ *
+ *   <SelectValue placeholder="모드">
+ *     {(v) => ({ light: "라이트", dark: "다크" })[v as string] ?? null}
+ *   </SelectValue>
+ */
 export function SelectValue({
   placeholder,
   className,
+  children,
   ...props
-}: { placeholder?: string; className?: string } & Omit<
+}: {
+  placeholder?: string;
+  className?: string;
+  children?: (value: unknown) => React.ReactNode;
+} & Omit<
   React.ComponentPropsWithoutRef<typeof BaseSelect.Value>,
   "children"
 >) {
   return (
     <BaseSelect.Value className={cn(styles.select__value, className)} {...props}>
-      {(value) =>
-        value !== null && value !== undefined && value !== "" ? (
-          (value as React.ReactNode)
-        ) : (
-          <span className={styles.select__placeholder}>{placeholder}</span>
-        )
-      }
+      {(value) => {
+        if (value === null || value === undefined || value === "") {
+          return <span className={styles.select__placeholder}>{placeholder}</span>;
+        }
+        if (children) return children(value);
+        return value as React.ReactNode;
+      }}
     </BaseSelect.Value>
   );
 }
