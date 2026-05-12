@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.77.1",
+      "date": "2026-05-12",
+      "title": "security — `sh_ui_create_project` / `sh_ui_add_app` path traversal 차단",
+      "type": "patch",
+      "highlights": [
+        "**path traversal 차단** — MCP 호출자가 `name` 인자에 `../` / 절대경로 / 선행 `.` 을 넣어 부모 디렉토리 밖의 임의 경로를 지정하던 흐름 차단. 영숫자 + `_` / `-` / `.` 만 허용 (단, `.` 로 시작 불가).",
+        "**임의 디렉토리 삭제 봉쇄** — `force: true` + 내부 `yes: true` 조합으로 `fs.remove(targetDir)` 가 traversal 경로에 실행되던 흐름을 진입부 검증 + `assertWithin(parent, child)` 가드로 이중 차단.",
+        "CLI / MCP 두 경로 모두 `createProject` / `addApp` 진입부에서 일괄 검증 — 호출 표면 어느 쪽으로도 우회 불가.",
+        "회귀 가드 — `test/name-validation.test.js` 추가 (traversal, 절대경로, 숨김 디렉토리, 셸 메타문자, NUL 바이트 등 29 케이스)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.1"
+    },
+    {
       "version": "0.77.0",
       "date": "2026-05-11",
       "title": "minor — `--arch mes` 프리셋 — 백오피스용 페이지 격리 구조",

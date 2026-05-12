@@ -152,6 +152,41 @@ function assertNoTtyFlag(value, flagLabel) {
   }
 }
 
+// 프로젝트/앱 이름을 디렉토리명으로 안전하게 쓸 수 있는지 검증.
+// MCP (sh_ui_create_project / sh_ui_add_app) 는 LLM/외부 호출자가 임의의 문자열을 넘길 수
+// 있는데, 그 값이 그대로 `path.resolve(parent, name)` 에 들어간다. 검증이 없으면 '../'
+// 시퀀스로 부모 디렉토리를 벗어나 임의 위치에 파일 쓰기 / 기존 디렉토리 삭제(force+yes 경로)
+// 까지 가능. 진입부에서 한 번 막아 두면 CLI 와 MCP 양쪽 모두 자동 차단.
+export function validateProjectName(name, label = 'name') {
+  if (typeof name !== 'string' || name.length === 0) {
+    throw new Error(`${label} 가 비어있습니다.`);
+  }
+  if (name.length > 214) {
+    throw new Error(`${label} 가 너무 깁니다 (최대 214자).`);
+  }
+  // 선행 '.' 차단 → '..', '.ssh', '.git' 등 숨김/특수 디렉토리 봉쇄.
+  // 영숫자 + '.' + '_' + '-' 만 허용 → 경로 구분자('/', '\\'), NUL, 셸 메타문자 일괄 차단.
+  if (name.startsWith('.') || !/^[a-zA-Z0-9._-]+$/.test(name)) {
+    throw new Error(
+      `${label} '${name}' 가 유효하지 않습니다 — ` +
+      `영숫자, '_', '-', '.' 만 허용하며 '.' 로 시작할 수 없습니다 (디렉토리 이름만 허용, 경로 불가).`,
+    );
+  }
+  return name;
+}
+
+// 방어 가드 — validateProjectName 이 이미 traversal 을 차단하지만, 파괴적 작업(`fs.remove`)
+// 직전에 한 번 더 봉쇄해 향후 다른 진입점이 추가되거나 검증을 우회하는 코드 패스가 생겨도
+// 부모 디렉토리 밖을 건드리지 않도록 보장. parent 의 진짜 하위가 아니면 throw.
+function assertWithin(parent, child) {
+  const rel = path.relative(parent, child);
+  if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) {
+    throw new Error(
+      `safety: 대상 경로 '${child}' 가 부모 '${parent}' 외부 또는 부모 그 자체입니다 — 처리 거부.`,
+    );
+  }
+}
+
 export async function createProject(options = {}) {
   if (!process.stdin.isTTY) {
     assertNoTtyFlag(options.name, '<project-name> (positional)');
@@ -161,10 +196,13 @@ export async function createProject(options = {}) {
     }
   }
 
-  const projectName = options.name ?? await input({
-    message: '프로젝트 이름:',
-    default: 'my-app',
-  });
+  const projectName = validateProjectName(
+    options.name ?? await input({
+      message: '프로젝트 이름:',
+      default: 'my-app',
+    }),
+    '프로젝트 이름',
+  );
 
   const platform = options.platform ?? await select({
     message: '플랫폼:',
@@ -246,6 +284,12 @@ export async function createProject(options = {}) {
   const targetDir = options.dryRun
     ? await fs.mkdtemp(path.join(os.tmpdir(), 'sh-ui-dry-'))
     : path.resolve(process.cwd(), projectName);
+
+  // 방어 가드 — projectName 검증을 이미 통과했어도 `fs.remove` 직전에 한 번 더 확인.
+  // dry-run 은 tmpdir 이라 parent 가 cwd 가 아니므로 스킵.
+  if (!options.dryRun) {
+    assertWithin(process.cwd(), targetDir);
+  }
 
   if (!options.dryRun && await fs.pathExists(targetDir)) {
     if (options.yes) {
@@ -361,10 +405,13 @@ export async function addApp(options = {}) {
     throw new Error('비대화형 환경(TTY 없음)에서는 name 이 필요합니다.');
   }
 
-  const appName = options.name ?? await input({
-    message: '앱 이름:',
-    default: 'web',
-  });
+  const appName = validateProjectName(
+    options.name ?? await input({
+      message: '앱 이름:',
+      default: 'web',
+    }),
+    '앱 이름',
+  );
 
   const port = options.port ?? (process.stdin.isTTY
     ? await input({ message: '포트 번호:', default: '3000' })
