@@ -3,6 +3,16 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.82.3",
+      "date": "2026-05-13",
+      "title": "스캐폴드 dependencies 에서 미사용 zustand 제거",
+      "type": "patch",
+      "highlights": [
+        "**`nextjs-app` / `nextjs-standalone` 템플릿의 `dependencies` 에서 `zustand@^5.0.11` 제거** — 두 템플릿에 박혀 있었지만 어디서도 import / store 정의 없이 dep 만 설치되던 노이즈. 필요할 때 사용자가 `pnpm add zustand` 한 줄로 추가. 번들 영향은 처음부터 없었지만 (tree-shaken) `pnpm install` 시간 / lockfile / dep 표면적이 줄어듦."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.82.3"
+    },
+    {
       "version": "0.82.2",
       "date": "2026-05-13",
       "title": "RootLayout themeInitScript 가 'system' 케이스 누락하던 FOUC 결함 수정",
