@@ -83,18 +83,22 @@
   padding: var(--space-2);
 }
 
-/* variant: floating */
+/* variant: floating — --sidebar-floating-padding (v0.85.0+) cascaded variable */
 .sidebar[data-variant="floating"] {
   border: none;
-  padding: var(--space-2);
+  padding: var(--sidebar-floating-padding, var(--space-2));
   background: transparent;
 }
 .sidebar[data-variant="floating"] .sidebar__inner {
   border: 1px solid var(--sidebar-border);
   border-radius: var(--radius);
   background: var(--sidebar-bg);
-  height: calc(100svh - 1rem);
-  top: var(--space-2);
+  height: calc(100svh - 2 * var(--sidebar-floating-padding, var(--space-2)));
+  top: var(--sidebar-floating-padding, var(--space-2));
+}
+/* DX 2 (v0.85.0+) — floating + icon outer width 자동 보정 */
+.sidebar[data-state="collapsed"][data-collapsible="icon"][data-variant="floating"] {
+  width: calc(var(--sidebar-width-icon) + 2 * var(--sidebar-floating-padding, var(--space-2)));
 }
 
 /* variant: inset (메인 영역이 카드 형태) */

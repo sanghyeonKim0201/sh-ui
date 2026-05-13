@@ -172,8 +172,10 @@ export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   collapsible?: "offcanvas" | "icon" | "none";
 }
 
+// v0.85.0+ — floating variant 의 outer padding + inner h/top 이 모두 --sidebar-floating-padding
+// 토큰 (default var(--space-2)) 을 추종. DX 2: floating+icon collapsed 시 outer width 자동 보정.
 const sidebarRoot =
-  "flex flex-col w-[var(--sidebar-width)] shrink-0 bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] border-r border-[var(--sidebar-border)] transition-[width] duration-[var(--duration-slow)] relative z-[5] data-[side=right]:border-r-0 data-[side=right]:border-l data-[side=right]:order-1 data-[state=collapsed]:data-[collapsible=offcanvas]:w-0 data-[state=collapsed]:data-[collapsible=offcanvas]:border-r-0 data-[state=collapsed]:data-[collapsible=offcanvas]:border-l-0 data-[state=collapsed]:data-[collapsible=offcanvas]:overflow-hidden data-[state=collapsed]:data-[collapsible=icon]:w-[var(--sidebar-width-icon)] data-[variant=floating]:border-none data-[variant=floating]:p-[var(--space-2)] data-[variant=floating]:bg-transparent data-[variant=inset]:bg-transparent data-[variant=inset]:border-none motion-reduce:transition-none";
+  "flex flex-col w-[var(--sidebar-width)] shrink-0 bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] border-r border-[var(--sidebar-border)] transition-[width] duration-[var(--duration-slow)] relative z-[5] data-[side=right]:border-r-0 data-[side=right]:border-l data-[side=right]:order-1 data-[state=collapsed]:data-[collapsible=offcanvas]:w-0 data-[state=collapsed]:data-[collapsible=offcanvas]:border-r-0 data-[state=collapsed]:data-[collapsible=offcanvas]:border-l-0 data-[state=collapsed]:data-[collapsible=offcanvas]:overflow-hidden data-[state=collapsed]:data-[collapsible=icon]:w-[var(--sidebar-width-icon)] data-[state=collapsed]:data-[collapsible=icon]:data-[variant=floating]:w-[calc(var(--sidebar-width-icon)+2*var(--sidebar-floating-padding,var(--space-2)))] data-[variant=floating]:border-none data-[variant=floating]:p-[var(--sidebar-floating-padding,var(--space-2))] data-[variant=floating]:bg-transparent data-[variant=inset]:bg-transparent data-[variant=inset]:border-none motion-reduce:transition-none";
 
 export function Sidebar({ side = "left", variant = "sidebar", collapsible = "offcanvas", className, children, ...props }: SidebarProps) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
@@ -198,7 +200,7 @@ export function Sidebar({ side = "left", variant = "sidebar", collapsible = "off
 
   const innerWrap =
     variant === "floating"
-      ? "flex flex-col h-[calc(100svh-1rem)] sticky top-[var(--space-2)] overflow-hidden border border-[var(--sidebar-border)] rounded-[var(--radius)] bg-[var(--sidebar-bg)]"
+      ? "flex flex-col h-[calc(100svh-2*var(--sidebar-floating-padding,var(--space-2)))] sticky top-[var(--sidebar-floating-padding,var(--space-2))] overflow-hidden border border-[var(--sidebar-border)] rounded-[var(--radius)] bg-[var(--sidebar-bg)]"
       : "flex flex-col h-[100svh] sticky top-0 overflow-hidden";
 
   return wrap(
