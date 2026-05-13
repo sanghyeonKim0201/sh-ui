@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.80.0 (2026-05-12) — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기
+**최신 버전**: v0.81.0 (2026-05-13) — atlas P0/P1 일괄 — monorepo 스캐폴드 자급자족 + 데스크탑 톤 다운 + Sidebar UX
 
 ## React — Components
 
@@ -878,6 +878,23 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.81.0 — atlas P0/P1 일괄 — monorepo 스캐폴드 자급자족 + 데스크탑 톤 다운 + Sidebar UX (2026-05-13)
+- **monorepo `create_project` 가 ui-core 까지 자급자족** — (1) ui-core `sh-ui.config.json` 이 호출 시점 `cssFramework` 그대로 emit (이전엔 항상 `plain` 으로 박혀 후속 `add_component` 가 plain fallback). (2) ui-app `globals.css` 의 `@source` 에 `../../../../ui-core/src/**/*.{ts,tsx}` 자동 추가 — Tailwind v4 가 ui-core 컴포넌트의 임의값 클래스 emit. (3) ui-core `src/styles/` 에 base / focus-ring / animations / breakpoints / z-index 5개 utility CSS 자동 prefetch + ui-app `globals.css` 에 `@workspace/ui-core/styles/*.css` sentinel 블록 자동 박음 — 사용자 매뉴얼 `add base focus-ring …` 호출 없이 `create → dev` 한 번에 굴러감.
+- **registry 6개 컴포넌트의 `.tsx` cross-import 일소** — sidebar (module/tailwind 변종 2건) · markdown-editor (plain/module/tailwind 변종 3건) · apps/docs markdown-editor 가 `../popover/index.tsx` / `../code-editor/index.tsx` 처럼 박혀 있어 사용자 프로젝트에서 TS5097 (allowImportingTsExtensions) 로 빌드 실패하던 결함. v0.80.1 이 sidebar plain 한 건만 고치고 5건 잔존했던 것 전수 정리.
+- **데스크탑 톤 디폴트 다운** — `--control-md` 2.5rem(40px) → 2.25rem(36px), `--control-lg` 3rem(48px) → 2.5rem(40px). shadcn 표준에 맞춰 admin/dashboard 정보 밀집 톤 회복. 모바일 점프(@media hover:none) 의 44px 는 그대로 — WCAG 2.5.5 터치 타겟 유지. Button base class 에 `white-space: nowrap` 추가 — 한글 텍스트 좁은 컨테이너 줄바꿈으로 부풀어 보이던 시각 회귀 차단. SidebarMenuButton / SidebarMenuSubButton / SidebarCollapsibleTrigger 의 size 디폴트 `md` → `sm` — 일반 사이드바 패턴(28~32px) 톤에 맞춤.
+- **`SidebarHeader` 에 `align="topbar"` + `divider` prop 신설** — admin/dashboard 의 좌 Sidebar 헤더와 우 Topbar 구분선이 4~5px 어긋나던 정렬 hack (`!h-14 !p-0 !flex-row` 류) 영구 해결. `align="topbar"` 가 56px 가로 행 + 가로 패딩만 적용, `divider` 가 border-bottom 1px 박는다. 두 옵션 조합 시 우측 Topbar border-bottom 과 픽셀 정렬.
+- **portal-floating 컴포넌트 z-index 상향** — DropdownMenu / Select / Combobox / ContextMenu 가 `--z-dropdown`(200) → `--z-popover`(500). 이전엔 Sidebar `collapsible="offcanvas"` drawer 의 backdrop(z-overlay=300) 아래로 깔려 메뉴 DOM 은 mount 됐는데 시각적으로 안 보이던 결함.
+- **`DropdownMenuLabel` 이 `DropdownMenuGroup` 없이도 동작** — Base UI 의 `Menu.GroupLabel` 이 `Menu.Group` 부재 시 `MenuGroupRootContext is missing` 런타임 throw 하던 함정. shadcn 호환을 위해 Label 내부에서 React context 로 Group 여부 감지 후 부재 시 자동 self-wrap. 이미 Group 안이면 wrap 안 함 (멱등).
+- **`scaffold` tsconfig 에서 `noUncheckedIndexedAccess: true` 제거** — registry 컴포넌트의 `items[items.length - 1]` 류 패턴이 strict 옵션에서 `possibly undefined` 로 막혀 사용자 프로젝트가 typecheck 실패하던 결함. base.json (monorepo) + 3개 standalone arch tsconfig 모두 제거.
+- **DX** — `add_component tokens` 가 ui-core 에 호출되면 안내 메시지에 "tokens 는 ui-app 의 역할, cwd 를 packages/ui/ui-apps/ui-<name>/ 로 바꾸세요" 추가 (이전엔 `paths.tokens 가 설정에 없습니다` 만 던지고 abort). `create_project` 직후 출력에 베이스 컴포넌트 추가 힌트 1줄 추가 (`add button card input dialog`). CodeEditor `language` 타입의 `"text"` / `"plaintext"` 중복 → `"text"` 단일화.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.81.0
+
+### v0.80.1 — monorepo create_project P0 fix — paths.styles · sidebar 토큰 · sidebar import (2026-05-12)
+- **A1/A2: `create_project --structure monorepo` ui-core 가 styles 경로 누락하던 결함 수정** — `sh-ui.config.json` 에 `paths.styles: "src/styles"`, `package.json` `exports` 에 `"./styles/*": "./src/styles/*"` 추가. 이전엔 직후 `add base focus-ring …` 호출이 `paths.styles 가 sh-ui.config.json에 없습니다` 로 즉시 실패.
+- **A3: 신규 프로젝트 tokens.css 에 sidebar/success/warning/info 토큰 emit** — sidebar 컴포넌트가 요구하는 `--sidebar-bg / --sidebar-fg / --sidebar-border / --sidebar-accent / --sidebar-accent-fg` 가 신규 프로젝트 tokens.css 에 빠져 sidebar 가 `@theme inline` 매핑에서 undefined 로 풀리던 결함 수정. presets(neutral · slate · rose · emerald · violet) light/dark 양쪽에 5+6 토큰 추가, `OPTIONAL_TOKEN_KEYS` 에 sidebar 키 등록. 베이스라인 3개 tokens.css 템플릿도 동기화.
+- **B1: registry/docs sidebar `.tsx` 확장자 import 제거** — `import { Popover } from "../popover/index.tsx"` 가 TS5097 (allowImportingTsExtensions) 로 docs typecheck 실패하던 결함 수정. 듀얼 카피본 양쪽 수정.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.80.1
+
 ### v0.80.0 — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기 (2026-05-12)
 - **`sh-ui-cli/api` 에 `describeTemplate()` 추가** — 옵션 조합(platform/structure/arch/plugins/cssFramework/appName) 으로 실제 생성 없이 emit 될 파일 경로 트리를 사전 계산. 베이스 템플릿 + arch 오버레이 + `plugin.files` + cssFramework 분기 + `plugin.transforms` (이동/삭제) 까지 정확히 반영. fs 접근 없는 순수 함수라 브라우저 번들 가능.
 - **`/create` 페이지 헤더에 파일 미리보기 별도 다이얼로그** — `FolderSearch` 아이콘 + 별도 진입. 옵션 picker(`ProjectOptionsForm` 으로 추출) + 요약/상세 토글 + 출처별 lucide 아이콘 분류(base=Package, arch=Layers, sentry=ShieldAlert, intl=Languages, …) + hover/진행막대 시각화. 상세 트리는 폴더/파일 lucide 아이콘 + 컴팩트 indent.
@@ -906,21 +923,6 @@
 - **i18n boilerplate 확장** — `nav` / `app` / `form` 네임스페이스 + `common` 에 create/name/description/empty 추가.
 - **MCP 가이드 추가** — Base UI 합성 함정 (SSR hydration mismatch, `DropdownMenuItem` 안 `DialogTrigger` 가 안 열리는 패턴) 회피 코드 예시를 sh_ui_* 툴 description 에 박음.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.78.0
-
-### v0.77.1 — security — `sh_ui_create_project` / `sh_ui_add_app` path traversal 차단 (2026-05-12)
-- **path traversal 차단** — MCP 호출자가 `name` 인자에 `../` / 절대경로 / 선행 `.` 을 넣어 부모 디렉토리 밖의 임의 경로를 지정하던 흐름 차단. 영숫자 + `_` / `-` / `.` 만 허용 (단, `.` 로 시작 불가).
-- **임의 디렉토리 삭제 봉쇄** — `force: true` + 내부 `yes: true` 조합으로 `fs.remove(targetDir)` 가 traversal 경로에 실행되던 흐름을 진입부 검증 + `assertWithin(parent, child)` 가드로 이중 차단.
-- CLI / MCP 두 경로 모두 `createProject` / `addApp` 진입부에서 일괄 검증 — 호출 표면 어느 쪽으로도 우회 불가.
-- 회귀 가드 — `test/name-validation.test.js` 추가 (traversal, 절대경로, 숨김 디렉토리, 셸 메타문자, NUL 바이트 등 29 케이스).
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.1
-
-### v0.77.0 — minor — `--arch mes` 프리셋 — 백오피스용 페이지 격리 구조 (2026-05-11)
-- **`sh-ui-cli create ... --arch mes` 신규 지원** — 스마트팩토리 MES·ERP·관리자 도구처럼 페이지 간 상호작용이 적은 CRUD-heavy 앱을 위한 페이지 격리 프리셋. FSD 의 6 레이어가 과한 백오피스 시나리오 전용.
-- **페이지 격리 구조** — 각 `src/pages/<name>/` 가 자기완결 슬롯 (index.tsx + components/ + api.ts + hooks.ts + schema.ts + columns.ts). `app/<route>/page.tsx` 는 `export { default } from '@/pages/<name>'` 한 줄 위임. 페이지 끼리는 import 금지 (eslint boundaries 강제).
-- **`src/pages/sign-in/` 스텁 동봉** — 슬롯 레이아웃을 보여주는 빈 페이지 (동작 X, 폴더 모양만). 새 페이지 추가 = 이 폴더 복사 → 이름 교체.
-- **tsconfig** — catch-all `@/*` → `./src/*`. 모든 import 가 `@/pages/...`, `@/components/...`, `@/lib/...` 처럼 짧고 일관.
-- monorepo (`apps/<name>` + `packages/ui/...`) 에서도 `--arch mes` 동작. nextjs-standalone / nextjs-app 두 템플릿 모두 mes overlay 포함.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.0
 
 ## Resources
 
