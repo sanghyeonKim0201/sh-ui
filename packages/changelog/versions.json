@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.84.0",
+      "date": "2026-05-13",
+      "title": "Sidebar — Brand 컴파운드 primitive (브랜드 카드 · 워크스페이스 스위처 · 유저 프로필)",
+      "type": "minor",
+      "highlights": [
+        "**`SidebarBrand` 컴파운드 primitive 신설 — 브랜드 카드 / 워크스페이스 스위처 / 유저 프로필 의 90% 를 커버** — `<SidebarHeader>` / `<SidebarFooter>` 안에서 매번 박던 패턴 (icon + title + subtitle + trailing chevron) 을 단일 합성으로. Card/Dialog 와 동일한 separate-exports 컨벤션.",
+        "**Exports (6개)**: `SidebarBrand` (행 wrapper, 내부 `data-when-collapsed=\"center\"` 자동 적용) · `SidebarBrandIcon` (항상 visible, collapsed 시 sole 요소) · `SidebarBrandText` (`data-when-collapsed=\"hide\"`) · `SidebarBrandTitle` (단일 줄 본문, truncate 내장) · `SidebarBrandSubtitle` (보조 줄, foreground-muted) · `SidebarBrandAction` (`data-when-collapsed=\"hide\"`, ml-auto trailing icon).",
+        "**v0.83.0 의 `data-when-collapsed` 컨벤션 내장** — 사용자가 attribute 박지 않아도 collapsible=\"icon\" 모드 전환 시 자동 적응. 인터랙티브 케이스는 `<DropdownMenuTrigger render={<button data-when-collapsed=\"strip-chrome\" />}>` 로 wrap.",
+        "**3 변종 모두 지원** — plain `styles.css` / module `styles.module.css` 에 룰 직접, tailwind 변종은 utility 클래스로 동등 스타일. 듀얼카피 (apps/docs) 동기화."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.84.0"
+    },
+    {
       "version": "0.83.0",
       "date": "2026-05-13",
       "title": "Sidebar — data-when-collapsed 컨벤션 (custom JSX 의 collapsed/icon 자동 적응)",

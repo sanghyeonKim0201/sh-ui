@@ -521,6 +521,92 @@ export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTML
   );
 }
 
+/* ───────────── Brand (compound primitive, v0.84.0+) ─────────────
+ * SidebarHeader / SidebarFooter 의 흔한 패턴 (브랜드 카드 · 워크스페이스 스위처 ·
+ * 유저 프로필) 의 90% 를 커버. data-when-collapsed 컨벤션을 내장해 사용자가
+ * attribute 박지 않아도 collapsed/icon 모드 자동 적응.
+ *
+ * 정적 예시:
+ *   <SidebarBrand>
+ *     <SidebarBrandIcon><Logo /></SidebarBrandIcon>
+ *     <SidebarBrandText>
+ *       <SidebarBrandTitle>Atlas</SidebarBrandTitle>
+ *       <SidebarBrandSubtitle>workspace</SidebarBrandSubtitle>
+ *     </SidebarBrandText>
+ *   </SidebarBrand>
+ *
+ * 인터랙티브 (워크스페이스 스위처):
+ *   <DropdownMenu>
+ *     <DropdownMenuTrigger render={<button data-when-collapsed='strip-chrome' />}>
+ *       <SidebarBrand>...</SidebarBrand>
+ *     </DropdownMenuTrigger>
+ *     ...
+ *   </DropdownMenu>
+ */
+
+/** 브랜드 행 wrapper. collapsed 일 땐 가운데 정렬 + 좌우 padding 0 (data-when-collapsed=center 내장). */
+export function SidebarBrand({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="center"
+      className={cn("sh-ui-sidebar__brand", className)}
+      {...props}
+    />
+  );
+}
+
+/** 항상 visible 한 아이콘 슬롯. collapsed 일 땐 SidebarBrand 의 유일한 요소. */
+export function SidebarBrandIcon({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("sh-ui-sidebar__brand-icon", className)}
+      {...props}
+    />
+  );
+}
+
+/** 텍스트 컨테이너. collapsed 일 땐 hidden (data-when-collapsed=hide 내장). */
+export function SidebarBrandText({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="hide"
+      className={cn("sh-ui-sidebar__brand-text", className)}
+      {...props}
+    />
+  );
+}
+
+/** 단일 줄 본문 (편의) — sh-ui-sidebar__brand-title 클래스만 박는다. */
+export function SidebarBrandTitle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("sh-ui-sidebar__brand-title", className)}
+      {...props}
+    />
+  );
+}
+
+/** 보조 줄 — sh-ui-sidebar__brand-subtitle. text-foreground-muted + text-xs. */
+export function SidebarBrandSubtitle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("sh-ui-sidebar__brand-subtitle", className)}
+      {...props}
+    />
+  );
+}
+
+/** Trailing icon (드롭다운 chevron 등). collapsed 일 땐 hidden. */
+export function SidebarBrandAction({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="hide"
+      className={cn("sh-ui-sidebar__brand-action", className)}
+      {...props}
+    />
+  );
+}
+
 /** Sidebar의 스크롤 영역. 메뉴/그룹 목록을 둔다. */
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (

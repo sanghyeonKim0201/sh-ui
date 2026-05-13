@@ -511,6 +511,66 @@ export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTML
   );
 }
 
+/* ───────────── Brand (compound primitive, v0.84.0+) ─────────────
+ * data-when-collapsed 컨벤션 내장. plain 변종 주석 참고. */
+
+export function SidebarBrand({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="center"
+      className={cn(styles.sidebar__brand, className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandIcon({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(styles.sidebar__brand_icon, className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandText({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="hide"
+      className={cn(styles.sidebar__brand_text, className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandTitle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(styles.sidebar__brand_title, className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandSubtitle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(styles.sidebar__brand_subtitle, className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandAction({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="hide"
+      className={cn(styles.sidebar__brand_action, className)}
+      {...props}
+    />
+  );
+}
+
 /** Sidebar의 스크롤 영역. 메뉴/그룹 목록을 둔다. */
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
