@@ -352,6 +352,66 @@ export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTML
   return <div className={cn("flex flex-col gap-[var(--space-2)] p-[var(--space-2)] overflow-hidden", className)} {...props} />;
 }
 
+/* ───────────── Brand (compound primitive, v0.84.0+) ─────────────
+ * data-when-collapsed 컨벤션 내장. plain 변종 주석 참고. */
+
+export function SidebarBrand({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="center"
+      className={cn("flex flex-row items-center gap-[var(--space-2)] px-[var(--space-2)] py-[var(--space-2)] rounded-[var(--radius)] min-w-0", className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandIcon({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("flex items-center justify-center shrink-0 size-8 rounded-[calc(var(--radius)-2px)]", className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandText({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="hide"
+      className={cn("flex flex-col flex-1 min-w-0 gap-0", className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandTitle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("text-[length:var(--text-sm)] font-[var(--weight-medium)] leading-tight truncate text-[color:var(--sidebar-fg)]", className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandSubtitle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("text-[length:var(--text-xs)] leading-tight truncate text-[color:var(--foreground-muted)]", className)}
+      {...props}
+    />
+  );
+}
+
+export function SidebarBrandAction({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-when-collapsed="hide"
+      className={cn("ml-auto shrink-0 flex items-center justify-center", className)}
+      {...props}
+    />
+  );
+}
+
 export function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("flex flex-col flex-1 min-h-0 overflow-y-auto gap-0", className)} {...props} />;
 }

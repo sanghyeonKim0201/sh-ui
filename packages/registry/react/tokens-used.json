@@ -1,6 +1,6 @@
 {
   "$description": "컴포넌트별 토큰 의존성 (var(--*) 추출). build-registry-tokens.mjs 가 자동 생성.",
-  "$generated": "2026-05-12T23:53:11.079Z",
+  "$generated": "2026-05-13T03:22:30.348Z",
   "components": {
     "button": {
       "plain": [
@@ -678,6 +678,7 @@
         "--duration-fast",
         "--duration-slow",
         "--foreground",
+        "--foreground-muted",
         "--opacity-disabled",
         "--radius",
         "--shadow-xl",
@@ -688,6 +689,7 @@
         "--text-lg",
         "--text-sm",
         "--text-xs",
+        "--weight-medium",
         "--z-modal",
         "--z-overlay"
       ],
