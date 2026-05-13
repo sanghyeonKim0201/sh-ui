@@ -356,6 +356,18 @@ export async function createProject(options = {}) {
   console.log(`\n  cd ${projectName}`);
   console.log('  pnpm install');
   console.log('  pnpm dev\n');
+
+  // v0.82.0+ — 다음 액션이 막막한 첫-사용 경험 보강. baseline 컴포넌트를 어디서/어떻게
+  // 추가할지 1줄 가이드. monorepo 는 ui-core 가 SoT, standalone 은 cwd 자체.
+  if (projectType === 'monorepo') {
+    console.log('다음 단계 — 베이스 컴포넌트 추가 (예시):');
+    console.log(`  cd ${projectName}/packages/ui/ui-core`);
+    console.log('  npx sh-ui-cli add button card input dialog\n');
+    console.log('또는 MCP: sh_ui_add_component({ names: ["button", "card", "input", "dialog"] })\n');
+  } else {
+    console.log('다음 단계 — 베이스 컴포넌트 추가 (예시):');
+    console.log('  npx sh-ui-cli add button card input dialog\n');
+  }
 }
 
 /**
