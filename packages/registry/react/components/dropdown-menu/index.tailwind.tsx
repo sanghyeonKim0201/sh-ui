@@ -52,7 +52,7 @@ export const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenu
     return (
       <BaseMenu.Portal container={container}>
         <BaseMenu.Positioner
-          className="outline-none z-[var(--z-dropdown)]"
+          className="outline-none z-[var(--z-popover)]"
           side={side}
           align={align}
           sideOffset={sideOffset}
@@ -120,18 +120,25 @@ export const DropdownMenuRadioItem = React.forwardRef<
   );
 });
 
+const DropdownMenuGroupContext = React.createContext(false);
+
 export const DropdownMenuGroup = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Group>>
 >(function DropdownMenuGroup({ className, ...props }, ref) {
-  return <BaseMenu.Group ref={ref} className={cn("p-0", className)} {...props} />;
+  return (
+    <DropdownMenuGroupContext.Provider value={true}>
+      <BaseMenu.Group ref={ref} className={cn("p-0", className)} {...props} />
+    </DropdownMenuGroupContext.Provider>
+  );
 });
 
 export const DropdownMenuLabel = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.GroupLabel>>
 >(function DropdownMenuLabel({ className, ...props }, ref) {
-  return (
+  const insideGroup = React.useContext(DropdownMenuGroupContext);
+  const labelEl = (
     <BaseMenu.GroupLabel
       ref={ref}
       className={cn(
@@ -141,6 +148,14 @@ export const DropdownMenuLabel = React.forwardRef<
       {...props}
     />
   );
+  if (!insideGroup) {
+    return (
+      <DropdownMenuGroupContext.Provider value={true}>
+        <BaseMenu.Group className="p-0">{labelEl}</BaseMenu.Group>
+      </DropdownMenuGroupContext.Provider>
+    );
+  }
+  return labelEl;
 });
 
 export const DropdownMenuSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(

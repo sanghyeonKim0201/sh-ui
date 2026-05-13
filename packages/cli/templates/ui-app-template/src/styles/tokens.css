@@ -145,8 +145,8 @@
   /* sh-ui:theme-ease-end */
   /* sh-ui:theme-control-start */
   --control-sm: 2rem;
-  --control-md: 2.5rem;
-  --control-lg: 3rem;
+  --control-md: 2.25rem;
+  --control-lg: 2.5rem;
   /* sh-ui:theme-control-end */
   /* sh-ui:theme-border-width-start */
   --border-width: 1px;

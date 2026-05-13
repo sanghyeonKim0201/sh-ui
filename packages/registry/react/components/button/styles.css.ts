@@ -9,6 +9,7 @@ export const button = style({
   borderRadius: "var(--radius)",
   fontWeight: "var(--weight-medium)",
   lineHeight: 1,
+  whiteSpace: "nowrap",
   cursor: "pointer",
   transition:
     "background-color var(--duration-fast), color var(--duration-fast), border-color var(--duration-fast), transform 80ms ease-out, filter 80ms",

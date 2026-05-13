@@ -671,7 +671,7 @@ describe('sh-ui create smoke tests', () => {
       path.join(tmpDir, 'neutral-baseline', 'src', 'shared', 'styles', 'tokens.css'), 'utf-8',
     );
     // neutral 은 디폴트 — 그대로 유지
-    expect(css).toContain('--control-md: 2.5rem;');
+    expect(css).toContain('--control-md: 2.25rem;');
     expect(css).toContain('--text-base: 1rem;');
     expect(css).toContain('--border-width-strong: 2px;');
   });

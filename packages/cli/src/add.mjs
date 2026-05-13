@@ -180,7 +180,19 @@ async function writeOrDiff({ dest, content, cwd, diffMode, summary, conflictReso
 /** 특수 컴포넌트: 설정으로 토큰 파일 생성 */
 async function addTokens(config, cwd, diffMode, summary, conflictResolver) {
   const destRel = config.paths?.tokens;
-  if (!destRel) throw new Error("paths.tokens 가 설정에 없습니다.");
+  if (!destRel) {
+    // v0.65+ monorepo: ui-core 는 컴포넌트 단일 SoT 라 tokens 를 보관하지 않음.
+    // cwd 가 ui-core 면 ui-app 으로 이동하라고 명시.
+    const cwdLower = cwd.replace(/\\/g, '/').toLowerCase();
+    if (cwdLower.endsWith('/packages/ui/ui-core')) {
+      throw new Error(
+        "paths.tokens 가 설정에 없습니다.\n" +
+        "  ui-core 는 컴포넌트 단일 SoT 라 tokens 를 보관하지 않습니다 (v0.65+ layout).\n" +
+        "  tokens 는 ui-app 의 역할 — cwd 를 packages/ui/ui-apps/ui-<name>/ 로 바꾸세요.",
+      );
+    }
+    throw new Error("paths.tokens 가 설정에 없습니다.");
+  }
   const dest = resolve(cwd, destRel);
 
   // theme.base === 'custom' 이면 토큰 빌더가 color.custom.X 스케일을 못 찾아 throw 한다 —

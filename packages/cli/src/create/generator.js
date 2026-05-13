@@ -104,7 +104,7 @@ import {
   buildDartEasesBlock,
   buildDartGradientsBlock,
 } from './theme/inject.js';
-import { getTemplatesRoot } from '../paths.mjs';
+import { getTemplatesRoot, getRegistryRoot } from '../paths.mjs';
 import {
   CSS_FRAMEWORK_DEFAULT,
   CSS_FRAMEWORKS_SUPPORTED,
@@ -356,6 +356,18 @@ export async function createProject(options = {}) {
   console.log(`\n  cd ${projectName}`);
   console.log('  pnpm install');
   console.log('  pnpm dev\n');
+
+  // v0.81.0+ — 처음 쓰는 사용자는 baseline 컴포넌트를 어디서/어떻게 추가할지 막막함.
+  // monorepo 는 ui-core 가 SoT, standalone 은 cwd 자체. 한 줄 힌트로 다음 액션 명확화.
+  if (projectType === 'monorepo') {
+    console.log('다음 단계 — 베이스 컴포넌트 추가 (예시):');
+    console.log(`  cd ${projectName}/packages/ui/ui-core`);
+    console.log('  npx sh-ui-cli add button card input dialog\n');
+    console.log('또는 MCP: sh_ui_add_component({ names: ["button", "card", "input", "dialog"] })\n');
+  } else {
+    console.log('다음 단계 — 베이스 컴포넌트 추가 (예시):');
+    console.log('  npx sh-ui-cli add button card input dialog\n');
+  }
 }
 
 /**
@@ -714,6 +726,38 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   const uiAppDir = path.join(targetDir, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
   await injectCssTheme(uiAppDir, theme);
   await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css, themeBase);
+
+  // ui-core sh-ui.config.json 의 cssFramework 도 동일하게 맞춘다 (v0.81.0+).
+  // 안 그러면 후속 add_component 호출이 plain 변종으로 fallback (atlas BUG 1).
+  const uiCoreConfigPath = path.join(targetDir, 'packages', 'ui', 'ui-core', 'sh-ui.config.json');
+  await patchShUiConfig(uiCoreConfigPath, css, themeBase);
+
+  // ui-core 에 utility CSS 5종 자동 설치 (v0.81.0+, atlas BUG 3).
+  // ui-app/globals.css 가 이 5개 파일을 @import 하므로 안 깔리면 Tailwind v4 빌드 깨짐.
+  await prefetchUiCoreUtilityCss(path.join(targetDir, 'packages', 'ui', 'ui-core'));
+}
+
+/**
+ * v0.81.0+ — monorepo create_project 직후 ui-core 에 베이스 유틸 CSS 자동 emit.
+ *
+ * ui-app-template/src/styles/globals.css 가 `@workspace/ui-core/styles/{base,focus-ring,
+ * animations,breakpoints,z-index}.css` 를 sentinel 블록 안에서 @import 하므로 이 파일들이
+ * 존재해야 Tailwind v4 빌드가 깨지지 않는다. 외부 의존성 없는 5개 CSS 파일이라 registry
+ * 라우팅 거치지 않고 직접 카피 — add.mjs 의 framework 매칭 / placeholder 치환 로직이
+ * 필요 없다 (모두 plain CSS, 토큰 변수만 참조).
+ */
+async function prefetchUiCoreUtilityCss(uiCoreDir) {
+  const stylesDir = path.join(uiCoreDir, 'src', 'styles');
+  await fs.ensureDir(stylesDir);
+  const registryRoot = getRegistryRoot('react');
+  const names = ['base', 'focus-ring', 'animations', 'breakpoints', 'z-index'];
+  for (const name of names) {
+    const src = path.join(registryRoot, 'components', name, `${name}.css`);
+    const dest = path.join(stylesDir, `${name}.css`);
+    if ((await fs.pathExists(src)) && !(await fs.pathExists(dest))) {
+      await fs.copy(src, dest);
+    }
+  }
 }
 
 async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailwind') {

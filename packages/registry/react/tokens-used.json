@@ -1,6 +1,6 @@
 {
   "$description": "컴포넌트별 토큰 의존성 (var(--*) 추출). build-registry-tokens.mjs 가 자동 생성.",
-  "$generated": "2026-05-11T07:02:18.245Z",
+  "$generated": "2026-05-13T00:30:28.611Z",
   "components": {
     "button": {
       "plain": [
@@ -600,7 +600,7 @@
         "--text-sm",
         "--text-xs",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "tailwind": [
         "--border-width-strong",
@@ -614,7 +614,7 @@
         "--space-3",
         "--text-sm",
         "--text-xs",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "css-modules": [
         "--background",
@@ -636,7 +636,7 @@
         "--text-sm",
         "--text-xs",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "vanilla-extract": []
     },
@@ -1034,7 +1034,7 @@
         "--text-xs",
         "--weight-medium",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "tailwind": [
         "--border-width-strong",
@@ -1048,7 +1048,7 @@
         "--space-3",
         "--text-sm",
         "--text-xs",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "css-modules": [
         "--background",
@@ -1072,7 +1072,7 @@
         "--text-xs",
         "--weight-medium",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "vanilla-extract": []
     },
@@ -1202,7 +1202,7 @@
         "--text-sm",
         "--text-xs",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "tailwind": [
         "--border-width-strong",
@@ -1213,7 +1213,7 @@
         "--space-2",
         "--text-sm",
         "--text-xs",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "css-modules": [
         "--background",
@@ -1230,7 +1230,7 @@
         "--text-sm",
         "--text-xs",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "vanilla-extract": []
     },
@@ -1248,7 +1248,7 @@
         "--text-sm",
         "--text-xs",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "tailwind": [
         "--opacity-disabled",
@@ -1258,7 +1258,7 @@
         "--space-2",
         "--text-sm",
         "--text-xs",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "css-modules": [
         "--background",
@@ -1273,7 +1273,7 @@
         "--text-sm",
         "--text-xs",
         "--weight-semibold",
-        "--z-dropdown"
+        "--z-popover"
       ],
       "vanilla-extract": []
     },

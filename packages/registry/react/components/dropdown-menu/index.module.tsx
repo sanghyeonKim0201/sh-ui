@@ -151,16 +151,20 @@ export const DropdownMenuRadioItem = React.forwardRef<
 
 /* ───────── Group / Label ───────── */
 
+const DropdownMenuGroupContext = React.createContext(false);
+
 export const DropdownMenuGroup = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Group>>
 >(function DropdownMenuGroup({ className, ...props }, ref) {
   return (
-    <BaseMenu.Group
-      ref={ref}
-      className={cn(styles.dm__group, className)}
-      {...props}
-    />
+    <DropdownMenuGroupContext.Provider value={true}>
+      <BaseMenu.Group
+        ref={ref}
+        className={cn(styles.dm__group, className)}
+        {...props}
+      />
+    </DropdownMenuGroupContext.Provider>
   );
 });
 
@@ -168,13 +172,22 @@ export const DropdownMenuLabel = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.GroupLabel>>
 >(function DropdownMenuLabel({ className, ...props }, ref) {
-  return (
+  const insideGroup = React.useContext(DropdownMenuGroupContext);
+  const labelEl = (
     <BaseMenu.GroupLabel
       ref={ref}
       className={cn(styles.dm__label, className)}
       {...props}
     />
   );
+  if (!insideGroup) {
+    return (
+      <DropdownMenuGroupContext.Provider value={true}>
+        <BaseMenu.Group className={styles.dm__group}>{labelEl}</BaseMenu.Group>
+      </DropdownMenuGroupContext.Provider>
+    );
+  }
+  return labelEl;
 });
 
 /* ───────── Separator ─────────

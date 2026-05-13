@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cn } from "@SH_UI_UTILS@";
 import { ChevronRightIcon, PanelLeftIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover/index.tsx";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import styles from "./styles.module.css";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
@@ -482,10 +482,19 @@ export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLE
 
 /* ───────────── Header / Footer / Content / Separator ───────────── */
 
-/** Sidebar 상단 영역. 보통 로고/검색을 둔다. */
-export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** @default "stack" */
+  align?: "stack" | "topbar";
+  /** @default false */
+  divider?: boolean;
+}
+
+/** Sidebar 상단 영역. 로고/검색/topbar-align 모드 지원. */
+export function SidebarHeader({ className, align = "stack", divider = false, ...props }: SidebarHeaderProps) {
   return (
     <div
+      data-align={align}
+      data-divider={divider ? "true" : undefined}
       className={cn(styles.sidebar__header, className)}
       {...props}
     />
@@ -587,7 +596,7 @@ export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLB
    * - `md` — 일반 (기본)
    * - `lg` — 강조 메뉴
    *
-   * @default "md"
+   * @default "sm"
    */
   size?: "sm" | "md" | "lg";
   /**
@@ -617,7 +626,7 @@ export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLB
  */
 export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
   function SidebarMenuButton(
-    { className, isActive, size = "md", render, sectionId, panelId, onClick, children, ...props },
+    { className, isActive, size = "sm", render, sectionId, panelId, onClick, children, ...props },
     ref
   ) {
     const tocActive = useTOCActiveId();
@@ -701,7 +710,7 @@ export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HT
   isActive?: boolean;
   /**
    * 크기.
-   * @default "md"
+   * @default "sm"
    */
   size?: "sm" | "md";
   /**
@@ -715,7 +724,7 @@ export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HT
 /** 서브 메뉴 항목 내부의 링크. `render` prop 으로 다른 엘리먼트 슬롯 가능. `sectionId`로 TOC 활성 연동. */
 export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarMenuSubButtonProps>(
   function SidebarMenuSubButton(
-    { className, isActive, size = "md", render, sectionId, children, ...props },
+    { className, isActive, size = "sm", render, sectionId, children, ...props },
     ref
   ) {
     const tocActive = useTOCActiveId();
@@ -844,7 +853,7 @@ export function SidebarCollapsible({
 export interface SidebarCollapsibleTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * 크기. 부모 메뉴와 시각 위계를 맞춘다.
-   * @default "md"
+   * @default "sm"
    */
   size?: "sm" | "md" | "lg";
 }
@@ -852,7 +861,7 @@ export interface SidebarCollapsibleTriggerProps extends React.ButtonHTMLAttribut
 /** Collapsible을 토글하는 메뉴 버튼. flyout 모드면 Popover Trigger로 자동 위임된다. */
 export function SidebarCollapsibleTrigger({
   className,
-  size = "md",
+  size = "sm",
   children,
   onClick,
   ...props

@@ -481,7 +481,7 @@ export default function TokensPage() {
   --shadow-menu: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   --duration-fast: 120ms;
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --control-md: 2.5rem;
+  --control-md: 2.25rem;
   --border-width: 1px;        /* 1px 미만 정밀도가 의미 있는 값은 px 유지 */
   --opacity-disabled: 0.5;
   --z-modal: 400;

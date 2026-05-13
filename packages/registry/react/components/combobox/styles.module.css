@@ -31,7 +31,7 @@
 
 /* ───── Popup ───── */
 .combobox__positioner {
-  z-index: var(--z-dropdown);
+  z-index: var(--z-popover);
   outline: none;
   width: var(--anchor-width);
 }

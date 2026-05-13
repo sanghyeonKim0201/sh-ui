@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { CodeEditor } from "../code-editor/index.tsx";
+import { CodeEditor } from "../code-editor";
 import styles from "./styles.module.css";
 
 import { cn } from "@SH_UI_UTILS@";

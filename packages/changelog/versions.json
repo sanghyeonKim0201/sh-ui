@@ -3,6 +3,23 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.81.0",
+      "date": "2026-05-13",
+      "title": "atlas P0/P1 일괄 — monorepo 스캐폴드 자급자족 + 데스크탑 톤 다운 + Sidebar UX",
+      "type": "minor",
+      "highlights": [
+        "**monorepo `create_project` 가 ui-core 까지 자급자족** — (1) ui-core `sh-ui.config.json` 이 호출 시점 `cssFramework` 그대로 emit (이전엔 항상 `plain` 으로 박혀 후속 `add_component` 가 plain fallback). (2) ui-app `globals.css` 의 `@source` 에 `../../../../ui-core/src/**/*.{ts,tsx}` 자동 추가 — Tailwind v4 가 ui-core 컴포넌트의 임의값 클래스 emit. (3) ui-core `src/styles/` 에 base / focus-ring / animations / breakpoints / z-index 5개 utility CSS 자동 prefetch + ui-app `globals.css` 에 `@workspace/ui-core/styles/*.css` sentinel 블록 자동 박음 — 사용자 매뉴얼 `add base focus-ring …` 호출 없이 `create → dev` 한 번에 굴러감.",
+        "**registry 6개 컴포넌트의 `.tsx` cross-import 일소** — sidebar (module/tailwind 변종 2건) · markdown-editor (plain/module/tailwind 변종 3건) · apps/docs markdown-editor 가 `../popover/index.tsx` / `../code-editor/index.tsx` 처럼 박혀 있어 사용자 프로젝트에서 TS5097 (allowImportingTsExtensions) 로 빌드 실패하던 결함. v0.80.1 이 sidebar plain 한 건만 고치고 5건 잔존했던 것 전수 정리.",
+        "**데스크탑 톤 디폴트 다운** — `--control-md` 2.5rem(40px) → 2.25rem(36px), `--control-lg` 3rem(48px) → 2.5rem(40px). shadcn 표준에 맞춰 admin/dashboard 정보 밀집 톤 회복. 모바일 점프(@media hover:none) 의 44px 는 그대로 — WCAG 2.5.5 터치 타겟 유지. Button base class 에 `white-space: nowrap` 추가 — 한글 텍스트 좁은 컨테이너 줄바꿈으로 부풀어 보이던 시각 회귀 차단. SidebarMenuButton / SidebarMenuSubButton / SidebarCollapsibleTrigger 의 size 디폴트 `md` → `sm` — 일반 사이드바 패턴(28~32px) 톤에 맞춤.",
+        "**`SidebarHeader` 에 `align=\"topbar\"` + `divider` prop 신설** — admin/dashboard 의 좌 Sidebar 헤더와 우 Topbar 구분선이 4~5px 어긋나던 정렬 hack (`!h-14 !p-0 !flex-row` 류) 영구 해결. `align=\"topbar\"` 가 56px 가로 행 + 가로 패딩만 적용, `divider` 가 border-bottom 1px 박는다. 두 옵션 조합 시 우측 Topbar border-bottom 과 픽셀 정렬.",
+        "**portal-floating 컴포넌트 z-index 상향** — DropdownMenu / Select / Combobox / ContextMenu 가 `--z-dropdown`(200) → `--z-popover`(500). 이전엔 Sidebar `collapsible=\"offcanvas\"` drawer 의 backdrop(z-overlay=300) 아래로 깔려 메뉴 DOM 은 mount 됐는데 시각적으로 안 보이던 결함.",
+        "**`DropdownMenuLabel` 이 `DropdownMenuGroup` 없이도 동작** — Base UI 의 `Menu.GroupLabel` 이 `Menu.Group` 부재 시 `MenuGroupRootContext is missing` 런타임 throw 하던 함정. shadcn 호환을 위해 Label 내부에서 React context 로 Group 여부 감지 후 부재 시 자동 self-wrap. 이미 Group 안이면 wrap 안 함 (멱등).",
+        "**`scaffold` tsconfig 에서 `noUncheckedIndexedAccess: true` 제거** — registry 컴포넌트의 `items[items.length - 1]` 류 패턴이 strict 옵션에서 `possibly undefined` 로 막혀 사용자 프로젝트가 typecheck 실패하던 결함. base.json (monorepo) + 3개 standalone arch tsconfig 모두 제거.",
+        "**DX** — `add_component tokens` 가 ui-core 에 호출되면 안내 메시지에 \"tokens 는 ui-app 의 역할, cwd 를 packages/ui/ui-apps/ui-<name>/ 로 바꾸세요\" 추가 (이전엔 `paths.tokens 가 설정에 없습니다` 만 던지고 abort). `create_project` 직후 출력에 베이스 컴포넌트 추가 힌트 1줄 추가 (`add button card input dialog`). CodeEditor `language` 타입의 `\"text\"` / `\"plaintext\"` 중복 → `\"text\"` 단일화."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.81.0"
+    },
+    {
       "version": "0.80.1",
       "date": "2026-05-12",
       "title": "monorepo create_project P0 fix — paths.styles · sidebar 토큰 · sidebar import",

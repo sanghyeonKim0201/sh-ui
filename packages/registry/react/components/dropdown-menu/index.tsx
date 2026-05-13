@@ -151,16 +151,23 @@ export const DropdownMenuRadioItem = React.forwardRef<
 
 /* ───────── Group / Label ───────── */
 
+// Base UI 의 Menu.GroupLabel 은 반드시 Menu.Group 하위에 있어야 함 — 아니면
+// 런타임에 "MenuGroupRootContext is missing" throw. shadcn 호환을 위해 Label 이
+// Group 없이도 동작하도록 Label 쪽에서 Group 자동 wrap. 이미 Group 안이면 wrap X.
+const DropdownMenuGroupContext = React.createContext(false);
+
 export const DropdownMenuGroup = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Group>>
 >(function DropdownMenuGroup({ className, ...props }, ref) {
   return (
-    <BaseMenu.Group
-      ref={ref}
-      className={cn("sh-ui-dm__group", className)}
-      {...props}
-    />
+    <DropdownMenuGroupContext.Provider value={true}>
+      <BaseMenu.Group
+        ref={ref}
+        className={cn("sh-ui-dm__group", className)}
+        {...props}
+      />
+    </DropdownMenuGroupContext.Provider>
   );
 });
 
@@ -168,13 +175,23 @@ export const DropdownMenuLabel = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.GroupLabel>>
 >(function DropdownMenuLabel({ className, ...props }, ref) {
-  return (
+  const insideGroup = React.useContext(DropdownMenuGroupContext);
+  const labelEl = (
     <BaseMenu.GroupLabel
       ref={ref}
       className={cn("sh-ui-dm__label", className)}
       {...props}
     />
   );
+  // Group 컨텍스트 없으면 self-wrap — shadcn 류 free-standing 사용 호환.
+  if (!insideGroup) {
+    return (
+      <DropdownMenuGroupContext.Provider value={true}>
+        <BaseMenu.Group className="sh-ui-dm__group">{labelEl}</BaseMenu.Group>
+      </DropdownMenuGroupContext.Provider>
+    );
+  }
+  return labelEl;
 });
 
 /* ───────── Separator ─────────

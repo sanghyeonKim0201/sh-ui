@@ -1,9 +1,19 @@
 @import 'tailwindcss';
 
 @source "../../../../../../apps/**/*.{ts,tsx}";
+@source "../../../../ui-core/src/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
 @import './tokens.css';
+
+/* sh-ui:utility-imports-start — v0.81+ create_project 가 자동 설치하는 베이스 유틸 CSS.
+ * 이 블록의 5개 파일은 ui-core/src/styles/ 에 prefetch 됨 — 사용자가 매뉴얼 add 안 해도 동작. */
+@import '@workspace/ui-core/styles/base.css';
+@import '@workspace/ui-core/styles/focus-ring.css';
+@import '@workspace/ui-core/styles/animations.css';
+@import '@workspace/ui-core/styles/breakpoints.css';
+@import '@workspace/ui-core/styles/z-index.css';
+/* sh-ui:utility-imports-end */
 
 @custom-variant dark (&:is(.dark *));
 

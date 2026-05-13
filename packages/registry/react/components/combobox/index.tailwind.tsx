@@ -53,7 +53,7 @@ export const ComboboxContent = React.forwardRef<
   return (
     <BaseCombobox.Portal container={container}>
       <BaseCombobox.Positioner
-        className="z-[var(--z-dropdown)] outline-none w-[var(--anchor-width)]"
+        className="z-[var(--z-popover)] outline-none w-[var(--anchor-width)]"
         sideOffset={sideOffset}
         align="start"
       >
