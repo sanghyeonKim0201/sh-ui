@@ -22,7 +22,7 @@
 - **접근성 내장** — nav/ol/button 등 시맨틱 태그, aria-label/aria-current 자동 부여, 키보드 내비 보장.
 - **토큰 사용 강제** — 매직값 금지. 컴포넌트 CSS는 `var(--foreground)` 등 semantic 토큰만 사용.
 
-**최신 버전**: v0.80.0 (2026-05-12) — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기
+**최신 버전**: v0.82.0 (2026-05-13) — atlas P2 잔여 — Sidebar topbar 정렬 + 메뉴 사이즈 디폴트 다운 + DX 정리
 
 ## React — Components
 
@@ -878,6 +878,30 @@
 
 ## 최근 릴리즈 (최대 5개)
 
+### v0.82.0 — atlas P2 잔여 — Sidebar topbar 정렬 + 메뉴 사이즈 디폴트 다운 + DX 정리 (2026-05-13)
+- **`SidebarHeader` 에 `align="topbar"` + `divider` prop 신설 (B8)** — admin/dashboard 의 좌 Sidebar 헤더와 우 Topbar 구분선이 4~5px 어긋나던 정렬 hack (`!h-14 !p-0 !flex-row` + SidebarSeparator 제거 + `border-b` 직접 박는 류) 영구 해결. `align="topbar"` 가 56px(`3.5rem`) 가로 행 + 가로 패딩만 적용, `divider` 가 `border-bottom: 1px solid var(--sidebar-border)` 박는다. 두 옵션 조합 시 우 Topbar 의 border-bottom 과 픽셀 정렬.
+- **`SidebarMenuButton` / `SidebarMenuSubButton` / `SidebarCollapsibleTrigger` 의 size 디폴트 `md` → `sm` (D3)** — 일반 사이드바 패턴(28~32px) 톤에 맞춤. v0.81.0 의 `--control-md` 40→36px 다운과 결합돼 사이드바가 데스크탑 정보 밀집 화면에서 후하게 느껴지던 회귀 차단. atlas 실측에서 size 명시 24건 전부 `sm` 이었던 신호 반영.
+- **`create_project` 직후 출력에 베이스 컴포넌트 추가 힌트 1줄 (B6)** — 기존엔 `cd / pnpm install / pnpm dev` 3줄만 출력. monorepo 는 `cd .../packages/ui/ui-core` + `npx sh-ui-cli add button card input dialog`, standalone 은 `npx sh-ui-cli add ...` 만. MCP 사용자에게는 `sh_ui_add_component` 한 줄도 같이.
+- **`CodeEditor` 의 `language` 타입 `"text"` / `"plaintext"` 중복 단일화 (B3)** — 의미상 동일한 두 값이 공존해 사용자가 어느 쪽을 쓸지 모호하던 결함. `"plaintext"` 제거, `"text"` 만 유지. `language="plaintext"` 사용처는 `"text"` 로 교체.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.82.0
+
+### v0.81.0 — atlas P0/P1 일괄 — monorepo create_project · registry · 디자인 톤 (2026-05-13)
+- **monorepo `create_project` 자동완성 흐름** — (1) ui-core `sh-ui.config.json` 의 `cssFramework` 가 항상 `plain` 으로 emit 되던 결함 수정 (호출 시점 인자가 ui-core/ui-app 양쪽에 반영), (2) ui-app `globals.css` 의 `@source` 에 ui-core 경로 누락 수정 (`../../../../ui-core/src/**/*.{ts,tsx}` 자동 박힘), (3) utility CSS 5종 (`base · focus-ring · animations · breakpoints · z-index`) 을 스캐폴드 시점에 ui-core 에 자동 emit + ui-app `globals.css` 에 sentinel-bounded `@import` 자동 박기. `create → dev` 가 매뉴얼 보정 없이 굴러감.
+- **registry `.tsx` cross-import 잔존 6건 일괄 제거** — v0.80.1 에서 sidebar/plain 한 개만 고쳤던 누락 후속. sidebar `tailwind/module` + markdown-editor `plain/tailwind/module` + docs 듀얼카피 markdown-editor 의 `../code-editor/index.tsx` / `../popover/index.tsx` 를 확장자 없는 형태로 통일. Next.js + TS 디폴트(`allowImportingTsExtensions: false`) 에서 빌드 깨지던 결함 해소.
+- **DropdownMenu / Select / Combobox / ContextMenu z-index `--z-dropdown` (200) → `--z-popover` (500)** — Sidebar offcanvas drawer 의 `--z-overlay` (300) 아래로 깔려 안 보이던 결함 수정. 드로어 안에 있는 메뉴/콤보가 정상 위로 뜸. 듀얼 카피본까지 일괄.
+- **DropdownMenuLabel free-standing 자동 self-wrap** — Base UI 의 `Menu.GroupLabel` 이 `Menu.Group` 부재 시 "MenuGroupRootContext is missing" 으로 런타임 throw 하던 마이그레이션 함정 해소. 자체 Context 로 부모 Group 감지, 없으면 Label 이 스스로 `Menu.Group` 으로 wrap. 명시적 Group 안에 두면 중첩 없이 그대로 동작 — shadcn 코드 그대로 옮겨와도 OK.
+- **디폴트 control 사이즈 다운 (40 → 36)** — `--control-md` 가 데스크탑 SaaS/대시보드 톤에 비해 통통하다는 atlas 측정(`size='sm'` 24건, `size='lg'` 0건) 반영. `--control-sm/md/lg` 를 `2rem / 2.25rem / 2.5rem` (32/36/40) 로. 모바일 터치 점프(44) 는 그대로. 기존 프로젝트의 `tokens.css` 는 미변경 — 신규 프로젝트만 새 디폴트.
+- **Button `white-space: nowrap`** — 좁은 컨테이너에서 한글 라벨이 줄바꿈되며 버튼 높이 60px+ 로 부풀던 결함 수정. 4 변종 (plain/tailwind/module/vanilla-extract) + 듀얼카피 일괄.
+- **`noUncheckedIndexedAccess` 디폴트 off** — 스캐폴드의 `typescript-config/base.json` + nextjs-standalone 3 arch 의 tsconfig 에서 제거. registry 컴포넌트들이 index access 결과를 narrowing 없이 쓰는 패턴이라 신규 사용자가 첫 `typecheck` 부터 실패하던 결함 해소.
+- **`add tokens` 가 ui-core 에 대해 던지는 에러 메시지에 가이드 추가** — `paths.tokens 가 설정에 없습니다` 만 던지던 것을 v0.65 layout 설명 + `cwd` 를 `packages/ui/ui-apps/ui-<name>` 로 바꾸라는 한 줄 안내로 보강.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.81.0
+
+### v0.80.1 — monorepo create_project P0 fix — paths.styles · sidebar 토큰 · sidebar import (2026-05-12)
+- **A1/A2: `create_project --structure monorepo` ui-core 가 styles 경로 누락하던 결함 수정** — `sh-ui.config.json` 에 `paths.styles: "src/styles"`, `package.json` `exports` 에 `"./styles/*": "./src/styles/*"` 추가. 이전엔 직후 `add base focus-ring …` 호출이 `paths.styles 가 sh-ui.config.json에 없습니다` 로 즉시 실패.
+- **A3: 신규 프로젝트 tokens.css 에 sidebar/success/warning/info 토큰 emit** — sidebar 컴포넌트가 요구하는 `--sidebar-bg / --sidebar-fg / --sidebar-border / --sidebar-accent / --sidebar-accent-fg` 가 신규 프로젝트 tokens.css 에 빠져 sidebar 가 `@theme inline` 매핑에서 undefined 로 풀리던 결함 수정. presets(neutral · slate · rose · emerald · violet) light/dark 양쪽에 5+6 토큰 추가, `OPTIONAL_TOKEN_KEYS` 에 sidebar 키 등록. 베이스라인 3개 tokens.css 템플릿도 동기화.
+- **B1: registry/docs sidebar `.tsx` 확장자 import 제거** — `import { Popover } from "../popover/index.tsx"` 가 TS5097 (allowImportingTsExtensions) 로 docs typecheck 실패하던 결함 수정. 듀얼 카피본 양쪽 수정.
+- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.80.1
+
 ### v0.80.0 — describeTemplate — 프로젝트 생성 전 파일 트리 미리보기 (2026-05-12)
 - **`sh-ui-cli/api` 에 `describeTemplate()` 추가** — 옵션 조합(platform/structure/arch/plugins/cssFramework/appName) 으로 실제 생성 없이 emit 될 파일 경로 트리를 사전 계산. 베이스 템플릿 + arch 오버레이 + `plugin.files` + cssFramework 분기 + `plugin.transforms` (이동/삭제) 까지 정확히 반영. fs 접근 없는 순수 함수라 브라우저 번들 가능.
 - **`/create` 페이지 헤더에 파일 미리보기 별도 다이얼로그** — `FolderSearch` 아이콘 + 별도 진입. 옵션 picker(`ProjectOptionsForm` 으로 추출) + 요약/상세 토글 + 출처별 lucide 아이콘 분류(base=Package, arch=Layers, sentry=ShieldAlert, intl=Languages, …) + hover/진행막대 시각화. 상세 트리는 폴더/파일 lucide 아이콘 + 컴팩트 indent.
@@ -893,34 +917,6 @@
 - **적용 범위** — monorepo `@workspace/eslint-config/base` (next.js · react-internal 등 모든 워크스페이스 config 가 상속) + `nextjs-standalone` 의 fsd / flat / mes arch 오버레이 3종.
 - **템플릿 CLAUDE.md 추가** — `nextjs-standalone` / `monorepo` 시작 템플릿에 `CLAUDE.md` 신규. 날짜·숫자 포맷 컨벤션 + sh-ui 컴포넌트 우선 + 토큰 사용 원칙 명시. AI 에이전트가 코드 작성 시점에 컨텍스트로 읽고 미리 피할 수 있게.
 - Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.79.0
-
-### v0.78.0 — minor — Next.js 호환성 fixes (exports map · relative imports · FOUC · SelectValue label · sidebar tokens) (2026-05-12)
-- **ui-core `package.json` exports map 수정** — `./components/*: ./src/components/*.tsx` → `./src/components/*/index.tsx`. 폴더+index 패턴에 맞춰 `@workspace/ui-core/components/<name>` import 가 즉시 resolve. v0.77 까지 scaffold 직후 매번 손으로 패치해야 했던 버그.
-- **registry typecheck 통과** — `markdown-editor` / `sidebar` 의 inter-component 상대 import 에 `/index.tsx` 명시 (node16/nodenext + bundler 둘 다 동작). `sidebar` 의 `PopoverTrigger` render callback 의 implicit `any` 도 명시 타입.
-- **`SidebarMenuButton` render 자식 `data-active` 보존** — `cloneElement` 가 사용자가 박은 `data-active` 를 sh-ui 자동값으로 덮어쓰던 버그. 이제 자식 명시값이 우선. 자기 디자인 시스템 active state 를 `[data-active]` 셀렉터로 다루는 흐름 가능.
-- **`SelectValue` children render 패턴 추가** — `<SelectValue>{(v) => labels[v as string]}</SelectValue>` 형태로 value → label 매핑. i18n 라벨 노출에 필수 (예: `light` → `라이트`).
-- **`CodeEditor` 에 `yaml` / `plaintext` 추가** — `@codemirror/lang-yaml` deps + language enum 확장. YAML convention 파일에 syntax highlighting.
-- **Sidebar 토큰 1급 노출** — `--sidebar-bg` / `--sidebar-fg` / `--sidebar-border` / `--sidebar-accent` / `--sidebar-accent-fg` 가 `tokens.css` 메인 셋과 globals.css 의 `@theme inline` 매핑에 정식 등재. Tailwind `bg-sidebar-bg` utility 직접 사용 가능.
-- **RootLayout FOUC 차단 inline script** — next-themes mount 전 첫 paint 에 dark/light class 적용. 다크모드 진입 시 light 한 frame 깜빡임 해소. 모든 arch (fsd/flat/mes) × (nextjs-app/nextjs-standalone) 템플릿에 적용.
-- **auth-jwt dev bypass flag** — `NEXT_PUBLIC_DEV_AUTH_BYPASS=true` 시 dev 환경에서 proxy.ts 가드 우회. `.env.example` 에 자리표시자 포함, production 빌드에선 무시.
-- **i18n boilerplate 확장** — `nav` / `app` / `form` 네임스페이스 + `common` 에 create/name/description/empty 추가.
-- **MCP 가이드 추가** — Base UI 합성 함정 (SSR hydration mismatch, `DropdownMenuItem` 안 `DialogTrigger` 가 안 열리는 패턴) 회피 코드 예시를 sh_ui_* 툴 description 에 박음.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.78.0
-
-### v0.77.1 — security — `sh_ui_create_project` / `sh_ui_add_app` path traversal 차단 (2026-05-12)
-- **path traversal 차단** — MCP 호출자가 `name` 인자에 `../` / 절대경로 / 선행 `.` 을 넣어 부모 디렉토리 밖의 임의 경로를 지정하던 흐름 차단. 영숫자 + `_` / `-` / `.` 만 허용 (단, `.` 로 시작 불가).
-- **임의 디렉토리 삭제 봉쇄** — `force: true` + 내부 `yes: true` 조합으로 `fs.remove(targetDir)` 가 traversal 경로에 실행되던 흐름을 진입부 검증 + `assertWithin(parent, child)` 가드로 이중 차단.
-- CLI / MCP 두 경로 모두 `createProject` / `addApp` 진입부에서 일괄 검증 — 호출 표면 어느 쪽으로도 우회 불가.
-- 회귀 가드 — `test/name-validation.test.js` 추가 (traversal, 절대경로, 숨김 디렉토리, 셸 메타문자, NUL 바이트 등 29 케이스).
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.1
-
-### v0.77.0 — minor — `--arch mes` 프리셋 — 백오피스용 페이지 격리 구조 (2026-05-11)
-- **`sh-ui-cli create ... --arch mes` 신규 지원** — 스마트팩토리 MES·ERP·관리자 도구처럼 페이지 간 상호작용이 적은 CRUD-heavy 앱을 위한 페이지 격리 프리셋. FSD 의 6 레이어가 과한 백오피스 시나리오 전용.
-- **페이지 격리 구조** — 각 `src/pages/<name>/` 가 자기완결 슬롯 (index.tsx + components/ + api.ts + hooks.ts + schema.ts + columns.ts). `app/<route>/page.tsx` 는 `export { default } from '@/pages/<name>'` 한 줄 위임. 페이지 끼리는 import 금지 (eslint boundaries 강제).
-- **`src/pages/sign-in/` 스텁 동봉** — 슬롯 레이아웃을 보여주는 빈 페이지 (동작 X, 폴더 모양만). 새 페이지 추가 = 이 폴더 복사 → 이름 교체.
-- **tsconfig** — catch-all `@/*` → `./src/*`. 모든 import 가 `@/pages/...`, `@/components/...`, `@/lib/...` 처럼 짧고 일관.
-- monorepo (`apps/<name>` + `packages/ui/...`) 에서도 `--arch mes` 동작. nextjs-standalone / nextjs-app 두 템플릿 모두 mes overlay 포함.
-- Release: https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.77.0
 
 ## Resources
 

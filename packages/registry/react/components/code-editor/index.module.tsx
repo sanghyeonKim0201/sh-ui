@@ -15,7 +15,6 @@ import styles from "./styles.module.css";
 import { cn } from "@SH_UI_UTILS@";
 export type CodeEditorLanguage =
   | "text"
-  | "plaintext"
   | "javascript"
   | "typescript"
   | "jsx"
@@ -85,7 +84,6 @@ function languageExtension(language: CodeEditorLanguage): Extension {
     case "yaml":
       return yaml();
     case "text":
-    case "plaintext":
     default:
       return [];
   }

@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.82.0",
+      "date": "2026-05-13",
+      "title": "atlas P2 잔여 — Sidebar topbar 정렬 + 메뉴 사이즈 디폴트 다운 + DX 정리",
+      "type": "minor",
+      "highlights": [
+        "**`SidebarHeader` 에 `align=\"topbar\"` + `divider` prop 신설 (B8)** — admin/dashboard 의 좌 Sidebar 헤더와 우 Topbar 구분선이 4~5px 어긋나던 정렬 hack (`!h-14 !p-0 !flex-row` + SidebarSeparator 제거 + `border-b` 직접 박는 류) 영구 해결. `align=\"topbar\"` 가 56px(`3.5rem`) 가로 행 + 가로 패딩만 적용, `divider` 가 `border-bottom: 1px solid var(--sidebar-border)` 박는다. 두 옵션 조합 시 우 Topbar 의 border-bottom 과 픽셀 정렬.",
+        "**`SidebarMenuButton` / `SidebarMenuSubButton` / `SidebarCollapsibleTrigger` 의 size 디폴트 `md` → `sm` (D3)** — 일반 사이드바 패턴(28~32px) 톤에 맞춤. v0.81.0 의 `--control-md` 40→36px 다운과 결합돼 사이드바가 데스크탑 정보 밀집 화면에서 후하게 느껴지던 회귀 차단. atlas 실측에서 size 명시 24건 전부 `sm` 이었던 신호 반영.",
+        "**`create_project` 직후 출력에 베이스 컴포넌트 추가 힌트 1줄 (B6)** — 기존엔 `cd / pnpm install / pnpm dev` 3줄만 출력. monorepo 는 `cd .../packages/ui/ui-core` + `npx sh-ui-cli add button card input dialog`, standalone 은 `npx sh-ui-cli add ...` 만. MCP 사용자에게는 `sh_ui_add_component` 한 줄도 같이.",
+        "**`CodeEditor` 의 `language` 타입 `\"text\"` / `\"plaintext\"` 중복 단일화 (B3)** — 의미상 동일한 두 값이 공존해 사용자가 어느 쪽을 쓸지 모호하던 결함. `\"plaintext\"` 제거, `\"text\"` 만 유지. `language=\"plaintext\"` 사용처는 `\"text\"` 로 교체."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.82.0"
+    },
+    {
       "version": "0.81.0",
       "date": "2026-05-13",
       "title": "atlas P0/P1 일괄 — monorepo create_project · registry · 디자인 톤",

@@ -17,7 +17,6 @@ function cx(...args: (string | undefined | false | null)[]) {
 }
 export type CodeEditorLanguage =
   | "text"
-  | "plaintext"
   | "javascript"
   | "typescript"
   | "jsx"
@@ -87,7 +86,6 @@ function languageExtension(language: CodeEditorLanguage): Extension {
     case "yaml":
       return yaml();
     case "text":
-    case "plaintext":
     default:
       return [];
   }

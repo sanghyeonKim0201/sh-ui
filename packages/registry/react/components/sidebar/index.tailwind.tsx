@@ -305,8 +305,23 @@ export function SidebarInset({ className, ...props }: React.HTMLAttributes<HTMLE
   return <main className={cn("flex-1 min-w-0 bg-background flex flex-col", className)} {...props} />;
 }
 
-export function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("flex flex-col gap-[var(--space-2)] p-[var(--space-2)] overflow-hidden", className)} {...props} />;
+export interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** @default "stack" */
+  align?: "stack" | "topbar";
+  /** @default false */
+  divider?: boolean;
+}
+
+export function SidebarHeader({ className, align = "stack", divider = false, ...props }: SidebarHeaderProps) {
+  const base = align === "topbar"
+    ? "flex flex-row items-center gap-[var(--space-2)] h-14 px-[var(--space-3)] overflow-hidden"
+    : "flex flex-col gap-[var(--space-2)] p-[var(--space-2)] overflow-hidden";
+  return (
+    <div
+      className={cn(base, divider && "border-b border-[var(--sidebar-border)]", className)}
+      {...props}
+    />
+  );
 }
 
 export function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -370,7 +385,7 @@ const menuButtonSize = {
 };
 
 export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
-  function SidebarMenuButton({ className, isActive, size = "md", render, sectionId, panelId, onClick, children, ...props }, ref) {
+  function SidebarMenuButton({ className, isActive, size = "sm", render, sectionId, panelId, onClick, children, ...props }, ref) {
     const tocActive = useTOCActiveId();
     const ctx = React.useContext(SidebarContext);
     const panelActive = panelId != null && ctx?.activePanel === panelId;
@@ -436,7 +451,7 @@ const menuSubButtonBase =
   "flex items-center gap-[var(--space-2)] h-7 px-[var(--space-2)] rounded-[calc(var(--radius)-2px)] text-[0.8125rem] text-[var(--sidebar-fg)] no-underline transition-[background-color,color] duration-[var(--duration-fast)] min-w-0 [&>span]:flex-1 [&>span]:min-w-0 [&>span]:overflow-hidden [&>span]:[text-overflow:ellipsis] [&>span]:whitespace-nowrap hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-fg)] data-[active]:bg-primary data-[active]:text-primary-foreground data-[active]:font-semibold data-[active]:hover:bg-primary-hover motion-reduce:transition-none";
 
 export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarMenuSubButtonProps>(
-  function SidebarMenuSubButton({ className, isActive, size = "md", render, sectionId, children, ...props }, ref) {
+  function SidebarMenuSubButton({ className, isActive, size = "sm", render, sectionId, children, ...props }, ref) {
     const tocActive = useTOCActiveId();
     const resolvedIsActive = isActive ?? (sectionId != null ? tocActive === sectionId : undefined);
     const cls = cn(menuSubButtonBase, size === "sm" && "text-[length:var(--text-xs)]", className);
@@ -510,7 +525,7 @@ export interface SidebarCollapsibleTriggerProps extends React.ButtonHTMLAttribut
   size?: "sm" | "md" | "lg";
 }
 
-export function SidebarCollapsibleTrigger({ className, size = "md", children, onClick, ...props }: SidebarCollapsibleTriggerProps) {
+export function SidebarCollapsibleTrigger({ className, size = "sm", children, onClick, ...props }: SidebarCollapsibleTriggerProps) {
   const { open, toggle, flyoutMode, flyoutOpen } = useCollapsible();
   const cls = cn(menuButtonBase, menuButtonSize[size], className);
   const isOpen = flyoutMode ? flyoutOpen : open;

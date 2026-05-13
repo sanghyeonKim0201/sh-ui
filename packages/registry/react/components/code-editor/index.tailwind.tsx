@@ -13,7 +13,7 @@ import { yaml } from "@codemirror/lang-yaml";
 
 import { cn } from "@SH_UI_UTILS@";
 export type CodeEditorLanguage =
-  | "text" | "plaintext" | "javascript" | "typescript" | "jsx" | "tsx"
+  | "text" | "javascript" | "typescript" | "jsx" | "tsx"
   | "json" | "css" | "html" | "markdown" | "yaml";
 
 export interface CodeEditorProps {
@@ -45,7 +45,6 @@ function languageExtension(language: CodeEditorLanguage): Extension {
     case "markdown": return markdown();
     case "yaml": return yaml();
     case "text":
-    case "plaintext":
     default: return [];
   }
 }
