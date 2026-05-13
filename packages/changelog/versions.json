@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.82.1",
+      "date": "2026-05-13",
+      "title": "Sidebar / Header tailwind 변종의 결합 data 셀렉터 → Tailwind v4 호환 체이닝 수정",
+      "type": "patch",
+      "highlights": [
+        "**Sidebar tailwind 변종의 결합 data 셀렉터가 Tailwind v4 에서 미emit 되던 결함 수정** — `data-[state=collapsed][data-collapsible=offcanvas]:w-0` 류 형식이 Tailwind v4 파서에서 해석 안 되어 `<SidebarTrigger>` 클릭으로 `data-state` 가 토글돼도 width 가 그대로 유지되어 시각적으로 안 닫히던 결함. v4 호환 syntax (variant 체이닝) `data-[state=collapsed]:data-[collapsible=offcanvas]:w-0` 로 일괄 변환. offcanvas (w-0/border-r-0/border-l-0/overflow-hidden) + icon collapsible (w-[var(--sidebar-width-icon)]) 5개 selector 모두 적용.",
+        "**Header tailwind 변종의 동일 안티패턴 수정** — `data-[sticky-hide][data-hidden]:-translate-y-full` → `data-[sticky-hide]:data-[hidden]:-translate-y-full`. sticky-hide 모드의 스크롤-숨김 transform 이 적용 안 되던 결함 해소.",
+        "plain CSS / module CSS 변종은 영향 없음 — 처음부터 CSS attribute selector(`.sh-ui-sidebar[data-state=\"collapsed\"][data-collapsible=\"offcanvas\"]`) 라 정상 동작."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.82.1"
+    },
+    {
       "version": "0.82.0",
       "date": "2026-05-13",
       "title": "atlas P2 잔여 — Sidebar topbar 정렬 + 메뉴 사이즈 디폴트 다운 + DX 정리",
