@@ -150,7 +150,7 @@ export const Header = React.forwardRef<HTMLElement, HeaderProps>(function Header
       <header
         ref={setRefs}
         className={cn(
-          "relative flex items-center gap-[var(--space-4)] h-[var(--control-md)] px-[var(--space-3)] border-b border-border transition-[transform,background-color] duration-[var(--duration-base)] [--sh-ui-header-hover-bg:var(--background-muted)] [--sh-ui-header-blur-opacity:85%] [--sh-ui-header-blur-radius:16px] motion-reduce:transition-none max-md:gap-[var(--space-2)] data-[sticky-hide][data-hidden]:-translate-y-full",
+          "relative flex items-center gap-[var(--space-4)] h-[var(--control-md)] px-[var(--space-3)] border-b border-border transition-[transform,background-color] duration-[var(--duration-base)] [--sh-ui-header-hover-bg:var(--background-muted)] [--sh-ui-header-blur-opacity:85%] [--sh-ui-header-blur-radius:16px] motion-reduce:transition-none max-md:gap-[var(--space-2)] data-[sticky-hide]:data-[hidden]:-translate-y-full",
           variantClasses[variant],
           className,
         )}
