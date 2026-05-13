@@ -83,18 +83,26 @@
   padding: var(--space-2);
 }
 
-/* variant: floating */
+/* variant: floating
+ * --sidebar-floating-padding (v0.85.0+) — 카드 가장자리 spacing. SidebarProvider 에
+ *   inline style 로 덮어쓰면 outer padding + inner height/top 자동 추종.
+ *   기본 var(--space-2). */
 .sh-ui-sidebar[data-variant="floating"] {
   border: none;
-  padding: var(--space-2);
+  padding: var(--sidebar-floating-padding, var(--space-2));
   background: transparent;
 }
 .sh-ui-sidebar[data-variant="floating"] .sh-ui-sidebar__inner {
   border: 1px solid var(--sidebar-border);
   border-radius: var(--radius);
   background: var(--sidebar-bg);
-  height: calc(100svh - 1rem);
-  top: var(--space-2);
+  height: calc(100svh - 2 * var(--sidebar-floating-padding, var(--space-2)));
+  top: var(--sidebar-floating-padding, var(--space-2));
+}
+/* DX 2 (v0.85.0+) — floating + icon collapsed 조합 시 outer width 자동 보정.
+ * outer = icon + 2 * floating-padding 으로 키워 inner usable 폭을 non-floating 과 동일하게 유지. */
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"][data-variant="floating"] {
+  width: calc(var(--sidebar-width-icon) + 2 * var(--sidebar-floating-padding, var(--space-2)));
 }
 
 /* variant: inset (메인 영역이 카드 형태) */
