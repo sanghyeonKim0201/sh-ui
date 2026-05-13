@@ -288,6 +288,36 @@
   border-bottom: 1px solid var(--sidebar-border);
 }
 
+/* ───────────── data-when-collapsed 컨벤션 (v0.83.0+) ─────────────
+ * SidebarHeader / SidebarFooter 안의 사용자 custom JSX (WorkspaceSwitcher,
+ * 브랜드 카드, 유저 프로필 등) 가 collapsible="icon" 모드 전환 시 자동
+ * 적응하도록 일반 attribute 컨벤션 제공. 사용자가 useSidebar() 훅 + 조건부
+ * 렌더 ceremony 없이 attribute 한 줄로 처리.
+ *
+ * 사용:
+ *   <button data-when-collapsed="center strip-chrome">
+ *     <Avatar />
+ *     <div data-when-collapsed="hide">{name}</div>
+ *     <ChevronsUpDown data-when-collapsed="hide" />
+ *   </button>
+ *
+ * 값(공백 구분 토큰 — `~=` 매처):
+ *   hide          — collapsed/icon 모드에서 display:none
+ *   center        — 가로 가운데 정렬 + 좌우 padding 제거
+ *   strip-chrome  — border / background 투명화 (카드 chrome 제거) */
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="hide"] {
+  display: none;
+}
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="center"] {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+.sh-ui-sidebar[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="strip-chrome"] {
+  border-color: transparent;
+  background-color: transparent;
+}
+
 .sh-ui-sidebar__content {
   display: flex;
   flex-direction: column;

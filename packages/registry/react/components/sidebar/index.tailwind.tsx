@@ -10,6 +10,29 @@ const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 const MOBILE_BREAKPOINT = 768;
 
+/**
+ * v0.83.0+ — `data-when-collapsed` 컨벤션을 위한 CSS 룰 inject.
+ *
+ * plain/module 변종은 styles.css/.module.css 가 import 되며 자동으로 룰이 깔리는데,
+ * tailwind 변종은 별도 CSS import 가 없으므로 SidebarProvider mount 시 한 번만 head
+ * 에 <style> 박는다. id="sh-ui-sidebar-helpers" 로 중복 inject 방지.
+ *
+ * 토큰: hide(display:none) · center(가운데 정렬 + 좌우 padding 0) · strip-chrome
+ * (border/bg 투명). `~=` 매처로 공백 구분 다중 토큰 지원.
+ */
+const SIDEBAR_HELPER_STYLE_ID = "sh-ui-sidebar-helpers";
+const SIDEBAR_HELPER_CSS = `[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="hide"]{display:none}[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="center"]{justify-content:center;padding-left:0;padding-right:0}[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="strip-chrome"]{border-color:transparent;background-color:transparent}`;
+function useSidebarHelperStyles() {
+  React.useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (document.getElementById(SIDEBAR_HELPER_STYLE_ID)) return;
+    const style = document.createElement("style");
+    style.id = SIDEBAR_HELPER_STYLE_ID;
+    style.textContent = SIDEBAR_HELPER_CSS;
+    document.head.appendChild(style);
+  }, []);
+}
+
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -77,6 +100,7 @@ export interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElemen
 export function SidebarProvider({
   defaultOpen = true, open: openProp, onOpenChange: setOpenProp, className, style, children, embedded, ...props
 }: SidebarProviderProps) {
+  useSidebarHelperStyles();
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
   const [_open, _setOpen] = React.useState(defaultOpen);

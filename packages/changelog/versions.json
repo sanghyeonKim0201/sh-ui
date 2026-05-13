@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.83.0",
+      "date": "2026-05-13",
+      "title": "Sidebar — data-when-collapsed 컨벤션 (custom JSX 의 collapsed/icon 자동 적응)",
+      "type": "minor",
+      "highlights": [
+        "**`<SidebarHeader>` / `<SidebarFooter>` 안 사용자 custom JSX 가 `collapsible=\"icon\"` 모드 전환 시 `useSidebar()` 훅 + 조건부 렌더 ceremony 없이 attribute 한 줄로 자동 적응** — 새 export 0개, 발견성 좋은 plain CSS 컨벤션. 값 (공백 구분 다중 토큰, `~=` 매처): `hide` (display:none) · `center` (가운데 정렬 + 좌우 padding 제거) · `strip-chrome` (border / background 투명). 워크스페이스 스위처 · 브랜드 카드 · 유저 프로필 등 admin/dashboard sidebar 의 흔한 패턴에 매번 박던 수동 처리 일소.",
+        "예시 — `<button data-when-collapsed=\"center strip-chrome\">  <Avatar />  <div data-when-collapsed=\"hide\">{name}</div>  <ChevronsUpDown data-when-collapsed=\"hide\" /></button>` — collapsed 모드에선 Avatar 만 가운데 정렬돼 보이고 카드 chrome 사라짐.",
+        "**3 변종 모두 지원** — plain `styles.css` / module `styles.module.css` 에 직접 룰. tailwind 변종은 CSS import 없어 `SidebarProvider` mount 시 1회 head 에 `<style id=\"sh-ui-sidebar-helpers\">` inject (모듈 레벨 dedup). 사용자 코드는 변종 무관 동일 attribute 만 박으면 됨."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.83.0"
+    },
+    {
       "version": "0.82.3",
       "date": "2026-05-13",
       "title": "스캐폴드 dependencies 에서 미사용 zustand 제거",

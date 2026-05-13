@@ -285,6 +285,22 @@
   border-bottom: 1px solid var(--sidebar-border);
 }
 
+/* data-when-collapsed 컨벤션 (v0.83.0+) — 사용자 custom JSX (WorkspaceSwitcher 등) 가
+ * collapsible="icon" 모드 전환 시 자동 적응. 값: hide / center / strip-chrome.
+ * 자세한 설명은 plain 변종 styles.css 참고. */
+.sidebar[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="hide"] {
+  display: none;
+}
+.sidebar[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="center"] {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+.sidebar[data-state="collapsed"][data-collapsible="icon"] [data-when-collapsed~="strip-chrome"] {
+  border-color: transparent;
+  background-color: transparent;
+}
+
 .sidebar__content {
   display: flex;
   flex-direction: column;
