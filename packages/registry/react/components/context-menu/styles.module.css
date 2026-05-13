@@ -10,7 +10,7 @@
 
 .cm__positioner {
   outline: none;
-  z-index: var(--z-dropdown);
+  z-index: var(--z-popover);
 }
 
 .cm__content {

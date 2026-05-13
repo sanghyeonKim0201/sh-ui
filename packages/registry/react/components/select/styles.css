@@ -64,7 +64,7 @@
 /* 팝업 */
 .sh-ui-select__positioner {
   outline: none;
-  z-index: var(--z-dropdown);
+  z-index: var(--z-popover);
 }
 
 .sh-ui-select__content {

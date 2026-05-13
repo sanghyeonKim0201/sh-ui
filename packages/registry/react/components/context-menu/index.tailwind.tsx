@@ -29,7 +29,7 @@ export const ContextMenuContent = React.forwardRef<HTMLDivElement, ContextMenuCo
   function ContextMenuContent({ className, children, container, ...props }, ref) {
     return (
       <BaseContextMenu.Portal container={container}>
-        <BaseContextMenu.Positioner className="outline-none z-[var(--z-dropdown)]">
+        <BaseContextMenu.Positioner className="outline-none z-[var(--z-popover)]">
           <BaseContextMenu.Popup ref={ref} className={cn(contentClasses, className)} {...props}>
             {children}
           </BaseContextMenu.Popup>

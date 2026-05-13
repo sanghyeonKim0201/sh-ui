@@ -113,9 +113,9 @@
   },
 
   "controlHeight": {
-    "sm": { "$value": "2rem",   "$type": "dimension" },
-    "md": { "$value": "2.5rem", "$type": "dimension" },
-    "lg": { "$value": "3rem",   "$type": "dimension" }
+    "sm": { "$value": "2rem",    "$type": "dimension" },
+    "md": { "$value": "2.25rem", "$type": "dimension" },
+    "lg": { "$value": "2.5rem",  "$type": "dimension" }
   },
 
   "borderWidth": {

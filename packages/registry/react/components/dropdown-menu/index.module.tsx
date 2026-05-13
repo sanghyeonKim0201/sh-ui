@@ -149,18 +149,26 @@ export const DropdownMenuRadioItem = React.forwardRef<
   );
 });
 
-/* ───────── Group / Label ───────── */
+/* ───────── Group / Label ─────────
+ *
+ * Base UI Menu.GroupLabel 은 Menu.Group 안에서만 동작 — free-standing 시 throw.
+ * DropdownMenuLabel 이 부모 Group 부재 시 자체 Group 으로 self-wrap.
+ */
+
+const InDmGroupContext = React.createContext(false);
 
 export const DropdownMenuGroup = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.Group>>
 >(function DropdownMenuGroup({ className, ...props }, ref) {
   return (
-    <BaseMenu.Group
-      ref={ref}
-      className={cn(styles.dm__group, className)}
-      {...props}
-    />
+    <InDmGroupContext.Provider value={true}>
+      <BaseMenu.Group
+        ref={ref}
+        className={cn(styles.dm__group, className)}
+        {...props}
+      />
+    </InDmGroupContext.Provider>
   );
 });
 
@@ -168,12 +176,19 @@ export const DropdownMenuLabel = React.forwardRef<
   HTMLDivElement,
   WithStringClassName<React.ComponentPropsWithoutRef<typeof BaseMenu.GroupLabel>>
 >(function DropdownMenuLabel({ className, ...props }, ref) {
-  return (
+  const inGroup = React.useContext(InDmGroupContext);
+  const label = (
     <BaseMenu.GroupLabel
       ref={ref}
       className={cn(styles.dm__label, className)}
       {...props}
     />
+  );
+  if (inGroup) return label;
+  return (
+    <InDmGroupContext.Provider value={true}>
+      <BaseMenu.Group>{label}</BaseMenu.Group>
+    </InDmGroupContext.Provider>
   );
 });
 
