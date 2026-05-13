@@ -5,8 +5,13 @@ import { GlobalProvider } from '@/src/app/providers';
  * FOUC 차단 inline script. next-themes 의 ThemeProvider 가 client mount 후
  * 동일 작업을 하지만, mount 전 한 frame 동안 light/dark 깜빡임이 생긴다.
  * 이걸 막으려고 SSR 응답 head 안쪽에 동기 실행 script 박음.
+ *
+ * next-themes 의 theme 값 매트릭스:
+ *   - 'dark'                 → .dark
+ *   - 'light'                → (no class — Tailwind 디폴트가 light)
+ *   - 'system' 또는 unset    → system pref 따라감
  */
-const themeInitScript = `try{var t=localStorage.getItem('theme');var c=document.documentElement.classList;if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){c.add('dark');}else if(t==='light'){c.add('light');}}catch(e){}`;
+const themeInitScript = `try{var t=localStorage.getItem('theme');var d=t==='dark'||((!t||t==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);if(d){document.documentElement.classList.add('dark');}}catch(e){}`;
 
 export function RootLayout({ children }: { children: React.ReactNode }) {
   // `lang` 은 앱의 주 언어. 영어 등 다른 언어 우선이면 'en' 으로 바꾸거나

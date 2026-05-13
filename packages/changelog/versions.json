@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.82.2",
+      "date": "2026-05-13",
+      "title": "RootLayout themeInitScript 가 'system' 케이스 누락하던 FOUC 결함 수정",
+      "type": "patch",
+      "highlights": [
+        "**RootLayout 의 FOUC 차단 inline script 가 `theme === 'system'` 케이스를 처리 안 해 새로고침 시 light → dark 깜빡임이 남던 결함 수정** — 기존 스크립트는 `t === 'dark'` 또는 `!t && system pref dark` 만 처리, `t === 'system'` 일 땐 next-themes 가 resolve 한 후에야 `.dark` 가 박혀 한 frame 흰 깜빡임. next-themes 의 `setTheme('system')` 호출 직후 localStorage 에 `'system'` 문자열이 들어가는데 이 케이스가 누락. matrix 정정: `'dark'` → `.dark`, `'light'` → none, `'system'`/unset → system pref 따라감. 6개 RootLayout 템플릿 (nextjs-app · nextjs-standalone × flat/mes/fsd) 일괄 수정.",
+        "**알려진 이슈 (이번 릴리즈 미반영)** — `@base-ui/react` 1.4.1 의 id 생성기가 Dialog/DropdownMenu/Popover Trigger 에서 server/client id 불일치로 hydration mismatch console error 발생. upstream 이슈 — 1.4.1 이 npm 최신이라 dep bump 로 해결 불가. 기능 영향은 없고 console error 만 뜸. 향후 Base UI 픽스 버전 나오면 peerDep 갱신."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.82.2"
+    },
+    {
       "version": "0.82.1",
       "date": "2026-05-13",
       "title": "Sidebar / Header tailwind 변종의 결합 data 셀렉터 → Tailwind v4 호환 체이닝 수정",

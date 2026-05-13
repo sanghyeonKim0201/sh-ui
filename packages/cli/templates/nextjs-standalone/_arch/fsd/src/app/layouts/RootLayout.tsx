@@ -1,7 +1,8 @@
 import { GlobalProvider } from '@/src/app/providers';
 
-/** FOUC 차단 — next-themes mount 전에 첫 paint 에 dark/light class 박기. */
-const themeInitScript = `try{var t=localStorage.getItem('theme');var c=document.documentElement.classList;if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){c.add('dark');}else if(t==='light'){c.add('light');}}catch(e){}`;
+/** FOUC 차단 — next-themes mount 전에 첫 paint 에 dark class 박기.
+ *  matrix: 'dark' → .dark, 'light' → (none), 'system'/unset → system pref. */
+const themeInitScript = `try{var t=localStorage.getItem('theme');var d=t==='dark'||((!t||t==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);if(d){document.documentElement.classList.add('dark');}}catch(e){}`;
 
 export function RootLayout({ children }: { children: React.ReactNode }) {
   // `lang` 은 앱의 주 언어. 영어 등 다른 언어 우선이면 'en' 으로 바꾸거나
