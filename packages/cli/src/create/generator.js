@@ -364,8 +364,11 @@ export async function createProject(options = {}) {
     console.log(`\n  cd ${projectName}`);
     console.log('  pnpm install');
     console.log('  pnpm dev\n');
-    if (options.tauri && projectType === 'standalone') {
+    if (options.tauri) {
       console.log('Tauri 데스크탑 셸:');
+      if (projectType === 'monorepo') {
+        console.log('  cd apps/web   # 또는 첫 앱 이름');
+      }
       console.log('  pnpm tauri dev     # Rust 처음 빌드는 5~10분 — 캐시 후 5~10초');
       console.log('  (Rust 미설치 시 https://rustup.rs/ 참고)\n');
     }
