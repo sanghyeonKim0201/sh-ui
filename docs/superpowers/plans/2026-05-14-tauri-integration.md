@@ -1,6 +1,16 @@
 # Tauri Integration for vite Platform Preset — Design Doc
 
-> **Status:** DRAFT — design discussion, not an implementation plan. Author wants user confirmation on the 5 open questions below before writing tasks.
+> **Status:** DECISIONS LOCKED (2026-05-14). User confirmed all 5 recommendations (a). Implementation breaks into 5 tasks below; target release v0.88.0. Standalone only for v1 (monorepo + Tauri deferred to v0.89 if requested).
+
+## Locked decisions
+
+| # | Decision |
+|---|----------|
+| Q1 | Assume Rust installed — print friendly hint on first failure |
+| Q2 | `src-tauri/` sibling of `src/` for both standalone (Tauri-default layout) |
+| Q3 | Empty/minimal capabilities — user opts in via Tauri docs |
+| Q4 | Bundle ID placeholder `app.{tauri_crate_name}.dev` + TODO sentinel comment |
+| Q5 | Tauri 2.x only — no 1.x compat |
 
 **Goal:** Let `sh_ui_create_project platform=vite tauri=true` (and `sh-ui-cli create --platform vite --tauri`) scaffold a Vite SPA wrapped in a Tauri 2.x desktop shell, ready to `pnpm tauri dev` on first launch.
 
