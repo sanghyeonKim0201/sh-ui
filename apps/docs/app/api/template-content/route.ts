@@ -229,6 +229,9 @@ export async function GET(req: NextRequest) {
   const pluginsParam = searchParams.get("plugins") ?? "";
   const plugins = pluginsParam ? pluginsParam.split(",").filter(Boolean) : [];
   const tauri = searchParams.get("tauri") === "true";
+  const i18n = (searchParams.get("i18n") ?? "none") as "none" | "react-i18next";
+  const locales = searchParams.get("locales") ?? "ko,en";
+  void locales; // describeTemplate 일관성 — 라우트는 locales 별 content 직접 emit 안 함.
   const path = searchParams.get("path");
 
   if (!path) {
@@ -236,6 +239,25 @@ export async function GET(req: NextRequest) {
       { error: "missing path" },
       { status: 400 },
     );
+  }
+
+  // i18n 파일은 emitI18n 이 런타임에 emit — 디스크에 소스 템플릿 없음.
+  // 컨텐츠는 generated 표시만 (platform/arch/locales 조합에 따라 결정).
+  if (
+    i18n === 'react-i18next' &&
+    (path.includes('/i18n/config.ts') ||
+     path.includes('/i18n/index.ts') ||
+     path.match(/\/i18n\/locales\/[^/]+\/common\.json$/) ||
+     path.endsWith('/providers/I18nProvider.tsx'))
+  ) {
+    return NextResponse.json({
+      content:
+        "// 이 파일은 sh-ui-cli 가 scaffold 시점에 generated (emitI18n).\n" +
+        "// 실제 내용은 platform/arch/locales 조합에 따라 결정.\n" +
+        "// 패턴 미리보기: react-i18next + LanguageDetector + HttpBackend 셋업.\n",
+      from: "generated:emitI18n",
+      truncated: false,
+    });
   }
 
   // 1) 플러그인 emit 파일 우선 (베이스/arch 파일을 덮어쓰는 경우가 있음 — 예: sentry 의 observability.ts)

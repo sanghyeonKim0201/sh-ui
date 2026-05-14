@@ -525,6 +525,12 @@ function ContentViewer({
     if (options?.tauri) {
       params.set("tauri", "true");
     }
+    if (options?.i18n && options.i18n !== 'none') {
+      params.set("i18n", options.i18n);
+    }
+    if (options?.locales && options.locales !== 'ko,en') {
+      params.set("locales", options.locales);
+    }
 
     fetch(`/api/template-content?${params.toString()}`, { signal: ctrl.signal })
       .then(async (r) => {
@@ -826,6 +832,8 @@ export function TemplatePreviewDialog({
     useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
   const [tauri, setTauri] = useState<boolean>(false);
+  const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
+  const [locales, setLocales] = useState<string>('ko,en');
 
   const togglePlugin = (p: Plugin) => {
     setPlugins((prev) => {
@@ -865,6 +873,10 @@ export function TemplatePreviewDialog({
             onTogglePlugin={togglePlugin}
             tauri={tauri}
             onTauriChange={setTauri}
+            i18n={i18n}
+            onI18nChange={setI18n}
+            locales={locales}
+            onLocalesChange={setLocales}
           />
 
           <TemplatePreviewBody
@@ -876,6 +888,8 @@ export function TemplatePreviewDialog({
               cssFramework,
               appName: "web",
               tauri,
+              i18n,
+              locales,
             }}
           />
         </div>
