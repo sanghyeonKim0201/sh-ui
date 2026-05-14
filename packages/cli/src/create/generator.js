@@ -1837,9 +1837,10 @@ const OPTIONAL_DART_INJECTORS = [
 async function injectCssTheme(projectDir, theme) {
   if (!theme) return;
   const candidates = [
-    'src/shared/styles/tokens.css',  // FSD standalone
+    'src/shared/styles/tokens.css',  // FSD standalone (next + vite)
     'src/styles/tokens.css',          // monorepo ui-app-template (arch-neutral)
-    'lib/styles/tokens.css',          // flat standalone
+    'src/lib/styles/tokens.css',      // flat standalone (vite)
+    'lib/styles/tokens.css',          // flat standalone (next)
   ];
   for (const rel of candidates) {
     const abs = path.join(projectDir, rel);

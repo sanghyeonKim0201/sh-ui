@@ -112,6 +112,49 @@ describe('sh-ui create smoke tests', () => {
     expect(await fs.pathExists(path.join(projectDir, 'src/components/layouts/RootLayout.tsx'))).toBe(true);
   });
 
+  it('scenario V3 — vite standalone, fsd, with rose theme', async () => {
+    await createProject({
+      name: 'my-vite-themed',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      theme: 'rose',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'my-vite-themed');
+    const tokens = await fs.readFile(
+      path.join(projectDir, 'src/shared/styles/tokens.css'),
+      'utf-8',
+    );
+    // rose preset 의 primary 색은 #E11D48
+    expect(tokens).toContain('#E11D48');
+
+    const cfg = await fs.readJson(path.join(projectDir, 'sh-ui.config.json'));
+    expect(cfg.theme.base).toBe('rose');
+  });
+
+  it('scenario V4 — vite standalone, flat, with violet theme', async () => {
+    await createProject({
+      name: 'my-vite-flat-themed',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'flat',
+      css: 'tailwind',
+      theme: 'violet',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'my-vite-flat-themed');
+    const tokens = await fs.readFile(
+      path.join(projectDir, 'src/lib/styles/tokens.css'),
+      'utf-8',
+    );
+    // violet preset 의 primary 색은 #7C3AED
+    expect(tokens).toContain('#7C3AED');
+  });
+
   it('scenario 2 — monorepo, no plugins', async () => {
     prompts.input
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름
