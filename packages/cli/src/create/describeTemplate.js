@@ -72,22 +72,64 @@ export function describeTemplate(opts = {}) {
   }
 
   if (platform === 'vite') {
-    // standalone only in Phase 1. monorepo is added in Task 13.
-    const tpl = TEMPLATE_MANIFEST['vite-standalone'];
-    if (!tpl) {
-      throw new Error("Template manifest missing entry for 'vite-standalone'.");
-    }
     const safeArchName = isKnownArch(archName) ? archName : DEFAULT_ARCH;
     const archObj = getArchByName(safeArchName);
     if (!archObj.platforms.includes('vite')) {
       throw new Error(`Arch '${safeArchName}' is not compatible with vite.`);
     }
-    const baseFiles = tpl.base.slice();
-    const archFiles = (tpl.arches?.[safeArchName] ?? []).slice();
-    return finalize([
-      makeGroup('base', '베이스 (vite-standalone)', baseFiles),
-      makeGroup('arch', `Arch (${safeArchName})`, archFiles),
-    ]);
+
+    if (structure === 'standalone') {
+      const tpl = TEMPLATE_MANIFEST['vite-standalone'];
+      if (!tpl) {
+        throw new Error("Template manifest missing entry for 'vite-standalone'.");
+      }
+      const baseFiles = tpl.base.slice();
+      const archFiles = (tpl.arches?.[safeArchName] ?? []).slice();
+      return finalize([
+        makeGroup('base', '베이스 (vite-standalone)', baseFiles),
+        makeGroup('arch', `Arch (${safeArchName})`, archFiles),
+      ]);
+    }
+
+    // monorepo — vite app 변형. Next monorepo 브랜치와 동일 구조이지만 vite-app 템플릿
+    // 사용 + 플러그인 없음 (vite 는 아직 plugin 시스템 없음).
+    const appName = rawAppName || 'web';
+    const viteAppTpl = TEMPLATE_MANIFEST['vite-app'];
+    if (!viteAppTpl) {
+      throw new Error("Template manifest missing entry for 'vite-app'.");
+    }
+    const groups = [];
+
+    groups.push(makeGroup(
+      'monorepo',
+      '모노레포 루트',
+      TEMPLATE_MANIFEST['monorepo'].base.slice(),
+    ));
+
+    const prefix = `apps/${appName}/`;
+    groups.push(makeGroup(
+      `app-base`,
+      `apps/${appName} — vite-app 베이스`,
+      viteAppTpl.base.map((p) => prefix + p),
+    ));
+    const appArchFiles = (viteAppTpl.arches?.[safeArchName] ?? []).map((p) => prefix + p);
+    if (appArchFiles.length > 0) {
+      groups.push(makeGroup(
+        `app-arch`,
+        `apps/${appName} — Arch (${safeArchName})`,
+        appArchFiles,
+      ));
+    }
+
+    groups.push(makeGroup(
+      'ui-app',
+      `packages/ui/ui-apps/ui-${appName}`,
+      TEMPLATE_MANIFEST['ui-app-template'].base.map(
+        (p) => `packages/ui/ui-apps/ui-${appName}/${p}`,
+      ),
+    ));
+
+    return finalize(groups);
   }
 
   // platform === 'next'

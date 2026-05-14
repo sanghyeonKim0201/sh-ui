@@ -335,11 +335,7 @@ export async function createProject(options = {}) {
     if (projectType === 'standalone') {
       await generateViteStandalone(targetDir, projectName, theme, cssFramework, arch, themeBase);
     } else {
-      // monorepo path is added in Task 12. For now, fail loudly so users know.
-      throw new Error(
-        'platform=vite + structure=monorepo 는 아직 구현되지 않았습니다 (Phase 2 — v0.87 예정). ' +
-        'standalone 을 사용하거나 platform=next 로 monorepo 를 만든 뒤 vite 앱을 수동으로 추가해주세요.',
-      );
+      await generateMonorepo(targetDir, projectName, [], { yes: options.yes, theme, css: cssFramework, arch, themeBase, platform: 'vite' });
     }
 
     await finalizeProject(targetDir, { dryRun: options.dryRun });
@@ -772,7 +768,7 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next' } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -803,7 +799,11 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   });
 
   const appsDir = path.join(targetDir, 'apps', appName);
-  await generateApp(appsDir, appName, port, plugins, arch, css);
+  if (platform === 'vite') {
+    await generateViteApp(appsDir, appName, port, arch, css);
+  } else {
+    await generateApp(appsDir, appName, port, plugins, arch, css);
+  }
   // generateApp 이 ui-{app} 패키지의 cssFramework 변종까지 처리. 여기선 theme + sh-ui.config.json 만.
   const uiAppDir = path.join(targetDir, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
   await injectCssTheme(uiAppDir, theme);
@@ -898,6 +898,67 @@ async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailw
   await applyCssFrameworkVariant(targetDir, css, { isMonorepo: true, plugins, arch });
   if (await fs.pathExists(uiPkgDir)) {
     await applyCssFrameworkVariant(uiPkgDir, css, { isMonorepo: true, plugins, arch, isUiPackage: true });
+  }
+}
+
+async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind') {
+  // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 동일 패턴.
+  await fs.copy(path.join(TEMPLATES_DIR, 'vite-app'), targetDir, {
+    filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
+  });
+  await ensureArchCleanup(targetDir);
+  await fs.copy(
+    path.join(TEMPLATES_DIR, 'vite-app', '_arch', arch.name),
+    targetDir,
+    { overwrite: true },
+  );
+  // vite-app 의 flat overlay 는 src/ 하위 — arch.paths.layouts(next 관용) 앞에 src/ 보정.
+  // (generateViteStandalone 의 동일 인라인 가드와 같은 이유 — fsd 는 이미 src/app/layouts.)
+  const layoutsPath = arch.paths.layouts.startsWith('src/')
+    ? arch.paths.layouts
+    : `src/${arch.paths.layouts}`;
+  const sentinelPath = path.join(targetDir, `${layoutsPath}/RootLayout.tsx`);
+  if (!(await fs.pathExists(sentinelPath))) {
+    throw new Error(
+      `arch 오버레이 누락: vite-app + ${arch.name} 의 sentinel 파일(${layoutsPath}/RootLayout.tsx) 이 ${targetDir} 에 없습니다.`,
+    );
+  }
+
+  // 워크스페이스 placeholder 치환 — `ui-app-name` → `ui-{appName}`, `app-name` → `{appName}`.
+  await replaceInAllFiles(targetDir, 'ui-app-name', `ui-${appName}`);
+  await replaceInAllFiles(targetDir, 'app-name', appName);
+
+  // package.json — name + dep sort
+  const pkgPath = path.join(targetDir, 'package.json');
+  const pkg = await fs.readJson(pkgPath);
+  pkg.name = appName;
+  if (pkg.dependencies) pkg.dependencies = sortObjectKeys(pkg.dependencies);
+  if (pkg.devDependencies) pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
+  await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+
+  // vite.config.ts 의 server.port 를 사용자 지정 port 로 patch.
+  // generateMonorepo 가 받은 port 가 next 의 --port 와 같은 의미로 흐른다.
+  const viteCfgPath = path.join(targetDir, 'vite.config.ts');
+  if (await fs.pathExists(viteCfgPath)) {
+    let viteCfg = await fs.readFile(viteCfgPath, 'utf-8');
+    viteCfg = viteCfg.replace(/port:\s*\d+/, `port: ${port}`);
+    await fs.writeFile(viteCfgPath, viteCfg);
+  }
+
+  // ui-{appName} 패키지 생성 — generateApp 과 동일 패턴 (ui-app-template 카피 후 placeholder 치환).
+  const monorepoRoot = path.resolve(targetDir, '..', '..');
+  const uiPkgDir = path.join(monorepoRoot, 'packages', 'ui', 'ui-apps', `ui-${appName}`);
+  if (!(await fs.pathExists(uiPkgDir))) {
+    await fs.copy(path.join(TEMPLATES_DIR, 'ui-app-template'), uiPkgDir);
+    await replaceInAllFiles(uiPkgDir, 'ui-app-name', `ui-${appName}`);
+    await replaceInAllFiles(uiPkgDir, 'app-name', appName);
+  }
+
+  // cssFramework 변종 — vite app 디렉토리 + ui-app 패키지 양쪽.
+  // 플러그인 없음 (vite 는 아직 플러그인 시스템 없음 — v0.87 스코프 밖).
+  await applyCssFrameworkVariant(targetDir, css, { isMonorepo: true, plugins: [], arch });
+  if (await fs.pathExists(uiPkgDir)) {
+    await applyCssFrameworkVariant(uiPkgDir, css, { isMonorepo: true, plugins: [], arch, isUiPackage: true });
   }
 }
 

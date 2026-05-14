@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.87.0",
+      "date": "2026-05-14",
+      "title": "Vite monorepo — apps/{name} + packages/ui/ui-core 공유 SoT",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui-cli create --platform vite --structure monorepo`** — vite 도 monorepo 진입점이 됨. ai-org 같은 단일 vite SPA 시나리오를 넘어, 여러 vite 앱이 packages/ui/ui-core 의 컴포넌트를 공유하는 워크스페이스 구조까지 1급 지원. apps/{name}/ (vite-app 템플릿) + packages/ui/ui-core/ (v0.65 단일 SoT) + packages/ui/ui-apps/ui-{name}/ (tokens-only role) 자동 emit.",
+        "**vite-app 템플릿 신설** — packages/cli/templates/vite-app/ 추가 (31 파일, base + flat + fsd overlays). nextjs-app 과 동일 패턴이지만 vite 5 + @tailwindcss/vite + vite-tsconfig-paths 기반. `@workspace/ui-core` / `@workspace/ui-{name}` workspace 별칭은 tsconfig.app.json 단일 SoT 로 핀고정, vite 빌드 타임에는 vite-tsconfig-paths 가 그대로 해석. workspace 별칭과 빌드 별칭이 어긋날 일 없음.",
+        "**generateMonorepo 가 platform 분기** — { platform: 'next' | 'vite' } 옵션 추가. vite 일 때 generateViteApp 으로 위임 (next 의 plugin pipeline / next.config 분기 없이 vite.config.ts 의 server.port 만 patch). ui-app-template + monorepo 베이스 + ui-core 는 두 플랫폼이 공유 — 코드 중복 없음.",
+        "**describeTemplate vite monorepo 분기** — monorepo 루트 + apps/{name} 베이스 + arch 오버레이 + ui-app 패키지 4 개 그룹으로 미리보기 산출. apps/docs CreateProjectDialog 와 MCP `sh_ui_describe_template` 둘 다 동일 결과 제공.",
+        "**스모크 회귀 가드** — `scenario V6` 가 vite 모노레포 스캐폴드의 파일 트리 + tsconfig workspace 별칭 치환 + ui-app role: tokens-only 확정. 빌드 사이클(`pnpm install + pnpm build`)은 Task E manual 에서 fsd/flat 양쪽 PASS — `composite: true` 와 base.json 의 `incremental: false` 충돌 + `clsx`/`tailwind-merge` 누락 두 가지를 사전 차단."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.87.0"
+    },
+    {
       "version": "0.86.1",
       "date": "2026-05-14",
       "title": "vite + next standalone 템플릿에 globals devDep 추가 + vite tsconfigPaths 회귀 가드",

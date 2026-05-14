@@ -181,6 +181,54 @@ describe('sh-ui create smoke tests', () => {
     expect(pkg.devDependencies.globals).toBeDefined();
   });
 
+  // v0.87.0+ — vite monorepo (apps/{name} + packages/ui/ui-core 공유).
+  it('scenario V6 — vite monorepo, fsd, web app', async () => {
+    await createProject({
+      name: 'my-vite-mono',
+      platform: 'vite',
+      structure: 'monorepo',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'my-vite-mono');
+    expect(await fs.pathExists(projectDir)).toBe(true);
+
+    // 모노레포 루트 산출물
+    expect(await fs.pathExists(path.join(projectDir, 'pnpm-workspace.yaml'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'turbo.json'))).toBe(true);
+
+    // vite app
+    expect(await fs.pathExists(path.join(projectDir, 'apps/web/vite.config.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'apps/web/index.html'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'apps/web/next.config.ts'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'apps/web/src/main.tsx'))).toBe(true);
+
+    const appPkg = await fs.readJson(path.join(projectDir, 'apps/web/package.json'));
+    expect(appPkg.name).toBe('web');
+    expect(appPkg.devDependencies.vite).toBeDefined();
+    expect(appPkg.dependencies['@workspace/ui-core']).toBeDefined();
+    expect(appPkg.dependencies['@workspace/ui-web']).toBeDefined();
+
+    // ui-core 단일 SoT
+    expect(await fs.pathExists(path.join(projectDir, 'packages/ui/ui-core/src'))).toBe(true);
+
+    // ui-{appName} — tokens-only 패키지
+    expect(await fs.pathExists(path.join(projectDir, 'packages/ui/ui-apps/ui-web/sh-ui.config.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'packages/ui/ui-apps/ui-web/src/styles/tokens.css'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'packages/ui/ui-apps/ui-web/src/styles/globals.css'))).toBe(true);
+
+    // tsconfig.app.json 의 workspace alias 가 치환됐는지 — ui-app-name 잔존 금지.
+    const tsApp = await fs.readFile(path.join(projectDir, 'apps/web/tsconfig.app.json'), 'utf-8');
+    expect(tsApp).toContain('@workspace/ui-web/*');
+    expect(tsApp).not.toContain('ui-app-name');
+
+    // ui-app sh-ui.config.json 에 tokens-only role 확인
+    const uiAppCfg = await fs.readJson(path.join(projectDir, 'packages/ui/ui-apps/ui-web/sh-ui.config.json'));
+    expect(uiAppCfg.role).toBe('tokens-only');
+  });
+
   it('scenario 2 — monorepo, no plugins', async () => {
     prompts.input
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름

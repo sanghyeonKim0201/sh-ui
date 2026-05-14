@@ -256,4 +256,32 @@ describe('describeTemplate — vite', () => {
     });
     expect(result.files.some((f) => f.endsWith('src/lib/styles/tokens.css'))).toBe(true);
   });
+
+  it('vite + monorepo + fsd returns monorepo + apps/web + ui-app groups', () => {
+    const result = describeTemplate({
+      platform: 'vite',
+      structure: 'monorepo',
+      arch: 'fsd',
+      cssFramework: 'tailwind',
+      appName: 'web',
+    });
+    // monorepo 루트
+    expect(result.files.some((f) => f === 'pnpm-workspace.yaml')).toBe(true);
+    // vite-app 베이스
+    expect(result.files.some((f) => f === 'apps/web/vite.config.ts')).toBe(true);
+    expect(result.files.some((f) => f === 'apps/web/index.html')).toBe(true);
+    // arch 오버레이
+    expect(result.files.some((f) => f === 'apps/web/src/main.tsx')).toBe(true);
+    // ui-app 패키지
+    expect(result.files.some((f) => f === 'packages/ui/ui-apps/ui-web/sh-ui.config.json')).toBe(true);
+    expect(result.files.some((f) => f === 'packages/ui/ui-apps/ui-web/src/styles/tokens.css')).toBe(true);
+    // next 흔적 없어야 함
+    expect(result.files.some((f) => f.includes('next.config.ts'))).toBe(false);
+
+    const groupIds = result.groups.map((g) => g.id);
+    expect(groupIds).toContain('monorepo');
+    expect(groupIds).toContain('app-base');
+    expect(groupIds).toContain('app-arch');
+    expect(groupIds).toContain('ui-app');
+  });
 });
