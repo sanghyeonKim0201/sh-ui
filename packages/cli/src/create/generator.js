@@ -213,6 +213,23 @@ export async function createProject(options = {}) {
     ],
   });
 
+  // tauri 옵션은 platform=vite + structure=standalone 일 때만 의미. 다른 조합은 명시적 에러.
+  // (MCP 진입점은 mcp.mjs 가 이미 동일 가드 — CLI 직접 호출에도 동일 안전망.)
+  if (options.tauri) {
+    if (platform !== 'vite') {
+      throw new Error(
+        `tauri: true 는 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). ` +
+        `--tauri 옵션 제거 또는 --platform vite 사용.`,
+      );
+    }
+    if (options.structure === 'monorepo') {
+      throw new Error(
+        'platform=vite + structure=monorepo + tauri=true 는 아직 지원 안 함 (v0.89 후속). ' +
+        'standalone 으로 시도하거나 tauri 옵션 제거.',
+      );
+    }
+  }
+
   // arch 결정 — platform 확정 후. 사용자가 --arch 미지정 시:
   //   - next  → DEFAULT_ARCH ('fsd')
   //   - flutter → 현재 Flutter arch 디스크립터 없음 → null. 미래에 flutter arch 추가되면

@@ -273,7 +273,9 @@ describe('sh-ui create smoke tests', () => {
     const conf = await fs.readJson(path.join(projectDir, 'src-tauri/tauri.conf.json'));
     expect(conf.productName).toBe('My-Cool.App');            // 원본 그대로 (UI 표시용)
     expect(conf.identifier).toBe('app.my_cool_app.dev');     // 식별자도 snake_case
-    expect(conf['//-identifier']).toContain('TODO');         // TODO sentinel 보존
+    // v0.88.0+ —  "//-identifier" sentinel 제거 (Tauri 2.x 의 strict schema 가 unknown top-level 거부).
+    // 프로덕션 식별자 교체 안내는 README 의 TODO 콜아웃으로 유지.
+    expect(conf['//-identifier']).toBeUndefined();
   });
 
   it('scenario V7c — vite package.json + vite.config.ts 가 Tauri 친화적으로 패치', async () => {
@@ -344,6 +346,19 @@ describe('sh-ui create smoke tests', () => {
     expect(pkg.scripts.tauri).toBeUndefined();
     expect(pkg.dependencies['@tauri-apps/api']).toBeUndefined();
     expect(pkg.devDependencies['@tauri-apps/cli']).toBeUndefined();
+  });
+
+  it('scenario V7f — tauri:true + platform=next 는 명시적 에러 (CLI 가드)', async () => {
+    await expect(
+      createProject({
+        name: 'next-tauri-fail',
+        platform: 'next',
+        structure: 'standalone',
+        css: 'tailwind',
+        tauri: true,
+        yes: true,
+      }),
+    ).rejects.toThrow(/tauri.*vite/);
   });
 
   it('scenario 2 — monorepo, no plugins', async () => {
