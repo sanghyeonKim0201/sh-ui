@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.89.0",
+      "date": "2026-05-14",
+      "title": "vite-standalone fsd arch — FSD-pure entry (src/app/main.tsx)",
+      "type": "minor",
+      "highlights": [
+        "**fsd arch 의 entry 가 `src/app/main.tsx` 로 이동** — Feature-Sliced Design 의 app layer 가 정식 부트스트랩 위치가 되도록. v0.88.x 까지는 Vite 컨벤션 (`src/main.tsx`) 따라 루트에 두고 안에서 FSD 레이어로 분기하던 1-layer 우회 — v0.89.0 부터는 entry 자체가 app layer 안. `_arch/fsd/index.html` overlay 신설 (script src `/src/app/main.tsx`). ai-org 처럼 명시적 FSD 노선을 가진 프로젝트에 맞춤.",
+        "**flat arch 는 Vite 컨벤션 유지** — `src/main.tsx` + `src/App.tsx` + `src/Home.tsx` 그대로 루트. 그러나 base 에서 이 파일들이 빠지면서 `_arch/flat/` overlay 가 자체적으로 emit (`_arch/flat/index.html`, `_arch/flat/src/Home.tsx` 신설). 사용자 입장의 결과 파일은 v0.88.x 와 동일.",
+        "**base 가 entry 책임 안 가짐** — `index.html`, `src/App.tsx`, `src/Home.tsx`, `src/main.tsx` 가 vite-standalone base 에서 제거. 각 arch overlay 가 자체 entry 를 owner — flat 은 Vite-style, fsd 는 FSD-pure. base 는 빌드 설정 + 메타 파일만 (CLAUDE.md / README.md / package.json / vite.config.ts / tsconfig.* / eslint.config.js / vitest.config.ts / gitignore — 10개).",
+        "**Smoke V10 + V11 회귀 가드 + V1 갱신** — V10 은 fsd 의 `src/app/main.tsx` 존재 + 루트 entry/opinionated 폴더 부재 + index.html script 경로 단언. V11 은 flat 의 Vite-convention 보장. V1 (기존 vite fsd smoke) 도 새 entry 경로로 갱신. fsd + flat 양쪽 manual `pnpm build` 검증 그린."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.89.0"
+    },
+    {
       "version": "0.88.1",
       "date": "2026-05-14",
       "title": "vite-standalone 템플릿 모바일/Tauri WebView 친화 — viewport-fit + theme-color + tap-highlight reset",
