@@ -1,3 +1,9 @@
+/* sh-ui:external-imports-start
+ *   외부 폰트 / 아이콘셋 / 디자인시스템 URL @import 는 반드시 이 블록 안에 둘 것.
+ *   `@import 'tailwindcss'` 아래에 추가하면 CSS spec 위반으로 Turbopack 이 즉사.
+ *   예: @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css'); */
+/* sh-ui:external-imports-end */
+
 @import 'tailwindcss';
 @import '../src/shared/styles/tokens.css';
 
