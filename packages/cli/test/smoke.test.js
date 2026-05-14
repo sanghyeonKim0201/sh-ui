@@ -229,6 +229,123 @@ describe('sh-ui create smoke tests', () => {
     expect(uiAppCfg.role).toBe('tokens-only');
   });
 
+  it('scenario V7a — vite standalone + tauri:true emits src-tauri/ shell', async () => {
+    await createProject({
+      name: 'my-vite-tauri',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      tauri: true,
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'my-vite-tauri');
+
+    // 8개 tauri-shell 파일이 모두 존재해야 함
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/Cargo.toml'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/build.rs'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/tauri.conf.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/src/main.rs'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/src/lib.rs'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/capabilities/default.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/.gitignore'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri/README.md'))).toBe(true);
+  });
+
+  it('scenario V7b — placeholder 치환 + bundle ID + crate name 동시 검증', async () => {
+    await createProject({
+      name: 'My-Cool.App',          // 하이픈 + 점 + 대문자 — snake_case 변환 케이스
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      tauri: true,
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'My-Cool.App');
+    const cargo = await fs.readFile(path.join(projectDir, 'src-tauri/Cargo.toml'), 'utf-8');
+    expect(cargo).toContain('name = "my_cool_app"');         // crate name = snake_case
+    expect(cargo).toContain('name = "my_cool_app_lib"');     // lib name = snake_case + _lib
+    expect(cargo).not.toContain('{{');                       // 치환 누락 없음
+
+    const conf = await fs.readJson(path.join(projectDir, 'src-tauri/tauri.conf.json'));
+    expect(conf.productName).toBe('My-Cool.App');            // 원본 그대로 (UI 표시용)
+    expect(conf.identifier).toBe('app.my_cool_app.dev');     // 식별자도 snake_case
+    expect(conf['//-identifier']).toContain('TODO');         // TODO sentinel 보존
+  });
+
+  it('scenario V7c — vite package.json + vite.config.ts 가 Tauri 친화적으로 패치', async () => {
+    await createProject({
+      name: 'tauri-patches',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      tauri: true,
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'tauri-patches');
+
+    // package.json scripts + deps
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.scripts.tauri).toBe('tauri');
+    expect(pkg.scripts['tauri:dev']).toBe('tauri dev');
+    expect(pkg.scripts['tauri:build']).toBe('tauri build');
+    expect(pkg.dependencies['@tauri-apps/api']).toBeDefined();
+    expect(pkg.dependencies['@tauri-apps/plugin-opener']).toBeDefined();
+    expect(pkg.devDependencies['@tauri-apps/cli']).toBeDefined();
+
+    // vite.config.ts — Tauri 권장 설정
+    const viteCfg = await fs.readFile(path.join(projectDir, 'vite.config.ts'), 'utf-8');
+    expect(viteCfg).toContain('clearScreen: false');
+    expect(viteCfg).toContain('strictPort: true');
+    expect(viteCfg).toContain('port: 5173');
+    // v0.86.0 의 tsconfigPaths 회귀 가드 — Tauri 패치가 plugin 을 떼어내면 안 됨
+    expect(viteCfg).toContain('tsconfigPaths');
+
+    // .gitignore 에 src-tauri/target 추가
+    const gitignore = await fs.readFile(path.join(projectDir, '.gitignore'), 'utf-8');
+    expect(gitignore).toContain('src-tauri/target');
+  });
+
+  it('scenario V7d — vite + monorepo + tauri 는 명시적 에러', async () => {
+    await expect(
+      createProject({
+        name: 'mono-tauri-fail',
+        platform: 'vite',
+        structure: 'monorepo',
+        arch: 'fsd',
+        css: 'tailwind',
+        tauri: true,
+        yes: true,
+      }),
+    ).rejects.toThrow(/monorepo.*tauri.*v0.89/);
+  });
+
+  it('scenario V7e — vite + tauri:false (또는 미지정) 은 src-tauri/ 안 emit (회귀 가드)', async () => {
+    await createProject({
+      name: 'no-tauri',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      // tauri 옵션 미지정 — 기본 false
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'no-tauri');
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri'))).toBe(false);
+
+    // package.json 에도 tauri 관련 추가 없어야 함
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.scripts.tauri).toBeUndefined();
+    expect(pkg.dependencies['@tauri-apps/api']).toBeUndefined();
+    expect(pkg.devDependencies['@tauri-apps/cli']).toBeUndefined();
+  });
+
   it('scenario 2 — monorepo, no plugins', async () => {
     prompts.input
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름
