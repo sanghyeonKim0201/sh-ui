@@ -7,7 +7,7 @@
 
 // ─── 프로젝트 생성 (sh-ui-cli create) ───
 
-export const CREATE_PLATFORMS = ['next', 'flutter'];
+export const CREATE_PLATFORMS = ['next', 'flutter', 'vite'];
 
 export const CREATE_STRUCTURES = ['standalone', 'monorepo'];
 
