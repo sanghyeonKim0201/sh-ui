@@ -71,6 +71,25 @@ export function describeTemplate(opts = {}) {
     ]);
   }
 
+  if (platform === 'vite') {
+    // standalone only in Phase 1. monorepo is added in Task 13.
+    const tpl = TEMPLATE_MANIFEST['vite-standalone'];
+    if (!tpl) {
+      throw new Error("Template manifest missing entry for 'vite-standalone'.");
+    }
+    const safeArchName = isKnownArch(archName) ? archName : DEFAULT_ARCH;
+    const archObj = getArchByName(safeArchName);
+    if (!archObj.platforms.includes('vite')) {
+      throw new Error(`Arch '${safeArchName}' is not compatible with vite.`);
+    }
+    const baseFiles = tpl.base.slice();
+    const archFiles = (tpl.arches?.[safeArchName] ?? []).slice();
+    return finalize([
+      makeGroup('base', '베이스 (vite-standalone)', baseFiles),
+      makeGroup('arch', `Arch (${safeArchName})`, archFiles),
+    ]);
+  }
+
   // platform === 'next'
   const safeArchName = isKnownArch(archName) ? archName : DEFAULT_ARCH;
   const archObj = getArchByName(safeArchName);
