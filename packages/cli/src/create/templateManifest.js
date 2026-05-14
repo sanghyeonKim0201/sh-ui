@@ -357,6 +357,20 @@ export const TEMPLATE_MANIFEST = {
         "src/lib/utils/utils.ts",
         "src/main.tsx",
         "tsconfig.app.json"
+      ],
+      "fsd": [
+        "sh-ui.config.json",
+        "src/App.tsx",
+        "src/app/layouts/RootLayout.tsx",
+        "src/app/providers/GlobalProvider/index.tsx",
+        "src/app/providers/theme/ThemeProvider.tsx",
+        "src/main.tsx",
+        "src/shared/api/queryClient.ts",
+        "src/shared/hooks/useTheme.ts",
+        "src/shared/lib/utils.ts",
+        "src/shared/styles/globals.css",
+        "src/shared/styles/tokens.css",
+        "tsconfig.app.json"
       ]
     }
   }
