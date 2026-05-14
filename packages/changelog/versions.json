@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.86.1",
+      "date": "2026-05-14",
+      "title": "vite + next standalone 템플릿에 globals devDep 추가 + vite tsconfigPaths 회귀 가드",
+      "type": "patch",
+      "highlights": [
+        "**`globals` devDep 누락 픽스** — `vite-standalone/eslint.config.js` 와 `nextjs-standalone/eslint.config.js` 둘 다 `import globals from 'globals'` 하는데 해당 deps 누락이라 스캐폴드 직후 `pnpm lint` 가 `ERR_MODULE_NOT_FOUND` 로 즉사. v0.86.0 의 vite 작업 final review 가 짚어준 pre-existing 결함을 함께 정리.",
+        "**vite tsconfigPaths 회귀 가드 추가** — `scenario V5` smoke 테스트가 `vite.config.ts` 의 `tsconfigPaths` 플러그인 와이어링 + `vite-tsconfig-paths` devDep + `globals` devDep 셋을 구조 단언으로 핀고정. v0.86.0 에서 잡혔던 \"smoke 그린이지만 실제 빌드 깨짐\" 패턴을 다시 발생시키지 않게 함. 학습 노트: `docs/solutions/developer-experience/vite-scaffolder-smoke-test-must-run-build-2026-05-14.md`."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.86.1"
+    },
+    {
       "version": "0.86.0",
       "date": "2026-05-14",
       "title": "Vite 플랫폼 프리셋 — sh_ui_create_project platform=vite (standalone)",
