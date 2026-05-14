@@ -2,6 +2,7 @@
   "extends": "@workspace/typescript-config/react-library.json",
   "compilerOptions": {
     "composite": true,
+    "incremental": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
