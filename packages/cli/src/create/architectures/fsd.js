@@ -12,7 +12,7 @@ export const fsdArch = {
   label: 'Feature-Sliced Design',
   description:
     '슬라이스 기반 폴더 구조 (entities/features/widgets/views/shared/app). 도메인이 큰 프로젝트에 적합.',
-  platforms: ['next'],
+  platforms: ['next', 'vite'],
 
   paths: {
     layouts:    'src/app/layouts',

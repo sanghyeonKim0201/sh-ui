@@ -190,3 +190,20 @@ describe('vite platform — constants + schema', () => {
     expect(msgs).not.toMatch(/platforms.*Invalid enum/);
   });
 });
+
+describe('vite arch compat', () => {
+  it('getArchesForPlatform("vite") includes flat + fsd', () => {
+    const names = getArchesForPlatform('vite').map((a) => a.name);
+    expect(names).toContain('flat');
+    expect(names).toContain('fsd');
+  });
+
+  it('assertArchPlatformCompat("flat", "vite") returns flat descriptor', () => {
+    const arch = assertArchPlatformCompat('flat', 'vite');
+    expect(arch.name).toBe('flat');
+  });
+
+  it('assertArchPlatformCompat("mes", "vite") rejects (mes is next-only)', () => {
+    expect(() => assertArchPlatformCompat('mes', 'vite')).toThrow(/vite/);
+  });
+});
