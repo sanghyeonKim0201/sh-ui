@@ -31,6 +31,10 @@ type Props = {
   onTogglePlugin: (p: Plugin) => void;
   tauri: boolean;
   onTauriChange: (v: boolean) => void;
+  i18n: 'none' | 'react-i18next';
+  onI18nChange: (v: 'none' | 'react-i18next') => void;
+  locales: string;
+  onLocalesChange: (v: string) => void;
 };
 
 /**
@@ -51,6 +55,10 @@ export function ProjectOptionsForm(props: Props) {
     onTogglePlugin,
     tauri,
     onTauriChange,
+    i18n,
+    onI18nChange,
+    locales,
+    onLocalesChange,
   } = props;
 
   return (
@@ -152,28 +160,77 @@ export function ProjectOptionsForm(props: Props) {
             </div>
           )}
           {platform === "vite" && (
-            <div>
-              <Label htmlFor="tauri-toggle">Tauri 데스크탑 셸</Label>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
-                <Button
-                  id="tauri-toggle"
-                  type="button"
-                  variant={tauri ? "primary" : "secondary"}
-                  size="sm"
-                  aria-pressed={tauri}
-                  title="Tauri 2.x 셸을 emit (standalone: src-tauri/, monorepo: apps/{name}/src-tauri/). Rust toolchain 필요."
-                  onClick={() => onTauriChange(!tauri)}
-                >
-                  {tauri ? "✓ " : ""}
-                  --tauri
-                </Button>
-                <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
-                  {structure === "standalone"
-                    ? "Vite SPA + 네이티브 윈도우 (Rust toolchain 필요)"
-                    : "Vite SPA + 네이티브 윈도우 — Tauri 셸은 apps/{name}/src-tauri/ 안 (Rust toolchain 필요)"}
-                </span>
+            <>
+              <div>
+                <Label htmlFor="tauri-toggle">Tauri 데스크탑 셸</Label>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
+                  <Button
+                    id="tauri-toggle"
+                    type="button"
+                    variant={tauri ? "primary" : "secondary"}
+                    size="sm"
+                    aria-pressed={tauri}
+                    title="Tauri 2.x 셸을 emit (standalone: src-tauri/, monorepo: apps/{name}/src-tauri/). Rust toolchain 필요."
+                    onClick={() => onTauriChange(!tauri)}
+                  >
+                    {tauri ? "✓ " : ""}
+                    --tauri
+                  </Button>
+                  <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
+                    {structure === "standalone"
+                      ? "Vite SPA + 네이티브 윈도우 (Rust toolchain 필요)"
+                      : "Vite SPA + 네이티브 윈도우 — Tauri 셸은 apps/{name}/src-tauri/ 안 (Rust toolchain 필요)"}
+                  </span>
+                </div>
               </div>
-            </div>
+              <div>
+                <Label>i18n (react-i18next)</Label>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
+                  <Button
+                    type="button"
+                    variant={i18n === 'react-i18next' ? "primary" : "secondary"}
+                    size="sm"
+                    aria-pressed={i18n === 'react-i18next'}
+                    title="i18next + react-i18next + browser-languagedetector + http-backend 셋업"
+                    onClick={() => onI18nChange(i18n === 'react-i18next' ? 'none' : 'react-i18next')}
+                  >
+                    {i18n === 'react-i18next' ? "✓ " : ""}
+                    --i18n react-i18next
+                  </Button>
+                  <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
+                    {i18n === 'react-i18next'
+                      ? "i18n/config.ts + locales/{lng}/common.json + I18nProvider 자동 emit"
+                      : "i18n 셋업 없이 (opt-in)"}
+                  </span>
+                </div>
+              </div>
+              {i18n === 'react-i18next' && (
+                <div>
+                  <Label htmlFor="locales-input">Locales</Label>
+                  <input
+                    id="locales-input"
+                    type="text"
+                    value={locales}
+                    onChange={(e) => onLocalesChange(e.target.value)}
+                    placeholder="ko,en"
+                    style={{
+                      width: "100%",
+                      marginTop: "0.25rem",
+                      padding: "0.375rem 0.5rem",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid var(--border)",
+                      background: "var(--background)",
+                      color: "var(--foreground)",
+                      fontSize: "0.875rem",
+                      fontFamily: "var(--font-mono, monospace)",
+                    }}
+                  />
+                  <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
+                    Comma-separated 2글자 코드 (예: ko,en,ja). 첫 locale 이 fallbackLng.
+                  </span>
+                </div>
+              )}
+            </>
           )}
         </>
       )}

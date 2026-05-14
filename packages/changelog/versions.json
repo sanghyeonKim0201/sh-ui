@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.92.0",
+      "date": "2026-05-14",
+      "title": "vite 프리셋 react-i18next i18n opt-in (--i18n + --locales)",
+      "type": "minor",
+      "highlights": [
+        "**`--i18n react-i18next` 옵션** — vite preset 에 opt-in i18n 셋업 추가. `sh-ui-cli create --platform vite --i18n react-i18next --locales ko,en` 한 줄로 i18next + react-i18next + browser-languagedetector + http-backend 셋업 + `I18nProvider` + locale JSON 자동 emit. 디폴트 `'none'` 이라 기존 사용자 영향 X. ai-org 처럼 i18n 부터 들어가는 워크로드의 30 초 boilerplate 제거.",
+        "**Arch-aware 파일 위치** — fsd 일 때 `src/shared/i18n/` + `src/app/providers/I18nProvider.tsx`, flat 일 때 `src/lib/i18n/` + `src/components/providers/I18nProvider.tsx`. `emitI18n` 헬퍼가 arch descriptor 의 `paths`/`aliases` 기반 경로 자동 결정. 사용자가 `import i18n from '@/shared/i18n'` 또는 `'@/lib/i18n'` 즉시 가능.",
+        "**Monorepo + Tauri + i18n 조합 모두 동작** — `--structure monorepo --tauri --i18n react-i18next` 한 번에 OK. `apps/{appName}/` 안에 `src-tauri/` 와 `src/shared/i18n/` 가 같이 emit, 각 의존성이 app 의 `package.json` 에 정확히. `sh-ui-cli add-app` 도 `--i18n` 받음.",
+        "**Locale 시드 정책** — 첫 locale (fallbackLng) 만 `{ greeting: 'Hello World', app_title: 'sh-ui app' }` 시드, 나머지는 `{}` 빈 객체로 시작. 사용자가 키 채우는 흐름 자연스럽게. backend (`i18next-http-backend`) 가 `/locales/{lng}/{ns}.json` lazy-load 하므로 dev 부터 namespace 분리 + lazy 동작.",
+        "**가드 + 회귀** — `i18n + platform !== 'vite'` 조합은 CLI + MCP 양쪽에서 명시적 Korean 에러. Smoke V15 (fsd + ko,en happy path), V16 (i18n=none 디폴트 회귀 가드 — 어떤 i18n 파일도 안 들어감), V17 (flat + ko,en,ja — 3개 locale 중 첫 locale 만 시드, ja 는 빈 객체). docs `/create` 페이지도 i18n 토글 + locales 인풋 노출."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.92.0"
+    },
+    {
       "version": "0.91.0",
       "date": "2026-05-14",
       "title": "add-app 가 platform (next/vite) + tauri 인식 — vite monorepo 에 새 앱 정상 추가",

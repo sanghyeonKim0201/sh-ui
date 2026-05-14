@@ -46,6 +46,8 @@ import {
   THEME_RADII,
   THEME_MODES,
   CSS_FRAMEWORKS_SUPPORTED,
+  I18N_LIBRARIES,
+  I18N_DEFAULT_LOCALES,
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
 import { allArchitectures } from "./create/architectures/index.js";
@@ -402,6 +404,16 @@ export async function startMcpServer() {
             "Rust toolchain (`cargo`/`rustc`) 가 시스템에 설치되어 있어야 첫 `pnpm tauri dev` 가 동작. " +
             "기본 false.",
           ),
+        i18n: z.enum(I18N_LIBRARIES).optional()
+          .describe(
+            "i18n 라이브러리 — platform=vite 일 때만 의미. 'react-i18next' 로 설정 시 i18next + react-i18next + browser-languagedetector + http-backend 셋업 + " +
+            "providers/I18nProvider.tsx + locales/{lng}/common.json 자동 emit. 기본 'none'. v0.92.0+ 신규.",
+          ),
+        locales: z.string().optional()
+          .describe(
+            `i18n 활성화 시 생성할 locale 코드 (comma-separated, 2글자 또는 'ko-KR' 류). 기본 '${I18N_DEFAULT_LOCALES}'. 첫 locale 이 fallbackLng. ` +
+            "i18n='none' 이면 무시.",
+          ),
       },
     },
     async (input) => {
@@ -432,6 +444,15 @@ export async function startMcpServer() {
           }],
         };
       }
+      if (input.i18n && input.i18n !== "none" && input.platform !== "vite") {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: `i18n='${input.i18n}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${input.platform}).`,
+          }],
+        };
+      }
       const targetParent = resolveCwd(input);
       const targetDir = resolve(targetParent, input.name);
       if (existsSync(targetDir) && !input.force) {
@@ -458,6 +479,8 @@ export async function startMcpServer() {
             theme: input.theme,
             css: input.cssFramework,
             tauri: input.tauri,
+            i18n: input.i18n,
+            locales: input.locales,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
@@ -492,6 +515,15 @@ export async function startMcpServer() {
           .describe("플랫폼 — next | vite. 미지정 시 기존 apps/* 의 deps 로 추론 (모든 앱이 같은 플랫폼이면 그것으로, 혼재면 명시 필요)."),
         tauri: z.boolean().optional()
           .describe("Tauri 2.x 데스크탑 셸 — platform=vite 일 때만 의미. apps/{name}/src-tauri/ 에 emit. 기본 false."),
+        i18n: z.enum(I18N_LIBRARIES).optional()
+          .describe(
+            "i18n 라이브러리 — platform=vite 일 때만 의미. 'react-i18next' 로 설정 시 i18next + react-i18next + " +
+            "browser-languagedetector + http-backend 셋업 + providers/I18nProvider.tsx 자동 emit. 기본 'none'. v0.92.0+ 신규.",
+          ),
+        locales: z.string().optional()
+          .describe(
+            `i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 '${I18N_DEFAULT_LOCALES}'. 첫 locale 이 fallbackLng. i18n='none' 이면 무시.`,
+          ),
         cwd: z.string().optional()
           .describe("모노레포 루트 (pnpm-workspace.yaml 있는 곳). 기본 process.cwd()"),
       },
@@ -511,6 +543,15 @@ export async function startMcpServer() {
           }],
         };
       }
+      if (input.i18n && input.i18n !== "none" && input.platform && input.platform !== "vite") {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: `i18n='${input.i18n}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${input.platform}).`,
+          }],
+        };
+      }
       const text = await captureConsole(() =>
         addApp({
           name: input.name,
@@ -520,6 +561,8 @@ export async function startMcpServer() {
           css: input.cssFramework,
           platform: input.platform,
           tauri: input.tauri,
+          i18n: input.i18n,
+          locales: input.locales,
           cwd: resolveCwd(input),
         }),
       );

@@ -18,7 +18,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 
 사용법:
   sh-ui create [name] [options]
-  sh-ui create add-app [name] [--port <n>] [--platform <next|vite>] [--plugins ..] [--theme ..] [--css ..] [--tauri]
+  sh-ui create add-app [name] [--port <n>] [--platform <next|vite>] [--plugins ..] [--theme ..] [--css ..] [--tauri] [--i18n <react-i18next|none>] [--locales ko,en]
   sh-ui create add-component <name> [--app <name>]
 
 옵션:
@@ -28,6 +28,8 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
   --plugins <a,b>                    플러그인 (${PLUGINS_LIST}). 미지정/"" → 없음
   --theme <preset|base64>            프리셋 이름(${THEME_PRESETS_LIST}) 또는 playground base64. 선택
   --css <${CSS_FRAMEWORKS_SUPPORTED.join('|')}>                        CSS 프레임워크. base 파일까지 분기 emit (tailwind/plain/css-modules)
+  --i18n <react-i18next|none>        vite 전용 — react-i18next 셋업 emit (i18n config + I18nProvider). 기본 none (v0.92.0+)
+  --locales <ko,en>                  i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 'ko,en'
   --yes                              디렉토리 덮어쓰기 + 모노레포 기본값 자동 채택
   --dry-run                          파일을 쓰지 않고 작성될 파일 목록만 출력
   -h, --help                         이 도움말
@@ -75,6 +77,8 @@ export async function runCreate(rest) {
       css: flags.css,
       platform: flags.platform,
       tauri: flags.tauri,
+      i18n: flags.i18n,
+      locales: flags.locales,
     });
   } else if (command === 'add-component') {
     // 호환 별칭 — 신규 진입점은 `sh-ui add <name>` (bin/sh-ui.mjs 가 walk-up 으로 라우팅).
@@ -92,6 +96,8 @@ export async function runCreate(rest) {
       theme: flags.theme,
       css: flags.css,
       tauri: flags.tauri,
+      i18n: flags.i18n,
+      locales: flags.locales,
       yes: flags.yes,
       dryRun: flags.dryRun,
     });

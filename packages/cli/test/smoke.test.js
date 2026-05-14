@@ -574,6 +574,90 @@ describe('sh-ui create smoke tests', () => {
     ).rejects.toThrow(/tauri.*vite/);
   });
 
+  it('scenario V15 — vite standalone + i18n=react-i18next + locales=ko,en (v0.92.0+)', async () => {
+    await createProject({
+      name: 'v-i18n',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      i18n: 'react-i18next',
+      locales: 'ko,en',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'v-i18n');
+
+    expect(await fs.pathExists(path.join(projectDir, 'src/shared/i18n/config.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/shared/i18n/index.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/shared/i18n/locales/ko/common.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/shared/i18n/locales/en/common.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/app/providers/I18nProvider.tsx'))).toBe(true);
+
+    const cfg = await fs.readFile(path.join(projectDir, 'src/shared/i18n/config.ts'), 'utf-8');
+    expect(cfg).toContain("import LanguageDetector from 'i18next-browser-languagedetector'");
+    expect(cfg).toContain("import HttpBackend from 'i18next-http-backend'");
+    expect(cfg).toContain("fallbackLng: 'ko'");
+    expect(cfg).toContain('supportedLngs: ["ko","en"]');
+
+    const gp = await fs.readFile(path.join(projectDir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
+    expect(gp).toContain("import { I18nProvider } from '../I18nProvider'");
+    expect(gp).toContain('<I18nProvider>');
+
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.dependencies['i18next']).toBeDefined();
+    expect(pkg.dependencies['react-i18next']).toBeDefined();
+    expect(pkg.dependencies['i18next-browser-languagedetector']).toBeDefined();
+    expect(pkg.dependencies['i18next-http-backend']).toBeDefined();
+  });
+
+  it('scenario V16 — vite + i18n=none (default) — i18n 파일 안 들어감 (회귀 가드)', async () => {
+    await createProject({
+      name: 'v-no-i18n',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'v-no-i18n');
+    expect(await fs.pathExists(path.join(projectDir, 'src/shared/i18n'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'src/app/providers/I18nProvider.tsx'))).toBe(false);
+
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.dependencies['i18next']).toBeUndefined();
+    expect(pkg.dependencies['react-i18next']).toBeUndefined();
+
+    const gp = await fs.readFile(path.join(projectDir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
+    expect(gp).not.toContain('I18nProvider');
+  });
+
+  it('scenario V17 — vite + flat + i18n=react-i18next — lib/i18n + components/providers 경로', async () => {
+    await createProject({
+      name: 'v-i18n-flat',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'flat',
+      css: 'tailwind',
+      i18n: 'react-i18next',
+      locales: 'ko,en,ja',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'v-i18n-flat');
+
+    expect(await fs.pathExists(path.join(projectDir, 'src/lib/i18n/config.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/lib/i18n/locales/ja/common.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/components/providers/I18nProvider.tsx'))).toBe(true);
+
+    const jaJson = await fs.readJson(path.join(projectDir, 'src/lib/i18n/locales/ja/common.json'));
+    expect(jaJson).toEqual({});
+
+    const cfg = await fs.readFile(path.join(projectDir, 'src/lib/i18n/config.ts'), 'utf-8');
+    expect(cfg).toContain("fallbackLng: 'ko'");
+  });
+
   it('scenario 2 — monorepo, no plugins', async () => {
     prompts.input
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름

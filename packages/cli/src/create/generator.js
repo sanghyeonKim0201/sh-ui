@@ -224,6 +224,13 @@ export async function createProject(options = {}) {
     }
   }
 
+  // i18n 옵션도 vite preset 전용. v0.92.0+.
+  if (options.i18n && options.i18n !== 'none' && platform !== 'vite') {
+    throw new Error(
+      `i18n='${options.i18n}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --i18n none 또는 --platform vite 사용.`,
+    );
+  }
+
   // arch 결정 — platform 확정 후. 사용자가 --arch 미지정 시:
   //   - next  → DEFAULT_ARCH ('fsd')
   //   - flutter → 현재 Flutter arch 디스크립터 없음 → null. 미래에 flutter arch 추가되면
@@ -344,9 +351,19 @@ export async function createProject(options = {}) {
     });
 
     if (projectType === 'standalone') {
-      await generateViteStandalone(targetDir, projectName, theme, cssFramework, arch, themeBase, { tauri: !!options.tauri });
+      await generateViteStandalone(targetDir, projectName, theme, cssFramework, arch, themeBase, {
+        tauri: !!options.tauri,
+        i18n: options.i18n ?? 'none',
+        locales: options.locales ?? 'ko,en',
+      });
     } else {
-      await generateMonorepo(targetDir, projectName, [], { yes: options.yes, theme, css: cssFramework, arch, themeBase, platform: 'vite', tauri: options.tauri });
+      await generateMonorepo(targetDir, projectName, [], {
+        yes: options.yes, theme, css: cssFramework, arch, themeBase,
+        platform: 'vite',
+        tauri: options.tauri,
+        i18n: options.i18n ?? 'none',
+        locales: options.locales ?? 'ko,en',
+      });
     }
 
     await finalizeProject(targetDir, { dryRun: options.dryRun });
@@ -507,6 +524,11 @@ export async function addApp(options = {}) {
       `tauri 는 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --platform vite 사용 또는 tauri 옵션 제거.`,
     );
   }
+  if (options.i18n && options.i18n !== 'none' && platform !== 'vite') {
+    throw new Error(
+      `i18n='${options.i18n}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}).`,
+    );
+  }
 
   const appName = validateProjectName(
     options.name ?? await input({
@@ -557,7 +579,11 @@ export async function addApp(options = {}) {
   const arch = assertArchPlatformCompat(DEFAULT_ARCH, platform);
 
   if (platform === 'vite') {
-    await generateViteApp(appsDir, appName, port, arch, css, { tauri: !!options.tauri });
+    await generateViteApp(appsDir, appName, port, arch, css, {
+      tauri: !!options.tauri,
+      i18n: options.i18n ?? 'none',
+      locales: options.locales ?? 'ko,en',
+    });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
   }
@@ -820,7 +846,7 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
 
-async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { tauri = false } = {}) {
+async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { tauri = false, i18n = 'none', locales = 'ko,en' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateStandalone 과 같은 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-standalone'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -860,6 +886,11 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
   if (tauri) {
     await emitTauri(targetDir, projectName, { devPort: 5173 });
     await patchViteForTauri(targetDir, { port: 5173 });
+  }
+
+  if (i18n === 'react-i18next') {
+    const localesArr = parseLocales(locales);
+    await emitI18n(targetDir, { arch, locales: localesArr });
   }
 }
 
@@ -958,7 +989,145 @@ export default defineConfig({
   }
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false } = {}) {
+/**
+ * react-i18next 셋업을 emit. arch 에 따라 경로가 달라짐:
+ *  - fsd: src/shared/i18n/* + src/app/providers/I18nProvider.tsx
+ *  - flat: src/lib/i18n/* + src/components/providers/I18nProvider.tsx
+ *
+ * 1. i18n/config.ts + i18n/index.ts + locales/{locale}/common.json 생성
+ * 2. providers/I18nProvider.tsx 생성 (<I18nextProvider> wrapper)
+ * 3. GlobalProvider/index.tsx 를 I18nProvider 로 wrapping 하도록 rewrite
+ * 4. package.json 에 i18next 패키지 deps 추가
+ *
+ * @param {string} targetDir — 앱 디렉토리 (standalone 이면 프로젝트 루트, monorepo 이면 apps/{name}/)
+ * @param {object} opts
+ * @param {object} opts.arch — arch descriptor (name + paths/aliases)
+ * @param {string[]} opts.locales — 생성할 locale 코드 배열 (예: ['ko', 'en'])
+ */
+async function emitI18n(targetDir, { arch, locales }) {
+  if (!locales || locales.length === 0) {
+    throw new Error('emitI18n: locales 배열이 비어 있습니다.');
+  }
+
+  const isFsd = arch.name === 'fsd';
+  const i18nDirRel = isFsd ? 'src/shared/i18n' : 'src/lib/i18n';
+  const i18nAlias = isFsd ? '@/shared/i18n' : '@/lib/i18n';
+  const providersDirRel = isFsd ? 'src/app/providers' : 'src/components/providers';
+  const apiAlias = isFsd ? '@/shared/api/queryClient' : '@/lib/api/queryClient';
+
+  const i18nDir = path.join(targetDir, i18nDirRel);
+  await fs.ensureDir(i18nDir);
+  await fs.ensureDir(path.join(i18nDir, 'locales'));
+
+  const localesArr = JSON.stringify(locales);
+  const fallbackLng = locales[0];
+  const configTs = `import i18n from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import HttpBackend from 'i18next-http-backend';
+import { initReactI18next } from 'react-i18next';
+
+// 클라이언트 측 lazy-load — 빌드 산출물에서 public/locales/{lng}/{ns}.json 경로로 fetch.
+// dev 에선 vite 가 ${i18nDirRel}/locales/* 를 /locales 로 serve (vite.config 의 publicDir 기본 'public').
+// 프로덕션 빌드 시 사용자가 vite-plugin-static-copy 등으로 public/locales 로 카피하거나
+// 처음부터 public/locales 에 두면 됨. 디폴트 경로 ${i18nDirRel}/locales 는 dev 편의용.
+
+i18n
+  .use(HttpBackend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    fallbackLng: '${fallbackLng}',
+    supportedLngs: ${localesArr},
+    ns: ['common'],
+    defaultNS: 'common',
+    interpolation: { escapeValue: false },
+    backend: {
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+    },
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+    },
+  });
+
+export default i18n;
+`;
+  await fs.writeFile(path.join(i18nDir, 'config.ts'), configTs);
+
+  await fs.writeFile(
+    path.join(i18nDir, 'index.ts'),
+    `export { default } from './config';\n`,
+  );
+
+  for (const lng of locales) {
+    const localeDir = path.join(i18nDir, 'locales', lng);
+    await fs.ensureDir(localeDir);
+    const seed = lng === fallbackLng
+      ? { greeting: 'Hello World', app_title: 'sh-ui app' }
+      : {};
+    await fs.writeFile(
+      path.join(localeDir, 'common.json'),
+      JSON.stringify(seed, null, 2) + '\n',
+    );
+  }
+
+  const providersDir = path.join(targetDir, providersDirRel);
+  await fs.ensureDir(providersDir);
+  const i18nProvider = `import { type ReactNode } from 'react';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '${i18nAlias}';
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+}
+`;
+  await fs.writeFile(path.join(providersDir, 'I18nProvider.tsx'), i18nProvider);
+
+  const globalProviderPath = path.join(targetDir, providersDirRel, 'GlobalProvider', 'index.tsx');
+  const globalProvider = `import { QueryClientProvider } from '@tanstack/react-query';
+import { type ReactNode, useState } from 'react';
+import { createQueryClient } from '${apiAlias}';
+import { ThemeProvider } from '../theme/ThemeProvider';
+import { I18nProvider } from '../I18nProvider';
+
+export function GlobalProvider({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(() => createQueryClient());
+  return (
+    <I18nProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </ThemeProvider>
+    </I18nProvider>
+  );
+}
+`;
+  await fs.writeFile(globalProviderPath, globalProvider);
+
+  const pkgPath = path.join(targetDir, 'package.json');
+  const pkg = await fs.readJson(pkgPath);
+  pkg.dependencies = pkg.dependencies ?? {};
+  pkg.dependencies['i18next'] = '^23.15.1';
+  pkg.dependencies['i18next-browser-languagedetector'] = '^8.0.0';
+  pkg.dependencies['i18next-http-backend'] = '^2.7.1';
+  pkg.dependencies['react-i18next'] = '^15.1.0';
+  pkg.dependencies = sortObjectKeys(pkg.dependencies);
+  await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+}
+
+/**
+ * locales 인자 (string or string[]) 를 정규화. comma-separated 또는 array 모두 받음.
+ * 빈 값 / 잘못된 형식이면 디폴트 ['ko', 'en'] fallback.
+ */
+function parseLocales(input) {
+  let arr;
+  if (Array.isArray(input)) arr = input;
+  else if (typeof input === 'string') arr = input.split(',');
+  else arr = ['ko', 'en'];
+  const cleaned = arr.map((s) => s.trim().toLowerCase()).filter((s) => /^[a-z]{2}(-[a-z]{2})?$/i.test(s));
+  return cleaned.length > 0 ? cleaned : ['ko', 'en'];
+}
+
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false, i18n = 'none', locales = 'ko,en' } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -990,7 +1159,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
 
   const appsDir = path.join(targetDir, 'apps', appName);
   if (platform === 'vite') {
-    await generateViteApp(appsDir, appName, port, arch, css, { tauri });
+    await generateViteApp(appsDir, appName, port, arch, css, { tauri, i18n, locales });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
   }
@@ -1091,7 +1260,7 @@ async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailw
   }
 }
 
-async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { tauri = false } = {}) {
+async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { tauri = false, i18n = 'none', locales = 'ko,en' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 동일 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-app'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -1158,6 +1327,11 @@ async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind',
     const devPort = Number(port) || 3000;
     await emitTauri(targetDir, appName, { devPort });
     await patchViteForTauri(targetDir, { port: devPort });
+  }
+
+  if (i18n === 'react-i18next') {
+    const localesArr = parseLocales(locales);
+    await emitI18n(targetDir, { arch, locales: localesArr });
   }
 }
 

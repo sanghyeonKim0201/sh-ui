@@ -114,6 +114,8 @@ export function CreateProjectDialog({
   const [packageManager, setPackageManager] = useState<PackageManager>("pnpm");
   const [cssFramework, setCssFramework] = useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
   const [tauri, setTauri] = useState<boolean>(false);
+  const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
+  const [locales, setLocales] = useState<string>('ko,en');
   const [copied, setCopied] = useState(false);
 
   const nameError = useMemo(() => validateProjectName(projectName), [projectName]);
@@ -178,8 +180,10 @@ export function CreateProjectDialog({
         themeBase64,
         cssFramework,
         tauri,
+        i18n,
+        locales,
       } satisfies ComposerOptions),
-    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, tauri],
+    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, tauri, i18n, locales],
   );
 
   const togglePlugin = (p: Plugin) => {
@@ -282,6 +286,10 @@ export function CreateProjectDialog({
             onTogglePlugin={togglePlugin}
             tauri={tauri}
             onTauriChange={setTauri}
+            i18n={i18n}
+            onI18nChange={setI18n}
+            locales={locales}
+            onLocalesChange={setLocales}
           />
 
           {/* package manager + command preview */}
