@@ -88,8 +88,8 @@ async function resolveDiskFile(opts: {
   }
 
   if (platform === "vite") {
-    // src-tauri/* 는 tauri-shell 템플릿에서
-    if (opts.tauri && p.startsWith("src-tauri/")) {
+    // standalone + tauri: src-tauri/* 는 tauri-shell 템플릿에서
+    if (opts.tauri && structure === "standalone" && p.startsWith("src-tauri/")) {
       const inner = p.slice("src-tauri/".length);
       const full = await tryDiskFile(join(TEMPLATES, "tauri-shell"), inner);
       if (full) return { full, from: "tauri-shell" };
@@ -107,6 +107,16 @@ async function resolveDiskFile(opts: {
       return null;
     }
     // structure === "monorepo" (v0.87+)
+    // monorepo + tauri: apps/{appName}/src-tauri/* → tauri-shell 템플릿 (v0.90+)
+    if (opts.tauri && structure === "monorepo") {
+      const monoTauriPrefix = `apps/${appName}/src-tauri/`;
+      if (p.startsWith(monoTauriPrefix)) {
+        const inner = p.slice(monoTauriPrefix.length);
+        const full = await tryDiskFile(join(TEMPLATES, "tauri-shell"), inner);
+        if (full) return { full, from: "tauri-shell" };
+        return null;
+      }
+    }
     const appPrefix = `apps/${appName}/`;
     const uiPrefix = `packages/ui/ui-apps/ui-${appName}/`;
     if (p.startsWith(appPrefix)) {
