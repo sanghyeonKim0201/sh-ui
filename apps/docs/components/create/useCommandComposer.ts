@@ -26,6 +26,7 @@ export type ComposerOptions = {
   packageManager: PackageManager;
   themeBase64: string;
   cssFramework: CssFramework;
+  tauri: boolean;
 };
 
 const packageManagerPrefix: Record<PackageManager, string> = {
@@ -36,10 +37,21 @@ const packageManagerPrefix: Record<PackageManager, string> = {
 };
 
 export const composeCommand = (opts: ComposerOptions): string => {
-  const { projectName, platform, structure, plugins, arch, packageManager, themeBase64, cssFramework } = opts;
+  const { projectName, platform, structure, plugins, arch, packageManager, themeBase64, cssFramework, tauri } = opts;
 
   const parts = [packageManagerPrefix[packageManager], projectName];
   parts.push("--platform", platform);
+
+  if (platform === "vite") {
+    parts.push("--structure", structure);
+    if (arch !== DEFAULT_ARCH) {
+      parts.push("--arch", arch);
+    }
+    // tauri 는 standalone 일 때만 의미 (monorepo+tauri 는 CLI 가 거부)
+    if (tauri && structure === "standalone") {
+      parts.push("--tauri");
+    }
+  }
 
   if (platform === "next") {
     parts.push("--structure", structure);

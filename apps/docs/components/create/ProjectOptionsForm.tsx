@@ -29,6 +29,8 @@ type Props = {
   onCssFrameworkChange: (v: CssFramework) => void;
   plugins: Set<Plugin>;
   onTogglePlugin: (p: Plugin) => void;
+  tauri: boolean;
+  onTauriChange: (v: boolean) => void;
 };
 
 /**
@@ -47,6 +49,8 @@ export function ProjectOptionsForm(props: Props) {
     onCssFrameworkChange,
     plugins,
     onTogglePlugin,
+    tauri,
+    onTauriChange,
   } = props;
 
   return (
@@ -61,11 +65,12 @@ export function ProjectOptionsForm(props: Props) {
           }}
         >
           <ToggleGroupItem value="next">Next.js</ToggleGroupItem>
+          <ToggleGroupItem value="vite">Vite (SPA)</ToggleGroupItem>
           <ToggleGroupItem value="flutter">Flutter</ToggleGroupItem>
         </ToggleGroup>
       </div>
 
-      {platform === "next" && (
+      {(platform === "next" || platform === "vite") && (
         <>
           <div>
             <Label>구조</Label>
@@ -89,7 +94,7 @@ export function ProjectOptionsForm(props: Props) {
                 if (next) onArchChange(next);
               }}
             >
-              {getArchesForPlatform("next").map((a) => (
+              {getArchesForPlatform(platform).map((a) => (
                 <ToggleGroupItem
                   key={a.name}
                   value={a.name}
@@ -126,24 +131,51 @@ export function ProjectOptionsForm(props: Props) {
               ))}
             </ToggleGroup>
           </div>
-          <div role="group" aria-labelledby="plugins-label">
-            <Label id="plugins-label">플러그인</Label>
-            <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
-              {allPlugins.map((p) => (
-                <Button
-                  key={p.name}
-                  type="button"
-                  variant={plugins.has(p.name) ? "primary" : "secondary"}
-                  size="sm"
-                  aria-pressed={plugins.has(p.name)}
-                  onClick={() => onTogglePlugin(p.name)}
-                >
-                  {plugins.has(p.name) ? "✓ " : ""}
-                  {p.name}
-                </Button>
-              ))}
+          {platform === "next" && (
+            <div role="group" aria-labelledby="plugins-label">
+              <Label id="plugins-label">플러그인</Label>
+              <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
+                {allPlugins.map((p) => (
+                  <Button
+                    key={p.name}
+                    type="button"
+                    variant={plugins.has(p.name) ? "primary" : "secondary"}
+                    size="sm"
+                    aria-pressed={plugins.has(p.name)}
+                    onClick={() => onTogglePlugin(p.name)}
+                  >
+                    {plugins.has(p.name) ? "✓ " : ""}
+                    {p.name}
+                  </Button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+          {platform === "vite" && (
+            <div>
+              <Label htmlFor="tauri-toggle">Tauri 데스크탑 셸</Label>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
+                <Button
+                  id="tauri-toggle"
+                  type="button"
+                  variant={tauri && structure === "standalone" ? "primary" : "secondary"}
+                  size="sm"
+                  aria-pressed={tauri && structure === "standalone"}
+                  disabled={structure !== "standalone"}
+                  title={structure !== "standalone" ? "monorepo + Tauri 는 아직 미지원 (v0.89 후속)" : "Tauri 2.x 셸을 src-tauri/ 에 emit"}
+                  onClick={() => onTauriChange(!tauri)}
+                >
+                  {tauri && structure === "standalone" ? "✓ " : ""}
+                  --tauri
+                </Button>
+                <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
+                  {structure === "standalone"
+                    ? "Vite SPA + 네이티브 윈도우 (Rust toolchain 필요)"
+                    : "monorepo + Tauri 는 미지원"}
+                </span>
+              </div>
+            </div>
+          )}
         </>
       )}
     </>
