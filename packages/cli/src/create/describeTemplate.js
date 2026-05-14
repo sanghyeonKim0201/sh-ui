@@ -28,8 +28,8 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
 
 /**
  * @typedef {Object} DescribeOptions
- * @property {'next'|'flutter'} [platform]
- * @property {'standalone'|'monorepo'} [structure]   next 일 때만 의미
+ * @property {'next'|'flutter'|'vite'} [platform]
+ * @property {'standalone'|'monorepo'} [structure]   next/vite 일 때만 의미
  * @property {string} [arch]                          next 일 때 'fsd'|'flat'|'mes'
  * @property {string[]} [plugins]                     ['sentry', 'next-intl', 'auth-jwt']
  * @property {'tailwind'|'plain'|'css-modules'} [cssFramework]

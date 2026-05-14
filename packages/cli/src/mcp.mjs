@@ -366,7 +366,7 @@ export async function startMcpServer() {
     "sh_ui_create_project",
     {
       description:
-        "빈 폴더에 sh-ui 프로젝트 스캐폴드 — Next.js (standalone/monorepo) 또는 Flutter. " +
+        "빈 폴더에 sh-ui 프로젝트 스캐폴드 — Next.js (standalone/monorepo) | Vite (standalone) | Flutter. " +
         `FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx ${cliName} create 직접 호출보다 우선). ` +
         "**단일 진입점** — theme/plugins/cssFramework/structure 모두 호출 시점에 정해서 한 번에 박는다. 호출 후 sh-ui.config.json/tokens.css 를 손으로 패치하지 말 것 (다음 재스캐폴드 시 유실). " +
         "산출물: theme 인자가 프리셋이면 sh-ui.config.json 의 theme.base 가 그 이름, base64 면 'custom'. paths.styles · paths.tokens 도 자동 박혀서 sh_ui_add_component 가 사후 패치 없이 동작.",
@@ -397,13 +397,13 @@ export async function startMcpServer() {
       },
     },
     async (input) => {
-      if (input.platform === "next" && !input.structure) {
+      if ((input.platform === "next" || input.platform === "vite") && !input.structure) {
         return {
           isError: true,
           content: [
             {
               type: "text",
-              text: "platform=next 일 때 structure ('standalone' | 'monorepo') 가 필요합니다.",
+              text: `platform=${input.platform} 일 때 structure ('standalone' | 'monorepo') 가 필요합니다.`,
             },
           ],
         };
@@ -820,7 +820,7 @@ export async function startMcpServer() {
         platform: z.enum(CREATE_PLATFORMS)
           .describe("타겟 플랫폼"),
         structure: z.enum(CREATE_STRUCTURES).optional()
-          .describe("Next.js 구조. platform=next 일 때 의미. 기본 standalone"),
+          .describe("Next.js 구조. platform=next | vite 일 때 의미. 기본 standalone"),
         arch: z.enum(ARCH_NAMES).optional()
           .describe("아키텍처. platform=next 일 때 의미. 기본 fsd"),
         plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
