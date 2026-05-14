@@ -18,7 +18,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 
 사용법:
   sh-ui create [name] [options]
-  sh-ui create add-app [name] [--port <n>] [--plugins ..] [--theme ..] [--css ..]
+  sh-ui create add-app [name] [--port <n>] [--platform <next|vite>] [--plugins ..] [--theme ..] [--css ..] [--tauri]
   sh-ui create add-component <name> [--app <name>]
 
 옵션:
@@ -73,6 +73,8 @@ export async function runCreate(rest) {
       plugins: flags.plugins,
       theme: flags.theme,
       css: flags.css,
+      platform: flags.platform,
+      tauri: flags.tauri,
     });
   } else if (command === 'add-component') {
     // 호환 별칭 — 신규 진입점은 `sh-ui add <name>` (bin/sh-ui.mjs 가 walk-up 으로 라우팅).

@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.91.0",
+      "date": "2026-05-14",
+      "title": "add-app 가 platform (next/vite) + tauri 인식 — vite monorepo 에 새 앱 정상 추가",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui-cli add-app` + MCP `sh_ui_add_app` 가 `platform: vite | next` 인식** — 이전엔 Next.js 하드코딩이라 vite monorepo (v0.87.0+) 에 `add-app` 하면 잘못된 Next.js 앱이 들어가던 빈틈 해소. `--platform` 미지정 시 기존 `apps/*` 의 `package.json` deps 스캔해서 platform 추론 (모든 앱이 같은 플랫폼이면 그 값으로). 혼재 or 빈 apps/ 면 TTY 면 prompt, 비대화형이면 'next' fallback.",
+        "**`--tauri` 옵션이 add-app 에도 동작** — `sh-ui-cli add-app admin --tauri` 또는 MCP `tauri: true` 로 `apps/{name}/src-tauri/` 까지 한 번에 emit. v0.90.0 의 monorepo+tauri 와 동일하게 dev port 가 `tauri.conf.json` 의 `devUrl` 과 `vite.config.ts` 의 `server.port` 양쪽에 자동 박힘. tauri + platform=next 조합은 CLI + MCP 양쪽에서 명시적 Korean 에러.",
+        "**Smoke V13 + V14 회귀 가드** — V13 은 vite monorepo create 후 `add-app admin --port 3001 --tauri` (platform 미지정) 가 추론으로 vite 선택 + apps/admin/src-tauri/ + devUrl=3001 + crate name 까지 단언. V14 는 next monorepo 에 `add-app --platform next --tauri` 가 에러 throw 확인. 기존 scenarios 4 + 4b 도 새 platform 추론 분기에 맞춰 prompt 모의 갱신.",
+        "**Backward-compat 확인** — Next.js 모노레포에서 기존 `add-app` 호출 흐름은 platform 추론 결과 'next' 가 나와 동일 동작. 깨지는 호출 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.91.0"
+    },
+    {
       "version": "0.90.0",
       "date": "2026-05-14",
       "title": "vite + monorepo + tauri 지원 — Tauri 셸이 apps/{name}/src-tauri/ 안",
