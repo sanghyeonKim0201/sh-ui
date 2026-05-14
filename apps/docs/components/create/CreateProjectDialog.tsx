@@ -113,6 +113,7 @@ export function CreateProjectDialog({
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
   const [packageManager, setPackageManager] = useState<PackageManager>("pnpm");
   const [cssFramework, setCssFramework] = useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
+  const [tauri, setTauri] = useState<boolean>(false);
   const [copied, setCopied] = useState(false);
 
   const nameError = useMemo(() => validateProjectName(projectName), [projectName]);
@@ -176,8 +177,9 @@ export function CreateProjectDialog({
         packageManager,
         themeBase64,
         cssFramework,
+        tauri,
       } satisfies ComposerOptions),
-    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework],
+    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, tauri],
   );
 
   const togglePlugin = (p: Plugin) => {
@@ -278,6 +280,8 @@ export function CreateProjectDialog({
             onCssFrameworkChange={setCssFramework}
             plugins={plugins}
             onTogglePlugin={togglePlugin}
+            tauri={tauri}
+            onTauriChange={setTauri}
           />
 
           {/* package manager + command preview */}

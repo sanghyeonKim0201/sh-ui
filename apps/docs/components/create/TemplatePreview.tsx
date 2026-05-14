@@ -522,6 +522,9 @@ function ContentViewer({
     if (options?.plugins && options.plugins.length) {
       params.set("plugins", options.plugins.join(","));
     }
+    if (options?.tauri) {
+      params.set("tauri", "true");
+    }
 
     fetch(`/api/template-content?${params.toString()}`, { signal: ctrl.signal })
       .then(async (r) => {
@@ -822,6 +825,7 @@ export function TemplatePreviewDialog({
   const [cssFramework, setCssFramework] =
     useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
+  const [tauri, setTauri] = useState<boolean>(false);
 
   const togglePlugin = (p: Plugin) => {
     setPlugins((prev) => {
@@ -859,6 +863,8 @@ export function TemplatePreviewDialog({
             onCssFrameworkChange={setCssFramework}
             plugins={plugins}
             onTogglePlugin={togglePlugin}
+            tauri={tauri}
+            onTauriChange={setTauri}
           />
 
           <TemplatePreviewBody
@@ -869,6 +875,7 @@ export function TemplatePreviewDialog({
               plugins: Array.from(plugins),
               cssFramework,
               appName: "web",
+              tauri,
             }}
           />
         </div>

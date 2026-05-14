@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.89.1",
+      "date": "2026-05-14",
+      "title": "/create 페이지 vite + tauri 노출 + api.d.ts 타입 정정",
+      "type": "patch",
+      "highlights": [
+        "**docs `/create` 페이지에 Vite (SPA) 플랫폼 토글 + Tauri 데스크탑 셸 토글** — v0.86.0~v0.88.0 의 CLI 변경이 docs UI 까지 따라가지 못한 빈틈 해소. ProjectOptionsForm 의 플랫폼 ToggleGroup 에 'Vite (SPA)' 추가, vite 일 때 구조/아키텍처/CSS 프레임워크 토글 공유 (플러그인은 next 전용), vite + standalone 일 때만 `--tauri` 버튼 활성 (monorepo+tauri 는 v0.89 후속이라 자동 비활성화 + 친절한 hover hint).",
+        "**`sh-ui-cli/api` 의 `.d.ts` 타입 정정** — `CreatePlatform` union 이 v0.86.0 부터 runtime 에 'vite' 추가됐는데 `api.d.ts` 가 `'next' \\| 'flutter'` 로 stale 상태였음. 'vite' 추가로 union 동기화. `DescribeTemplateOptions` 에도 v0.88.0 부터 runtime 이 받던 `tauri?: boolean` 필드 명시. 다운스트림 TS 소비자 가 정확한 타입 받음.",
+        "**`/api/template-content` 엔드포인트가 vite 인식** — 미리보기 트리에서 vite-standalone / vite-app / tauri-shell 파일을 정확히 resolve. `?tauri=true` 쿼리 시 `src-tauri/*` 경로가 `tauri-shell` 템플릿에서 lookup. 모노레포 `apps/{name}/*` 는 vite-app, `packages/ui/ui-apps/ui-{name}/*` 는 ui-app-template, 루트는 monorepo 템플릿."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.89.1"
+    },
+    {
       "version": "0.89.0",
       "date": "2026-05-14",
       "title": "vite-standalone fsd arch — FSD-pure entry (src/app/main.tsx)",

@@ -3,7 +3,7 @@
  * apps/docs 등 TypeScript 사용자가 자동완성과 타입 안전을 받을 수 있게.
  */
 
-export type CreatePlatform = 'next' | 'flutter';
+export type CreatePlatform = 'next' | 'flutter' | 'vite';
 export type CreateStructure = 'standalone' | 'monorepo';
 export type InitPlatform = 'react' | 'flutter';
 export type ThemeBase = 'neutral' | 'zinc' | 'slate';
@@ -139,6 +139,8 @@ export interface DescribeTemplateOptions {
   projectName?: string;
   /** monorepo 첫 앱 이름. 기본 'web'. */
   appName?: string;
+  /** platform=vite + structure=standalone 일 때 Tauri 2.x 셸(`src-tauri/`) 동시 emit. */
+  tauri?: boolean;
 }
 
 export interface DescribeTemplateGroup {

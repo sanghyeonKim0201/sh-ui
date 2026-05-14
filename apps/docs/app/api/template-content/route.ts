@@ -71,11 +71,12 @@ async function tryDiskFile(root: string, rel: string): Promise<string | null> {
 
 /** 디스크에서 파일을 찾는 후보 위치 — 우선순위 순. plugin.files 는 별도 처리. */
 async function resolveDiskFile(opts: {
-  platform: "next" | "flutter";
+  platform: "next" | "flutter" | "vite";
   structure: "standalone" | "monorepo";
   arch: string;
   appName: string;
   path: string;
+  tauri?: boolean;
 }): Promise<{ full: string; from: string } | null> {
   const TEMPLATES = TEMPLATES_ROOT;
   const { platform, structure, arch, appName, path: p } = opts;
@@ -83,6 +84,50 @@ async function resolveDiskFile(opts: {
   if (platform === "flutter") {
     const full = await tryDiskFile(join(TEMPLATES, "flutter-standalone"), p);
     if (full) return { full, from: "flutter-standalone" };
+    return null;
+  }
+
+  if (platform === "vite") {
+    // src-tauri/* 는 tauri-shell 템플릿에서
+    if (opts.tauri && p.startsWith("src-tauri/")) {
+      const inner = p.slice("src-tauri/".length);
+      const full = await tryDiskFile(join(TEMPLATES, "tauri-shell"), inner);
+      if (full) return { full, from: "tauri-shell" };
+      return null;
+    }
+    if (structure === "standalone") {
+      const base = await tryDiskFile(join(TEMPLATES, "vite-standalone"), p);
+      if (base) return { full: base, from: "vite-standalone" };
+      const overlay = await tryDiskFile(
+        join(TEMPLATES, "vite-standalone", "_arch", arch),
+        p,
+      );
+      if (overlay)
+        return { full: overlay, from: `vite-standalone/_arch/${arch}` };
+      return null;
+    }
+    // structure === "monorepo" (v0.87+)
+    const appPrefix = `apps/${appName}/`;
+    const uiPrefix = `packages/ui/ui-apps/ui-${appName}/`;
+    if (p.startsWith(appPrefix)) {
+      const inner = p.slice(appPrefix.length);
+      const base = await tryDiskFile(join(TEMPLATES, "vite-app"), inner);
+      if (base) return { full: base, from: "vite-app" };
+      const overlay = await tryDiskFile(
+        join(TEMPLATES, "vite-app", "_arch", arch),
+        inner,
+      );
+      if (overlay) return { full: overlay, from: `vite-app/_arch/${arch}` };
+      return null;
+    }
+    if (p.startsWith(uiPrefix)) {
+      const inner = p.slice(uiPrefix.length);
+      const full = await tryDiskFile(join(TEMPLATES, "ui-app-template"), inner);
+      if (full) return { full, from: "ui-app-template" };
+      return null;
+    }
+    const root = await tryDiskFile(join(TEMPLATES, "monorepo"), p);
+    if (root) return { full: root, from: "monorepo" };
     return null;
   }
 
@@ -164,7 +209,8 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const platform = (searchParams.get("platform") ?? "next") as
     | "next"
-    | "flutter";
+    | "flutter"
+    | "vite";
   const structure = (searchParams.get("structure") ?? "standalone") as
     | "standalone"
     | "monorepo";
@@ -172,6 +218,7 @@ export async function GET(req: NextRequest) {
   const appName = searchParams.get("appName") ?? "web";
   const pluginsParam = searchParams.get("plugins") ?? "";
   const plugins = pluginsParam ? pluginsParam.split(",").filter(Boolean) : [];
+  const tauri = searchParams.get("tauri") === "true";
   const path = searchParams.get("path");
 
   if (!path) {
@@ -204,6 +251,7 @@ export async function GET(req: NextRequest) {
     arch,
     appName,
     path,
+    tauri,
   });
   if (diskHit) {
     try {
