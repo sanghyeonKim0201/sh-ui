@@ -314,18 +314,52 @@ describe('sh-ui create smoke tests', () => {
     expect(gitignore).toContain('src-tauri/target');
   });
 
-  it('scenario V7d — vite + monorepo + tauri 는 명시적 에러', async () => {
-    await expect(
-      createProject({
-        name: 'mono-tauri-fail',
-        platform: 'vite',
-        structure: 'monorepo',
-        arch: 'fsd',
-        css: 'tailwind',
-        tauri: true,
-        yes: true,
-      }),
-    ).rejects.toThrow(/monorepo.*tauri.*v0.89/);
+  it('scenario V12 — vite + monorepo + tauri (v0.90.0+) — src-tauri/ 가 apps/{name}/ 안', async () => {
+    await createProject({
+      name: 'my-mono-tauri',
+      platform: 'vite',
+      structure: 'monorepo',
+      arch: 'fsd',
+      css: 'tailwind',
+      tauri: true,
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'my-mono-tauri');
+    const appDir = path.join(projectDir, 'apps/web');
+
+    // monorepo 구조
+    expect(await fs.pathExists(path.join(projectDir, 'pnpm-workspace.yaml'))).toBe(true);
+    expect(await fs.pathExists(path.join(appDir, 'vite.config.ts'))).toBe(true);
+
+    // tauri shell 이 app 안
+    expect(await fs.pathExists(path.join(appDir, 'src-tauri/Cargo.toml'))).toBe(true);
+    expect(await fs.pathExists(path.join(appDir, 'src-tauri/tauri.conf.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(appDir, 'src-tauri/src/main.rs'))).toBe(true);
+
+    // dev URL 이 app port (default 3000) 와 일치
+    const conf = await fs.readJson(path.join(appDir, 'src-tauri/tauri.conf.json'));
+    expect(conf.build.devUrl).toBe('http://localhost:3000');
+
+    // app package.json 에 tauri scripts/deps
+    const appPkg = await fs.readJson(path.join(appDir, 'package.json'));
+    expect(appPkg.scripts['tauri:dev']).toBe('tauri dev');
+    expect(appPkg.devDependencies['@tauri-apps/cli']).toBeDefined();
+    expect(appPkg.dependencies['@tauri-apps/api']).toBeDefined();
+
+    // app vite.config.ts 의 Tauri 권장 설정 + port 3000
+    const viteCfg = await fs.readFile(path.join(appDir, 'vite.config.ts'), 'utf-8');
+    expect(viteCfg).toContain('clearScreen: false');
+    expect(viteCfg).toContain('strictPort: true');
+    expect(viteCfg).toContain('port: 3000');
+
+    // crate name = appName snake_case (this case: 'web' is already valid)
+    const cargo = await fs.readFile(path.join(appDir, 'src-tauri/Cargo.toml'), 'utf-8');
+    expect(cargo).toContain('name = "web"');
+    expect(cargo).toContain('name = "web_lib"');
+
+    // 루트엔 src-tauri 없어야 함 (monorepo + tauri 의 핵심 — app 안에 emit)
+    expect(await fs.pathExists(path.join(projectDir, 'src-tauri'))).toBe(false);
   });
 
   it('scenario V7e — vite + tauri:false (또는 미지정) 은 src-tauri/ 안 emit (회귀 가드)', async () => {

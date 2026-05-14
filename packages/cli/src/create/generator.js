@@ -222,12 +222,6 @@ export async function createProject(options = {}) {
         `--tauri 옵션 제거 또는 --platform vite 사용.`,
       );
     }
-    if (options.structure === 'monorepo') {
-      throw new Error(
-        'platform=vite + structure=monorepo + tauri=true 는 아직 지원 안 함 (v0.89 후속). ' +
-        'standalone 으로 시도하거나 tauri 옵션 제거.',
-      );
-    }
   }
 
   // arch 결정 — platform 확정 후. 사용자가 --arch 미지정 시:
@@ -352,14 +346,7 @@ export async function createProject(options = {}) {
     if (projectType === 'standalone') {
       await generateViteStandalone(targetDir, projectName, theme, cssFramework, arch, themeBase, { tauri: !!options.tauri });
     } else {
-      // monorepo + tauri 는 v0.89 후속 — 명시적 에러
-      if (options.tauri) {
-        throw new Error(
-          'platform=vite + structure=monorepo + tauri=true 는 아직 지원 안 함 (v0.89 후속). ' +
-          'standalone 으로 시도하거나 tauri 옵션 제거.',
-        );
-      }
-      await generateMonorepo(targetDir, projectName, [], { yes: options.yes, theme, css: cssFramework, arch, themeBase, platform: 'vite' });
+      await generateMonorepo(targetDir, projectName, [], { yes: options.yes, theme, css: cssFramework, arch, themeBase, platform: 'vite', tauri: options.tauri });
     }
 
     await finalizeProject(targetDir, { dryRun: options.dryRun });
@@ -798,8 +785,8 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
 
   // Tauri 셸 emit (옵션) — vite SPA + native window. standalone 만 v1 지원.
   if (tauri) {
-    await emitTauri(targetDir, projectName);
-    await patchViteForTauri(targetDir);
+    await emitTauri(targetDir, projectName, { devPort: 5173 });
+    await patchViteForTauri(targetDir, { port: 5173 });
   }
 }
 
@@ -812,7 +799,7 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
  *
  * generateViteStandalone 에서 tauri: true 인 경우 호출. monorepo+tauri 는 v0.89 후속.
  */
-async function emitTauri(targetDir, projectName) {
+async function emitTauri(targetDir, projectName, { devPort = 5173 } = {}) {
   const srcTauriDir = path.join(targetDir, 'src-tauri');
   await fs.copy(path.join(TEMPLATES_DIR, 'tauri-shell'), srcTauriDir);
 
@@ -824,6 +811,7 @@ async function emitTauri(targetDir, projectName) {
 
   await replaceInAllFiles(srcTauriDir, '{{tauri_crate_name}}', tauriCrateName);
   await replaceInAllFiles(srcTauriDir, '{{project_name}}', projectName);
+  await replaceInAllFiles(srcTauriDir, '{{tauri_dev_url}}', `http://localhost:${devPort}`);
 }
 
 /**
@@ -837,7 +825,7 @@ async function emitTauri(targetDir, projectName) {
  * 이라 안전. 후속 task 에서 arch-specific vite.config.ts overlay 가 생기면 이 자리에서 머지 전략
  * 필요 (현재는 단순 overwrite).
  */
-async function patchViteForTauri(targetDir) {
+async function patchViteForTauri(targetDir, { port = 5173 } = {}) {
   const pkgPath = path.join(targetDir, 'package.json');
   const pkg = await fs.readJson(pkgPath);
 
@@ -872,7 +860,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   clearScreen: false,
   server: {
-    port: 5173,
+    port: ${port},
     strictPort: true,
     host: false,
   },
@@ -897,7 +885,7 @@ export default defineConfig({
   }
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next' } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -929,7 +917,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
 
   const appsDir = path.join(targetDir, 'apps', appName);
   if (platform === 'vite') {
-    await generateViteApp(appsDir, appName, port, arch, css);
+    await generateViteApp(appsDir, appName, port, arch, css, { tauri });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
   }
@@ -1030,7 +1018,7 @@ async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailw
   }
 }
 
-async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind') {
+async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { tauri = false } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 동일 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-app'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -1088,6 +1076,15 @@ async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind')
   await applyCssFrameworkVariant(targetDir, css, { isMonorepo: true, plugins: [], arch });
   if (await fs.pathExists(uiPkgDir)) {
     await applyCssFrameworkVariant(uiPkgDir, css, { isMonorepo: true, plugins: [], arch, isUiPackage: true });
+  }
+
+  // tauri 가 켜져 있으면 이 app 안에 src-tauri/ shell 을 떨어뜨린다 (v0.90.0+).
+  // standalone 과 달리 monorepo 에서는 app 단위로 별도 dev port (default 3000) 가 있고,
+  // tauri 의 devUrl 이 그 port 와 일치해야 한다. frontendDist 는 src-tauri 기준 `../dist`.
+  if (tauri) {
+    const devPort = Number(port) || 3000;
+    await emitTauri(targetDir, appName, { devPort });
+    await patchViteForTauri(targetDir, { port: devPort });
   }
 }
 
