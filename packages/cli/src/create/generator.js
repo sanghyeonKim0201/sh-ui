@@ -863,13 +863,19 @@ export default defineConfig({
 `;
   await fs.writeFile(viteCfgPath, viteCfg);
 
-  // .gitignore 에 src-tauri/target 추가 — Rust 빌드 산출물 (수 GB 가능)
-  const gitignorePath = path.join(targetDir, '.gitignore');
-  if (await fs.pathExists(gitignorePath)) {
-    let ignore = await fs.readFile(gitignorePath, 'utf-8');
-    if (!ignore.includes('src-tauri/target')) {
-      ignore += `\n# Tauri build artifacts\nsrc-tauri/target/\n`;
-      await fs.writeFile(gitignorePath, ignore);
+  // .gitignore 에 src-tauri/target 추가 — Rust 빌드 산출물 (수 GB 가능).
+  // 스캐폴드 단계에서는 파일명이 `gitignore` (점 없음); finalizeProject 가 나중에 `.gitignore` 로 rename.
+  // 양쪽 이름 모두 시도해서 호출 순서가 달라져도 안전하게 적용.
+  const gitignoreCandidates = ['.gitignore', 'gitignore'];
+  for (const name of gitignoreCandidates) {
+    const p = path.join(targetDir, name);
+    if (await fs.pathExists(p)) {
+      let ignore = await fs.readFile(p, 'utf-8');
+      if (!ignore.includes('src-tauri/target')) {
+        ignore += `\n# Tauri build artifacts\nsrc-tauri/target/\n`;
+        await fs.writeFile(p, ignore);
+      }
+      break;
     }
   }
 }
