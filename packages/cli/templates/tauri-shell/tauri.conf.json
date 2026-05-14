@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "{{project_name}}",
+  "version": "0.1.0",
+  "identifier": "app.{{tauri_crate_name}}.dev",
+  "//-identifier": "TODO: 프로덕션 빌드 전 반드시 실제 도메인 기반 unique 식별자로 교체 (예: com.yourcompany.yourapp). 'app.*.dev' 는 개발용 placeholder.",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "{{project_name}}",
+        "width": 1200,
+        "height": 800
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": []
+  }
+}
