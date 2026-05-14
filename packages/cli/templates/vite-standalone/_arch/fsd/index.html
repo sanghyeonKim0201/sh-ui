@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko" suppressHydrationWarning>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- viewport-fit=cover: iOS safe-area inset / Android edge-to-edge / Tauri mobile 호환 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- theme-color: 모바일 브라우저 / PWA / Tauri WebView 의 status bar 톤. dark default 에 맞춰 어두운 톤. -->
+    <meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <title>sh-ui app</title>
+    <script>
+      // FOUC 차단 — ThemeProvider mount 전에 첫 paint 에 dark class 박기.
+      try {
+        var t = localStorage.getItem('theme');
+        var d = t === 'dark' || ((!t || t === 'system') && matchMedia('(prefers-color-scheme:dark)').matches);
+        if (d) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- v0.89.0+ FSD-pure entry — 부트스트랩이 app layer 안에 있음. -->
+    <script type="module" src="/src/app/main.tsx"></script>
+  </body>
+</html>

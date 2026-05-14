@@ -86,7 +86,8 @@ describe('sh-ui create smoke tests', () => {
     expect(await fs.pathExists(path.join(projectDir, 'index.html'))).toBe(true);
     expect(await fs.pathExists(path.join(projectDir, 'vite.config.ts'))).toBe(true);
     expect(await fs.pathExists(path.join(projectDir, 'next.config.ts'))).toBe(false);
-    expect(await fs.pathExists(path.join(projectDir, 'src/main.tsx'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/app/main.tsx'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/main.tsx'))).toBe(false); // v0.89.0+ FSD-pure: 루트 entry 없음
     expect(await fs.pathExists(path.join(projectDir, 'src/shared/styles/tokens.css'))).toBe(true);
 
     const cfg = await fs.readJson(path.join(projectDir, 'sh-ui.config.json'));
@@ -402,6 +403,57 @@ describe('sh-ui create smoke tests', () => {
     );
     expect(flatGlobals).toContain('sh-ui:webview-base-start');
     expect(flatGlobals).toContain('touch-action: manipulation');
+  });
+
+  it('scenario V10 — vite + fsd (v0.89.0+ FSD-pure): entry 가 src/app/main.tsx, index.html 도 그쪽 가리킴', async () => {
+    await createProject({
+      name: 'v-fsd-pure',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'v-fsd-pure');
+
+    // entry 가 app layer 안
+    expect(await fs.pathExists(path.join(projectDir, 'src/app/main.tsx'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/app/App.tsx'))).toBe(true);
+    // 루트 entry 부재 — opinionated 폴더 미생성 확인
+    expect(await fs.pathExists(path.join(projectDir, 'src/main.tsx'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'src/App.tsx'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'src/Home.tsx'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'src/components'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'src/hooks'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'src/lib'))).toBe(false);
+
+    // index.html 이 새 entry 가리킴
+    const indexHtml = await fs.readFile(path.join(projectDir, 'index.html'), 'utf-8');
+    expect(indexHtml).toContain('/src/app/main.tsx');
+    expect(indexHtml).not.toContain('/src/main.tsx"');  // 따옴표 포함 — substring 매칭 회피
+  });
+
+  it('scenario V11 — vite + flat (v0.89.0+): 루트 entry 유지 (Vite 컨벤션)', async () => {
+    await createProject({
+      name: 'v-flat-entry',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'flat',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'v-flat-entry');
+
+    // flat 은 Vite 컨벤션 유지 — 루트 entry
+    expect(await fs.pathExists(path.join(projectDir, 'src/main.tsx'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/App.tsx'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/Home.tsx'))).toBe(true);
+
+    // index.html 은 루트 entry 가리킴
+    const indexHtml = await fs.readFile(path.join(projectDir, 'index.html'), 'utf-8');
+    expect(indexHtml).toContain('/src/main.tsx');
   });
 
   it('scenario V7f — tauri:true + platform=next 는 명시적 에러 (CLI 가드)', async () => {
