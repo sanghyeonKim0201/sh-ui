@@ -285,3 +285,35 @@ describe('describeTemplate — vite', () => {
     expect(groupIds).toContain('ui-app');
   });
 });
+
+describe('describeTemplate — vite + tauri', () => {
+  it('vite + standalone + fsd + tauri:true includes src-tauri/ files', () => {
+    const result = describeTemplate({
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      cssFramework: 'tailwind',
+      tauri: true,
+    });
+    expect(result.files.some((f) => f === 'src-tauri/Cargo.toml')).toBe(true);
+    expect(result.files.some((f) => f === 'src-tauri/tauri.conf.json')).toBe(true);
+    expect(result.files.some((f) => f === 'src-tauri/src/main.rs')).toBe(true);
+    expect(result.files.some((f) => f.startsWith('src-tauri/'))).toBe(true);
+
+    const tauriGroup = result.groups.find((g) => g.id === 'tauri');
+    expect(tauriGroup).toBeDefined();
+    expect(tauriGroup.paths.length).toBeGreaterThan(0);
+  });
+
+  it('vite + standalone + fsd + tauri:false (default) excludes src-tauri/', () => {
+    const result = describeTemplate({
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      cssFramework: 'tailwind',
+    });
+    expect(result.files.some((f) => f.startsWith('src-tauri/'))).toBe(false);
+    const tauriGroup = result.groups.find((g) => g.id === 'tauri');
+    expect(tauriGroup).toBeUndefined();
+  });
+});

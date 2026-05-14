@@ -14,3 +14,12 @@ describe('MCP sh_ui_create_project — vite acceptance', () => {
     expect(schema.safeParse('monorepo').success).toBe(true);
   });
 });
+
+describe('MCP sh_ui_create_project — tauri option', () => {
+  it('tauri is an optional boolean', () => {
+    const schema = z.boolean().optional();
+    expect(schema.safeParse(true).success).toBe(true);
+    expect(schema.safeParse(false).success).toBe(true);
+    expect(schema.safeParse(undefined).success).toBe(true);
+  });
+});

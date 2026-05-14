@@ -35,6 +35,7 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
  * @property {'tailwind'|'plain'|'css-modules'} [cssFramework]
  * @property {string} [projectName]
  * @property {string} [appName]                       monorepo 첫 앱 이름. 기본 'web'
+ * @property {boolean} [tauri]                        platform=vite + structure=standalone 일 때 Tauri 2.x 셸 같이 emit
  */
 
 /**
@@ -62,6 +63,7 @@ export function describeTemplate(opts = {}) {
     plugins: pluginNames = [],
     cssFramework = CSS_FRAMEWORK_DEFAULT,
     appName: rawAppName = 'web',
+    tauri = false,
   } = opts;
 
   if (platform === 'flutter') {
@@ -85,10 +87,19 @@ export function describeTemplate(opts = {}) {
       }
       const baseFiles = tpl.base.slice();
       const archFiles = (tpl.arches?.[safeArchName] ?? []).slice();
-      return finalize([
+      const groups = [
         makeGroup('base', '베이스 (vite-standalone)', baseFiles),
         makeGroup('arch', `Arch (${safeArchName})`, archFiles),
-      ]);
+      ];
+      if (tauri) {
+        const tauriTpl = TEMPLATE_MANIFEST['tauri-shell'];
+        if (!tauriTpl) {
+          throw new Error("Template manifest missing entry for 'tauri-shell'.");
+        }
+        const tauriFiles = tauriTpl.base.map((p) => `src-tauri/${p}`);
+        groups.push(makeGroup('tauri', 'Tauri 셸 (src-tauri/)', tauriFiles));
+      }
+      return finalize(groups);
     }
 
     // monorepo — vite app 변형. Next monorepo 브랜치와 동일 구조이지만 vite-app 템플릿

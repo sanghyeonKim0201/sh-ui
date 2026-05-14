@@ -89,6 +89,7 @@ export async function runCreate(rest) {
       arch: flags.arch,
       theme: flags.theme,
       css: flags.css,
+      tauri: flags.tauri,
       yes: flags.yes,
       dryRun: flags.dryRun,
     });

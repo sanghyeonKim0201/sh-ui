@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.88.0",
+      "date": "2026-05-14",
+      "title": "Tauri 2.x 데스크탑 셸 — sh_ui_create_project platform=vite tauri=true",
+      "type": "minor",
+      "highlights": [
+        "**`--tauri` 플래그 + MCP `tauri: true` 옵션** — `sh-ui-cli create --platform vite --structure standalone --tauri` 한 줄로 Vite SPA + Tauri 2.x 네이티브 셸 (`src-tauri/`) 일괄 emit. ai-org 같은 local-first 데스크탑 앱의 1급 진입점. v0.86.0 의 vite 프리셋과 짝 (Q1-Q5 design decisions 모두 confirmed: assume Rust installed, `src-tauri/` sibling layout, minimal capabilities, identifier placeholder, Tauri 2.x only).",
+        "**Tauri 2.x idioms 표준 준수** — `Cargo.toml` 의 lib name 은 snake_case (`{tauri_crate_name}_lib`), `tauri.conf.json` 의 `identifier` 는 `app.{crate}.dev` 플레이스홀더 (README 에 production 전 교체 TODO 명시), `capabilities/default.json` 은 `core:default` + `opener:default` 만 — fs/dialog/shell 권한은 사용자가 명시적 opt-in.",
+        "**Vite 패치 자동 적용** — Tauri 권장값(`clearScreen: false`, `server.strictPort: true`, `server.host: false`, `server.port: 5173`) 을 `vite.config.ts` 에 emit. `@tauri-apps/cli` (devDep), `@tauri-apps/api` + `@tauri-apps/plugin-opener` (dep) + `tauri`/`tauri:dev`/`tauri:build` scripts 자동 추가. `.gitignore` 에 `src-tauri/target/` 추가 (Rust 빌드 산출물 보호).",
+        "**가드 + 회귀 테스트** — `tauri: true + platform != vite` 또는 `tauri: true + structure == monorepo` 는 CLI 진입점 + MCP 진입점 양쪽에서 명시적 Korean 에러. monorepo + Tauri 는 v0.89 후속. smoke V7a-f 6 개 시나리오로 회귀 가드 (file emission, placeholder substitution, package/vite/gitignore patches, opt-out 회귀, 잘못된 조합 거부)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.88.0"
+    },
+    {
       "version": "0.87.0",
       "date": "2026-05-14",
       "title": "Vite monorepo — apps/{name} + packages/ui/ui-core 공유 SoT",
