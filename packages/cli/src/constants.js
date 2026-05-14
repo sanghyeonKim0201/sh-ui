@@ -54,3 +54,9 @@ export const INIT_DEFAULTS = {
   mode: 'light-dark',
   cssFramework: CSS_FRAMEWORK_DEFAULT,
 };
+
+// ─── i18n (vite preset 전용 — v0.92.0+) ───
+// 'none' 디폴트 — opt-in 으로 react-i18next 설치 + 셋업. 향후 lingui / react-intl 등 추가 시 enum 확장.
+export const I18N_LIBRARIES = ['none', 'react-i18next'];
+export const I18N_DEFAULT = 'none';
+export const I18N_DEFAULT_LOCALES = 'ko,en';

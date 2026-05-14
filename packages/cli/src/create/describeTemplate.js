@@ -36,6 +36,8 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
  * @property {string} [projectName]
  * @property {string} [appName]                       monorepo 첫 앱 이름. 기본 'web'
  * @property {boolean} [tauri]                        platform=vite (standalone/monorepo 둘 다) 일 때 Tauri 2.x 셸 같이 emit
+ * @property {'none'|'react-i18next'} [i18n]          vite 전용 — react-i18next 셋업
+ * @property {string} [locales]                       i18n 활성화 시 생성할 locale 코드 (comma-separated, default 'ko,en')
  */
 
 /**
@@ -64,6 +66,8 @@ export function describeTemplate(opts = {}) {
     cssFramework = CSS_FRAMEWORK_DEFAULT,
     appName: rawAppName = 'web',
     tauri = false,
+    i18n = 'none',
+    locales = 'ko,en',
   } = opts;
 
   if (platform === 'flutter') {
@@ -98,6 +102,19 @@ export function describeTemplate(opts = {}) {
         }
         const tauriFiles = tauriTpl.base.map((p) => `src-tauri/${p}`);
         groups.push(makeGroup('tauri', 'Tauri 셸 (src-tauri/)', tauriFiles));
+      }
+      if (i18n === 'react-i18next') {
+        const isFsd = safeArchName === 'fsd';
+        const i18nBase = isFsd ? 'src/shared/i18n' : 'src/lib/i18n';
+        const providersBase = isFsd ? 'src/app/providers' : 'src/components/providers';
+        const localesArr = parseLocalesString(locales);
+        const i18nFiles = [
+          `${i18nBase}/config.ts`,
+          `${i18nBase}/index.ts`,
+          ...localesArr.map((lng) => `${i18nBase}/locales/${lng}/common.json`),
+          `${providersBase}/I18nProvider.tsx`,
+        ];
+        groups.push(makeGroup('i18n', `i18n (${i18n})`, i18nFiles));
       }
       return finalize(groups);
     }
@@ -147,6 +164,20 @@ export function describeTemplate(opts = {}) {
       }
       const tauriFiles = tauriTpl.base.map((p) => `apps/${appName}/src-tauri/${p}`);
       groups.push(makeGroup('tauri', `Tauri 셸 (apps/${appName}/src-tauri/)`, tauriFiles));
+    }
+
+    if (i18n === 'react-i18next') {
+      const isFsd = safeArchName === 'fsd';
+      const i18nBase = isFsd ? 'src/shared/i18n' : 'src/lib/i18n';
+      const providersBase = isFsd ? 'src/app/providers' : 'src/components/providers';
+      const localesArr = parseLocalesString(locales);
+      const i18nFiles = [
+        `apps/${appName}/${i18nBase}/config.ts`,
+        `apps/${appName}/${i18nBase}/index.ts`,
+        ...localesArr.map((lng) => `apps/${appName}/${i18nBase}/locales/${lng}/common.json`),
+        `apps/${appName}/${providersBase}/I18nProvider.tsx`,
+      ];
+      groups.push(makeGroup('i18n', `i18n (${i18n}, apps/${appName}/)`, i18nFiles));
     }
 
     return finalize(groups);
@@ -324,6 +355,14 @@ function removeFromAllGroups(groups, path) {
 
 function makeGroup(id, label, paths) {
   return { id, label, paths: paths.slice() };
+}
+
+/** locales (string or string[]) 를 정규화 — generator.js 의 parseLocales 와 동일 규칙. */
+function parseLocalesString(s) {
+  if (Array.isArray(s)) return s;
+  if (typeof s !== 'string') return ['ko', 'en'];
+  const arr = s.split(',').map((x) => x.trim().toLowerCase()).filter((x) => /^[a-z]{2}(-[a-z]{2})?$/i.test(x));
+  return arr.length > 0 ? arr : ['ko', 'en'];
 }
 
 /**
