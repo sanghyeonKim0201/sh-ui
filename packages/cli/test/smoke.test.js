@@ -64,6 +64,54 @@ describe('sh-ui create smoke tests', () => {
     expect(await fs.pathExists(path.join(projectDir, 'next.config.ts'))).toBe(true);
     expect(await fs.pathExists(path.join(projectDir, 'app'))).toBe(true);
   });
+  it('scenario V1 — vite standalone, fsd arch, tailwind, no theme', async () => {
+    await createProject({
+      name: 'my-vite-app',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'my-vite-app');
+    expect(await fs.pathExists(projectDir)).toBe(true);
+
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.name).toBe('my-vite-app');
+    expect(pkg.devDependencies.vite).toBeDefined();
+    expect(pkg.devDependencies['@tailwindcss/vite']).toBeDefined();
+    expect(pkg.devDependencies.next).toBeUndefined();
+
+    expect(await fs.pathExists(path.join(projectDir, 'index.html'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'vite.config.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'next.config.ts'))).toBe(false);
+    expect(await fs.pathExists(path.join(projectDir, 'src/main.tsx'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/shared/styles/tokens.css'))).toBe(true);
+
+    const cfg = await fs.readJson(path.join(projectDir, 'sh-ui.config.json'));
+    expect(cfg.platform).toBe('react');
+    expect(cfg.cssFramework).toBe('tailwind');
+    expect(cfg.paths.tokens).toBe('src/shared/styles/tokens.css');
+  });
+
+  it('scenario V2 — vite standalone, flat arch', async () => {
+    await createProject({
+      name: 'my-vite-flat',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'flat',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const projectDir = path.join(tmpDir, 'my-vite-flat');
+    const cfg = await fs.readJson(path.join(projectDir, 'sh-ui.config.json'));
+    expect(cfg.paths.tokens).toBe('src/lib/styles/tokens.css');
+    expect(await fs.pathExists(path.join(projectDir, 'src/lib/styles/tokens.css'))).toBe(true);
+    expect(await fs.pathExists(path.join(projectDir, 'src/components/layouts/RootLayout.tsx'))).toBe(true);
+  });
+
   it('scenario 2 — monorepo, no plugins', async () => {
     prompts.input
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름
