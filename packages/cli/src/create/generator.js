@@ -231,6 +231,13 @@ export async function createProject(options = {}) {
     );
   }
 
+  // observability 옵션도 vite preset 전용. v0.93.0+.
+  if (options.observability && options.observability !== 'none' && platform !== 'vite') {
+    throw new Error(
+      `observability='${options.observability}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --observability none 또는 --platform vite 사용.`,
+    );
+  }
+
   // arch 결정 — platform 확정 후. 사용자가 --arch 미지정 시:
   //   - next  → DEFAULT_ARCH ('fsd')
   //   - flutter → 현재 Flutter arch 디스크립터 없음 → null. 미래에 flutter arch 추가되면
@@ -355,6 +362,7 @@ export async function createProject(options = {}) {
         tauri: !!options.tauri,
         i18n: options.i18n ?? 'none',
         locales: options.locales ?? 'ko,en',
+        observability: options.observability ?? 'none',
       });
     } else {
       await generateMonorepo(targetDir, projectName, [], {
@@ -363,6 +371,7 @@ export async function createProject(options = {}) {
         tauri: options.tauri,
         i18n: options.i18n ?? 'none',
         locales: options.locales ?? 'ko,en',
+        observability: options.observability ?? 'none',
       });
     }
 
@@ -529,6 +538,11 @@ export async function addApp(options = {}) {
       `i18n='${options.i18n}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}).`,
     );
   }
+  if (options.observability && options.observability !== 'none' && platform !== 'vite') {
+    throw new Error(
+      `observability='${options.observability}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --observability none 또는 --platform vite 사용.`,
+    );
+  }
 
   const appName = validateProjectName(
     options.name ?? await input({
@@ -583,6 +597,7 @@ export async function addApp(options = {}) {
       tauri: !!options.tauri,
       i18n: options.i18n ?? 'none',
       locales: options.locales ?? 'ko,en',
+      observability: options.observability ?? 'none',
     });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
@@ -846,7 +861,7 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
 
-async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { tauri = false, i18n = 'none', locales = 'ko,en' } = {}) {
+async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateStandalone 과 같은 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-standalone'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -891,6 +906,10 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
   if (i18n === 'react-i18next') {
     const localesArr = parseLocales(locales);
     await emitI18n(targetDir, { arch, locales: localesArr });
+  }
+
+  if (observability === 'sentry') {
+    await emitSentry(targetDir, { arch, i18nActive: i18n === 'react-i18next' });
   }
 }
 
@@ -1127,7 +1146,183 @@ function parseLocales(input) {
   return cleaned.length > 0 ? cleaned : ['ko', 'en'];
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false, i18n = 'none', locales = 'ko,en' } = {}) {
+/**
+ * Sentry observability 셋업 emit (v0.93.0+). vite preset 전용 opt-in.
+ *
+ * - shared/observability/sentry.ts — Sentry.init (DSN 있을 때만)
+ * - shared/observability/index.ts  — Sentry + ErrorBoundary re-export
+ * - app/providers/SentryProvider.tsx — ErrorBoundary wrapper
+ * - GlobalProvider 재작성 — Sentry > [I18n?] > Theme > Query 순서
+ * - package.json — @sentry/react + @sentry/vite-plugin 추가
+ * - vite.config.ts — sentryVitePlugin 삽입 + sourcemap: true
+ * - .env.example — Sentry 변수 안내 블록 추가
+ *
+ * @param {string} targetDir — 앱 디렉토리
+ * @param {object} opts
+ * @param {object} opts.arch — arch descriptor
+ * @param {boolean} [opts.i18nActive] — i18n 도 같이 켜져 있는지 (GlobalProvider wrapping 순서)
+ */
+async function emitSentry(targetDir, { arch, i18nActive = false }) {
+  const isFsd = arch.name === 'fsd';
+  const obsDirRel = isFsd ? 'src/shared/observability' : 'src/lib/observability';
+  const obsAlias = isFsd ? '@/shared/observability' : '@/lib/observability';
+  const providersDirRel = isFsd ? 'src/app/providers' : 'src/components/providers';
+  const apiAlias = isFsd ? '@/shared/api/queryClient' : '@/lib/api/queryClient';
+
+  const obsDir = path.join(targetDir, obsDirRel);
+  await fs.ensureDir(obsDir);
+
+  const sentryTs = `/// <reference types="vite/client" />
+import * as Sentry from '@sentry/react';
+
+// VITE_SENTRY_DSN 이 있을 때만 init — 로컬 dev 에선 자동 skip.
+// GlitchTip self-hosted 도 같은 SDK — DSN 만 변경.
+if (import.meta.env.VITE_SENTRY_DSN) {
+  Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    release: import.meta.env.VITE_APP_VERSION,
+    environment: import.meta.env.MODE,
+    tracesSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    replaysSessionSampleRate: 0,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration({ maskAllText: true, blockAllMedia: true }),
+    ],
+  });
+}
+
+export { Sentry };
+`;
+  await fs.writeFile(path.join(obsDir, 'sentry.ts'), sentryTs);
+
+  await fs.writeFile(
+    path.join(obsDir, 'index.ts'),
+    `export { Sentry } from './sentry';\nexport { ErrorBoundary } from '@sentry/react';\n`,
+  );
+
+  const providersDir = path.join(targetDir, providersDirRel);
+  await fs.ensureDir(providersDir);
+  const sentryProvider = `import { type ReactNode } from 'react';
+import { ErrorBoundary } from '${obsAlias}';
+
+function Fallback({ error }: { error: unknown }) {
+  return (
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>오류가 발생했습니다</h1>
+      <p style={{ marginTop: '0.5rem', color: 'var(--foreground-muted)' }}>
+        {error instanceof Error ? error.message : '알 수 없는 오류'}
+      </p>
+    </div>
+  );
+}
+
+export function SentryProvider({ children }: { children: ReactNode }) {
+  return (
+    <ErrorBoundary fallback={({ error }) => <Fallback error={error} />}>
+      {children}
+    </ErrorBoundary>
+  );
+}
+`;
+  await fs.writeFile(path.join(providersDir, 'SentryProvider.tsx'), sentryProvider);
+
+  // GlobalProvider rewrite — Sentry outermost, then optional I18n, then Theme + Query.
+  const globalProviderPath = path.join(targetDir, providersDirRel, 'GlobalProvider', 'index.tsx');
+  const i18nImport = i18nActive ? `import { I18nProvider } from '../I18nProvider';\n` : '';
+  const innerOpen = i18nActive ? '      <I18nProvider>\n        ' : '      ';
+  const innerClose = i18nActive ? '\n      </I18nProvider>' : '';
+  const globalProvider = `import { QueryClientProvider } from '@tanstack/react-query';
+import { type ReactNode, useState } from 'react';
+import { createQueryClient } from '${apiAlias}';
+import { ThemeProvider } from '../theme/ThemeProvider';
+${i18nImport}import { SentryProvider } from '../SentryProvider';
+
+export function GlobalProvider({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(() => createQueryClient());
+  return (
+    <SentryProvider>
+${innerOpen}<ThemeProvider>
+          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        </ThemeProvider>${innerClose}
+    </SentryProvider>
+  );
+}
+`;
+  await fs.writeFile(globalProviderPath, globalProvider);
+
+  // package.json deps
+  const pkgPath = path.join(targetDir, 'package.json');
+  const pkg = await fs.readJson(pkgPath);
+  pkg.dependencies = pkg.dependencies ?? {};
+  pkg.devDependencies = pkg.devDependencies ?? {};
+  pkg.dependencies['@sentry/react'] = '^8.45.0';
+  pkg.devDependencies['@sentry/vite-plugin'] = '^2.22.7';
+  pkg.dependencies = sortObjectKeys(pkg.dependencies);
+  pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
+  await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+
+  await patchViteConfigForSentry(targetDir);
+
+  // .env.example
+  const envExamplePath = path.join(targetDir, '.env.example');
+  const envBlock = `# Sentry observability (v0.93.0+) — 비워두면 init 자동 skip.
+VITE_SENTRY_DSN=
+VITE_APP_VERSION=
+# Source map upload (vite build 시).
+SENTRY_AUTH_TOKEN=
+SENTRY_ORG=
+SENTRY_PROJECT=
+`;
+  if (await fs.pathExists(envExamplePath)) {
+    const existing = await fs.readFile(envExamplePath, 'utf-8');
+    if (!existing.includes('VITE_SENTRY_DSN')) {
+      await fs.writeFile(envExamplePath, existing + '\n' + envBlock);
+    }
+  } else {
+    await fs.writeFile(envExamplePath, envBlock);
+  }
+}
+
+async function patchViteConfigForSentry(targetDir) {
+  const viteCfgPath = path.join(targetDir, 'vite.config.ts');
+  if (!(await fs.pathExists(viteCfgPath))) {
+    throw new Error(`vite.config.ts 가 ${targetDir} 에 없습니다.`);
+  }
+  let cfg = await fs.readFile(viteCfgPath, 'utf-8');
+
+  if (!cfg.includes("@sentry/vite-plugin")) {
+    cfg = cfg.replace(
+      /import { defineConfig } from 'vite';/,
+      `import { defineConfig } from 'vite';\nimport { sentryVitePlugin } from '@sentry/vite-plugin';`,
+    );
+  }
+
+  if (!cfg.includes("sentryVitePlugin(")) {
+    cfg = cfg.replace(
+      /(plugins:\s*\[[^\]]*?)(\s*\])/s,
+      (_, before, close) => {
+        const sep = /,\s*$/.test(before) ? ' ' : ', ';
+        return `${before}${sep}sentryVitePlugin({\n      org: process.env.SENTRY_ORG,\n      project: process.env.SENTRY_PROJECT,\n      authToken: process.env.SENTRY_AUTH_TOKEN,\n      disable: !process.env.SENTRY_AUTH_TOKEN,\n    })${close}`;
+      },
+    );
+  }
+
+  if (!cfg.includes("sourcemap:")) {
+    if (cfg.includes("server: {")) {
+      cfg = cfg.replace(/(\n\s*server:\s*\{)/, `\n  build: { sourcemap: true },$1`);
+    } else if (cfg.includes("plugins: [")) {
+      cfg = cfg.replace(
+        /(plugins:\s*\[[^\]]*?\][^,\n]*[,;]?\n)/s,
+        `$1  build: { sourcemap: true },\n`,
+      );
+    }
+  }
+
+  await fs.writeFile(viteCfgPath, cfg);
+}
+
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -1159,7 +1354,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
 
   const appsDir = path.join(targetDir, 'apps', appName);
   if (platform === 'vite') {
-    await generateViteApp(appsDir, appName, port, arch, css, { tauri, i18n, locales });
+    await generateViteApp(appsDir, appName, port, arch, css, { tauri, i18n, locales, observability });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
   }
@@ -1260,7 +1455,7 @@ async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailw
   }
 }
 
-async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { tauri = false, i18n = 'none', locales = 'ko,en' } = {}) {
+async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 동일 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-app'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -1332,6 +1527,10 @@ async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind',
   if (i18n === 'react-i18next') {
     const localesArr = parseLocales(locales);
     await emitI18n(targetDir, { arch, locales: localesArr });
+  }
+
+  if (observability === 'sentry') {
+    await emitSentry(targetDir, { arch, i18nActive: i18n === 'react-i18next' });
   }
 }
 

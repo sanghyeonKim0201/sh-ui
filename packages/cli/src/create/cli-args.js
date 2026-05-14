@@ -4,6 +4,7 @@ import {
   CSS_FRAMEWORKS_SUPPORTED,
   CSS_FRAMEWORKS_PLANNED,
   I18N_LIBRARIES,
+  OBSERVABILITY_PROVIDERS,
 } from '../constants.js';
 import { allPlugins } from './plugins/index.js';
 import { allArchitectures } from './architectures/index.js';
@@ -13,7 +14,7 @@ const VALID_STRUCTURES = CREATE_STRUCTURES;
 const VALID_PLUGINS = allPlugins.map((p) => p.name);
 const VALID_ARCHES = allArchitectures.map((a) => a.name);
 
-const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch', 'port', 'i18n', 'locales'];
+const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch', 'port', 'i18n', 'locales', 'observability'];
 const BOOL_FLAGS = ['yes', 'help', 'dry-run', 'tauri'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
@@ -78,6 +79,9 @@ export const parseArgs = (argv) => {
     }
     if (name === 'i18n' && !I18N_LIBRARIES.includes(value)) {
       throw new Error(`--i18n 은 ${I18N_LIBRARIES.join('/')} 중 하나여야 함 (받은 값: ${value})`);
+    }
+    if (name === 'observability' && !OBSERVABILITY_PROVIDERS.includes(value)) {
+      throw new Error(`--observability 는 ${OBSERVABILITY_PROVIDERS.join('/')} 중 하나여야 함 (받은 값: ${value})`);
     }
     if (name === 'css' && !CSS_FRAMEWORKS_SUPPORTED.includes(value)) {
       // planned 값은 '곧 옵니다' 신호로 분기 — 사용자 의도가 더 명확히 전달.

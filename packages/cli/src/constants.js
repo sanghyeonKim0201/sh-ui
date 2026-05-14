@@ -60,3 +60,8 @@ export const INIT_DEFAULTS = {
 export const I18N_LIBRARIES = ['none', 'react-i18next'];
 export const I18N_DEFAULT = 'none';
 export const I18N_DEFAULT_LOCALES = 'ko,en';
+
+// ─── observability (vite preset 전용 — v0.93.0+) ───
+// 'none' 디폴트 — opt-in 으로 @sentry/react + @sentry/vite-plugin 설치 + 셋업.
+// GlitchTip self-hosted 도 같은 SDK — DSN 만 변경. 향후 bugsnag 등 추가 시 enum 확장.
+export const OBSERVABILITY_PROVIDERS = ['none', 'sentry'];
