@@ -116,6 +116,7 @@ export function CreateProjectDialog({
   const [tauri, setTauri] = useState<boolean>(false);
   const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
   const [locales, setLocales] = useState<string>('ko,en');
+  const [observability, setObservability] = useState<'none' | 'sentry'>('none');
   const [copied, setCopied] = useState(false);
 
   const nameError = useMemo(() => validateProjectName(projectName), [projectName]);
@@ -182,8 +183,9 @@ export function CreateProjectDialog({
         tauri,
         i18n,
         locales,
+        observability,
       } satisfies ComposerOptions),
-    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, tauri, i18n, locales],
+    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, tauri, i18n, locales, observability],
   );
 
   const togglePlugin = (p: Plugin) => {
@@ -290,6 +292,8 @@ export function CreateProjectDialog({
             onI18nChange={setI18n}
             locales={locales}
             onLocalesChange={setLocales}
+            observability={observability}
+            onObservabilityChange={setObservability}
           />
 
           {/* package manager + command preview */}

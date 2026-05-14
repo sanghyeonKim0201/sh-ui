@@ -35,6 +35,8 @@ type Props = {
   onI18nChange: (v: 'none' | 'react-i18next') => void;
   locales: string;
   onLocalesChange: (v: string) => void;
+  observability: 'none' | 'sentry';
+  onObservabilityChange: (v: 'none' | 'sentry') => void;
 };
 
 /**
@@ -59,6 +61,8 @@ export function ProjectOptionsForm(props: Props) {
     onI18nChange,
     locales,
     onLocalesChange,
+    observability,
+    onObservabilityChange,
   } = props;
 
   return (
@@ -230,6 +234,27 @@ export function ProjectOptionsForm(props: Props) {
                   </span>
                 </div>
               )}
+              <div>
+                <Label>Observability</Label>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
+                  <Button
+                    type="button"
+                    variant={observability === 'sentry' ? "primary" : "secondary"}
+                    size="sm"
+                    aria-pressed={observability === 'sentry'}
+                    title="@sentry/react + @sentry/vite-plugin 셋업 + SentryProvider (ErrorBoundary) + .env.example. GlitchTip 도 같은 SDK — DSN 만 변경."
+                    onClick={() => onObservabilityChange(observability === 'sentry' ? 'none' : 'sentry')}
+                  >
+                    {observability === 'sentry' ? "✓ " : ""}
+                    --observability sentry
+                  </Button>
+                  <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
+                    {observability === 'sentry'
+                      ? "Error tracking + performance + replay (PII 보호 기본). DSN 은 .env 의 VITE_SENTRY_DSN."
+                      : "observability 셋업 없이 (opt-in)"}
+                  </span>
+                </div>
+              </div>
             </>
           )}
         </>

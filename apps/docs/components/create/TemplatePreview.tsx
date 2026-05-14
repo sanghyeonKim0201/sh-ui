@@ -531,6 +531,9 @@ function ContentViewer({
     if (options?.locales && options.locales !== 'ko,en') {
       params.set("locales", options.locales);
     }
+    if (options?.observability && options.observability !== 'none') {
+      params.set("observability", options.observability);
+    }
 
     fetch(`/api/template-content?${params.toString()}`, { signal: ctrl.signal })
       .then(async (r) => {
@@ -834,6 +837,7 @@ export function TemplatePreviewDialog({
   const [tauri, setTauri] = useState<boolean>(false);
   const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
   const [locales, setLocales] = useState<string>('ko,en');
+  const [observability, setObservability] = useState<'none' | 'sentry'>('none');
 
   const togglePlugin = (p: Plugin) => {
     setPlugins((prev) => {
@@ -877,6 +881,8 @@ export function TemplatePreviewDialog({
             onI18nChange={setI18n}
             locales={locales}
             onLocalesChange={setLocales}
+            observability={observability}
+            onObservabilityChange={setObservability}
           />
 
           <TemplatePreviewBody
@@ -890,6 +896,7 @@ export function TemplatePreviewDialog({
               tauri,
               i18n,
               locales,
+              observability,
             }}
           />
         </div>
