@@ -472,10 +472,11 @@ export async function startMcpServer() {
     "sh_ui_add_app",
     {
       description:
-        "기존 모노레포에 새 Next.js 앱 추가 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 동시 생성. " +
+        "기존 모노레포에 새 앱 (Next.js 또는 Vite) 추가 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 동시 생성. " +
         "사용자가 '앱 추가' / 'monorepo 에 새 앱' / 'add admin app' 류 요청을 하면 이 툴 사용 (Bash 로 npx " + cliName + " add-app 직접 호출보다 우선). " +
         "v0.65+ 레이아웃 준수 — ui-{name} 은 tokens-only role, 컴포넌트는 sibling ui-core 가 SoT. " +
-        "theme/css 는 새 ui-app 에만 적용 (다른 앱 영향 없음). monorepo 가 아니면 (pnpm-workspace.yaml 없음) 에러.",
+        "theme/css 는 새 ui-app 에만 적용 (다른 앱 영향 없음). monorepo 가 아니면 (pnpm-workspace.yaml 없음) 에러. " +
+        "platform 미지정 시 기존 apps/* 스캔해 추론 (모든 앱이 같은 플랫폼이면 그것으로). vite + tauri:true 면 apps/{name}/src-tauri/ 도 함께 emit.",
       inputSchema: {
         name: z.string().min(1)
           .describe("앱 이름 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 디렉토리명. 영숫자 + 하이픈."),
@@ -487,6 +488,10 @@ export async function startMcpServer() {
           .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 base64 테마 코드. 새 ui-app 의 tokens.css 에만 주입.`),
         cssFramework: z.enum(CSS_FRAMEWORKS).optional()
           .describe("CSS 프레임워크. 기본 plain. 새 앱의 컴포넌트 변종 결정 — 같은 모노레포 내 다른 앱과 다른 값 가능."),
+        platform: z.enum(["next", "vite"]).optional()
+          .describe("플랫폼 — next | vite. 미지정 시 기존 apps/* 의 deps 로 추론 (모든 앱이 같은 플랫폼이면 그것으로, 혼재면 명시 필요)."),
+        tauri: z.boolean().optional()
+          .describe("Tauri 2.x 데스크탑 셸 — platform=vite 일 때만 의미. apps/{name}/src-tauri/ 에 emit. 기본 false."),
         cwd: z.string().optional()
           .describe("모노레포 루트 (pnpm-workspace.yaml 있는 곳). 기본 process.cwd()"),
       },
@@ -497,6 +502,15 @@ export async function startMcpServer() {
       } catch (e) {
         return { isError: true, content: [{ type: "text", text: e.message }] };
       }
+      if (input.tauri && input.platform === "next") {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: "tauri 는 platform=vite 일 때만 지원합니다. --platform vite 사용 또는 tauri 옵션 제거.",
+          }],
+        };
+      }
       const text = await captureConsole(() =>
         addApp({
           name: input.name,
@@ -504,6 +518,8 @@ export async function startMcpServer() {
           plugins: input.plugins,
           theme: input.theme,
           css: input.cssFramework,
+          platform: input.platform,
+          tauri: input.tauri,
           cwd: resolveCwd(input),
         }),
       );

@@ -477,6 +477,37 @@ export async function addApp(options = {}) {
     throw new Error('비대화형 환경(TTY 없음)에서는 name 이 필요합니다.');
   }
 
+  // platform 결정 — 명시 시 그대로, 미지정 시 기존 apps/* 의 package.json 스캔으로 추론.
+  let platform = options.platform;
+  if (!platform) {
+    platform = await inferMonorepoPlatform(cwd);
+    if (!platform) {
+      // 모노레포에 아직 앱이 없거나 혼재 — 안전한 디폴트 (next 가 기존 동작).
+      // 첫 앱은 user 가 명시하는 게 권장 (interactive prompt).
+      if (process.stdin.isTTY) {
+        platform = await select({
+          message: '플랫폼:',
+          choices: [
+            { name: 'Next.js', value: 'next' },
+            { name: 'Vite (SPA)', value: 'vite' },
+          ],
+        });
+      } else {
+        platform = 'next';
+      }
+    }
+  }
+  if (platform !== 'next' && platform !== 'vite') {
+    throw new Error(
+      `add-app 는 platform=next 또는 vite 만 지원 (받은 값: ${platform}). flutter 는 standalone 만 지원.`,
+    );
+  }
+  if (options.tauri && platform !== 'vite') {
+    throw new Error(
+      `tauri 는 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --platform vite 사용 또는 tauri 옵션 제거.`,
+    );
+  }
+
   const appName = validateProjectName(
     options.name ?? await input({
       message: '앱 이름:',
@@ -523,9 +554,13 @@ export async function addApp(options = {}) {
   // arch 는 모노레포가 처음 만들어질 때 정한 값과 같아야 한다. root config 에 별도
   // 저장 안 해 두므로 일단 DEFAULT_ARCH (fsd) fallback. 향후 root config 에 arch
   // 박아두고 여기서 읽어오는 흐름으로 개선 가능.
-  const arch = assertArchPlatformCompat(DEFAULT_ARCH, 'next');
+  const arch = assertArchPlatformCompat(DEFAULT_ARCH, platform);
 
-  await generateApp(appsDir, appName, port, plugins, arch, css);
+  if (platform === 'vite') {
+    await generateViteApp(appsDir, appName, port, arch, css, { tauri: !!options.tauri });
+  } else {
+    await generateApp(appsDir, appName, port, plugins, arch, css);
+  }
 
   // monorepo 의 새 ui-app 패키지 — tokens-only role + theme 주입 + cssFramework 패치.
   // generateMonorepo 의 흐름과 정확히 동일.
@@ -538,6 +573,41 @@ export async function addApp(options = {}) {
   console.log(`\n✅ apps/${appName} 이 추가되었습니다!`);
   console.log('\n  pnpm install');
   console.log(`  pnpm --filter ${appName} dev\n`);
+
+  if (platform === 'vite' && options.tauri) {
+    console.log('Tauri 데스크탑 셸:');
+    console.log(`  cd apps/${appName}`);
+    console.log('  pnpm tauri dev     # Rust 처음 빌드는 5~10분 — 캐시 후 5~10초');
+    console.log('  (Rust 미설치 시 https://rustup.rs/ 참고)\n');
+  }
+}
+
+/**
+ * 모노레포의 기존 apps/* 들 package.json 을 스캔해 platform 추론.
+ * - 모든 앱이 vite — 'vite'
+ * - 모든 앱이 next — 'next'
+ * - 혼재 또는 다른 조합 — null (user 가 명시해야 함)
+ * - apps/ 가 없거나 비었으면 null
+ */
+async function inferMonorepoPlatform(cwd) {
+  const appsDir = path.resolve(cwd, 'apps');
+  if (!(await fs.pathExists(appsDir))) return null;
+  const entries = await fsp.readdir(appsDir, { withFileTypes: true });
+  const apps = entries.filter((e) => e.isDirectory());
+  if (apps.length === 0) return null;
+
+  const platforms = new Set();
+  for (const app of apps) {
+    const pkgPath = path.join(appsDir, app.name, 'package.json');
+    if (!(await fs.pathExists(pkgPath))) continue;
+    const pkg = await fs.readJson(pkgPath);
+    const deps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
+    if (deps.next) platforms.add('next');
+    else if (deps.vite) platforms.add('vite');
+  }
+
+  if (platforms.size === 1) return [...platforms][0];
+  return null;
 }
 
 // ─── Add component to ui packages ───

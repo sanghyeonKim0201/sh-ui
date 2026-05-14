@@ -362,6 +362,77 @@ describe('sh-ui create smoke tests', () => {
     expect(await fs.pathExists(path.join(projectDir, 'src-tauri'))).toBe(false);
   });
 
+  it('scenario V13 — vite monorepo + add-app + tauri (v0.91.0+)', async () => {
+    // 1) 먼저 vite monorepo create
+    await createProject({
+      name: 'mono-v13',
+      platform: 'vite',
+      structure: 'monorepo',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const monoDir = path.join(tmpDir, 'mono-v13');
+
+    // 2) add-app — platform 미지정 (추론 기대) + tauri:true
+    await addApp({
+      cwd: monoDir,
+      name: 'admin',
+      port: '3001',
+      plugins: [],
+      tauri: true,
+    });
+
+    const adminDir = path.join(monoDir, 'apps/admin');
+
+    // admin 앱이 vite 로 생성됐는지 확인 (next 가 아니라)
+    const adminPkg = await fs.readJson(path.join(adminDir, 'package.json'));
+    expect(adminPkg.devDependencies.vite).toBeDefined();
+    expect(adminPkg.devDependencies.next).toBeUndefined();
+
+    // tauri shell 이 admin 앱 안
+    expect(await fs.pathExists(path.join(adminDir, 'src-tauri/Cargo.toml'))).toBe(true);
+    expect(await fs.pathExists(path.join(adminDir, 'src-tauri/tauri.conf.json'))).toBe(true);
+
+    // devUrl 이 admin 의 port (3001) 와 일치
+    const conf = await fs.readJson(path.join(adminDir, 'src-tauri/tauri.conf.json'));
+    expect(conf.build.devUrl).toBe('http://localhost:3001');
+
+    // vite.config.ts port 도 3001
+    const viteCfg = await fs.readFile(path.join(adminDir, 'vite.config.ts'), 'utf-8');
+    expect(viteCfg).toContain('port: 3001');
+
+    // crate name = appName snake_case
+    const cargo = await fs.readFile(path.join(adminDir, 'src-tauri/Cargo.toml'), 'utf-8');
+    expect(cargo).toContain('name = "admin"');
+    expect(cargo).toContain('name = "admin_lib"');
+
+    // 첫 앱 (web) 은 그대로
+    expect(await fs.pathExists(path.join(monoDir, 'apps/web/vite.config.ts'))).toBe(true);
+  });
+
+  it('scenario V14 — add-app + tauri + platform=next 는 명시적 에러', async () => {
+    await createProject({
+      name: 'mono-v14',
+      platform: 'next',
+      structure: 'monorepo',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    await expect(
+      addApp({
+        cwd: path.join(tmpDir, 'mono-v14'),
+        name: 'admin',
+        port: '3001',
+        platform: 'next',
+        tauri: true,
+      }),
+    ).rejects.toThrow(/tauri.*vite/);
+  });
+
   it('scenario V7e — vite + tauri:false (또는 미지정) 은 src-tauri/ 안 emit (회귀 가드)', async () => {
     await createProject({
       name: 'no-tauri',
@@ -619,6 +690,7 @@ describe('sh-ui create smoke tests', () => {
     prompts.input
       .mockResolvedValueOnce('admin')   // 앱 이름
       .mockResolvedValueOnce('3001');    // 포트
+    prompts.select.mockResolvedValueOnce('next'); // platform (v0.91.0+ — apps/ 비어있어 추론 불가)
     prompts.checkbox.mockResolvedValueOnce([]);
 
     await addApp();
@@ -657,6 +729,7 @@ describe('sh-ui create smoke tests', () => {
       port: '4000',
       plugins: [],
       css: 'plain',
+      platform: 'next',
     });
 
     const appPkg = await fs.readJson(path.join(tmpDir, 'apps', 'studio', 'package.json'));
