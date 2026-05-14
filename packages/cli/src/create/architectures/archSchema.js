@@ -40,7 +40,7 @@ export const ArchSchema = z.object({
   // 이 arch 가 적용 가능한 플랫폼들. CLI 에서 platform/arch 조합이 호환되는지 검증.
   // 예: fsd/flat 은 ['next'], 미래에 추가될 flutter-clean 은 ['flutter'].
   // 같은 이름의 arch 가 두 플랫폼 모두 지원하는 케이스도 가능 (예: 'flat' 가 양쪽).
-  platforms: z.array(z.enum(['next', 'flutter'])).min(1),
+  platforms: z.array(z.enum(['next', 'flutter', 'vite'])).min(1),
 
   // 논리 키 → 파일시스템 경로 (앱 루트 기준 상대)
   paths: PathKeys,

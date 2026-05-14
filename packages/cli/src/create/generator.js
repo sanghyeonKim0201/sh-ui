@@ -191,7 +191,7 @@ export async function createProject(options = {}) {
   if (!process.stdin.isTTY) {
     assertNoTtyFlag(options.name, '<project-name> (positional)');
     assertNoTtyFlag(options.platform, '--platform');
-    if (options.platform === 'next') {
+    if (options.platform === 'next' || options.platform === 'vite') {
       assertNoTtyFlag(options.structure, '--structure');
     }
   }
@@ -208,6 +208,7 @@ export async function createProject(options = {}) {
     message: '플랫폼:',
     choices: [
       { name: 'Next.js', value: 'next' },
+      { name: 'Vite (SPA)', value: 'vite' },
       { name: 'Flutter', value: 'flutter' },
     ],
   });
@@ -221,6 +222,9 @@ export async function createProject(options = {}) {
   if (platform === 'next') {
     const archName = options.arch ?? DEFAULT_ARCH;
     arch = assertArchPlatformCompat(archName, 'next');
+  } else if (platform === 'vite') {
+    const archName = options.arch ?? DEFAULT_ARCH;  // 'fsd' default — flat 도 호환
+    arch = assertArchPlatformCompat(archName, 'vite');
   } else if (platform === 'flutter' && options.arch) {
     arch = assertArchPlatformCompat(options.arch, 'flutter');
   }
@@ -314,6 +318,47 @@ export async function createProject(options = {}) {
     console.log(`\n  cd ${projectName}`);
     console.log('  flutter pub get');
     console.log('  flutter run\n');
+    return;
+  }
+
+  if (platform === 'vite') {
+    // vite 는 next 와 동일하게 structure 옵션을 받지만 Phase 1 에서는 standalone 만 처리.
+    // monorepo 는 후속 task 에서 generateMonorepo 의 platform 분기로 연결.
+    const projectType = options.structure ?? await select({
+      message: '프로젝트 구조:',
+      choices: [
+        { name: '단독 (Vite standalone)', value: 'standalone' },
+        { name: '모노레포 (Turborepo + pnpm)', value: 'monorepo' },
+      ],
+    });
+
+    if (projectType === 'standalone') {
+      await generateViteStandalone(targetDir, projectName, theme, cssFramework, arch, themeBase);
+    } else {
+      // monorepo path is added in Task 12. For now, fail loudly so users know.
+      throw new Error(
+        'platform=vite + structure=monorepo 는 아직 구현되지 않았습니다 (Phase 2 — v0.87 예정). ' +
+        'standalone 을 사용하거나 platform=next 로 monorepo 를 만든 뒤 vite 앱을 수동으로 추가해주세요.',
+      );
+    }
+
+    await finalizeProject(targetDir, { dryRun: options.dryRun });
+
+    if (options.dryRun) {
+      const files = await listAllFiles(targetDir);
+      console.log(`\n[DRY RUN] ${projectName} 스캐폴드 시 작성될 파일 (${files.length}개):\n`);
+      for (const f of files.sort()) console.log(`  ${f}`);
+      await fs.remove(targetDir);
+      console.log(`\n실제 스캐폴드: --dry-run 제거 후 같은 명령 실행.`);
+      return;
+    }
+
+    console.log(`\n✅ ${projectName} Vite 프로젝트가 생성되었습니다!`);
+    console.log(`\n  cd ${projectName}`);
+    console.log('  pnpm install');
+    console.log('  pnpm dev\n');
+    console.log('다음 단계 — 베이스 컴포넌트 추가 (예시):');
+    console.log('  npx sh-ui-cli add button card input dialog\n');
     return;
   }
 
@@ -686,6 +731,43 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await composeProviders(targetDir, plugins, arch);
   await applyTransforms(targetDir, plugins, arch);
   await applyCssFrameworkVariant(targetDir, css, { isMonorepo: false, plugins, arch });
+  await injectCssTheme(targetDir, theme);
+  await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
+}
+
+async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase) {
+  // 베이스 (arch-neutral) + arch 오버레이 — generateStandalone 과 같은 패턴.
+  await fs.copy(path.join(TEMPLATES_DIR, 'vite-standalone'), targetDir, {
+    filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
+  });
+  await ensureArchCleanup(targetDir);
+  await fs.copy(
+    path.join(TEMPLATES_DIR, 'vite-standalone', '_arch', arch.name),
+    targetDir,
+    { overwrite: true },
+  );
+  // vite 는 모든 소스가 src/ 아래 — arch.paths.layouts(next 관용) 앞에 src/ 를 붙여
+  // sentinel 위치를 보정한다. flat 의 components/layouts → src/components/layouts,
+  // fsd 의 src/app/layouts → src/app/layouts (변화 없음 — fsd 가 이미 src/ 박혀 있음).
+  const layoutsPath = arch.paths.layouts.startsWith('src/')
+    ? arch.paths.layouts
+    : `src/${arch.paths.layouts}`;
+  const sentinelPath = path.join(targetDir, `${layoutsPath}/RootLayout.tsx`);
+  if (!(await fs.pathExists(sentinelPath))) {
+    throw new Error(
+      `arch 오버레이 누락: vite-standalone + ${arch.name} 의 sentinel 파일(${layoutsPath}/RootLayout.tsx) 이 ${targetDir} 에 없습니다.`,
+    );
+  }
+
+  // package.json — name + dep sort
+  const pkgPath = path.join(targetDir, 'package.json');
+  const pkg = await fs.readJson(pkgPath);
+  pkg.name = projectName;
+  if (pkg.dependencies) pkg.dependencies = sortObjectKeys(pkg.dependencies);
+  if (pkg.devDependencies) pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
+  await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+
+  await applyCssFrameworkVariant(targetDir, css, { isMonorepo: false, plugins: [], arch });
   await injectCssTheme(targetDir, theme);
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
@@ -1755,9 +1837,10 @@ const OPTIONAL_DART_INJECTORS = [
 async function injectCssTheme(projectDir, theme) {
   if (!theme) return;
   const candidates = [
-    'src/shared/styles/tokens.css',  // FSD standalone
+    'src/shared/styles/tokens.css',  // FSD standalone (next + vite)
     'src/styles/tokens.css',          // monorepo ui-app-template (arch-neutral)
-    'lib/styles/tokens.css',          // flat standalone
+    'src/lib/styles/tokens.css',      // flat standalone (vite)
+    'lib/styles/tokens.css',          // flat standalone (next)
   ];
   for (const rel of candidates) {
     const abs = path.join(projectDir, rel);

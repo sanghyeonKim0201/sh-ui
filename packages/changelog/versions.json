@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.86.0",
+      "date": "2026-05-14",
+      "title": "Vite 플랫폼 프리셋 — sh_ui_create_project platform=vite (standalone)",
+      "type": "minor",
+      "highlights": [
+        "**`sh-ui-cli create --platform vite --structure standalone`** — Vite 5 + React 19 + Tailwind v4 SPA 스캐폴드 신설. ai-org 같은 Tauri 셸 + SPA 조합처럼 Next.js SSR/App Router 가 무용지물이고 HMR 속도·번들 크기에서 vite 가 유리한 워크로드를 위한 1급 진입점. `@tailwindcss/vite` 공식 플러그인 경유 (next 프리셋의 postcss 경로와 다름). flat·fsd arch 모두 호환 (`mes` 는 App Router 의존이라 제외). MCP `sh_ui_create_project` / `sh_ui_describe_template` 도 platform=vite 인식.",
+        "**`next-themes` 없이 self-rolled `useTheme` 훅 + `ThemeProvider`** — vite SPA 환경에 맞춰 context + `localStorage` + `document.documentElement.classList` 토글 + `prefers-color-scheme` 변화 구독을 ~70 줄로 직접 구현. `index.html` 의 inline FOUC 스크립트가 첫 paint 전에 dark class 박아 깜빡임 차단. registry 에는 theme 두지 않는 v0.63+ 정책 그대로.",
+        "**`vite-tsconfig-paths` 플러그인 포함** — tsconfig 의 `@/*` (fsd) / `@/lib/*` + `@/components/*` (flat) 별칭을 vite/rollup 빌드 타임에 그대로 해석. tsconfig.app.json 이 별칭 단일 소스, `vite.config.ts` 는 plugin 한 줄만 추가. tsconfig 별칭과 빌드 별칭이 어긋날 일 없음.",
+        "**monorepo + Tauri 통합은 후속**. v0.86.0 은 vite-standalone 한정. vite-monorepo (apps/{name} + packages/ui/ui-core 공유) 는 v0.87 에서 generateMonorepo platform 분기로 추가 예정. Tauri scaffold 자동화는 별도 PR 후보 (현재도 `tauri init` 으로 vite 앱을 wrap 가능 — `dist/` 표준 위치 그대로)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.86.0"
+    },
+    {
       "version": "0.85.1",
       "date": "2026-05-13",
       "title": "scaffold globals.css 에 external-imports sentinel — 폰트/디자인시스템 URL @import footgun 차단",

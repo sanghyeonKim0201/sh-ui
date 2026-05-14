@@ -8,6 +8,7 @@ import {
   DEFAULT_ARCH,
 } from '../src/create/architectures/index.js';
 import { ArchSchema } from '../src/create/architectures/archSchema.js';
+import { CREATE_PLATFORMS } from '../src/constants.js';
 
 describe('architectures — descriptor 시스템', () => {
   describe('등록된 디스크립터', () => {
@@ -165,5 +166,44 @@ describe('architectures — descriptor 시스템', () => {
     it('getArchByName — 미등록은 throw', () => {
       expect(() => getArchByName('clean')).toThrow(/Unknown architecture/);
     });
+  });
+});
+
+describe('vite platform — constants + schema', () => {
+  it('CREATE_PLATFORMS includes vite', () => {
+    expect(CREATE_PLATFORMS).toContain('vite');
+  });
+
+  it('ArchSchema accepts platforms: [vite]', () => {
+    const result = ArchSchema.safeParse({
+      name: 'demo',
+      label: 'Demo',
+      description: 'test arch',
+      platforms: ['vite'],
+      paths: { layouts:'', providers:'', api:'', config:'', hooks:'', utils:'', ui:'', test:'' },
+      aliases: { layouts:'', providers:'', api:'', config:'', hooks:'', utils:'', ui:'', test:'' },
+      tsconfigPaths: {},
+    });
+    // paths/aliases must be non-empty per schema — expect failure but for a different reason
+    expect(result.success).toBe(false);
+    const msgs = result.error.issues.map((i) => i.message).join(' ');
+    expect(msgs).not.toMatch(/platforms.*Invalid enum/);
+  });
+});
+
+describe('vite arch compat', () => {
+  it('getArchesForPlatform("vite") includes flat + fsd', () => {
+    const names = getArchesForPlatform('vite').map((a) => a.name);
+    expect(names).toContain('flat');
+    expect(names).toContain('fsd');
+  });
+
+  it('assertArchPlatformCompat("flat", "vite") returns flat descriptor', () => {
+    const arch = assertArchPlatformCompat('flat', 'vite');
+    expect(arch.name).toBe('flat');
+  });
+
+  it('assertArchPlatformCompat("mes", "vite") rejects (mes is next-only)', () => {
+    expect(() => assertArchPlatformCompat('mes', 'vite')).toThrow(/vite/);
   });
 });

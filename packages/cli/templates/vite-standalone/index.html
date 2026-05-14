@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko" suppressHydrationWarning>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sh-ui app</title>
+    <script>
+      // FOUC 차단 — ThemeProvider mount 전에 첫 paint 에 dark class 박기.
+      // matrix: 'dark' → .dark, 'light' → (none), 'system'/unset → system pref.
+      try {
+        var t = localStorage.getItem('theme');
+        var d = t === 'dark' || ((!t || t === 'system') && matchMedia('(prefers-color-scheme:dark)').matches);
+        if (d) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

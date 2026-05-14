@@ -230,3 +230,30 @@ describe('describeTemplate — 옵션 조합 → 파일 트리 사전 계산', (
     });
   });
 });
+
+describe('describeTemplate — vite', () => {
+  it('vite + standalone + fsd returns files from vite-standalone manifest', () => {
+    const result = describeTemplate({
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      cssFramework: 'tailwind',
+    });
+    expect(result.files.some((f) => f === 'vite.config.ts')).toBe(true);
+    expect(result.files.some((f) => f === 'index.html')).toBe(true);
+    expect(result.files.some((f) => f.endsWith('src/shared/styles/tokens.css'))).toBe(true);
+    expect(result.files.some((f) => f === 'next.config.ts')).toBe(false);
+    const baseGroup = result.groups.find((g) => g.id === 'base');
+    expect(baseGroup.paths.length).toBeGreaterThan(0);
+  });
+
+  it('vite + standalone + flat uses flat overlay paths', () => {
+    const result = describeTemplate({
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'flat',
+      cssFramework: 'tailwind',
+    });
+    expect(result.files.some((f) => f.endsWith('src/lib/styles/tokens.css'))).toBe(true);
+  });
+});

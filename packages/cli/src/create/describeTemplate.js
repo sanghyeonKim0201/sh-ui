@@ -28,8 +28,8 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
 
 /**
  * @typedef {Object} DescribeOptions
- * @property {'next'|'flutter'} [platform]
- * @property {'standalone'|'monorepo'} [structure]   next 일 때만 의미
+ * @property {'next'|'flutter'|'vite'} [platform]
+ * @property {'standalone'|'monorepo'} [structure]   next/vite 일 때만 의미
  * @property {string} [arch]                          next 일 때 'fsd'|'flat'|'mes'
  * @property {string[]} [plugins]                     ['sentry', 'next-intl', 'auth-jwt']
  * @property {'tailwind'|'plain'|'css-modules'} [cssFramework]
@@ -68,6 +68,25 @@ export function describeTemplate(opts = {}) {
     const base = TEMPLATE_MANIFEST['flutter-standalone'].base;
     return finalize([
       makeGroup('base', 'Flutter 베이스', base),
+    ]);
+  }
+
+  if (platform === 'vite') {
+    // standalone only in Phase 1. monorepo is added in Task 13.
+    const tpl = TEMPLATE_MANIFEST['vite-standalone'];
+    if (!tpl) {
+      throw new Error("Template manifest missing entry for 'vite-standalone'.");
+    }
+    const safeArchName = isKnownArch(archName) ? archName : DEFAULT_ARCH;
+    const archObj = getArchByName(safeArchName);
+    if (!archObj.platforms.includes('vite')) {
+      throw new Error(`Arch '${safeArchName}' is not compatible with vite.`);
+    }
+    const baseFiles = tpl.base.slice();
+    const archFiles = (tpl.arches?.[safeArchName] ?? []).slice();
+    return finalize([
+      makeGroup('base', '베이스 (vite-standalone)', baseFiles),
+      makeGroup('arch', `Arch (${safeArchName})`, archFiles),
     ]);
   }
 

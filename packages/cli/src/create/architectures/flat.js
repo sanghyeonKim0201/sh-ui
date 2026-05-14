@@ -18,7 +18,7 @@ export const flatArch = {
   label: 'Flat',
   description:
     '슬라이스 없는 관용적 Next.js 구조 (lib/components/app). 작은 프로젝트, 데모, 일회성 도구에 적합.',
-  platforms: ['next'],
+  platforms: ['next', 'vite'],
 
   paths: {
     layouts:    'components/layouts',
