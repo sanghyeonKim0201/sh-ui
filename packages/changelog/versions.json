@@ -3,6 +3,21 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.93.0",
+      "date": "2026-05-14",
+      "title": "vite 프리셋 Sentry observability opt-in (--observability sentry)",
+      "type": "minor",
+      "highlights": [
+        "**`--observability sentry` 옵션** — vite preset 에 opt-in Sentry 셋업 추가. `@sentry/react` (deps) + `@sentry/vite-plugin` (devDeps) + `Sentry.init({...})` (DSN 가드, browserTracing + replay PII 보호 디폴트) + `SentryProvider` (ErrorBoundary wrap) + `.env.example` 자동 emit. DSN 빈 값이면 init 자동 skip — dev/CI 안전. ai-org 처럼 error tracking 부터 들어가는 워크로드 5분 boilerplate 제거.",
+        "**enum 디자인** — `observability: z.enum(['none', 'sentry'])` future-extensible. GlitchTip 등 Sentry-protocol 호환 서비스는 같은 SDK + DSN 만 변경하면 동작 (라이브러리 lock-in 아님). 추후 `glitchtip` / `bugsnag` 등 enum 확장 자연스럽게.",
+        "**Source map upload 자동 셋업** — `vite.config.ts` 에 `sentryVitePlugin({ org, project, authToken, disable: !SENTRY_AUTH_TOKEN })` 자동 추가 + `build.sourcemap: true`. SENTRY_AUTH_TOKEN 이 env 에 있으면 빌드 시 source map 자동 업로드, 없으면 plugin disable. CI 친화.",
+        "**i18n + Sentry 동시 시 wrapper 순서 보장** — SentryProvider 가 OUTERMOST (모든 children error 캐치) → I18nProvider → ThemeProvider → QueryClientProvider. Smoke V20 가 wrapper index 순서 단언으로 회귀 가드.",
+        "**Vite types 자동 reference** — emit 된 `sentry.ts` 가 `/// <reference types=\"vite/client\" />` triple-slash 로 `import.meta.env.VITE_SENTRY_DSN` 타입 정확. 사용자 tsconfig 손댈 필요 X.",
+        "**guards + 회귀** — `observability + platform !== 'vite'` 조합은 CLI + MCP 양쪽에서 명시적 Korean 에러. Smoke V18 (positive), V19 (default opt-out 회귀), V20 (i18n + sentry combo wrapper 순서). docs `/create` 페이지도 observability 토글 노출."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.93.0"
+    },
+    {
       "version": "0.92.0",
       "date": "2026-05-14",
       "title": "vite 프리셋 react-i18next i18n opt-in (--i18n + --locales)",

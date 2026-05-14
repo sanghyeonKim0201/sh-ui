@@ -48,6 +48,7 @@ import {
   CSS_FRAMEWORKS_SUPPORTED,
   I18N_LIBRARIES,
   I18N_DEFAULT_LOCALES,
+  OBSERVABILITY_PROVIDERS,
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
 import { allArchitectures } from "./create/architectures/index.js";
@@ -414,6 +415,11 @@ export async function startMcpServer() {
             `i18n 활성화 시 생성할 locale 코드 (comma-separated, 2글자 또는 'ko-KR' 류). 기본 '${I18N_DEFAULT_LOCALES}'. 첫 locale 이 fallbackLng. ` +
             "i18n='none' 이면 무시.",
           ),
+        observability: z.enum(OBSERVABILITY_PROVIDERS).optional()
+          .describe(
+            "observability provider — platform=vite 일 때만 의미. 'sentry' 로 설정 시 @sentry/react + " +
+            "@sentry/vite-plugin 셋업 + SentryProvider + .env.example 자동 emit. GlitchTip self-hosted 도 같은 SDK — DSN 만 변경. 기본 'none'.",
+          ),
       },
     },
     async (input) => {
@@ -453,6 +459,15 @@ export async function startMcpServer() {
           }],
         };
       }
+      if (input.observability && input.observability !== "none" && input.platform !== "vite") {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: `observability='${input.observability}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${input.platform}).`,
+          }],
+        };
+      }
       const targetParent = resolveCwd(input);
       const targetDir = resolve(targetParent, input.name);
       if (existsSync(targetDir) && !input.force) {
@@ -481,6 +496,7 @@ export async function startMcpServer() {
             tauri: input.tauri,
             i18n: input.i18n,
             locales: input.locales,
+            observability: input.observability,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
@@ -524,6 +540,11 @@ export async function startMcpServer() {
           .describe(
             `i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 '${I18N_DEFAULT_LOCALES}'. 첫 locale 이 fallbackLng. i18n='none' 이면 무시.`,
           ),
+        observability: z.enum(OBSERVABILITY_PROVIDERS).optional()
+          .describe(
+            "observability provider — platform=vite 일 때만 의미. 'sentry' 로 설정 시 @sentry/react + " +
+            "@sentry/vite-plugin 셋업 + SentryProvider + .env.example 자동 emit. GlitchTip self-hosted 도 같은 SDK — DSN 만 변경. 기본 'none'.",
+          ),
         cwd: z.string().optional()
           .describe("모노레포 루트 (pnpm-workspace.yaml 있는 곳). 기본 process.cwd()"),
       },
@@ -552,6 +573,15 @@ export async function startMcpServer() {
           }],
         };
       }
+      if (input.observability && input.observability !== "none" && input.platform && input.platform !== "vite") {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: `observability='${input.observability}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${input.platform}).`,
+          }],
+        };
+      }
       const text = await captureConsole(() =>
         addApp({
           name: input.name,
@@ -563,6 +593,7 @@ export async function startMcpServer() {
           tauri: input.tauri,
           i18n: input.i18n,
           locales: input.locales,
+          observability: input.observability,
           cwd: resolveCwd(input),
         }),
       );

@@ -29,6 +29,7 @@ export type ComposerOptions = {
   tauri: boolean;
   i18n: 'none' | 'react-i18next';
   locales: string;
+  observability: 'none' | 'sentry';
 };
 
 const packageManagerPrefix: Record<PackageManager, string> = {
@@ -39,7 +40,7 @@ const packageManagerPrefix: Record<PackageManager, string> = {
 };
 
 export const composeCommand = (opts: ComposerOptions): string => {
-  const { projectName, platform, structure, plugins, arch, packageManager, themeBase64, cssFramework, tauri, i18n, locales } = opts;
+  const { projectName, platform, structure, plugins, arch, packageManager, themeBase64, cssFramework, tauri, i18n, locales, observability } = opts;
 
   const parts = [packageManagerPrefix[packageManager], projectName];
   parts.push("--platform", platform);
@@ -59,6 +60,10 @@ export const composeCommand = (opts: ComposerOptions): string => {
       if (locales && locales !== 'ko,en') {
         parts.push("--locales", locales);
       }
+    }
+    // observability opt-in (v0.93.0+) — 디폴트(none) 가 아닐 때만 emit.
+    if (observability && observability !== 'none') {
+      parts.push("--observability", observability);
     }
   }
 

@@ -658,6 +658,65 @@ describe('sh-ui create smoke tests', () => {
     expect(cfg).toContain("fallbackLng: 'ko'");
   });
 
+  it('scenario V18 — vite + observability=sentry (v0.93.0+)', async () => {
+    await createProject({
+      name: 'v-sentry', platform: 'vite', structure: 'standalone', arch: 'fsd',
+      css: 'tailwind', observability: 'sentry', yes: true,
+    });
+    const dir = path.join(tmpDir, 'v-sentry');
+    expect(await fs.pathExists(path.join(dir, 'src/shared/observability/sentry.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(dir, 'src/shared/observability/index.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(dir, 'src/app/providers/SentryProvider.tsx'))).toBe(true);
+    expect(await fs.pathExists(path.join(dir, '.env.example'))).toBe(true);
+    const sentryTs = await fs.readFile(path.join(dir, 'src/shared/observability/sentry.ts'), 'utf-8');
+    expect(sentryTs).toContain("import * as Sentry from '@sentry/react'");
+    expect(sentryTs).toContain('import.meta.env.VITE_SENTRY_DSN');
+    expect(sentryTs).toContain('replaysSessionSampleRate: 0');
+    const gp = await fs.readFile(path.join(dir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
+    expect(gp).toContain("import { SentryProvider } from '../SentryProvider'");
+    expect(gp).toContain('<SentryProvider>');
+    expect(gp.indexOf('<SentryProvider>')).toBeLessThan(gp.indexOf('<ThemeProvider>'));
+    const pkg = await fs.readJson(path.join(dir, 'package.json'));
+    expect(pkg.dependencies['@sentry/react']).toBeDefined();
+    expect(pkg.devDependencies['@sentry/vite-plugin']).toBeDefined();
+    const viteCfg = await fs.readFile(path.join(dir, 'vite.config.ts'), 'utf-8');
+    expect(viteCfg).toContain("import { sentryVitePlugin } from '@sentry/vite-plugin'");
+    expect(viteCfg).toContain('sentryVitePlugin(');
+    expect(viteCfg).toContain('sourcemap: true');
+    const env = await fs.readFile(path.join(dir, '.env.example'), 'utf-8');
+    expect(env).toContain('VITE_SENTRY_DSN');
+    expect(env).toContain('SENTRY_AUTH_TOKEN');
+  });
+
+  it('scenario V19 — vite + observability=none (default) — Sentry 파일 안 들어감', async () => {
+    await createProject({
+      name: 'v-no-sentry', platform: 'vite', structure: 'standalone', arch: 'fsd',
+      css: 'tailwind', yes: true,
+    });
+    const dir = path.join(tmpDir, 'v-no-sentry');
+    expect(await fs.pathExists(path.join(dir, 'src/shared/observability'))).toBe(false);
+    expect(await fs.pathExists(path.join(dir, 'src/app/providers/SentryProvider.tsx'))).toBe(false);
+    const pkg = await fs.readJson(path.join(dir, 'package.json'));
+    expect(pkg.dependencies['@sentry/react']).toBeUndefined();
+    const gp = await fs.readFile(path.join(dir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
+    expect(gp).not.toContain('SentryProvider');
+  });
+
+  it('scenario V20 — vite + i18n + sentry — wrapper 순서 Sentry > I18n > Theme > Query', async () => {
+    await createProject({
+      name: 'v-stack', platform: 'vite', structure: 'standalone', arch: 'fsd',
+      css: 'tailwind', i18n: 'react-i18next', locales: 'ko,en', observability: 'sentry', yes: true,
+    });
+    const gp = await fs.readFile(path.join(tmpDir, 'v-stack/src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
+    expect(gp).toContain("import { I18nProvider } from '../I18nProvider'");
+    expect(gp).toContain("import { SentryProvider } from '../SentryProvider'");
+    const sentryIdx = gp.indexOf('<SentryProvider>');
+    const i18nIdx = gp.indexOf('<I18nProvider>');
+    const themeIdx = gp.indexOf('<ThemeProvider>');
+    expect(sentryIdx).toBeLessThan(i18nIdx);
+    expect(i18nIdx).toBeLessThan(themeIdx);
+  });
+
   it('scenario 2 — monorepo, no plugins', async () => {
     prompts.input
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름

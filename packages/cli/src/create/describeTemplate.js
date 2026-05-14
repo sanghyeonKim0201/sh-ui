@@ -38,6 +38,7 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
  * @property {boolean} [tauri]                        platform=vite (standalone/monorepo 둘 다) 일 때 Tauri 2.x 셸 같이 emit
  * @property {'none'|'react-i18next'} [i18n]          vite 전용 — react-i18next 셋업
  * @property {string} [locales]                       i18n 활성화 시 생성할 locale 코드 (comma-separated, default 'ko,en')
+ * @property {'none'|'sentry'} [observability]        vite 전용 — Sentry 셋업 (v0.93.0+)
  */
 
 /**
@@ -68,6 +69,7 @@ export function describeTemplate(opts = {}) {
     tauri = false,
     i18n = 'none',
     locales = 'ko,en',
+    observability = 'none',
   } = opts;
 
   if (platform === 'flutter') {
@@ -115,6 +117,17 @@ export function describeTemplate(opts = {}) {
           `${providersBase}/I18nProvider.tsx`,
         ];
         groups.push(makeGroup('i18n', `i18n (${i18n})`, i18nFiles));
+      }
+      if (observability === 'sentry') {
+        const isFsd = safeArchName === 'fsd';
+        const obsBase = isFsd ? 'src/shared/observability' : 'src/lib/observability';
+        const providersBase = isFsd ? 'src/app/providers' : 'src/components/providers';
+        groups.push(makeGroup('sentry', `Sentry observability`, [
+          `${obsBase}/sentry.ts`,
+          `${obsBase}/index.ts`,
+          `${providersBase}/SentryProvider.tsx`,
+          '.env.example',
+        ]));
       }
       return finalize(groups);
     }
@@ -178,6 +191,18 @@ export function describeTemplate(opts = {}) {
         `apps/${appName}/${providersBase}/I18nProvider.tsx`,
       ];
       groups.push(makeGroup('i18n', `i18n (${i18n}, apps/${appName}/)`, i18nFiles));
+    }
+
+    if (observability === 'sentry') {
+      const isFsd = safeArchName === 'fsd';
+      const obsBase = isFsd ? 'src/shared/observability' : 'src/lib/observability';
+      const providersBase = isFsd ? 'src/app/providers' : 'src/components/providers';
+      groups.push(makeGroup('sentry', `Sentry observability (apps/${appName}/)`, [
+        `apps/${appName}/${obsBase}/sentry.ts`,
+        `apps/${appName}/${obsBase}/index.ts`,
+        `apps/${appName}/${providersBase}/SentryProvider.tsx`,
+        `apps/${appName}/.env.example`,
+      ]));
     }
 
     return finalize(groups);
