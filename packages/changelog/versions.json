@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.88.1",
+      "date": "2026-05-14",
+      "title": "vite-standalone 템플릿 모바일/Tauri WebView 친화 — viewport-fit + theme-color + tap-highlight reset",
+      "type": "patch",
+      "highlights": [
+        "**`index.html` viewport meta 확장** — `viewport-fit=cover` 추가 (iOS safe-area inset / Android edge-to-edge / Tauri 모바일 호환). `theme-color` 메타도 light/dark prefers-color-scheme 분기로 emit — 모바일 브라우저 status bar, PWA, Tauri WebView 의 chrome 톤이 앱 톤을 따라감.",
+        "**globals.css 에 WebView base reset** — `-webkit-tap-highlight-color: transparent` (탭 시 회색 박스 차단), `-webkit-user-select: none` (모바일 long-press 컨텍스트 메뉴 차단), `touch-action: manipulation` (300ms 더블탭 줌 지연 제거). `input`/`textarea`/`[contenteditable]` 은 명시적으로 `user-select: text` 로 복원해 폼은 정상 동작. fsd + flat 양쪽 arch overlay 에 동일 emit.",
+        "**ai-org Tauri 통일 전략 대응 (참고용)** — Phase 1.5 desktop + Phase 3 mobile 통일 Tauri 2 워크플로우의 WebView 친화 디폴트. sh-ui 컴포넌트 자체의 touch-target (44pt iOS / 48dp Android) 분기는 별도 PR — `--control-md-touch` 류 토큰 신설 + 컴포넌트 디폴트 API 결정 필요.",
+        "**smoke V8 + V9 회귀 가드** — V8 은 viewport-fit + 양쪽 theme-color 매체 쿼리 존재, V9 는 fsd + flat globals.css 양쪽에 sentinel 블록 + 핵심 reset 라인 존재를 단언. 텍스트 입력 복원 라인도 따로 가드 (input/textarea 셀렉트 회귀 차단)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.88.1"
+    },
+    {
       "version": "0.88.0",
       "date": "2026-05-14",
       "title": "Tauri 2.x 데스크탑 셸 — sh_ui_create_project platform=vite tauri=true",

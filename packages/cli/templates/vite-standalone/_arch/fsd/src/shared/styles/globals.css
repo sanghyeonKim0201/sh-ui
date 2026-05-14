@@ -33,3 +33,29 @@
   --color-info-foreground: var(--info-foreground);
   --color-sidebar-bg: var(--sidebar-bg);
 }
+
+/* sh-ui:webview-base-start — 모바일 브라우저 / Tauri WebView / PWA 공통 기본값.
+ * v0.88.1+: Tauri 통합 + iOS/Android 친화. 사용자가 텍스트 셀렉트 필요한 곳은 input/textarea/
+ * contenteditable 에 명시적으로 user-select: text 로 복원. 토큰이 아니라 reset 성 규칙이라
+ * @theme inline 밖에 둠. */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  input,
+  textarea,
+  [contenteditable],
+  [contenteditable='true'] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  html {
+    touch-action: manipulation;
+  }
+}
+/* sh-ui:webview-base-end */

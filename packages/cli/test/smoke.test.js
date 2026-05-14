@@ -348,6 +348,62 @@ describe('sh-ui create smoke tests', () => {
     expect(pkg.devDependencies['@tauri-apps/cli']).toBeUndefined();
   });
 
+  it('scenario V8 — vite index.html 에 viewport-fit + theme-color meta 포함 (v0.88.1+ 모바일/Tauri)', async () => {
+    await createProject({
+      name: 'v-mobile',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+
+    const indexHtml = await fs.readFile(
+      path.join(tmpDir, 'v-mobile', 'index.html'),
+      'utf-8',
+    );
+    expect(indexHtml).toContain('viewport-fit=cover');
+    expect(indexHtml).toMatch(/<meta name="theme-color"[^>]*media="\(prefers-color-scheme: dark\)"/);
+    expect(indexHtml).toMatch(/<meta name="theme-color"[^>]*media="\(prefers-color-scheme: light\)"/);
+  });
+
+  it('scenario V9 — vite globals.css 에 WebView reset 블록 포함 (fsd + flat 양쪽)', async () => {
+    // fsd
+    await createProject({
+      name: 'v-webview-fsd',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+    const fsdGlobals = await fs.readFile(
+      path.join(tmpDir, 'v-webview-fsd', 'src/shared/styles/globals.css'),
+      'utf-8',
+    );
+    expect(fsdGlobals).toContain('sh-ui:webview-base-start');
+    expect(fsdGlobals).toContain('-webkit-tap-highlight-color: transparent');
+    expect(fsdGlobals).toContain('touch-action: manipulation');
+    // 텍스트 입력 영역 복원 가드 — 빠지면 사용자가 input 에 텍스트 셀렉트 못 하는 회귀
+    expect(fsdGlobals).toMatch(/input,\s*\n\s*textarea/);
+
+    // flat
+    await createProject({
+      name: 'v-webview-flat',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'flat',
+      css: 'tailwind',
+      yes: true,
+    });
+    const flatGlobals = await fs.readFile(
+      path.join(tmpDir, 'v-webview-flat', 'src/lib/styles/globals.css'),
+      'utf-8',
+    );
+    expect(flatGlobals).toContain('sh-ui:webview-base-start');
+    expect(flatGlobals).toContain('touch-action: manipulation');
+  });
+
   it('scenario V7f — tauri:true + platform=next 는 명시적 에러 (CLI 가드)', async () => {
     await expect(
       createProject({

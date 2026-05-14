@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover: iOS safe-area inset / Android edge-to-edge / Tauri mobile 호환 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- theme-color: 모바일 브라우저 / PWA / Tauri WebView 의 status bar 톤. dark default 에 맞춰 어두운 톤. -->
+    <meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
     <title>sh-ui app</title>
     <script>
       // FOUC 차단 — ThemeProvider mount 전에 첫 paint 에 dark class 박기.
