@@ -384,11 +384,7 @@ export const TEMPLATE_MANIFEST = {
       "README.md",
       "eslint.config.js",
       "gitignore",
-      "index.html",
       "package.json",
-      "src/App.tsx",
-      "src/Home.tsx",
-      "src/main.tsx",
       "tsconfig.json",
       "tsconfig.node.json",
       "vite.config.ts",
@@ -397,8 +393,10 @@ export const TEMPLATE_MANIFEST = {
     ],
     "arches": {
       "flat": [
+        "index.html",
         "sh-ui.config.json",
         "src/App.tsx",
+        "src/Home.tsx",
         "src/components/layouts/RootLayout.tsx",
         "src/components/providers/GlobalProvider/index.tsx",
         "src/components/providers/index.tsx",
@@ -412,12 +410,13 @@ export const TEMPLATE_MANIFEST = {
         "tsconfig.app.json"
       ],
       "fsd": [
+        "index.html",
         "sh-ui.config.json",
-        "src/App.tsx",
+        "src/app/App.tsx",
         "src/app/layouts/RootLayout.tsx",
+        "src/app/main.tsx",
         "src/app/providers/GlobalProvider/index.tsx",
         "src/app/providers/theme/ThemeProvider.tsx",
-        "src/main.tsx",
         "src/shared/api/queryClient.ts",
         "src/shared/hooks/useTheme.ts",
         "src/shared/lib/utils.ts",
