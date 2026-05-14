@@ -325,6 +325,47 @@ export const TEMPLATE_MANIFEST = {
       "tsconfig.json"
     ]
   },
+  "vite-app": {
+    "base": [
+      "eslint.config.js",
+      "gitignore",
+      "index.html",
+      "package.json",
+      "src/App.tsx",
+      "src/Home.tsx",
+      "src/main.tsx",
+      "tsconfig.json",
+      "tsconfig.node.json",
+      "vite.config.ts",
+      "vitest.config.ts",
+      "vitest.setup.ts"
+    ],
+    "arches": {
+      "flat": [
+        "src/App.tsx",
+        "src/components/layouts/RootLayout.tsx",
+        "src/components/providers/GlobalProvider/index.tsx",
+        "src/components/providers/index.tsx",
+        "src/components/providers/theme/ThemeProvider.tsx",
+        "src/lib/api/queryClient.ts",
+        "src/lib/hooks/useTheme.ts",
+        "src/lib/utils/utils.ts",
+        "src/main.tsx",
+        "tsconfig.app.json"
+      ],
+      "fsd": [
+        "src/App.tsx",
+        "src/app/layouts/RootLayout.tsx",
+        "src/app/providers/GlobalProvider/index.tsx",
+        "src/app/providers/theme/ThemeProvider.tsx",
+        "src/main.tsx",
+        "src/shared/api/queryClient.ts",
+        "src/shared/hooks/useTheme.ts",
+        "src/shared/lib/utils.ts",
+        "tsconfig.app.json"
+      ]
+    }
+  },
   "vite-standalone": {
     "base": [
       "CLAUDE.md",
