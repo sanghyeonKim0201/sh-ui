@@ -155,6 +155,32 @@ describe('sh-ui create smoke tests', () => {
     expect(tokens).toContain('#7C3AED');
   });
 
+  // v0.86.1+ — 회귀 가드 (docs/solutions/developer-experience/vite-scaffolder-smoke-test-must-run-build).
+  // vite.config.ts 가 tsconfigPaths 플러그인을 와이어링하지 않으면 typecheck 는 통과하지만
+  // 실제 `pnpm build` 가 Rollup 의 `@/*` 해석 실패로 깨진다. 빌드를 직접 돌리는 비용은
+  // smoke 에서 과한 부담이라, 구조 단언으로 번들러↔tsconfig 계약을 핀고정.
+  it('scenario V5 — vite.config.ts 가 tsconfigPaths 플러그인을 와이어링 (build 회귀 가드)', async () => {
+    await createProject({
+      name: 'v-paths',
+      platform: 'vite',
+      structure: 'standalone',
+      arch: 'fsd',
+      css: 'tailwind',
+      yes: true,
+    });
+    const viteCfg = await fs.readFile(
+      path.join(tmpDir, 'v-paths', 'vite.config.ts'),
+      'utf-8',
+    );
+    expect(viteCfg).toContain('tsconfigPaths');
+    expect(viteCfg).toContain("from 'vite-tsconfig-paths'");
+    // package.json 에 vite-tsconfig-paths 가 실제로 깔리는지도 확인.
+    const pkg = await fs.readJson(path.join(tmpDir, 'v-paths', 'package.json'));
+    expect(pkg.devDependencies['vite-tsconfig-paths']).toBeDefined();
+    // eslint.config.js 에서 globals 를 import 한다면 package.json 에 dep 도 있어야 한다.
+    expect(pkg.devDependencies.globals).toBeDefined();
+  });
+
   it('scenario 2 — monorepo, no plugins', async () => {
     prompts.input
       .mockResolvedValueOnce('my-mono')   // 프로젝트 이름

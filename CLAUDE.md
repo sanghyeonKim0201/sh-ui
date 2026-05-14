@@ -179,6 +179,14 @@ Flutter 탭을 모두 제공한다. Flutter 위젯이 없는 컴포넌트(CodePa
 `apps/showcase/assets/versions.json`은 `packages/changelog/versions.json`의
 심볼릭 링크(mode 120000)다. versions.json만 수정하면 양쪽 앱에 자동 반영.
 
+### 누적된 학습 (docs/solutions/)
+
+`docs/solutions/` — 과거에 해결한 문제(버그, 베스트 프랙티스, 워크플로 패턴)에 대한
+구조화된 기록. 카테고리별 하위 디렉토리(`developer-experience/`, `build-errors/`,
+`tooling-decisions/`, …)와 YAML frontmatter(`module`, `tags`, `problem_type`)로
+검색 가능. CLI 스캐폴더 / 템플릿 / smoke 테스트처럼 이전에 다룬 영역에서 작업하거나
+디버깅할 때 관련 학습이 있는지 살펴볼 만하다.
+
 ## Skill routing
 
 When the user's request matches an available skill, ALWAYS invoke it using the Skill
