@@ -13,7 +13,7 @@ const VALID_PLUGINS = allPlugins.map((p) => p.name);
 const VALID_ARCHES = allArchitectures.map((a) => a.name);
 
 const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch', 'port'];
-const BOOL_FLAGS = ['yes', 'help', 'dry-run'];
+const BOOL_FLAGS = ['yes', 'help', 'dry-run', 'tauri'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
 

@@ -367,6 +367,7 @@ export async function startMcpServer() {
     {
       description:
         "빈 폴더에 sh-ui 프로젝트 스캐폴드 — Next.js (standalone/monorepo) | Vite (standalone/monorepo) | Flutter. " +
+        "+ vite + standalone 인 경우 `tauri: true` 로 Tauri 2.x 데스크탑 셸 (`src-tauri/`) 까지 한 번에 emit (Rust toolchain 필요). " +
         `FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx ${cliName} create 직접 호출보다 우선). ` +
         "**단일 진입점** — theme/plugins/cssFramework/structure 모두 호출 시점에 정해서 한 번에 박는다. 호출 후 sh-ui.config.json/tokens.css 를 손으로 패치하지 말 것 (다음 재스캐폴드 시 유실). " +
         "산출물: theme 인자가 프리셋이면 sh-ui.config.json 의 theme.base 가 그 이름, base64 면 'custom'. paths.styles · paths.tokens 도 자동 박혀서 sh_ui_add_component 가 사후 패치 없이 동작.",
@@ -394,6 +395,12 @@ export async function startMcpServer() {
           .describe("부모 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()
           .describe("기존 디렉토리 덮어쓰기. 기본 false (안전)"),
+        tauri: z.boolean().optional()
+          .describe(
+            "Tauri 2.x 데스크탑 셸 (`src-tauri/`) 함께 emit. platform=vite + structure=standalone 일 때만 지원. " +
+            "Rust toolchain (`cargo`/`rustc`) 가 시스템에 설치되어 있어야 첫 `pnpm tauri dev` 가 동작. " +
+            "기본 false. monorepo + tauri 는 v0.89 후속.",
+          ),
       },
     },
     async (input) => {
@@ -414,6 +421,24 @@ export async function startMcpServer() {
         validateProjectName(input.name, "name");
       } catch (e) {
         return { isError: true, content: [{ type: "text", text: e.message }] };
+      }
+      if (input.tauri && input.platform !== "vite") {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: "tauri: true 는 platform=vite 일 때만 지원합니다 (현재 platform=" + input.platform + ").",
+          }],
+        };
+      }
+      if (input.tauri && input.structure === "monorepo") {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: "platform=vite + structure=monorepo + tauri=true 는 아직 지원 안 함 (v0.89 후속). standalone 으로 시도하거나 tauri 옵션 제거.",
+          }],
+        };
       }
       const targetParent = resolveCwd(input);
       const targetDir = resolve(targetParent, input.name);
@@ -440,6 +465,7 @@ export async function startMcpServer() {
             arch: input.arch,
             theme: input.theme,
             css: input.cssFramework,
+            tauri: input.tauri,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
