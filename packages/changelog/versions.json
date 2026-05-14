@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.90.0",
+      "date": "2026-05-14",
+      "title": "vite + monorepo + tauri 지원 — Tauri 셸이 apps/{name}/src-tauri/ 안",
+      "type": "minor",
+      "highlights": [
+        "**`--platform vite --structure monorepo --tauri` 동작** — v0.88.0 에서 의도적으로 defer 했던 조합 풀림. Tauri 데스크탑 셸이 모노레포 안의 첫 vite 앱 디렉토리 (`apps/{appName}/src-tauri/`) 에 emit. `frontendDist: \"../dist\"` 관계가 그대로 유지되고, Tauri 의 `pnpm dev` / `pnpm build` beforeCommand 도 app 컨텍스트에서 정상 동작.",
+        "**Tauri devUrl 이 app port 와 자동 일치** — 모노레포 첫 app port (default 3000) 가 `tauri.conf.json` 의 `devUrl: http://localhost:{port}` + `vite.config.ts` 의 `server.port` 양쪽에 박힘. standalone (5173) 도 그대로 (placeholder 시스템으로 backward-compat). `{{tauri_dev_url}}` 플레이스홀더 신설, `emitTauri({ devPort })` + `patchViteForTauri({ port })` 옵션 시그니처.",
+        "**MCP + CLI 진입점에서 거부 가드 제거** — `mcp.mjs` 와 `generator.js` 의 `tauri + structure === 'monorepo'` throw 삭제. `sh_ui_create_project` 의 description 도 `Vite (standalone/monorepo)` 로 갱신. `tauri + platform !== 'vite'` 가드는 그대로 유지 (next/flutter 는 Tauri 통합 안 함).",
+        "**docs `/create` UI 도 풀림** — ProjectOptionsForm 의 `disabled={structure !== 'standalone'}` 제거 + composer 의 `--tauri` 가 monorepo 에서도 emit. `/api/template-content` 가 `apps/{name}/src-tauri/*` 경로를 tauri-shell 템플릿에서 resolve. describeTemplate 의 vite-monorepo 분기가 `tauri=true` 일 때 `apps/{appName}/src-tauri/` 그룹 emit.",
+        "**Smoke V12 회귀 가드** — vite + monorepo + tauri scaffold 가 (1) apps/web/src-tauri/ 8 파일 emit, (2) tauri.conf.json devUrl = http://localhost:3000, (3) vite.config.ts port = 3000, (4) Cargo.toml crate name = web/web_lib, (5) 루트엔 src-tauri/ 없음 — 모두 단언. v0.88.0 의 V7d (rejection guard) 는 제거 (조합 풀려 더 이상 거부 안 함)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.90.0"
+    },
+    {
       "version": "0.89.1",
       "date": "2026-05-14",
       "title": "/create 페이지 vite + tauri 노출 + api.d.ts 타입 정정",

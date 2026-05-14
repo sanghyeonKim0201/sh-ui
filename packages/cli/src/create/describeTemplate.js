@@ -35,7 +35,7 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
  * @property {'tailwind'|'plain'|'css-modules'} [cssFramework]
  * @property {string} [projectName]
  * @property {string} [appName]                       monorepo 첫 앱 이름. 기본 'web'
- * @property {boolean} [tauri]                        platform=vite + structure=standalone 일 때 Tauri 2.x 셸 같이 emit
+ * @property {boolean} [tauri]                        platform=vite (standalone/monorepo 둘 다) 일 때 Tauri 2.x 셸 같이 emit
  */
 
 /**
@@ -139,6 +139,15 @@ export function describeTemplate(opts = {}) {
         (p) => `packages/ui/ui-apps/ui-${appName}/${p}`,
       ),
     ));
+
+    if (tauri) {
+      const tauriTpl = TEMPLATE_MANIFEST['tauri-shell'];
+      if (!tauriTpl) {
+        throw new Error("Template manifest missing entry for 'tauri-shell'.");
+      }
+      const tauriFiles = tauriTpl.base.map((p) => `apps/${appName}/src-tauri/${p}`);
+      groups.push(makeGroup('tauri', `Tauri 셸 (apps/${appName}/src-tauri/)`, tauriFiles));
+    }
 
     return finalize(groups);
   }

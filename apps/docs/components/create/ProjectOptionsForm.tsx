@@ -158,20 +158,19 @@ export function ProjectOptionsForm(props: Props) {
                 <Button
                   id="tauri-toggle"
                   type="button"
-                  variant={tauri && structure === "standalone" ? "primary" : "secondary"}
+                  variant={tauri ? "primary" : "secondary"}
                   size="sm"
-                  aria-pressed={tauri && structure === "standalone"}
-                  disabled={structure !== "standalone"}
-                  title={structure !== "standalone" ? "monorepo + Tauri 는 아직 미지원 (v0.89 후속)" : "Tauri 2.x 셸을 src-tauri/ 에 emit"}
+                  aria-pressed={tauri}
+                  title="Tauri 2.x 셸을 emit (standalone: src-tauri/, monorepo: apps/{name}/src-tauri/). Rust toolchain 필요."
                   onClick={() => onTauriChange(!tauri)}
                 >
-                  {tauri && structure === "standalone" ? "✓ " : ""}
+                  {tauri ? "✓ " : ""}
                   --tauri
                 </Button>
                 <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
                   {structure === "standalone"
                     ? "Vite SPA + 네이티브 윈도우 (Rust toolchain 필요)"
-                    : "monorepo + Tauri 는 미지원"}
+                    : "Vite SPA + 네이티브 윈도우 — Tauri 셸은 apps/{name}/src-tauri/ 안 (Rust toolchain 필요)"}
                 </span>
               </div>
             </div>

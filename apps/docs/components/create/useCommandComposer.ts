@@ -47,8 +47,8 @@ export const composeCommand = (opts: ComposerOptions): string => {
     if (arch !== DEFAULT_ARCH) {
       parts.push("--arch", arch);
     }
-    // tauri 는 standalone 일 때만 의미 (monorepo+tauri 는 CLI 가 거부)
-    if (tauri && structure === "standalone") {
+    // tauri: standalone(src-tauri/) + monorepo(apps/{name}/src-tauri/) 둘 다 OK (v0.90+)
+    if (tauri) {
       parts.push("--tauri");
     }
   }
