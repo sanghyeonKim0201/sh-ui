@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.95.0",
+      "date": "2026-05-15",
+      "title": "MCP describe_template 옵션 누락 fix + staleness 경고 — 외부 AI 가 stale MCP 알아채게",
+      "type": "minor",
+      "highlights": [
+        "**`sh_ui_describe_template` 가 tauri/i18n/locales/observability 받음** — describeTemplate 자체는 옵션을 처리하지만 MCP 핸들러의 inputSchema 에 누락되어 외부 AI 가 옵션을 명시해도 무시됐다. preview 가 항상 기본 파일만 나열되던 회귀 (#3) 해결. create_project ↔ describe_template 파일 plan 1:1 일치 보장.",
+        "**MCP staleness 경고 자동 prepend** — 서버 start 시 https://registry.npmjs.org/sh-ui-cli/latest 비동기 조회 (3s timeout). 현재 버전보다 latest 가 높으면 모든 tool 응답 상단에 `⚠ sh-ui MCP X.Y.Z (latest: …)` 한 줄 prepend. 외부 AI 가 stale MCP 를 정상 출력으로 오해하던 회귀 (#8) 차단. 오프라인 / DNS 실패는 조용히 skip — best-effort.",
+        "**`SH_UI_SKIP_STALENESS_CHECK=1` 옵트아웃** — CI / 오프라인 / 사용자가 경고 끄고 싶을 때 env var 한 줄. test runner 가 외부 fetch 없이 결정적으로 돌게 함."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.95.0"
+    },
+    {
       "version": "0.94.0",
       "date": "2026-05-15",
       "title": "vite 스캐폴드 P0 fix 묶음 — i18n locale 자동 미러 / monorepo .gitignore / CLAUDE.md platform 분기",
