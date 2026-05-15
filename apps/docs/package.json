@@ -8,7 +8,6 @@
     "prebuild": "pnpm --filter @sh-ui/llms gen && node scripts/build-search-index.mjs && node scripts/generate-variants.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "pretypecheck": "node scripts/generate-variants.mjs",
     "typecheck": "tsc --noEmit",
     "generate:variants": "node scripts/generate-variants.mjs",
