@@ -113,9 +113,16 @@ export function ComponentSandbox({
     componentFiles[`/components/ui/${c.name}/styles.css`] = { code: c.styles, hidden: true };
   }
 
+  // sh-ui 컴포넌트가 자주 import 하는 npm 의존성. Sandpack 의 customSetup 에 넣으면 자동 install.
+  // 없으면 Base UI 기반 컴포넌트 (Accordion / Radio / Tabs / Dialog 등) 가 "Could not find dependency" 로 fail.
+  const SH_UI_NPM_DEPENDENCIES = {
+    "@base-ui/react": "latest",
+  };
+
   const sandbox = (
     <MonacoSandbox
       template="react-ts"
+      dependencies={SH_UI_NPM_DEPENDENCIES}
       activeFile="/App.tsx"
       visibleFiles={["/App.tsx"]}
       editorHeight={editorHeight}

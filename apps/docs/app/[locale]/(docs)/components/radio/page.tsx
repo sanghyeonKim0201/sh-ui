@@ -5,6 +5,14 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { RadioBasicDemo, RadioHorizontalDemo, RadioDisabledDemo } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { RadioLiveDemo } from "./radio-live-demo";
+
+const sources = loadComponentSources("radio");
+const extras = [loadExtraComponent("label")];
 
 export default function RadioPage() {
   return (
@@ -14,6 +22,14 @@ export default function RadioPage() {
         여러 옵션 중 하나만 선택하는 라디오 버튼. RadioGroup으로 그룹 상태를 관리한다.
       </p>
 
+      <RadioLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
+
+      {false && (
       <Preview>
         <Preview.Demo>
           <RadioBasicDemo />
@@ -65,6 +81,7 @@ ShUiRadioGroup(
           ]}
         />
       </Preview>
+      )}
 
       <h2>Installation</h2>
 

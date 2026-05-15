@@ -10,6 +10,14 @@ import {
   CheckboxIndeterminateDemo,
 } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { CheckboxLiveDemo } from "./checkbox-live-demo";
+
+const sources = loadComponentSources("checkbox");
+const extras = [loadExtraComponent("label")];
 
 export default function CheckboxPage() {
   return (
@@ -19,6 +27,14 @@ export default function CheckboxPage() {
         체크/해제/부분 선택 상태를 표현하는 컨트롤. CheckboxGroup으로 묶어 다중 선택을 관리한다.
       </p>
 
+      <CheckboxLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
+
+      {false && (
       <Preview>
         <Preview.Demo>
           <CheckboxBasicDemo />
@@ -75,6 +91,7 @@ class _TermsCheckboxState extends State<TermsCheckbox> {
           ]}
         />
       </Preview>
+      )}
 
       <h2>Installation</h2>
 
