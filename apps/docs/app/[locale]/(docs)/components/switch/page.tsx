@@ -5,6 +5,14 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SwitchBasicDemo, SwitchSizeDemo, SwitchDisabledDemo } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { SwitchLiveDemo } from "./switch-live-demo";
+
+const sources = loadComponentSources("switch");
+const extras = [loadExtraComponent("label")];
 
 export default function SwitchPage() {
   return (
@@ -14,42 +22,12 @@ export default function SwitchPage() {
         켜기/끄기를 토글하는 스위치 컨트롤. 설정 항목 등에 사용한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <SwitchBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-  <Switch id="airplane" />
-  <Label htmlFor="airplane">비행기 모드</Label>
-</div>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `// StatefulWidget 내부에서 사용
-bool _checked = false;
-
-Row(
-  children: [
-    ShUiSwitch(
-      checked: _checked,
-      onChanged: (v) => setState(() => _checked = v),
-    ),
-    const SizedBox(width: 8),
-    const Text('비행기 모드'),
-  ],
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <SwitchLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
 

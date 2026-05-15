@@ -21,7 +21,11 @@ export function loadComponentSources(componentName: string): ComponentSources {
   const docsRoot = process.cwd();
   const componentDir = path.join(docsRoot, "components", "ui", componentName);
   const source = fs.readFileSync(path.join(componentDir, "index.tsx"), "utf-8");
-  const styles = fs.readFileSync(path.join(componentDir, "styles.css"), "utf-8");
+  // 일부 컴포넌트 (예: code-tabs) 는 styles.css 가 없을 수 있다 — 빈 문자열 fallback.
+  const stylesPath = path.join(componentDir, "styles.css");
+  const styles = fs.existsSync(stylesPath)
+    ? fs.readFileSync(stylesPath, "utf-8")
+    : "";
   const tokens = fs.readFileSync(
     path.join(docsRoot, "app", "styles", "tokens.css"),
     "utf-8",
@@ -41,6 +45,9 @@ export function loadExtraComponent(name: string): {
   const docsRoot = process.cwd();
   const componentDir = path.join(docsRoot, "components", "ui", name);
   const source = fs.readFileSync(path.join(componentDir, "index.tsx"), "utf-8");
-  const styles = fs.readFileSync(path.join(componentDir, "styles.css"), "utf-8");
+  const stylesPath = path.join(componentDir, "styles.css");
+  const styles = fs.existsSync(stylesPath)
+    ? fs.readFileSync(stylesPath, "utf-8")
+    : "";
   return { name, source, styles };
 }

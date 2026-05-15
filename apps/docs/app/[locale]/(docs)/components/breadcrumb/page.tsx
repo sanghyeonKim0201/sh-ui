@@ -14,6 +14,10 @@ import {
   BreadcrumbEllipsis,
 } from "@/components/ui/breadcrumb";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { BreadcrumbLiveDemo } from "./breadcrumb-live-demo";
+
+const sources = loadComponentSources("breadcrumb");
 
 export default function BreadcrumbDocsPage() {
   return (
@@ -24,6 +28,13 @@ export default function BreadcrumbDocsPage() {
         <code> &lt;ol&gt;</code> 시맨틱을 기본 제공.
       </p>
 
+      <BreadcrumbLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
+
+      {false && (
       <Preview>
         <Preview.Demo>
           <NoNav strict>
@@ -81,6 +92,7 @@ export default function BreadcrumbDocsPage() {
           ]}
         />
       </Preview>
+      )}
 
       <h2>Installation</h2>
 
