@@ -2,28 +2,55 @@ import { test, expect } from "@playwright/test";
 
 /**
  * 컴포넌트 페이지의 Preview 영역 (`<Preview.Demo>` 가 렌더하는 박스) 을 캡쳐해
- * 시각적 회귀를 잡는다. 페이지 전체가 아닌 데모 영역만 — VariantSource 의 코드 탭이나
- * Examples 섹션이 변동돼도 회귀로 잡지 않도록.
+ * 시각적 회귀를 잡는다.
  *
- * **현재 비활성** — v0.93 ~ v0.95 에서 모든 컴포넌트 페이지 상단 데모를 Sandpack
- * (Monaco + 라이브 프리뷰) 으로 교체. `.sh-ui-preview__demo` 셀렉터가 더 이상 1차
- * 데모 영역을 가리키지 않고, Sandpack 의 cross-origin iframe 은 스크린샷이 불안정.
+ * Sandpack 롤아웃 이후 (v0.93+) 상단 데모는 라이브 sandbox (cross-origin iframe,
+ * 스크린샷 불안정) 라 캡쳐 대상이 아니다. 대신 `.first()` 가 Examples 섹션의 첫
+ * `<Preview>` 를 잡도록 한다 — 컴포넌트 본체의 시각 회귀는 그쪽에서도 동일하게
+ * 검출된다.
  *
- * 재활성화하려면 (1) 페이지 상단 ComponentSandbox 외곽 박스를 안정 캡쳐할 수 있는
- * 셀렉터를 정하거나 (2) screenshot 대신 DOM/aria assertion 으로 전환할 것.
- *
- * 일단 빈 배열로 두면 Playwright 가 0 tests passed 로 통과 — CI 게이트는 유지.
+ * Examples 에 `<Preview>` 가 전혀 없는 페이지는 제외 (아래 EXCLUDED 참고).
+ * 추가하려면 COMPONENTS 배열에 슬러그만 더하면 됨.
  */
-const COMPONENTS: string[] = [];
-
-// Playwright 는 0 테스트면 "No tests found" 로 fail. 게이트 유지용 health-check:
-// 컴포넌트 index 페이지가 로드되는지만 확인 — 회귀 검출은 못 하지만 CI 가 깨지지 않음.
-test("/components index loads", async ({ page }) => {
-  await page.goto("/ko/components");
-  await expect(page).toHaveTitle(/.+/);
-});
+const COMPONENTS = [
+  "accordion",
+  "avatar",
+  "badge",
+  "breadcrumb",
+  "button",
+  "calendar",
+  "card",
+  "carousel",
+  "checkbox",
+  "code-panel",
+  "code-tabs",
+  "combobox",
+  "date-picker",
+  "dialog",
+  "dropdown-menu",
+  "file-upload",
+  "header",
+  "input",
+  "label",
+  "numeric-input",
+  "pagination",
+  "progress",
+  "radio",
+  "select",
+  "separator",
+  "sidebar",
+  "skeleton",
+  "slider",
+  "spinner",
+  "switch",
+  "tabs",
+  "textarea",
+  "toggle",
+];
 
 // 의도적으로 제외:
+// - context-menu / menubar / popover / tooltip — Sandpack 롤아웃 후 페이지에
+//   `<Preview>` 가 0개. 회귀 캡쳐 대상이 없음.
 // - color-picker / code-editor / markdown-editor / rich-text-editor — 무거운 에디터/IME, 안정적 캡처 어려움
 // - toast — viewport 가 fixed 라 Preview 데모 영역 캡쳐로 잡히지 않음
 // - form / theme — non-styled 로직 컴포넌트, 시각 회귀 의미 없음
@@ -32,8 +59,7 @@ test("/components index loads", async ({ page }) => {
 for (const name of COMPONENTS) {
   test(`/components/${name} preview snapshot`, async ({ page }) => {
     await page.goto(`/ko/components/${name}`);
-    // 첫 Preview 데모 — preview-demo 클래스 또는 data-testid 가 없으므로
-    // h2 직전의 첫 .preview 영역으로 셀렉트. sh-ui-preview__demo 클래스 사용.
+    // Sandpack 롤아웃 후 .first() 는 Examples 섹션의 첫 Preview 를 잡는다.
     const demo = page.locator(".sh-ui-preview__demo").first();
     await demo.waitFor({ state: "visible", timeout: 10_000 });
     await expect(demo).toHaveScreenshot(`${name}.png`, {
