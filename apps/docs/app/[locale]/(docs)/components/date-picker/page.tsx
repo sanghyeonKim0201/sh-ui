@@ -5,7 +5,6 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import {
-  BasicDemo,
   ControlledDemo,
   MinMaxDemo,
   StatesDemo,
@@ -19,6 +18,10 @@ import {
   CustomTriggerDemo,
 } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { DatePickerLiveDemo } from "./date-picker-live-demo";
+
+const sources = loadComponentSources("date-picker");
 
 export default function DatePickerPage() {
   return (
@@ -28,27 +31,11 @@ export default function DatePickerPage() {
         캘린더 팝오버를 통해 날짜를 선택하는 컴포넌트. 단일 날짜와 범위 선택을 모두 지원한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <BasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<DatePicker placeholder="날짜를 선택하세요" />`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `const ShUiDatePicker(placeholder: '날짜를 선택하세요')`,
-            },
-          ]}
-        />
-      </Preview>
+      <DatePickerLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

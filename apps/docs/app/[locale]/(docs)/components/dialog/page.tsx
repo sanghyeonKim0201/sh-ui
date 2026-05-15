@@ -4,8 +4,16 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
-import { BasicDialogDemo, FormDialogDemo } from "./_demos/basic";
+import { FormDialogDemo } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { DialogLiveDemo } from "./dialog-live-demo";
+
+const sources = loadComponentSources("dialog");
+const extras = [loadExtraComponent("button")];
 
 export default function DialogPage() {
   return (
@@ -19,10 +27,15 @@ export default function DialogPage() {
         위에 sh-ui 토큰 스타일을 입혔다. 포커스 트랩, Esc 닫기, 배경 블러 + 클릭 닫기 기본 지원.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <BasicDialogDemo />
-        </Preview.Demo>
+      <DialogLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
+
+      <details style={{ marginTop: "1rem" }}>
+        <summary className="muted" style={{ cursor: "pointer" }}>Flutter 코드 보기</summary>
         <CodeTabs
           items={[
             {
@@ -113,7 +126,7 @@ Column(children: [
             },
           ]}
         />
-      </Preview>
+      </details>
 
       <h2>Installation</h2>
 

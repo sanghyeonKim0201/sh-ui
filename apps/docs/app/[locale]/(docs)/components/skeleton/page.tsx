@@ -6,6 +6,10 @@ import { CodePanel } from "@/components/ui/code-panel";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { SkeletonLiveDemo } from "./skeleton-live-demo";
+
+const sources = loadComponentSources("skeleton");
 
 export default function SkeletonPage() {
   return (
@@ -16,43 +20,11 @@ export default function SkeletonPage() {
         <code>style</code>이나 <code>className</code>으로 지정한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.75rem",
-              width: "100%",
-              maxWidth: 320,
-            }}
-          >
-            <Skeleton style={{ height: "1.25rem", width: "70%" }} />
-            <Skeleton style={{ height: "1rem" }} />
-            <Skeleton style={{ height: "1rem", width: "85%" }} />
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Skeleton style={{ height: "1.25rem", width: "70%" }} />
-<Skeleton style={{ height: "1rem" }} />
-<Skeleton style={{ height: "1rem", width: "85%" }} />`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `const ShUiSkeleton(height: 20, width: 220),
-const ShUiSkeleton(height: 16),
-const ShUiSkeleton(height: 16, width: 270),`,
-            },
-          ]}
-        />
-      </Preview>
+      <SkeletonLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

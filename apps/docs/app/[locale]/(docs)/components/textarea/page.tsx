@@ -7,6 +7,10 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { CharCountDemo } from "./_demos/char-count";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { TextareaLiveDemo } from "./textarea-live-demo";
+
+const sources = loadComponentSources("textarea");
 
 export default function TextareaPage() {
   return (
@@ -14,19 +18,11 @@ export default function TextareaPage() {
       <h1>Textarea</h1>
       <p className="muted">여러 줄 텍스트 입력 필드. 네이티브 <code>&lt;textarea&gt;</code>에 토큰 스타일만 입혔다.</p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ width: "100%", maxWidth: 400 }}>
-            <Textarea placeholder="내용을 입력하세요" />
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            { value: "react", label: "React", language: "tsx", code: `<Textarea placeholder="내용을 입력하세요" />` },
-            { value: "flutter", label: "Flutter", language: "dart", code: `ShUiTextarea(placeholder: '내용을 입력하세요')` },
-          ]}
-        />
-      </Preview>
+      <TextareaLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

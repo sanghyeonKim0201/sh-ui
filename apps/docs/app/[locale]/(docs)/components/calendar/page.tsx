@@ -5,7 +5,6 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import {
-  BasicDemo,
   SingleControlledDemo,
   MultipleDemo,
   RangeDemo,
@@ -22,6 +21,10 @@ import {
   CompoundNoArrowsDemo,
 } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { CalendarLiveDemo } from "./calendar-live-demo";
+
+const sources = loadComponentSources("calendar");
 
 export default function CalendarPage() {
   return (
@@ -32,21 +35,11 @@ export default function CalendarPage() {
         <code>DatePicker</code> / <code>DateRangePicker</code> 를 사용한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <BasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Calendar />`,
-            },
-          ]}
-        />
-      </Preview>
+      <CalendarLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

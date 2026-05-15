@@ -4,9 +4,12 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
-import { ComboboxBasicDemo } from "./_demos/basic";
 import { ComboboxMultiChipsDemo } from "./_demos/multi-chips";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { ComboboxLiveDemo } from "./combobox-live-demo";
+
+const sources = loadComponentSources("combobox");
 
 export default function ComboboxPage() {
   return (
@@ -16,50 +19,11 @@ export default function ComboboxPage() {
         Select + Input을 합친 검색 가능한 드롭다운. 타이핑에 따라 목록이 자동 필터링된다. <a href="https://base-ui.com/react/components/combobox" target="_blank" rel="noreferrer">Base UI Combobox</a> 위에 sh-ui 토큰 스타일을 얹음.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <ComboboxBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Combobox items={fruits}>
-  <ComboboxInput placeholder="과일 검색..." />
-  <ComboboxContent>
-    <ComboboxList>
-      {(item) => (
-        <ComboboxItem key={item} value={item}>
-          {item}
-        </ComboboxItem>
-      )}
-    </ComboboxList>
-    <ComboboxEmpty>일치하는 항목이 없습니다.</ComboboxEmpty>
-  </ComboboxContent>
-</Combobox>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `// StatefulWidget 내부
-String? _selected;
-
-ShUiCombobox<String>(
-  value: _selected,
-  onChanged: (v) => setState(() => _selected = v),
-  items: fruits
-      .map((f) => ShUiComboboxItem(value: f, label: f))
-      .toList(),
-  placeholder: '과일 검색...',
-  emptyText: '일치하는 항목이 없습니다.',
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <ComboboxLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

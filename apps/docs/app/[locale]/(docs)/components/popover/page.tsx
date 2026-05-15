@@ -1,11 +1,17 @@
 export const dynamic = "force-static";
 
 import { CodeTabs } from "@/components/ui/code-tabs";
-import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
-import { PopoverBasicDemo } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { PopoverLiveDemo } from "./popover-live-demo";
+
+const sources = loadComponentSources("popover");
+const extras = [loadExtraComponent("button")];
 
 export default function PopoverPage() {
   return (
@@ -15,55 +21,12 @@ export default function PopoverPage() {
         트리거에 앵커된 떠오르는 패널. 클릭/hover로 열고 바깥 클릭·Esc로 닫힌다. <a href="https://base-ui.com/react/components/popover" target="_blank" rel="noreferrer">Base UI Popover</a> 위에 sh-ui 토큰 스타일을 얹음.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <PopoverBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Popover>
-  <PopoverTrigger>
-    <Button variant="secondary">팝오버 열기</Button>
-  </PopoverTrigger>
-  <PopoverContent showArrow>
-    <PopoverTitle>알림 설정</PopoverTitle>
-    <PopoverDescription>
-      여기서 알림 수신 방법을 변경할 수 있습니다.
-    </PopoverDescription>
-  </PopoverContent>
-</Popover>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiPopover(
-  trigger: (show) => ShUiButton(
-    variant: ShUiButtonVariant.secondary,
-    onPressed: show,
-    child: const Text('팝오버 열기'),
-  ),
-  content: (close) => const Padding(
-    padding: EdgeInsets.all(16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ShUiPopoverTitle('알림 설정'),
-        SizedBox(height: 4),
-        ShUiPopoverDescription('여기서 알림 수신 방법을 변경할 수 있습니다.'),
-      ],
-    ),
-  ),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <PopoverLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
 

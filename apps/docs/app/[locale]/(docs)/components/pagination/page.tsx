@@ -1,32 +1,17 @@
-"use client";
+export const dynamic = "force-static";
 
-import { useState } from "react";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
-  getPaginationRange,
-} from "@/components/ui/pagination";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { PaginationLiveDemo } from "./pagination-live-demo";
+import { PaginationBasicDemo } from "./_demos/basic";
+import { PaginationEllipsisDemo } from "./_demos/ellipsis";
+
+const sources = loadComponentSources("pagination");
 
 export default function PaginationDocsPage() {
-  const [page, setPage] = useState(1);
-  const [pageLarge, setPageLarge] = useState(5);
-  const totalLarge = 20;
-
-  const largeTokens = getPaginationRange({
-    page: pageLarge,
-    totalPages: totalLarge,
-    siblings: 1,
-  });
-
   return (
     <main className="container">
       <h1>Pagination</h1>
@@ -37,44 +22,35 @@ export default function PaginationDocsPage() {
         <code>aria-current=&quot;page&quot;</code>.
       </p>
 
+      <PaginationLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
+
+      <h2>Installation</h2>
+
+      <h3>CLI</h3>
+      <CodeTabs
+        items={[
+          {
+            value: "react",
+            label: "React",
+            language: "bash",
+            showLineNumbers: false,
+            code: `npx sh-ui-cli add pagination`,
+          },
+        ]}
+      />
+      <h3>Manual</h3>
+      <VariantSource name="pagination" />
+
+      <h2>Examples</h2>
+
+      <h3>기본 — 5 페이지</h3>
       <Preview>
         <Preview.Demo>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPage((p) => Math.max(1, p - 1));
-                  }}
-                />
-              </PaginationItem>
-              {[1, 2, 3, 4, 5].map((n) => (
-                <PaginationItem key={n}>
-                  <PaginationLink
-                    href="#"
-                    isActive={page === n}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setPage(n);
-                    }}
-                  >
-                    {n}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPage((p) => Math.min(5, p + 1));
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <PaginationBasicDemo />
         </Preview.Demo>
         <CodeTabs
           items={[
@@ -116,26 +92,6 @@ export default function PaginationDocsPage() {
         />
       </Preview>
 
-      <h2>Installation</h2>
-
-      <h3>CLI</h3>
-      <CodeTabs
-        items={[
-          {
-            value: "react",
-            label: "React",
-            language: "bash",
-            showLineNumbers: false,
-            code: `npx sh-ui-cli add pagination`,
-          },
-        ]}
-      />
-      <h3>Manual</h3>
-      <VariantSource name="pagination" />
-
-
-      <h2>Examples</h2>
-
       <h3>생략(…) 포함 — 긴 페이지 목록</h3>
       <p className="muted">
         <code>getPaginationRange</code>로 현재 페이지 주변과 양 끝만 펼치고
@@ -143,52 +99,7 @@ export default function PaginationDocsPage() {
       </p>
       <Preview>
         <Preview.Demo>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  aria-disabled={pageLarge === 1}
-                  data-disabled={pageLarge === 1 ? "" : undefined}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPageLarge((p) => Math.max(1, p - 1));
-                  }}
-                />
-              </PaginationItem>
-              {largeTokens.map((token, i) =>
-                token === "dots" ? (
-                  <PaginationItem key={`dots-${i}`}>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                ) : (
-                  <PaginationItem key={token}>
-                    <PaginationLink
-                      href="#"
-                      isActive={pageLarge === token}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPageLarge(token);
-                      }}
-                    >
-                      {token}
-                    </PaginationLink>
-                  </PaginationItem>
-                ),
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  aria-disabled={pageLarge === totalLarge}
-                  data-disabled={pageLarge === totalLarge ? "" : undefined}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPageLarge((p) => Math.min(totalLarge, p + 1));
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <PaginationEllipsisDemo />
         </Preview.Demo>
         <CodeTabs
           items={[

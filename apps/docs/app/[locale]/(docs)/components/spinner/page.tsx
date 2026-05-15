@@ -5,6 +5,10 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Spinner } from "@/components/ui/spinner";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { SpinnerLiveDemo } from "./spinner-live-demo";
+
+const sources = loadComponentSources("spinner");
 
 export default function SpinnerPage() {
   return (
@@ -15,35 +19,11 @@ export default function SpinnerPage() {
         카드 중앙에 단독으로 배치.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-            <Spinner size="sm" />
-            <Spinner size="md" />
-            <Spinner size="lg" />
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Spinner size="sm" />
-<Spinner size="md" />
-<Spinner size="lg" />`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiSpinner(size: ShUiSpinnerSize.sm)
-ShUiSpinner(size: ShUiSpinnerSize.md)
-ShUiSpinner(size: ShUiSpinnerSize.lg)`,
-            },
-          ]}
-        />
-      </Preview>
+      <SpinnerLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
       <CodeTabs

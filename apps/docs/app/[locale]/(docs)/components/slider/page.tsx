@@ -11,6 +11,10 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { ControlledSliderDemo } from "./_demos/controlled";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { SliderLiveDemo } from "./slider-live-demo";
+
+const sources = loadComponentSources("slider");
 
 export default function SliderPage() {
   return (
@@ -20,34 +24,11 @@ export default function SliderPage() {
         값 범위 안에서 단일 값을 선택. 마우스/터치 드래그 + 키보드(화살표/Home/End/PageUp·Down) 지원.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ width: "100%", maxWidth: 320 }}>
-            <Slider defaultValue={50} aria-label="기본" />
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Slider defaultValue={50} aria-label="기본" />`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `double _value = 50;
-
-ShUiSlider(
-  value: _value,
-  onChanged: (v) => setState(() => _value = v),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <SliderLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

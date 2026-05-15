@@ -6,6 +6,10 @@ import { PropsTable } from "@/components/props-table";
 import { Progress } from "@/components/ui/progress";
 import { AnimatedProgressDemo } from "./_demos/animated";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { ProgressLiveDemo } from "./progress-live-demo";
+
+const sources = loadComponentSources("progress");
 
 export default function ProgressPage() {
   return (
@@ -16,29 +20,11 @@ export default function ProgressPage() {
         없으면 무한 루프 indeterminate.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ width: "100%" }}>
-            <Progress value={60} aria-label="기본 예시" />
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Progress value={60} aria-label="다운로드" />`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiProgress(value: 0.6, semanticLabel: '다운로드')`,
-            },
-          ]}
-        />
-      </Preview>
+      <ProgressLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
       <CodeTabs

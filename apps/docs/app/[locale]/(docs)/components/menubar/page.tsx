@@ -2,8 +2,14 @@ export const dynamic = "force-static";
 
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { VariantSource } from "@/components/variant-source";
-import { Preview } from "@/components/preview";
-import { MenubarBasicDemo } from "./_demos/basic";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { MenubarLiveDemo } from "./menubar-live-demo";
+
+const sources = loadComponentSources("menubar");
+const extras = [loadExtraComponent("dropdown-menu")];
 
 export default function MenubarPage() {
   return (
@@ -18,58 +24,12 @@ export default function MenubarPage() {
         래핑.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <MenubarBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Menubar>
-  <DropdownMenu>
-    <DropdownMenuTrigger>파일</DropdownMenuTrigger>
-    <DropdownMenuContent align="start">
-      <DropdownMenuItem>새로 만들기</DropdownMenuItem>
-      <DropdownMenuItem>열기…</DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-  <DropdownMenu>
-    <DropdownMenuTrigger>편집</DropdownMenuTrigger>
-    <DropdownMenuContent align="start">...</DropdownMenuContent>
-  </DropdownMenu>
-</Menubar>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiMenubar(
-  menus: [
-    ShUiMenubarMenu(
-      label: '파일',
-      onSelected: (v) => print(v),
-      items: const [
-        ShUiDropdownMenuItem(value: 'new', label: '새로 만들기'),
-        ShUiDropdownMenuItem(value: 'open', label: '열기…'),
-      ],
-    ),
-    ShUiMenubarMenu(
-      label: '편집',
-      onSelected: (v) => print(v),
-      items: const [
-        ShUiDropdownMenuItem(value: 'undo', label: '실행 취소'),
-        ShUiDropdownMenuItem(value: 'redo', label: '다시 실행'),
-      ],
-    ),
-  ],
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <MenubarLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
 

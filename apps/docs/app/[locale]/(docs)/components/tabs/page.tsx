@@ -12,6 +12,10 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { TabsLiveDemo } from "./tabs-live-demo";
+
+const sources = loadComponentSources("tabs");
 
 export default function TabsPage() {
   return (
@@ -21,53 +25,11 @@ export default function TabsPage() {
         패널 전환용 탭. <a href="https://base-ui.com/react/components/tabs" target="_blank" rel="noreferrer">Base UI</a> Tabs 위에 sh-ui 토큰 스타일을 입혔다. 키보드 내비게이션(←/→, Home/End)과 활성 인디케이터 내장.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <Tabs defaultValue="overview">
-            <TabsList>
-              <TabsIndicator />
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="usage">Usage</TabsTrigger>
-              <TabsTrigger value="api">API</TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview">패널 전환 컴포넌트입니다.</TabsContent>
-            <TabsContent value="usage">defaultValue / value + onValueChange.</TabsContent>
-            <TabsContent value="api">TabsTrigger의 value로 TabsContent와 매칭.</TabsContent>
-          </Tabs>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Tabs defaultValue="overview">
-  <TabsList>
-    <TabsIndicator />
-    <TabsTrigger value="overview">Overview</TabsTrigger>
-    <TabsTrigger value="usage">Usage</TabsTrigger>
-    <TabsTrigger value="api">API</TabsTrigger>
-  </TabsList>
-  <TabsContent value="overview">패널 전환 컴포넌트입니다.</TabsContent>
-  <TabsContent value="usage">defaultValue / value + onValueChange.</TabsContent>
-  <TabsContent value="api">TabsTrigger의 value로 TabsContent와 매칭.</TabsContent>
-</Tabs>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiTabs(
-  tabs: const [
-    ShUiTab(label: 'Overview', child: Text('패널 전환 컴포넌트입니다.')),
-    ShUiTab(label: 'Usage', child: Text('initialIndex / onChanged.')),
-    ShUiTab(label: 'API', child: Text('label + child로 구성.')),
-  ],
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <TabsLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

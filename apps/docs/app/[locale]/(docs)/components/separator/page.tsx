@@ -5,6 +5,10 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { Separator } from "@/components/ui/separator";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { SeparatorLiveDemo } from "./separator-live-demo";
+
+const sources = loadComponentSources("separator");
 
 export default function SeparatorPage() {
   return (
@@ -15,25 +19,11 @@ export default function SeparatorPage() {
         보조 기술에 노출되지 않음. 섹션 경계로서 의미가 있으면 <code>decorative={"{false}"}</code>.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ width: "100%", maxWidth: "20rem" }}>
-            <div style={{ fontSize: "var(--text-sm)", color: "var(--foreground)" }}>
-              라디오 옵션
-            </div>
-            <Separator />
-            <div style={{ fontSize: "var(--text-sm)", color: "var(--foreground-muted)", marginTop: "0.5rem" }}>
-              설정 섹션 설명
-            </div>
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            { value: "react", label: "React", language: "tsx", code: `<Separator />` },
-            { value: "flutter", label: "Flutter", language: "dart", code: `const ShUiSeparator()` },
-          ]}
-        />
-      </Preview>
+      <SeparatorLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
       <CodeTabs

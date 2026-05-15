@@ -12,6 +12,10 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { MultiValidateDemo } from "./_demos/multi-validate";
 import { CustomListDemo } from "./_demos/custom-list";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { FileUploadLiveDemo } from "./file-upload-live-demo";
+
+const sources = loadComponentSources("file-upload");
 
 export default function FileUploadPage() {
   return (
@@ -21,55 +25,11 @@ export default function FileUploadPage() {
         드래그&amp;드롭 + 클릭 선택을 지원하는 파일 업로드. Compound 컴포넌트 패턴으로 Dropzone / Trigger / List 를 조합해 자유롭게 UI를 구성할 수 있다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ width: "100%", maxWidth: 480 }}>
-            <FileUpload hint="PNG, JPG · 최대 5MB" />
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "highlight",
-              label: "강조",
-              language: "tsx",
-              code: `// 자식 없이 렌더하면 기본 레이아웃(Dropzone + List) 자동 구성 (backward-compat)
-<FileUpload hint="PNG, JPG · 최대 5MB" />`,
-            },
-            {
-              value: "impl",
-              label: "구현",
-              language: "tsx",
-              filename: "components/ui/file-upload/index.tsx",
-              code: `// FileUpload는 Provider로 state(files, dragging, disabled)를 공유.
-// 각 part(Dropzone / Trigger / List / Item)는 Context에서 핸들러를 꺼내 사용한다.
-
-export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
-  ({ value, defaultValue, onValueChange, onFiles, multiple, accept,
-     maxSize, maxFiles, disabled, onError, children, ... }, ref) => {
-    const [internal, setInternal] = React.useState<File[]>(defaultValue ?? []);
-    const files = value ?? internal;
-    const [dragging, setDragging] = React.useState(false);
-    const inputRef = React.useRef<HTMLInputElement>(null);
-
-    const addFiles = (incoming: FileList | File[]) => { /* maxSize/maxFiles 검증 */ };
-    const remove   = (idx: number) => update(files.filter((_, i) => i !== idx));
-    const openPicker = () => inputRef.current?.click();
-
-    return (
-      <FileUploadContext.Provider value={{ files, dragging, disabled, addFiles, remove, openPicker, ... }}>
-        <div className="sh-ui-file-upload">
-          <input ref={inputRef} type="file" className="sh-ui-file-upload__input" ... />
-          {children ?? <DefaultLayout />}
-        </div>
-      </FileUploadContext.Provider>
-    );
-  },
-);`,
-            },
-          ]}
-        />
-      </Preview>
+      <FileUploadLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

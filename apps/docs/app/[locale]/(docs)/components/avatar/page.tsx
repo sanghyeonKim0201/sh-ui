@@ -6,6 +6,10 @@ import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { AvatarLiveDemo } from "./avatar-live-demo";
+
+const sources = loadComponentSources("avatar");
 
 export default function AvatarPage() {
   return (
@@ -19,46 +23,11 @@ export default function AvatarPage() {
         래핑 — 이미지 로드 실패 시 자동으로 fallback 렌더.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-            <Avatar>
-              <AvatarImage src="https://i.pravatar.cc/80?img=12" alt="김상현" />
-              <AvatarFallback>상</AvatarFallback>
-            </Avatar>
-            <Avatar>
-              <AvatarImage src="/this-will-fail.jpg" alt="로드 실패 예시" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <Avatar>
-              <AvatarFallback>SK</AvatarFallback>
-            </Avatar>
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Avatar>
-  <AvatarImage src="https://.../photo.jpg" alt="사용자 이름" />
-  <AvatarFallback>SK</AvatarFallback>
-</Avatar>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiAvatar(
-  imageUrl: 'https://.../photo.jpg',
-  fallback: const Text('SK'),
-  semanticLabel: '사용자 이름',
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <AvatarLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

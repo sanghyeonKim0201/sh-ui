@@ -10,6 +10,10 @@ import {
   ToggleGroupMultipleDemo,
 } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { ToggleLiveDemo } from "./toggle-live-demo";
+
+const sources = loadComponentSources("toggle");
 
 export default function TogglePage() {
   return (
@@ -19,42 +23,11 @@ export default function TogglePage() {
         눌림/해제 두 상태를 전환하는 버튼. ToggleGroup으로 묶어 단일/다중 선택을 관리한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <ToggleBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `import { Toggle } from "@/components/ui/toggle";
-
-export function BoldToggle() {
-  return (
-    <Toggle aria-label="Bold" onPressedChange={(pressed) => console.log(pressed)}>
-      <BoldIcon />
-    </Toggle>
-  );
-}`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `// StatefulWidget 내부에서 사용
-bool _pressed = false;
-
-ShUiToggle(
-  pressed: _pressed,
-  onPressedChange: (p) => setState(() => _pressed = p),
-  child: const Icon(Icons.format_bold),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <ToggleLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

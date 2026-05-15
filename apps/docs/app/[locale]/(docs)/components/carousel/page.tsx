@@ -14,6 +14,14 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { PropsTable } from "@/components/props-table";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { CarouselLiveDemo } from "./carousel-live-demo";
+
+const sources = loadComponentSources("carousel");
+const extras = [loadExtraComponent("card")];
 
 const slides = [1, 2, 3, 4, 5];
 
@@ -54,23 +62,15 @@ export default function CarouselPage() {
         버튼을 제공한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ padding: "0 2rem", width: "100%", maxWidth: 420 }}>
-            <Carousel>
-              <CarouselContent>
-                {slides.map((n) => (
-                  <CarouselItem key={n}>
-                    <SlideTile n={n} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-              <CarouselIndicators />
-            </Carousel>
-          </div>
-        </Preview.Demo>
+      <CarouselLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
+
+      <details style={{ marginTop: "1rem" }}>
+        <summary className="muted" style={{ cursor: "pointer" }}>Flutter 코드 보기</summary>
         <CodeTabs
           items={[
             {
@@ -112,7 +112,7 @@ export default function CarouselPage() {
             },
           ]}
         />
-      </Preview>
+      </details>
 
       <h2>Installation</h2>
 

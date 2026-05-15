@@ -24,6 +24,10 @@ import {
   NumberInputDemo,
   PhoneInputDemo,
 } from "./_demos/specialized";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { InputLiveDemo } from "./input-live-demo";
+
+const sources = loadComponentSources("input");
 
 export default function InputPage() {
   return (
@@ -31,29 +35,11 @@ export default function InputPage() {
       <h1>Input</h1>
       <p className="muted">텍스트 입력 필드. 네이티브 <code>&lt;input&gt;</code>에 토큰 스타일만 입혔다.</p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ width: "100%", maxWidth: 320 }}>
-            <Input placeholder="이름을 입력하세요" />
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Input placeholder="이름을 입력하세요" />`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `const ShUiInput(placeholder: '이름을 입력하세요')`,
-            },
-          ]}
-        />
-      </Preview>
+      <InputLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

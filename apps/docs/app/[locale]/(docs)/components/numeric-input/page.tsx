@@ -4,12 +4,19 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import {
-  BasicDemo,
   UnitsDemo,
   SliderCompanionDemo,
   DisabledDemo,
 } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { NumericInputLiveDemo } from "./numeric-input-live-demo";
+
+const sources = loadComponentSources("numeric-input");
+const extras = [loadExtraComponent("slider")];
 
 export default function NumericInputPage() {
   return (
@@ -25,24 +32,12 @@ export default function NumericInputPage() {
         같은 모듈의 <code>NumberInput</code>(천 단위 콤마 자동) 을 권장한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <BasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `const [angle, setAngle] = useState(135);
-
-<Slider value={angle} onValueChange={setAngle} min={0} max={360} step={1} />
-<NumericInput value={angle} onValueChange={setAngle} min={0} max={360} unit="°" />`,
-            },
-          ]}
-        />
-      </Preview>
+      <NumericInputLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
       <h3>CLI</h3>

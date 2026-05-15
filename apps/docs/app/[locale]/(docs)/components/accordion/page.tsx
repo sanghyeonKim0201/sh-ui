@@ -11,6 +11,10 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { AccordionSingleDemo } from "./_demos/basic";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { AccordionLiveDemo } from "./accordion-live-demo";
+
+const sources = loadComponentSources("accordion");
 
 export default function AccordionPage() {
   return (
@@ -24,6 +28,13 @@ export default function AccordionPage() {
         <code>initialValue</code>를 넘겨 구성한다.
       </p>
 
+      <AccordionLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
+
+      {false && (
       <Preview>
         <Preview.Demo>
           <div style={{ width: "100%", maxWidth: 520 }}>
@@ -93,6 +104,7 @@ export default function AccordionPage() {
           ]}
         />
       </Preview>
+      )}
 
       <h2>Installation</h2>
 

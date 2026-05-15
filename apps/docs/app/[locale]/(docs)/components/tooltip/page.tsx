@@ -1,11 +1,17 @@
 export const dynamic = "force-static";
 
 import { CodeTabs } from "@/components/ui/code-tabs";
-import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
-import { TooltipBasicDemo } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { TooltipLiveDemo } from "./tooltip-live-demo";
+
+const sources = loadComponentSources("tooltip");
+const extras = [loadExtraComponent("button")];
 
 export default function TooltipPage() {
   return (
@@ -19,39 +25,12 @@ export default function TooltipPage() {
         래핑.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <TooltipBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<TooltipProvider delay={200}>
-  <Tooltip>
-    <TooltipTrigger render={<Button variant="secondary">저장</Button>} />
-    <TooltipContent>변경 사항을 저장합니다 (⌘S)</TooltipContent>
-  </Tooltip>
-</TooltipProvider>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiTooltip(
-  message: '변경 사항을 저장합니다 (⌘S)',
-  child: ShUiButton(
-    variant: ShUiButtonVariant.secondary,
-    onPressed: () {},
-    child: const Text('저장'),
-  ),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <TooltipLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
 
