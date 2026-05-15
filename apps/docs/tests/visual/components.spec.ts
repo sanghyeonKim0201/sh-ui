@@ -16,6 +16,13 @@ import { test, expect } from "@playwright/test";
  */
 const COMPONENTS: string[] = [];
 
+// Playwright 는 0 테스트면 "No tests found" 로 fail. 게이트 유지용 health-check:
+// 컴포넌트 index 페이지가 로드되는지만 확인 — 회귀 검출은 못 하지만 CI 가 깨지지 않음.
+test("/components index loads", async ({ page }) => {
+  await page.goto("/ko/components");
+  await expect(page).toHaveTitle(/.+/);
+});
+
 // 의도적으로 제외:
 // - color-picker / code-editor / markdown-editor / rich-text-editor — 무거운 에디터/IME, 안정적 캡처 어려움
 // - toast — viewport 가 fixed 라 Preview 데모 영역 캡쳐로 잡히지 않음
