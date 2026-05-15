@@ -14,6 +14,14 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { VariantSource } from "@/components/variant-source";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { CardLiveDemo } from "./card-live-demo";
+
+const sources = loadComponentSources("card");
+const extras = [loadExtraComponent("button")];
 
 export default function CardPage() {
   return (
@@ -23,76 +31,12 @@ export default function CardPage() {
         컨텐츠를 그룹화하는 컨테이너. 컴파운드 컴포넌트 패턴으로 조합한다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <div style={{ width: "100%", maxWidth: 480 }}>
-            <Card>
-              <CardHeader>
-                <CardTitle>알림 설정</CardTitle>
-                <CardDescription>이메일과 푸시 알림을 받을지 선택하세요.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>현재 모든 알림이 꺼져 있습니다. 언제든 다시 켤 수 있습니다.</p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="secondary">나중에</Button>
-                <Button>설정하기</Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Card>
-  <CardHeader>
-    <CardTitle>알림 설정</CardTitle>
-    <CardDescription>이메일과 푸시 알림을 받을지 선택하세요.</CardDescription>
-  </CardHeader>
-  <CardContent>
-    <p>현재 모든 알림이 꺼져 있습니다. 언제든 다시 켤 수 있습니다.</p>
-  </CardContent>
-  <CardFooter>
-    <Button variant="secondary">나중에</Button>
-    <Button>설정하기</Button>
-  </CardFooter>
-</Card>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiCard(
-  children: [
-    const ShUiCardHeader(
-      title: ShUiCardTitle('알림 설정'),
-      description: ShUiCardDescription('이메일과 푸시 알림을 받을지 선택하세요.'),
-    ),
-    const ShUiCardContent(
-      child: Text('현재 모든 알림이 꺼져 있습니다. 언제든 다시 켤 수 있습니다.'),
-    ),
-    ShUiCardFooter(
-      children: [
-        ShUiButton(
-          variant: ShUiButtonVariant.secondary,
-          onPressed: () {},
-          child: const Text('나중에'),
-        ),
-        ShUiButton(
-          onPressed: () {},
-          child: const Text('설정하기'),
-        ),
-      ],
-    ),
-  ],
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <CardLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
 

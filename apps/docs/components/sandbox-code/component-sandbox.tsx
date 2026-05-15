@@ -33,8 +33,17 @@ import {
  *     flutterPanel={<CodePanel language="dart" code={...} />}
  *   />
  */
+export interface ExtraComponentSource {
+  /** 컴포넌트 이름 — components/ui/<name>/ 디렉토리 안에 emit. */
+  name: string;
+  /** index.tsx */
+  source: string;
+  /** styles.css */
+  styles: string;
+}
+
 export interface ComponentSandboxProps {
-  /** import 경로 / virtual FS path 에 사용. "badge" → /components/ui/badge.tsx */
+  /** import 경로 / virtual FS path 에 사용. "badge" → /components/ui/badge/index.tsx */
   componentName: string;
   /** 해당 컴포넌트의 index.tsx 풀 소스 */
   source: string;
@@ -44,6 +53,8 @@ export interface ComponentSandboxProps {
   tokens: string;
   /** 사용자에게 보이는 App.tsx 코드 (import + 사용 예) */
   demoCode: string;
+  /** 의존성 컴포넌트들. 예: Form 페이지가 Input/Button/Label 도 같이 노출. */
+  extraComponents?: ExtraComponentSource[];
   /** Flutter 탭 컨텐츠. 없으면 React 탭만 단독 렌더. */
   flutterPanel?: ReactNode;
   /** Sandpack 에디터 높이. 데모 코드 행 수에 맞춰 조정 가능. 기본 360. */
@@ -82,9 +93,26 @@ export function ComponentSandbox({
   styles,
   tokens,
   demoCode,
+  extraComponents = [],
   flutterPanel,
   editorHeight = 360,
 }: ComponentSandboxProps) {
+  // 메인 + extra 컴포넌트들 모두 virtual FS 에 emit.
+  const allComponents: ExtraComponentSource[] = [
+    { name: componentName, source, styles },
+    ...extraComponents,
+  ];
+
+  const componentFiles: Record<string, { code: string; hidden: true }> = {};
+  const componentTypeDefs = allComponents.map((c) => ({
+    path: `file:///components/ui/${c.name}/index.tsx`,
+    content: c.source,
+  }));
+  for (const c of allComponents) {
+    componentFiles[`/components/ui/${c.name}/index.tsx`] = { code: c.source, hidden: true };
+    componentFiles[`/components/ui/${c.name}/styles.css`] = { code: c.styles, hidden: true };
+  }
+
   const sandbox = (
     <MonacoSandbox
       template="react-ts"
@@ -94,22 +122,13 @@ export function ComponentSandbox({
       files={{
         "/App.tsx": demoCode,
         "/index.tsx": { code: INDEX_TSX, hidden: true },
-        // sh-ui 실제 구조 (components/ui/<name>/index.tsx + styles.css) 그대로 옮긴다.
-        // 평면화 시 index.tsx 안의 `import "./styles.css"` 가 외부 styles.css 와 충돌하므로
-        // 디렉토리를 분리해야 한다.
-        [`/components/ui/${componentName}/index.tsx`]: { code: source, hidden: true },
-        [`/components/ui/${componentName}/styles.css`]: { code: styles, hidden: true },
+        ...componentFiles,
         "/tokens.css": { code: tokens, hidden: true },
         "/reset.css": { code: RESET_CSS, hidden: true },
       }}
       // Monaco IntelliSense — 사용자가 App.tsx 에서 자동완성 받도록 컴포넌트 소스를
       // Monaco virtual FS 에 등록. import 경로와 path 가 매칭되어야 한다.
-      typeDefs={[
-        {
-          path: `file:///components/ui/${componentName}/index.tsx`,
-          content: source,
-        },
-      ]}
+      typeDefs={componentTypeDefs}
     />
   );
 

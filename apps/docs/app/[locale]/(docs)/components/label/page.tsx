@@ -2,11 +2,19 @@ export const dynamic = "force-static";
 
 import { Input } from "@/components/ui/input";
 import { Label, LabelTitle, LabelSubtitle, LabelDescription, LabelCaption } from "@/components/ui/label";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { LabelLiveDemo } from "./label-live-demo";
 import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { VariantSource } from "@/components/variant-source";
+
+const sources = loadComponentSources("label");
+const extras = [loadExtraComponent("input")];
 
 export default function LabelPage() {
   return (
@@ -16,6 +24,14 @@ export default function LabelPage() {
         폼 입력 필드와 연결되는 라벨. <code>isRequired</code>로 필수 필드 표시(* 마크) 자동 추가.
       </p>
 
+      <LabelLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
+
+      {false && (
       <Preview>
         <Preview.Demo>
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "100%", maxWidth: 320 }}>
@@ -61,6 +77,7 @@ const ShUiInput(placeholder: 'you@example.com'),`,
           ]}
         />
       </Preview>
+      )}
 
       <h2>Installation</h2>
 

@@ -28,3 +28,19 @@ export function loadComponentSources(componentName: string): ComponentSources {
   );
   return { componentName, source, styles, tokens };
 }
+
+/**
+ * 의존성 컴포넌트만 (name + source + styles) — ComponentSandbox 의 extraComponents 에 직접 전달.
+ * 토큰은 메인 컴포넌트 묶음에 이미 포함되므로 안 읽음.
+ */
+export function loadExtraComponent(name: string): {
+  name: string;
+  source: string;
+  styles: string;
+} {
+  const docsRoot = process.cwd();
+  const componentDir = path.join(docsRoot, "components", "ui", name);
+  const source = fs.readFileSync(path.join(componentDir, "index.tsx"), "utf-8");
+  const styles = fs.readFileSync(path.join(componentDir, "styles.css"), "utf-8");
+  return { name, source, styles };
+}
