@@ -113,11 +113,66 @@ async function captureConsole(fn) {
 }
 
 function textResult(text) {
-  return { content: [{ type: "text", text }] };
+  return { content: withStaleness([{ type: "text", text }]) };
 }
 
 function jsonResult(data) {
-  return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+  return { content: withStaleness([{ type: "text", text: JSON.stringify(data, null, 2) }]) };
+}
+
+/**
+ * Staleness 경고 — npm registry 에서 latest sh-ui-cli 버전을 조회해 현재와 다르면
+ * 모든 tool 응답 상단에 한 줄 경고 prepend (v0.95.0+).
+ *
+ * 왜 필요: npx 가 sh-ui-cli 를 한 번 fetch 한 뒤 ~/.npm/_npx 캐시에 박아두면, 사용자
+ * `~/.claude.json` 에 `sh-ui-cli` (버전 비고정) 로 등록해도 MCP 가 오래된 버전으로
+ * 계속 실행된다. AI 에이전트는 "응답이 정상 응답" 으로 받아들이므로 stale 임을 의심
+ * 못 함 — 사용자 (ai-org 케이스) 가 직접 발견할 때까지 잘못된 plan 으로 작업.
+ *
+ * 모듈 변수 — startMcpServer 가 fire-and-forget 으로 채움. 첫 응답 직전에 미완료
+ * 면 경고 없이 진행 (best-effort).
+ */
+let STALE_WARNING = "";
+
+function withStaleness(content) {
+  if (!STALE_WARNING) return content;
+  return [{ type: "text", text: STALE_WARNING }, ...content];
+}
+
+/**
+ * 비동기로 npm registry 조회 → 더 높은 버전이 있으면 STALE_WARNING 셋업.
+ * 3초 timeout · 모든 실패 (오프라인 / DNS / 차단) 는 조용히 무시.
+ */
+async function checkStaleness(currentVersion, cliName) {
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 3000);
+    const res = await fetch(`https://registry.npmjs.org/${cliName}/latest`, {
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) return;
+    const data = await res.json();
+    const latest = typeof data.version === "string" ? data.version : null;
+    if (!latest || latest === currentVersion) return;
+    if (!isSemverGreater(latest, currentVersion)) return;
+    STALE_WARNING =
+      `⚠ sh-ui MCP ${currentVersion} (latest: ${latest}) — stale. ` +
+      `최신 옵션·버그픽스를 받으려면: \n` +
+      `  • ~/.claude.json (또는 다른 MCP 설정) 의 args 를 ["sh-ui-cli@latest", "mcp"] 로 변경 후 재시작\n` +
+      `  • npx 캐시가 박혀 있으면 \`npx clear-npx-cache\` 한 번 실행`;
+  } catch {
+    // best-effort.
+  }
+}
+
+function isSemverGreater(a, b) {
+  const parse = (s) => s.split("-")[0].split(".").map((n) => Number.parseInt(n, 10) || 0);
+  const [aMaj, aMin, aPatch] = parse(a);
+  const [bMaj, bMin, bPatch] = parse(b);
+  if (aMaj !== bMaj) return aMaj > bMaj;
+  if (aMin !== bMin) return aMin > bMin;
+  return aPatch > bPatch;
 }
 
 async function loadRegistry(platform) {
@@ -346,6 +401,13 @@ return (
 
 export async function startMcpServer() {
   const { version, name: cliName } = await readPackageMeta();
+
+  // fire-and-forget — server 가 첫 tool 요청 받기 전에 끝나면 경고 prepend, 아니면 다음 요청부터.
+  // env SH_UI_SKIP_STALENESS_CHECK=1 로 disable 가능 (CI / 오프라인 환경).
+  if (!process.env.SH_UI_SKIP_STALENESS_CHECK) {
+    void checkStaleness(version, cliName);
+  }
+
   const server = new McpServer(
     { name: "sh-ui", version },
     {
@@ -942,6 +1004,16 @@ export async function startMcpServer() {
           .describe("CSS 프레임워크. 기본 plain. css-modules 면 page.module.css 등 추가"),
         appName: z.string().optional()
           .describe("monorepo 첫 앱 이름. 기본 web"),
+        // vite 전용 — sh_ui_create_project 의 동일 옵션과 1:1 대응. describe ↔ create 가 같은
+        // file-plan 을 보장하려면 여기서 받아 describeTemplate 에 전달해야 한다 (v0.95.0+).
+        tauri: z.boolean().optional()
+          .describe("Tauri 2.x 데스크탑 셸 emit (platform=vite 전용). 기본 false"),
+        i18n: z.enum(I18N_LIBRARIES).optional()
+          .describe(`i18n 라이브러리 (platform=vite 전용). 옵션: ${I18N_LIBRARIES.join(', ')}. 기본 none`),
+        locales: z.string().optional()
+          .describe(`i18n 활성화 시 locale 코드 (comma-separated, 예: "ko,en"). 기본 "${I18N_DEFAULT_LOCALES}"`),
+        observability: z.enum(OBSERVABILITY_PROVIDERS).optional()
+          .describe(`observability 백엔드 (platform=vite 전용). 옵션: ${OBSERVABILITY_PROVIDERS.join(', ')}. 기본 none`),
       },
     },
     async (input) => {
@@ -953,6 +1025,10 @@ export async function startMcpServer() {
           plugins: input.plugins,
           cssFramework: input.cssFramework,
           appName: input.appName,
+          tauri: input.tauri,
+          i18n: input.i18n,
+          locales: input.locales,
+          observability: input.observability,
         });
         return jsonResult(result);
       } catch (e) {
