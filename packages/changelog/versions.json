@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.96.2",
+      "date": "2026-05-15",
+      "title": "의존성 유지보수 — @inquirer/prompts v8, @types/node v25 + sh-ui-cli engines 명시",
+      "type": "patch",
+      "highlights": [
+        "**`@inquirer/prompts` 7 → 8 (sh-ui-cli 런타임 의존성)** — CLI 의 `create` / `add` 인터랙티브 프롬프트가 쓰는 라이브러리 메이저 업그레이드. v8 은 Node `>=20.12 || ^21.7 || ^22.13 || >=23.5` 를 요구한다.",
+        "**`sh-ui-cli` 에 `engines.node: \">=20.12\"` 명시** — 기존엔 engines 필드가 없어 실제 Node floor 가 불투명했다. v8 의 요구사항에 맞춰 명시해, Node 20.0~20.11 사용자가 `npm i sh-ui-cli` 시 정확한 EBADENGINE 안내를 받도록 정직화.",
+        "**`@types/node` 22 → 25 (devDep)** — 타입 정의만 최신화. 빌드/런타임 산출물에는 영향 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.96.2"
+    },
+    {
       "version": "0.96.1",
       "date": "2026-05-15",
       "title": "docs Vercel preview 빌드 깨짐 fix — Turbo build outputs 에 prebuild 산출물 등록",
