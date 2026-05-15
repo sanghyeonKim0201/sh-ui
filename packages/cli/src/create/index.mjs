@@ -101,6 +101,10 @@ export async function runCreate(rest) {
       i18n: flags.i18n,
       locales: flags.locales,
       observability: flags.observability,
+      // create 컨텍스트에서는 --app 이 첫 앱 이름 (monorepo). 같은 플래그가
+      // add-component 컨텍스트에서는 대상 앱 선택 — 의미가 컨텍스트마다 다름.
+      appName: flags.app,
+      port: flags.port,
       yes: flags.yes,
       dryRun: flags.dryRun,
     });

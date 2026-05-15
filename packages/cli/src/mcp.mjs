@@ -483,6 +483,15 @@ export async function startMcpServer() {
             "observability provider — platform=vite 일 때만 의미. 'sentry' 로 설정 시 @sentry/react + " +
             "@sentry/vite-plugin 셋업 + SentryProvider + .env.example 자동 emit. GlitchTip self-hosted 도 같은 SDK — DSN 만 변경. 기본 'none'.",
           ),
+        // monorepo 첫 앱 이름 — describe_template 와 시그니처 1:1 일치 (v0.96.0+).
+        // standalone 일 땐 무시 (프로젝트 루트가 곧 앱). 미지정 시 'web'.
+        appName: z.string().min(1).optional()
+          .describe(
+            "monorepo 첫 앱 이름. structure=monorepo 일 때만 의미 — apps/{appName}/ + packages/ui/ui-apps/ui-{appName}/ 동시 생성. " +
+            "기본 'web'. describe_template 의 동일 인자와 1:1 대응 (v0.96.0+).",
+          ),
+        port: z.string().optional()
+          .describe("monorepo 첫 앱의 dev 포트. 기본 '3000'. structure=monorepo 일 때만 의미."),
       },
     },
     async (input) => {
@@ -560,6 +569,8 @@ export async function startMcpServer() {
             i18n: input.i18n,
             locales: input.locales,
             observability: input.observability,
+            appName: input.appName,
+            port: input.port,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
