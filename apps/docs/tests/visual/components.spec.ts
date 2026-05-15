@@ -12,7 +12,9 @@ const COMPONENTS = [
   "avatar",
   "badge",
   "breadcrumb",
-  "button",
+  // "button" — v0.94 react-live LiveCode pilot. 첫 Preview 가 LiveCode 로 교체돼
+  // .sh-ui-preview__demo selector 가 다른 element 를 잡음 (variants 섹션). 다른 페이지로 rollout
+  // 후 selector 가 .sh-ui-preview__demo OR .sh-ui-live-code__preview 양쪽 지원하도록 업데이트 + baseline 재생성.
   "calendar",
   "card",
   "carousel",
