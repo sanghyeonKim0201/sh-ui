@@ -3,6 +3,17 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.96.1",
+      "date": "2026-05-15",
+      "title": "docs Vercel preview 빌드 깨짐 fix — Turbo build outputs 에 prebuild 산출물 등록",
+      "type": "patch",
+      "highlights": [
+        "**Vercel Preview 가 cache hit 시 `ENOENT: ... public/llms-full.txt` 로 실패하던 회귀 fix** — v0.94.x 후속의 `a2c2bf3` 에서 `apps/docs/public/llms.txt` / `llms-full.txt` / `search-index.json` 을 gitignore 로 untrack 했지만 root `turbo.json` 의 build `outputs` 엔 빠져 있어 cache hit 시 복원 안 됨. Production 은 cache miss 라 prebuild 실제 실행 → 성공, Preview 는 같은 SHA 라 cache hit → prebuild 스킵 → 파일 없음 → Vercel finalize 단계 lstat 깨짐.",
+        "**`turbo.json` 의 build outputs 에 prebuild 산출물 3종 등록** — `public/llms.txt`, `public/llms-full.txt`, `public/search-index.json`. Turbo remote cache 복원 시 이 파일들도 함께 복원되어 Preview/Production 어느 쪽에서 캐시가 채워졌든 다른 쪽에서 hit 해도 정합."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.96.1"
+    },
+    {
       "version": "0.96.0",
       "date": "2026-05-15",
       "title": "vite 스캐폴드 P0 fix — i18n + sentry plugins 패치 충돌 + create_project appName 인자",
