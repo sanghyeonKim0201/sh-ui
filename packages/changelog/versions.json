@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.94.0",
+      "date": "2026-05-15",
+      "title": "vite 스캐폴드 P0 fix 묶음 — i18n locale 자동 미러 / monorepo .gitignore / CLAUDE.md platform 분기",
+      "type": "minor",
+      "highlights": [
+        "**`--i18n` 시 vite-plugin-static-copy 자동 셋업** — emitI18n 이 `vite-plugin-static-copy` (devDeps) + `vite.config.ts` 의 plugins 배열 패치를 자동 처리. 사용자가 손으로 plugin 추가하지 않아도 dev/build 양쪽에서 `src/shared/i18n/locales/*` (또는 `src/lib/i18n/locales/*`) 가 `public/locales/*` 로 미러되어 `/locales/{{lng}}/{{ns}}.json` 404 없음. Tauri prod 빌드도 dist 에 자동 포함.",
+        "**Locale seed 콘텐츠 언어별 정합화** — ko = `{greeting: '안녕하세요', app_title: 'sh-ui 앱'}`, en = `{greeting: 'Hello', app_title: 'sh-ui app'}`, 그 외 locale 도 영어 placeholder 시드를 받아 translator 가 채울 키가 즉시 보임. 이전엔 fallback (보통 ko) 에만 영어 시드 + 나머지 빈 객체였음.",
+        "**monorepo `apps/<name>/gitignore` 도 dot-prefix** — finalizeProject 가 root 만 처리하던 동작을 recursive 로 변경. vite-app 처럼 sub-app 에 자체 gitignore 가 있는 케이스에서 점 없는 파일이 남아 node_modules / dist 가 git staged 될 위험 제거. 회귀 가드 smoke 추가.",
+        "**CLAUDE.md `{{PLATFORM_APP_DESCRIPTION}}` 분기** — monorepo CLAUDE.md 가 `apps/<name>` 을 'Next.js 앱' 으로 hardcode 하던 문제 해결. `--platform vite` 면 'Vite SPA' + Tauri 옵션 시 추가 문장이 자동 치환되어 AI 에이전트가 잘못된 컨벤션 (App Router/RSC) 으로 코드를 작성하는 회귀 차단.",
+        "**mes arch 옵션 docs 명시** — monorepo / nextjs-standalone CLAUDE.md 에 `--arch` 옵션 (`fsd` / `flat` / `mes`) 섹션 추가. 외부 에이전트가 `packages/eslint-config/mes.js` 를 deprecated 잔재로 오해하던 문제 해결 — mes 는 MES(Backoffice) 전용 별도 arch, 모두 emit 되는 건 라이브러리 형태이기 때문."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.94.0"
+    },
+    {
       "version": "0.93.0",
       "date": "2026-05-14",
       "title": "vite 프리셋 Sentry observability opt-in (--observability sentry)",

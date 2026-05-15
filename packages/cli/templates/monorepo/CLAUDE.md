@@ -5,12 +5,25 @@ sh-ui CLI 가 스캐폴드한 monorepo (Turborepo + pnpm workspace). AI 에이�
 
 ## 구조
 
-- `apps/<name>/` — Next.js 앱. 라우트 + 비즈니스 로직.
+- `apps/<name>/` — {{PLATFORM_APP_DESCRIPTION}}
 - `packages/ui/ui-core/` — 모든 앱이 공유하는 sh-ui 컴포넌트 / 훅 / 유틸 SoT.
   컴포넌트 추가는 여기에 한 번만.
 - `packages/ui/ui-apps/ui-<name>/` — 앱별 토큰 (color/spacing/font) 만 보관.
   컴포넌트는 두지 않음 (v0.65+ `tokens-only` 마커).
 - `packages/eslint-config/` · `packages/typescript-config/` — 공용 설정.
+
+## 아키텍처 옵션 (`--arch`)
+
+- **`fsd`** (default) — Feature-Sliced Design. `src/{app,pages,widgets,features,entities,shared}`
+  레이어로 단방향 의존(상위→하위). 일반적 SPA / 서비스에 적합.
+- **`flat`** — `src/{components,hooks,lib,pages}` 단순 구조. 작은 앱 / 학습용.
+- **`mes`** — MES (Backoffice) 전용. 페이지 격리 + 단방향 의존 강제. ERP/내부 관리도구
+  처럼 페이지 간 분리도가 중요한 도메인. Next.js 만 지원 (vite-app 은 fsd/flat 만).
+
+세 arch 모두 `packages/eslint-config/` 에 별도 ruleset 으로 들어가 있다 — 라이브러리
+이므로 모두 emit 되지만, 본인 앱의 `eslint.config.js` 에서 선택한 arch 의 config 만
+import 한다. 다른 arch 의 `.js` 파일이 보여도 deprecated 가 아니라 다른 앱이
+쓸 수 있는 옵션이다.
 
 ## 날짜 / 숫자 포맷
 

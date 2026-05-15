@@ -1046,9 +1046,9 @@ import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 
 // 클라이언트 측 lazy-load — 빌드 산출물에서 public/locales/{lng}/{ns}.json 경로로 fetch.
-// dev 에선 vite 가 ${i18nDirRel}/locales/* 를 /locales 로 serve (vite.config 의 publicDir 기본 'public').
-// 프로덕션 빌드 시 사용자가 vite-plugin-static-copy 등으로 public/locales 로 카피하거나
-// 처음부터 public/locales 에 두면 됨. 디폴트 경로 ${i18nDirRel}/locales 는 dev 편의용.
+// 원본 locale 파일은 ${i18nDirRel}/locales/* 에 두고, vite-plugin-static-copy 가
+// dev/build 양쪽에서 public/locales/* 로 자동 미러링한다 (vite.config.ts 참고).
+// Tauri 빌드의 경우도 dist/locales 에 그대로 포함된다.
 
 i18n
   .use(HttpBackend)
@@ -1078,12 +1078,17 @@ export default i18n;
     `export { default } from './config';\n`,
   );
 
+  // locale 별 시드 — 같은 key 를 모든 locale 에 emit (translator 가 무엇을 채워야 하는지 즉시 보임).
+  // 핵심 locale (ko, en) 만 사람-언어 값, 그 외 locale 은 영어 placeholder.
+  const seedByLocale = {
+    ko: { greeting: '안녕하세요', app_title: 'sh-ui 앱' },
+    en: { greeting: 'Hello', app_title: 'sh-ui app' },
+  };
+  const fallbackSeed = { greeting: 'Hello', app_title: 'sh-ui app' };
   for (const lng of locales) {
     const localeDir = path.join(i18nDir, 'locales', lng);
     await fs.ensureDir(localeDir);
-    const seed = lng === fallbackLng
-      ? { greeting: 'Hello World', app_title: 'sh-ui app' }
-      : {};
+    const seed = seedByLocale[lng] ?? fallbackSeed;
     await fs.writeFile(
       path.join(localeDir, 'common.json'),
       JSON.stringify(seed, null, 2) + '\n',
@@ -1130,7 +1135,56 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   pkg.dependencies['i18next-http-backend'] = '^2.7.1';
   pkg.dependencies['react-i18next'] = '^15.1.0';
   pkg.dependencies = sortObjectKeys(pkg.dependencies);
+  pkg.devDependencies = pkg.devDependencies ?? {};
+  // dev/build 양쪽에서 src/shared/i18n/locales/* (또는 src/lib/i18n/locales/*) 를
+  // public/locales/* 로 자동 미러 → i18next-http-backend 의 /locales/{{lng}}/{{ns}}.json 이 동작.
+  pkg.devDependencies['vite-plugin-static-copy'] = '^2.2.0';
+  pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+
+  // vite.config.ts 에 vite-plugin-static-copy 삽입.
+  await patchViteConfigForI18n(targetDir, { i18nDirRel });
+}
+
+/**
+ * vite.config.ts 의 plugins 배열에 vite-plugin-static-copy 호출을 삽입한다.
+ * i18n 의 locale 파일 (src/shared/i18n/locales/* 등) 을 public/locales/* 로 자동 미러.
+ *
+ * 이미 같은 호출이 있으면 no-op. parsing 실패하면 사용자에게 수동 작업을 알리고 abort 하지 않는다.
+ */
+async function patchViteConfigForI18n(targetDir, { i18nDirRel }) {
+  const viteConfigPath = path.join(targetDir, 'vite.config.ts');
+  if (!(await fs.pathExists(viteConfigPath))) return;
+  let src = await fs.readFile(viteConfigPath, 'utf-8');
+
+  if (src.includes('vite-plugin-static-copy')) {
+    return; // 이미 셋업됨 (재진입 안전).
+  }
+
+  const importLine = `import { viteStaticCopy } from 'vite-plugin-static-copy';`;
+  // 다른 import 블록 뒤에 삽입.
+  const lastImportIdx = src.lastIndexOf('import ');
+  const insertImportAt = src.indexOf('\n', lastImportIdx) + 1;
+  src = src.slice(0, insertImportAt) + importLine + '\n' + src.slice(insertImportAt);
+
+  const pluginCall = `    viteStaticCopy({
+      // i18n locale 파일을 public/locales 로 미러 — i18next-http-backend 의 loadPath 와 매칭.
+      targets: [
+        { src: '${i18nDirRel}/locales/*', dest: 'locales' },
+      ],
+    }),`;
+
+  // plugins: [ ... ] 의 시작 직후에 새 plugin 삽입.
+  const pluginsMatch = src.match(/plugins:\s*\[/);
+  if (pluginsMatch) {
+    const insertAt = pluginsMatch.index + pluginsMatch[0].length;
+    src = src.slice(0, insertAt) + '\n' + pluginCall + src.slice(insertAt);
+  } else {
+    // 형태가 예상과 다르면 패치 포기 — config 가 깨지지 않도록.
+    return;
+  }
+
+  await fs.writeFile(viteConfigPath, src);
 }
 
 /**
@@ -1330,6 +1384,11 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   const rootPkg = await fs.readJson(rootPkgPath);
   rootPkg.name = projectName;
   await fs.writeJson(rootPkgPath, rootPkg, { spaces: 2 });
+
+  // CLAUDE.md 의 platform 분기 placeholder 치환. AI 에이전트가 Next.js 가정으로
+  // 잘못된 컨벤션을 적용하지 않도록 (v0.94.0+).
+  const platformAppDesc = describeAppPlatform(platform, { tauri });
+  await replaceInAllFiles(targetDir, '{{PLATFORM_APP_DESCRIPTION}}', platformAppDesc);
 
   // Update turbo.json
   const turboPath = path.join(targetDir, 'turbo.json');
@@ -2149,11 +2208,9 @@ function buildErrorModuleCss() {
  * git init 은 dry-run 에서는 스킵하고, 실패해도(git 미설치 등) 조용히 넘어간다.
  */
 async function finalizeProject(targetDir, { dryRun = false } = {}) {
-  const noDot = path.join(targetDir, 'gitignore');
-  const withDot = path.join(targetDir, '.gitignore');
-  if (await fs.pathExists(noDot)) {
-    await fs.move(noDot, withDot, { overwrite: true });
-  }
+  // 모노레포 / sub-app 까지 모든 `gitignore` 를 `.gitignore` 로 rename.
+  // root 만 처리하면 apps/<name>/gitignore 가 그대로 남아 node_modules/dist 가 staged 된다 (v0.93.0 버그).
+  await renameAllGitignoreRecursive(targetDir);
 
   if (dryRun) return;
 
@@ -2161,6 +2218,40 @@ async function finalizeProject(targetDir, { dryRun = false } = {}) {
     execSync('git init -q', { cwd: targetDir, stdio: 'ignore' });
   } catch {
     // git 미설치 / 권한 문제 — 스캐폴드 자체는 성공이므로 조용히 넘어간다.
+  }
+}
+
+/**
+ * CLAUDE.md 의 `{{PLATFORM_APP_DESCRIPTION}}` 치환용 문장 — AI 에이전트에게 어떤 플랫폼인지
+ * 정확히 전달해서 잘못된 컨벤션 (예: vite 프로젝트에 App Router 가정) 적용 방지.
+ */
+function describeAppPlatform(platform, { tauri = false } = {}) {
+  if (platform === 'vite') {
+    const tauriSuffix = tauri
+      ? ' Tauri 데스크탑 셸이 동봉되어 있어 `src-tauri/` 가 native 진입점이다.'
+      : '';
+    return `Vite SPA (React + TypeScript). 라우트 + 비즈니스 로직. RSC / App Router 없음 — 모든 코드가 클라이언트 사이드 실행이다.${tauriSuffix}`;
+  }
+  // 디폴트: Next.js. 향후 platform 추가 시 분기 늘릴 것.
+  return 'Next.js 앱 (App Router + Server Components). 라우트 + 비즈니스 로직.';
+}
+
+async function renameAllGitignoreRecursive(dir) {
+  let entries;
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true });
+  } catch {
+    return;
+  }
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      // 스캐폴드 직후엔 node_modules / .git 가 없지만 방어적으로.
+      if (entry.name === 'node_modules' || entry.name === '.git') continue;
+      await renameAllGitignoreRecursive(fullPath);
+    } else if (entry.name === 'gitignore') {
+      await fs.move(fullPath, path.join(dir, '.gitignore'), { overwrite: true });
+    }
   }
 }
 

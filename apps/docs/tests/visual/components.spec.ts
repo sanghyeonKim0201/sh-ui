@@ -12,9 +12,9 @@ const COMPONENTS = [
   "avatar",
   "badge",
   "breadcrumb",
-  // "button" — v0.94 react-live LiveCode pilot. 첫 Preview 가 LiveCode 로 교체돼
-  // .sh-ui-preview__demo selector 가 다른 element 를 잡음 (variants 섹션). 다른 페이지로 rollout
-  // 후 selector 가 .sh-ui-preview__demo OR .sh-ui-live-code__preview 양쪽 지원하도록 업데이트 + baseline 재생성.
+  // "button" — Sandpack 데모 pilot. 첫 Preview 가 Sandpack iframe 으로 교체돼
+  // .sh-ui-preview__demo selector 가 다른 element 를 잡고, Sandpack 내부는 cross-origin iframe 이라
+  // 캡쳐도 불안정. 다른 페이지로 rollout 시 별도 검증 전략 필요 (스크린샷 대신 DOM 어설션 등).
   "calendar",
   "card",
   "carousel",

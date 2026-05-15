@@ -651,11 +651,27 @@ describe('sh-ui create smoke tests', () => {
     expect(await fs.pathExists(path.join(projectDir, 'src/lib/i18n/locales/ja/common.json'))).toBe(true);
     expect(await fs.pathExists(path.join(projectDir, 'src/components/providers/I18nProvider.tsx'))).toBe(true);
 
+    // v0.94.0+: non-core locale (ja) 은 영어 fallback seed 를 받는다 (이전엔 빈 객체).
+    // translator 가 채워야 할 key 가 즉시 보이도록.
     const jaJson = await fs.readJson(path.join(projectDir, 'src/lib/i18n/locales/ja/common.json'));
-    expect(jaJson).toEqual({});
+    expect(jaJson).toEqual({ greeting: 'Hello', app_title: 'sh-ui app' });
+
+    // 핵심 locale (ko, en) 은 사람-언어 시드.
+    const koJson = await fs.readJson(path.join(projectDir, 'src/lib/i18n/locales/ko/common.json'));
+    expect(koJson.greeting).toBe('안녕하세요');
+    expect(koJson.app_title).toBe('sh-ui 앱');
+    const enJson = await fs.readJson(path.join(projectDir, 'src/lib/i18n/locales/en/common.json'));
+    expect(enJson.greeting).toBe('Hello');
 
     const cfg = await fs.readFile(path.join(projectDir, 'src/lib/i18n/config.ts'), 'utf-8');
     expect(cfg).toContain("fallbackLng: 'ko'");
+
+    // v0.94.0+: vite-plugin-static-copy 자동 설치 + vite.config 패치 검증.
+    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
+    expect(pkg.devDependencies['vite-plugin-static-copy']).toBeTruthy();
+    const viteCfg = await fs.readFile(path.join(projectDir, 'vite.config.ts'), 'utf-8');
+    expect(viteCfg).toContain('vite-plugin-static-copy');
+    expect(viteCfg).toContain('locales');
   });
 
   it('scenario V18 — vite + observability=sentry (v0.93.0+)', async () => {
@@ -1619,6 +1635,30 @@ describe('sh-ui create smoke tests', () => {
 
       const gi = await fs.readFile(path.join(monoDir, '.gitignore'), 'utf-8');
       expect(gi).toContain('.turbo');
+    });
+
+    // v0.94.0+ 회귀 가드 — monorepo + vite 시 apps/<name>/gitignore 도 dot-prefix 되어야 한다.
+    // 이전엔 root 만 rename 해서 apps/web/gitignore 가 남았다 (node_modules / dist 가 git staged 될 위험).
+    it('monorepo + vite — apps/<name>/.gitignore 도 dot-prefix 된다', async () => {
+      await createProject({
+        name: 'mono-vite-gitignore',
+        platform: 'vite',
+        structure: 'monorepo',
+        plugins: [],
+        yes: true,
+      });
+
+      const monoDir = path.join(tmpDir, 'mono-vite-gitignore');
+      const appDir = path.join(monoDir, 'apps', 'web');
+      expect(await fs.pathExists(path.join(monoDir, '.gitignore'))).toBe(true);
+      expect(await fs.pathExists(path.join(appDir, '.gitignore'))).toBe(true);
+      // 우회용 원본은 sub-app 에도 남아있으면 안 된다.
+      expect(await fs.pathExists(path.join(monoDir, 'gitignore'))).toBe(false);
+      expect(await fs.pathExists(path.join(appDir, 'gitignore'))).toBe(false);
+
+      const appGi = await fs.readFile(path.join(appDir, '.gitignore'), 'utf-8');
+      expect(appGi).toContain('node_modules');
+      expect(appGi).toContain('dist');
     });
 
     it('flutter — .gitignore 와 .git/ 생성 (Flutter 패턴 포함)', async () => {

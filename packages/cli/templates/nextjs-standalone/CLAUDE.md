@@ -3,6 +3,16 @@
 sh-ui CLI 가 스캐폴드한 Next.js standalone 프로젝트. AI 에이전트 (Claude / Cursor /
 Codex 등) 가 이 파일을 컨텍스트로 읽고 아래 규칙을 따른다.
 
+## 아키텍처 옵션 (`--arch`)
+
+- **`fsd`** (default) — Feature-Sliced Design. `src/{app,pages,widgets,features,entities,shared}`
+  레이어로 단방향 의존(상위→하위). 일반적 SPA / 서비스에 적합.
+- **`flat`** — `src/{components,hooks,lib}` 단순 구조. 작은 앱 / 학습용.
+- **`mes`** — MES (Backoffice) 전용. 페이지 격리 + 단방향 의존 강제. ERP/내부 관리도구
+  처럼 페이지 간 분리도가 중요한 도메인.
+
+선택한 arch 에 따라 `eslint.config.js` 가 다르게 emit 된다.
+
 ## 날짜 / 숫자 포맷
 
 - raw `Date.prototype.toLocaleDateString()` / `toLocaleString()` / `toLocaleTimeString()`

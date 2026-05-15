@@ -51,7 +51,7 @@ import {
   OBSERVABILITY_PROVIDERS,
 } from "./constants.js";
 import { allPlugins } from "./create/plugins/index.js";
-import { allArchitectures } from "./create/architectures/index.js";
+import { allArchitectures, describeArchOptions } from "./create/architectures/index.js";
 import { describeTemplate } from "./create/describeTemplate.js";
 import { THEME_PRESET_NAMES } from "./create/theme/presets.js";
 import { decodeTheme } from "./create/theme/decode.js";
@@ -386,9 +386,10 @@ export async function startMcpServer() {
         arch: z.enum(ARCH_NAMES).optional()
           .describe(
             `프로젝트 아키텍처 — 플랫폼별로 사용 가능한 값이 다름. ` +
-            `현재 next 에서 사용 가능: ${allArchitectures.filter((a) => a.platforms.includes('next')).map((a) => a.name).join(', ')} (기본 fsd). ` +
-            `flutter 는 현재 arch 디스크립터 없음 (미지정 또는 host 자체 default). ` +
-            `arch 와 플러그인은 별개 — arch 는 폴더 구조/import alias 컨벤션, 플러그인은 기능.`,
+            `사용 가능한 아키텍처 (의미 포함): ${describeArchOptions()}. ` +
+            `next 기본: fsd · vite 지원: fsd/flat · flutter 는 현재 arch 디스크립터 없음 (host 자체 default). ` +
+            `arch 와 플러그인은 별개 — arch 는 폴더 구조/import alias 컨벤션, 플러그인은 기능. ` +
+            `mes 는 폐기된 옵션이 아니라 별도 도메인-특화 아키텍처 (관리자/MES 류).`,
           ),
         theme: z.string().optional()
           .describe(`프리셋 이름 (${THEME_PRESETS_LIST}) 또는 base64 테마 코드. 사용자가 톤을 직접 손본 결과를 영구 보관하려면 sh_ui_encode_theme 으로 base64 를 만들어 여기에 넘긴다.`),
@@ -930,7 +931,11 @@ export async function startMcpServer() {
         structure: z.enum(CREATE_STRUCTURES).optional()
           .describe("Next.js 구조. platform=next | vite 일 때 의미. 기본 standalone"),
         arch: z.enum(ARCH_NAMES).optional()
-          .describe("아키텍처. platform=next 일 때 의미. 기본 fsd"),
+          .describe(
+            `아키텍처. 기본 fsd. ` +
+            `옵션 (의미 포함): ${describeArchOptions()}. ` +
+            `mes 는 deprecated 가 아니라 도메인-특화 옵션.`,
+          ),
         plugins: z.array(z.enum(PLUGIN_NAMES)).optional()
           .describe(`Next.js 플러그인 배열 (${PLUGIN_NAMES.join(', ')}). 미지정 빈 배열`),
         cssFramework: z.enum(CSS_FRAMEWORKS).optional()
