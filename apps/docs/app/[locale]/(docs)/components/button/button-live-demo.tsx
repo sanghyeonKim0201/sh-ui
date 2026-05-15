@@ -1,8 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
-import { LiveCode } from "@/components/live-code";
+import { SandboxCode } from "@/components/sandbox-code";
 import {
   Tabs,
   TabsContent,
@@ -11,17 +10,60 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 
+interface Props {
+  buttonSource: string;
+  buttonStyles: string;
+  tokensCss: string;
+}
+
+const APP_TSX = `import { Button } from "./components/ui/button";
+
+export default function App() {
+  return (
+    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+      <Button>저장</Button>
+      <Button variant="secondary">취소</Button>
+      <Button variant="ghost">더보기</Button>
+      <Button variant="danger">삭제</Button>
+    </div>
+  );
+}
+`;
+
+const INDEX_TSX = `import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./tokens.css";
+import "./reset.css";
+import App from "./App";
+
+const root = createRoot(document.getElementById("root")!);
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
+`;
+
+// Sandpack iframe 안의 기본 body 여백 / 폰트 리셋. tokens.css 만으로는 부족.
+const RESET_CSS = `*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  padding: 1.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+`;
+
 /**
- * Button 페이지 상단의 기본 라이브 데모.
+ * Button 페이지 상단 라이브 데모.
  *
- * react-live 의 scope 로 Button 컴포넌트(함수) 를 넘겨야 하는데 서버 컴포넌트 → 클라이언트 컴포넌트
- * 경계로는 함수를 직렬화할 수 없다. 그래서 이 작은 client wrapper 안에서 `scope: { Button }` 을
- * 직접 구성한다. 페이지 본체는 서버 컴포넌트 + `force-static` 으로 유지된다.
- *
- * Tabs 프리미티브로 직접 React/Flutter 탭을 구성한다 — React 탭만 LiveCode 로 렌더하고,
- * Flutter 탭은 정적 CodePanel 로 렌더. CodeTabs 에 docs-only `live:true` 옵션을 두지 않기 위함.
+ * Sandpack 으로 실제 import / 멀티파일을 보여준다. 사용자가 보는 건 App.tsx 한 파일이지만
+ * Button 컴포넌트 소스 / 스타일 / 토큰 css 는 hidden file 로 함께 주입돼 진짜 import 가 동작한다.
+ * 부모(server) 가 fs 로 읽어 prop 으로 넘기므로 sh-ui 단일 소스(apps/docs/components/ui/button) 와 자동 동기화.
  */
-export function ButtonLiveDemo() {
+export function ButtonLiveDemo({ buttonSource, buttonStyles, tokensCss }: Props) {
   return (
     <Tabs defaultValue="react">
       <TabsList>
@@ -30,7 +72,20 @@ export function ButtonLiveDemo() {
         <TabsTrigger value="flutter">Flutter</TabsTrigger>
       </TabsList>
       <TabsContent value="react">
-        <LiveCode scope={{ Button }} code={`<Button>저장</Button>`} />
+        <SandboxCode
+          template="react-ts"
+          activeFile="/App.tsx"
+          visibleFiles={["/App.tsx"]}
+          editorHeight={320}
+          files={{
+            "/App.tsx": APP_TSX,
+            "/index.tsx": { code: INDEX_TSX, hidden: true },
+            "/components/ui/button.tsx": { code: buttonSource, hidden: true },
+            "/components/ui/styles.css": { code: buttonStyles, hidden: true },
+            "/tokens.css": { code: tokensCss, hidden: true },
+            "/reset.css": { code: RESET_CSS, hidden: true },
+          }}
+        />
       </TabsContent>
       <TabsContent value="flutter">
         <CodePanel

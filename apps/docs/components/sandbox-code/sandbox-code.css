@@ -1,0 +1,17 @@
+.sh-ui-sandbox-code {
+  margin: var(--space-4) 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+/* Sandpack 의 내장 컨테이너가 자체 border-radius 를 가져 외곽이 어그러질 수 있어 정리. */
+.sh-ui-sandbox-code .sp-wrapper {
+  border-radius: 0 !important;
+  border: 0 !important;
+}
+
+.sh-ui-sandbox-code .sp-layout {
+  border-radius: 0 !important;
+  border: 0 !important;
+}

@@ -1,5 +1,7 @@
 export const dynamic = "force-static";
 
+import fs from "node:fs";
+import path from "node:path";
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import { CodePanel } from "@/components/ui/code-panel";
@@ -12,13 +14,33 @@ import { ButtonLiveDemo } from "./button-live-demo";
 const variants = ["primary", "secondary", "ghost", "danger", "link"] as const;
 const sizes = ["sm", "md", "lg"] as const;
 
+// Sandpack hidden files — 빌드 타임에 실제 sh-ui 소스 / 토큰을 string 으로 읽어
+// 클라이언트 컴포넌트로 prop 전달. 단일 소스 (apps/docs) 와 자동 동기화.
+const docsRoot = process.cwd();
+const buttonSource = fs.readFileSync(
+  path.join(docsRoot, "components/ui/button/index.tsx"),
+  "utf-8",
+);
+const buttonStyles = fs.readFileSync(
+  path.join(docsRoot, "components/ui/button/styles.css"),
+  "utf-8",
+);
+const tokensCss = fs.readFileSync(
+  path.join(docsRoot, "app/styles/tokens.css"),
+  "utf-8",
+);
+
 export default function ButtonPage() {
   return (
     <main className="container">
       <h1>Button</h1>
       <p className="muted">기본 상호작용 요소. 5가지 variant × 3가지 size.</p>
 
-      <ButtonLiveDemo />
+      <ButtonLiveDemo
+        buttonSource={buttonSource}
+        buttonStyles={buttonStyles}
+        tokensCss={tokensCss}
+      />
 
       <h2>Installation</h2>
 
