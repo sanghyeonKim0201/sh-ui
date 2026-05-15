@@ -13,6 +13,10 @@ import {
 } from "./_demos/headerless";
 import { VariantSource } from "@/components/variant-source";
 import { SidebarMixedDemo, SidebarPanelDemo } from "./_demos/panel";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { SidebarLiveDemo } from "./sidebar-live-demo";
+
+const sources = loadComponentSources("sidebar");
 
 export default function SidebarPage() {
   return (
@@ -22,86 +26,11 @@ export default function SidebarPage() {
         앱 좌/우측에 고정되는 네비게이션 영역. Provider로 상태를 관리하고 쿠키로 영속화한다. Cmd/Ctrl+B 단축키 내장.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <SidebarBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<SidebarProvider>
-  <Sidebar>
-    <SidebarHeader>...</SidebarHeader>
-    <SidebarContent>
-      <SidebarGroup>
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton isActive>
-                <HomeIcon />
-                <span>Home</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    </SidebarContent>
-    <SidebarFooter>...</SidebarFooter>
-  </Sidebar>
-  <SidebarInset>
-    <SidebarTrigger />
-    {children}
-  </SidebarInset>
-</SidebarProvider>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiSidebarProvider(
-  child: Row(
-    children: [
-      ShUiSidebar(
-        header: ShUiSidebarHeader(
-          child: Builder(
-            builder: (context) {
-              final isOpen = useSidebar(context)?.open ?? true;
-              if (!isOpen) return const Center(child: ShUiSidebarTrigger());
-              return Row(children: const [
-                Text('sh-ui'),
-                Spacer(),
-                ShUiSidebarTrigger(),
-              ]);
-            },
-          ),
-        ),
-        footer: const ShUiSidebarFooter(child: Text('v0.1.0')),
-        children: [
-          ShUiSidebarGroup(
-            label: 'Application',
-            children: [
-              ShUiSidebarItem(
-                icon: Icons.home,
-                label: 'Home',
-                isActive: true,
-                onTap: () {},
-              ),
-            ],
-          ),
-        ],
-      ),
-      Expanded(child: mainContent),
-    ],
-  ),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <SidebarLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

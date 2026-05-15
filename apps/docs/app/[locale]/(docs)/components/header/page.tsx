@@ -23,9 +23,16 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
-import { BasicDemo } from "./_demos/basic";
 import { StickyHideDemo } from "./_demos/sticky-hide";
 import { NoNav } from "@/components/no-nav";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { HeaderLiveDemo } from "./header-live-demo";
+
+const sources = loadComponentSources("header");
+const extras = [loadExtraComponent("button")];
 
 export default function HeaderPage() {
   return (
@@ -35,57 +42,12 @@ export default function HeaderPage() {
         상단 네비게이션 바. 데스크탑에선 가로 네비, 모바일(<code>{"<"} 768px</code>)에선 햄버거 + drawer로 자동 전환. Compound 패턴으로 구성. 마케팅/랜딩 페이지, 좌측 사이드바 없는 블로그·문서 사이트, AppShell 이 과한 단순 화면 등에 적합.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <NoNav>
-            <BasicDemo />
-          </NoNav>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `// 라우터를 안 쓰는 경우 — defaultValue 만 주면 클릭이 자동으로 active 를 옮긴다 (uncontrolled).
-// Next.js 등 라우터 앱이라면 value={pathname} 으로 (controlled, 아래 섹션 참고).
-<Header>
-  <HeaderTrigger />
-  <HeaderBrand>
-    <HeaderLogo><LogoIcon /></HeaderLogo>
-    <HeaderTitle>sh-ui</HeaderTitle>
-  </HeaderBrand>
-  <HeaderNav defaultValue="/">
-    <HeaderItem href="/">홈</HeaderItem>
-    <HeaderItem href="/docs">문서</HeaderItem>
-    <HeaderItem href="/pricing">가격</HeaderItem>
-  </HeaderNav>
-  <HeaderActions>
-    <Button variant="secondary" size="sm">로그인</Button>
-  </HeaderActions>
-</Header>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `// Flutter는 prop-based API.
-ShUiHeader(
-  logo: Icon(Icons.hexagon_outlined),
-  title: 'sh-ui',
-  items: [
-    ShUiHeaderItem(label: '홈', isActive: true, onTap: () {}),
-    ShUiHeaderItem(label: '문서', onTap: () {}),
-    ShUiHeaderItem(label: '가격', onTap: () {}),
-  ],
-  trailing: [
-    ShUiButton(label: '로그인', size: ShUiButtonSize.sm),
-  ],
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <HeaderLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
       <CodeTabs
