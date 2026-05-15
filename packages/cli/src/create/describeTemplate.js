@@ -400,9 +400,10 @@ function finalize(groups) {
   for (let i = groups.length - 1; i >= 0; i--) {
     const kept = [];
     for (const p of groups[i].paths) {
-      if (!seen.has(p)) {
-        seen.add(p);
-        kept.push(p);
+      const finalPath = applyFinalizeRenames(p);
+      if (!seen.has(finalPath)) {
+        seen.add(finalPath);
+        kept.push(finalPath);
       }
     }
     groups[i] = {
@@ -416,4 +417,24 @@ function finalize(groups) {
   for (const g of cleaned) files.push(...g.paths);
   files.sort();
   return { files, groups: cleaned };
+}
+
+/**
+ * generator.js 의 `finalizeProject` 가 실제 fs 단계에서 적용하는 rename 을
+ * file plan 텍스트 레벨에서 mock-apply (v0.96.0+ — 피드백 #3 buglet).
+ *
+ * 현재 규칙:
+ *  - basename 이 정확히 'gitignore' 인 경로 → '.gitignore' 로 prefix dot 추가.
+ *    (npm publish 가 .gitignore 를 strip 하므로 템플릿엔 점 없이 두고 emit 후 dot-prefix.)
+ *  - 이미 '.gitignore' 인 경로 (예: tauri-shell 의 src-tauri/.gitignore) 는 그대로.
+ *
+ * 미래에 다른 fs-level rename 이 추가되면 여기에 같이 등록 (describeTemplate 의
+ * file-plan ↔ create_project 의 실제 emit 1:1 정합성 유지).
+ */
+function applyFinalizeRenames(p) {
+  const slash = p.lastIndexOf('/');
+  const dir = slash === -1 ? '' : p.slice(0, slash + 1);
+  const base = slash === -1 ? p : p.slice(slash + 1);
+  if (base === 'gitignore') return dir + '.gitignore';
+  return p;
 }
