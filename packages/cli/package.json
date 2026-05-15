@@ -25,7 +25,7 @@
     "components"
   ],
   "dependencies": {
-    "@inquirer/prompts": "^7.0.0",
+    "@inquirer/prompts": "^8.4.3",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "zod": "^4.4.3"
   },
