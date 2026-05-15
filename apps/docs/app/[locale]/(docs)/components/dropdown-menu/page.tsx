@@ -4,10 +4,17 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
-import { DropdownMenuBasicDemo } from "./_demos/basic";
 import { DropdownMenuCheckRadioDemo } from "./_demos/check";
 import { DropdownMenuSubmenuDemo } from "./_demos/submenu";
 import { VariantSource } from "@/components/variant-source";
+import {
+  loadComponentSources,
+  loadExtraComponent,
+} from "@/components/sandbox-code/load-component-sources";
+import { DropdownMenuLiveDemo } from "./dropdown-menu-live-demo";
+
+const sources = loadComponentSources("dropdown-menu");
+const extras = [loadExtraComponent("button")];
 
 export default function DropdownMenuPage() {
   return (
@@ -21,58 +28,12 @@ export default function DropdownMenuPage() {
         위에 sh-ui 토큰 스타일을 얹음.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <DropdownMenuBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<DropdownMenu>
-  <DropdownMenuTrigger render={<Button variant="secondary">메뉴 열기</Button>} />
-  <DropdownMenuContent align="start">
-    <DropdownMenuGroup>
-      <DropdownMenuLabel>내 계정</DropdownMenuLabel>
-      <DropdownMenuItem>프로필</DropdownMenuItem>
-      <DropdownMenuItem>설정</DropdownMenuItem>
-      <DropdownMenuItem>청구 내역</DropdownMenuItem>
-    </DropdownMenuGroup>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem disabled>팀 (준비 중)</DropdownMenuItem>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem>로그아웃</DropdownMenuItem>
-  </DropdownMenuContent>
-</DropdownMenu>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiDropdownMenu<String>(
-  onSelected: (v) => print(v),
-  items: const [
-    ShUiDropdownMenuLabel('내 계정'),
-    ShUiDropdownMenuItem(value: 'profile', label: '프로필'),
-    ShUiDropdownMenuItem(value: 'settings', label: '설정'),
-    ShUiDropdownMenuItem(value: 'billing', label: '청구 내역'),
-    ShUiDropdownMenuDivider(),
-    ShUiDropdownMenuItem(value: 'team', label: '팀 (준비 중)', disabled: true),
-    ShUiDropdownMenuDivider(),
-    ShUiDropdownMenuItem(value: 'signout', label: '로그아웃'),
-  ],
-  child: ShUiButton(
-    variant: ShUiButtonVariant.secondary,
-    onPressed: null,
-    child: const Text('메뉴 열기'),
-  ),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <DropdownMenuLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+        extraComponents={extras}
+      />
 
       <h2>Installation</h2>
 

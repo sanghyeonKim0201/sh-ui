@@ -1,10 +1,12 @@
 export const dynamic = "force-static";
 
 import { CodeTabs } from "@/components/ui/code-tabs";
-import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
-import { ContextMenuBasicDemo } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { ContextMenuLiveDemo } from "./context-menu-live-demo";
+
+const sources = loadComponentSources("context-menu");
 
 export default function ContextMenuPage() {
   return (
@@ -19,55 +21,11 @@ export default function ContextMenuPage() {
         위에 sh-ui 토큰 스타일을 얹음.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <ContextMenuBasicDemo />
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<ContextMenu>
-  <ContextMenuTrigger>
-    <div className="hit-area">이 영역에서 우클릭</div>
-  </ContextMenuTrigger>
-  <ContextMenuContent>
-    <ContextMenuLabel>편집</ContextMenuLabel>
-    <ContextMenuItem>잘라내기</ContextMenuItem>
-    <ContextMenuItem>복사</ContextMenuItem>
-    <ContextMenuItem>붙여넣기</ContextMenuItem>
-    <ContextMenuSeparator />
-    <ContextMenuItem>삭제</ContextMenuItem>
-  </ContextMenuContent>
-</ContextMenu>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiContextMenu<String>(
-  onSelected: (v) => print(v),
-  items: const [
-    ShUiDropdownMenuLabel('편집'),
-    ShUiDropdownMenuItem(value: 'cut', label: '잘라내기'),
-    ShUiDropdownMenuItem(value: 'copy', label: '복사'),
-    ShUiDropdownMenuItem(value: 'paste', label: '붙여넣기'),
-    ShUiDropdownMenuDivider(),
-    ShUiDropdownMenuItem(value: 'delete', label: '삭제'),
-  ],
-  child: Container(
-    /* 우클릭/long-press 감지할 영역 */
-    width: 320, height: 128,
-    alignment: Alignment.center,
-    child: const Text('이 영역에서 우클릭'),
-  ),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <ContextMenuLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
 
       <h2>Installation</h2>
 

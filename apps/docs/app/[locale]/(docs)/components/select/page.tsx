@@ -18,6 +18,10 @@ import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { SubComponents } from "@/components/sub-components";
 import { ChipMultiSelectDemo } from "./_demos/chip-multi";
+import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
+import { SelectLiveDemo } from "./select-live-demo";
+
+const sources = loadComponentSources("select");
 
 export default function SelectPage() {
   return (
@@ -27,42 +31,16 @@ export default function SelectPage() {
         단일 선택 드롭다운. <a href="https://base-ui.com/react/components/select" target="_blank" rel="noreferrer">Base UI</a>의 headless primitive 위에 sh-ui 토큰 스타일을 입혔다.
       </p>
 
-      <Preview>
-        <Preview.Demo>
-          <Select>
-            <SelectTrigger style={{ width: "12rem" }}>
-              <SelectValue placeholder="과일 선택" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Fruits</SelectLabel>
-                <SelectItem value="apple">Apple</SelectItem>
-                <SelectItem value="banana">Banana</SelectItem>
-                <SelectItem value="grapes">Grapes</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Preview.Demo>
+      <SelectLiveDemo
+        source={sources.source}
+        styles={sources.styles}
+        tokens={sources.tokens}
+      />
+
+      <details style={{ marginTop: "1rem" }}>
+        <summary className="muted" style={{ cursor: "pointer" }}>Flutter 코드 보기</summary>
         <CodeTabs
           items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Select>
-  <SelectTrigger>
-    <SelectValue placeholder="과일 선택" />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectGroup>
-      <SelectLabel>Fruits</SelectLabel>
-      <SelectItem value="apple">Apple</SelectItem>
-      <SelectItem value="banana">Banana</SelectItem>
-      <SelectItem value="grapes">Grapes</SelectItem>
-    </SelectGroup>
-  </SelectContent>
-</Select>`,
-            },
             {
               value: "flutter",
               label: "Flutter",
@@ -82,7 +60,7 @@ ShUiSelect<String>(
             },
           ]}
         />
-      </Preview>
+      </details>
 
       <h2>Installation</h2>
 
