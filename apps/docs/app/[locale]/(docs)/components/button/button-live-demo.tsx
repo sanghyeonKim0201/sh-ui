@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { SandboxCode } from "@/components/sandbox-code";
+import { MonacoSandbox } from "@/components/sandbox-code/monaco-sandbox";
 import {
   Tabs,
   TabsContent,
@@ -79,11 +79,11 @@ export function ButtonLiveDemo({ buttonSource, buttonStyles, tokensCss, flutterP
         <TabsTrigger value="flutter">Flutter</TabsTrigger>
       </TabsList>
       <TabsContent value="react">
-        <SandboxCode
+        <MonacoSandbox
           template="react-ts"
           activeFile="/App.tsx"
           visibleFiles={["/App.tsx"]}
-          editorHeight={320}
+          editorHeight={360}
           files={{
             "/App.tsx": APP_TSX,
             "/index.tsx": { code: INDEX_TSX, hidden: true },
@@ -92,6 +92,14 @@ export function ButtonLiveDemo({ buttonSource, buttonStyles, tokensCss, flutterP
             "/tokens.css": { code: tokensCss, hidden: true },
             "/reset.css": { code: RESET_CSS, hidden: true },
           }}
+          // Monaco IntelliSense: button.tsx 의 실제 export 시그니처 (ButtonProps, variant/size enum) 를
+          // Monaco virtual FS 에 등록 → App.tsx 에서 <Button variant="..." size="..." /> 자동완성 동작.
+          typeDefs={[
+            {
+              path: "file:///components/ui/button.tsx",
+              content: buttonSource,
+            },
+          ]}
         />
       </TabsContent>
       <TabsContent value="flutter">{flutterPanel}</TabsContent>
