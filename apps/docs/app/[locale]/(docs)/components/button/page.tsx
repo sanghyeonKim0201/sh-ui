@@ -7,6 +7,7 @@ import { CodeTabs } from "@/components/ui/code-tabs";
 import { Preview } from "@/components/preview";
 import { PropsTable } from "@/components/props-table";
 import { VariantSource } from "@/components/variant-source";
+import { ButtonLiveDemo } from "./button-live-demo";
 
 const variants = ["primary", "secondary", "ghost", "danger", "link"] as const;
 const sizes = ["sm", "md", "lg"] as const;
@@ -17,30 +18,7 @@ export default function ButtonPage() {
       <h1>Button</h1>
       <p className="muted">기본 상호작용 요소. 5가지 variant × 3가지 size.</p>
 
-      <Preview>
-        <Preview.Demo>
-          <Button>저장</Button>
-        </Preview.Demo>
-        <CodeTabs
-          items={[
-            {
-              value: "react",
-              label: "React",
-              language: "tsx",
-              code: `<Button>저장</Button>`,
-            },
-            {
-              value: "flutter",
-              label: "Flutter",
-              language: "dart",
-              code: `ShUiButton(
-  onPressed: () {},
-  child: const Text('저장'),
-)`,
-            },
-          ]}
-        />
-      </Preview>
+      <ButtonLiveDemo />
 
       <h2>Installation</h2>
 
