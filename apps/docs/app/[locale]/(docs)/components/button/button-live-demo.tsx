@@ -1,6 +1,6 @@
 "use client";
 
-import { CodePanel } from "@/components/ui/code-panel";
+import type { ReactNode } from "react";
 import { SandboxCode } from "@/components/sandbox-code";
 import {
   Tabs,
@@ -14,6 +14,13 @@ interface Props {
   buttonSource: string;
   buttonStyles: string;
   tokensCss: string;
+  /**
+   * Flutter 탭 컨텐츠. CodePanel 이 async server component (shiki) 라
+   * client wrapper 안에서 직접 렌더하면 RSC 경계 에러. 부모(server) 에서
+   * element 로 만들어 prop 으로 넘기면 server 결과가 RSC payload 로 직렬화돼
+   * 안전하게 전달된다.
+   */
+  flutterPanel: ReactNode;
 }
 
 const APP_TSX = `import { Button } from "./components/ui/button";
@@ -63,7 +70,7 @@ body {
  * Button 컴포넌트 소스 / 스타일 / 토큰 css 는 hidden file 로 함께 주입돼 진짜 import 가 동작한다.
  * 부모(server) 가 fs 로 읽어 prop 으로 넘기므로 sh-ui 단일 소스(apps/docs/components/ui/button) 와 자동 동기화.
  */
-export function ButtonLiveDemo({ buttonSource, buttonStyles, tokensCss }: Props) {
+export function ButtonLiveDemo({ buttonSource, buttonStyles, tokensCss, flutterPanel }: Props) {
   return (
     <Tabs defaultValue="react">
       <TabsList>
@@ -87,15 +94,7 @@ export function ButtonLiveDemo({ buttonSource, buttonStyles, tokensCss }: Props)
           }}
         />
       </TabsContent>
-      <TabsContent value="flutter">
-        <CodePanel
-          language="dart"
-          code={`ShUiButton(
-  onPressed: () {},
-  child: const Text('저장'),
-)`}
-        />
-      </TabsContent>
+      <TabsContent value="flutter">{flutterPanel}</TabsContent>
     </Tabs>
   );
 }

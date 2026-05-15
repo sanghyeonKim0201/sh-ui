@@ -40,6 +40,15 @@ export default function ButtonPage() {
         buttonSource={buttonSource}
         buttonStyles={buttonStyles}
         tokensCss={tokensCss}
+        flutterPanel={
+          <CodePanel
+            language="dart"
+            code={`ShUiButton(
+  onPressed: () {},
+  child: const Text('저장'),
+)`}
+          />
+        }
       />
 
       <h2>Installation</h2>
