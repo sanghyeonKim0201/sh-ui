@@ -17,6 +17,18 @@ build
 # Claude Code 개인 설정만 제외 (rules/agents/commands 등 공유 자산은 유지)
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+.claude/worktrees/
+
+# Next.js 가 자동 생성하는 ambient type 파일 — pnpm dev / build 마다 갱신.
+apps/docs/next-env.d.ts
+
+# 빌드 산출물 (predev/prebuild 에서 자동 생성). 소스 오브 트루스는 각 generator:
+#   - llms.txt / llms-full.txt → packages/llms/scripts/generate.mjs
+#   - search-index.json → apps/docs/scripts/build-search-index.mjs
+# Vercel 배포 시 `pnpm build` 가 prebuild 단계에서 재생성하므로 commit 불필요.
+apps/docs/public/llms.txt
+apps/docs/public/llms-full.txt
+apps/docs/public/search-index.json
 
 # CLI 출고 직전 prepublish 가 모노레포 데이터를 복사해 두는 디렉토리.
 # 소스 오브 트루스는 packages/{registry,tokens,llms,changelog} 그대로.
