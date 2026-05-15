@@ -372,6 +372,8 @@ export async function createProject(options = {}) {
         i18n: options.i18n ?? 'none',
         locales: options.locales ?? 'ko,en',
         observability: options.observability ?? 'none',
+        appName: options.appName ?? null,
+        port: options.port ?? null,
       });
     }
 
@@ -422,7 +424,11 @@ export async function createProject(options = {}) {
   if (projectType === 'standalone') {
     await generateStandalone(targetDir, projectName, plugins, theme, cssFramework, arch, themeBase);
   } else {
-    await generateMonorepo(targetDir, projectName, plugins, { yes: options.yes, theme, css: cssFramework, arch, themeBase });
+    await generateMonorepo(targetDir, projectName, plugins, {
+      yes: options.yes, theme, css: cssFramework, arch, themeBase,
+      appName: options.appName ?? null,
+      port: options.port ?? null,
+    });
   }
 
   await finalizeProject(targetDir, { dryRun: options.dryRun });
@@ -1144,6 +1150,162 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
 
   // vite.config.ts 에 vite-plugin-static-copy 삽입.
   await patchViteConfigForI18n(targetDir, { i18nDirRel });
+
+  // 랜딩 컴포넌트 (Home.tsx 또는 fsd 의 src/app/App.tsx) 가 i18n 을 즉시 사용하도록 패치.
+  // v0.94 에서 ko 시드가 '안녕하세요' 로 들어가니 첫 화면이 한국어로 떠 사용자가 i18n 동작을 즉시 인지 (피드백 #2/#3).
+  await patchLandingForI18n(targetDir, { arch });
+}
+
+/**
+ * i18n 활성화 시 첫 화면을 `useTranslation` 으로 바꾸어 'greeting' 키를 사용한다.
+ * 이 patch 가 없으면 사용자가 i18n 셋업이 동작하는지 즉시 확인할 길이 없음.
+ *
+ * 대상 파일 (존재하는 첫 번째):
+ *   - fsd + vite-standalone: src/app/App.tsx  (inline `<h1>Hello World</h1>`)
+ *   - fsd + vite-app(monorepo): src/Home.tsx  (App.tsx 가 <Home /> import)
+ *   - flat: src/Home.tsx
+ *
+ * 이미 useTranslation 을 쓰고 있으면 no-op (재진입 안전).
+ * 형태가 예상과 다르면 silent skip — 사용자 코드를 깨뜨리지 않는 게 우선.
+ */
+async function patchLandingForI18n(targetDir, { arch }) {
+  const candidates =
+    arch.name === 'fsd'
+      ? [
+          path.join(targetDir, 'src/Home.tsx'),       // vite-app monorepo
+          path.join(targetDir, 'src/app/App.tsx'),    // vite-standalone fsd
+        ]
+      : [
+          path.join(targetDir, 'src/Home.tsx'),       // flat (vite-app + vite-standalone 공통)
+        ];
+
+  for (const filePath of candidates) {
+    if (!(await fs.pathExists(filePath))) continue;
+    let src = await fs.readFile(filePath, 'utf-8');
+    if (src.includes('useTranslation')) continue; // 이미 적용됨
+
+    // 형태가 예상과 다르면 (Hello World 가 없으면) skip.
+    if (!src.includes('Hello World')) continue;
+
+    // 1) import { useTranslation } from 'react-i18next' 를 import 블록 뒤에 (없으면 파일 맨 앞에) 추가.
+    const i18nImport = `import { useTranslation } from 'react-i18next';\n`;
+    const lastImportIdx = src.lastIndexOf('import ');
+    if (lastImportIdx >= 0) {
+      const importLineEnd = src.indexOf('\n', lastImportIdx) + 1;
+      src = src.slice(0, importLineEnd) + i18nImport + src.slice(importLineEnd);
+    } else {
+      // import 없는 파일 (flat Home.tsx) — 파일 맨 앞에 import + 빈 줄.
+      src = i18nImport + '\n' + src;
+    }
+
+    // 2) 컴포넌트 함수 본문 첫 줄에 `const { t } = useTranslation();` 추가.
+    //    export default function ... () {  또는  export default function ... () {\n...return (
+    //    형태를 가정. 매치 실패 시 silent skip.
+    const fnMatch = src.match(/export default function \w+\s*\([^)]*\)\s*\{\n/);
+    if (!fnMatch) continue;
+    const insertAt = fnMatch.index + fnMatch[0].length;
+    src = src.slice(0, insertAt) + `  const { t } = useTranslation();\n` + src.slice(insertAt);
+
+    // 3) Hello World 텍스트를 {t('greeting')} 으로 치환.
+    src = src.replace(/Hello World/g, "{t('greeting')}");
+
+    await fs.writeFile(filePath, src);
+  }
+}
+
+/**
+ * vite.config.ts 의 `plugins: [ ... ]` 배열에서 top-level entry 들을 분리해
+ * 새 entry 를 append 한 뒤 canonical 멀티라인 형태로 재방출한다.
+ *
+ * - balanced bracket 으로 outer `]` 를 찾으므로 `viteStaticCopy({ targets: [...] })`
+ *   처럼 안쪽에 `[]` 가 있어도 안전.
+ * - 두 개 이상의 patch (i18n + sentry 등) 가 같은 vite.config.ts 를 순차로
+ *   건드릴 때 anchor 경합으로 entry 가 안쪽 배열에 inject 되던 v0.92~0.95 회귀의 원인을 제거.
+ *
+ * 입력 src 가 예상 형태가 아니면 (`plugins: [` 못 찾음 / unbalanced bracket)
+ * `null` 을 반환 → 호출부에서 patch 포기.
+ *
+ * @param {string} src — vite.config.ts 전체 소스
+ * @param {string} callSource — 추가할 plugin 호출 소스 (예: "viteStaticCopy({ ... })"). 선행 indent / 후행 comma 없이 entry 본문만.
+ * @returns {string | null}
+ */
+function appendVitePluginEntry(src, callSource) {
+  const openMatch = src.match(/plugins:\s*\[/);
+  if (!openMatch) return null;
+
+  // plugins: 라인의 들여쓰기 추출 → 안쪽 entry 는 한 단계(=2 space) 더 깊게.
+  const pluginsLineStart = src.lastIndexOf('\n', openMatch.index) + 1;
+  const pluginsIndent = src.slice(pluginsLineStart, openMatch.index).match(/^[ \t]*/)[0];
+  const entryIndent = pluginsIndent + '  ';
+
+  const arrStart = openMatch.index + openMatch[0].length; // `[` 직후
+  // balanced bracket walk — `]` 깊이 0 지점이 outer 닫는 `]`.
+  let depth = 1;
+  let i = arrStart;
+  let inStr = null;
+  while (i < src.length && depth > 0) {
+    const ch = src[i];
+    if (inStr) {
+      if (ch === '\\' && i + 1 < src.length) { i += 2; continue; }
+      if (ch === inStr) inStr = null;
+      i++;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === '`') { inStr = ch; i++; continue; }
+    if (ch === '[' || ch === '(' || ch === '{') depth++;
+    else if (ch === ']' || ch === ')' || ch === '}') depth--;
+    if (depth === 0) break;
+    i++;
+  }
+  if (depth !== 0) return null;
+  const arrEnd = i; // outer `]` 의 인덱스
+
+  const inner = src.slice(arrStart, arrEnd);
+  const entries = splitTopLevelPluginEntries(inner);
+  entries.push(callSource);
+
+  const rebuilt =
+    '\n' +
+    entries.map((e) => entryIndent + e).join(',\n') +
+    ',\n' +
+    pluginsIndent;
+  return src.slice(0, arrStart) + rebuilt + src.slice(arrEnd);
+}
+
+/**
+ * plugins 배열 내부 문자열을 top-level `,` 기준으로 split.
+ * `()` `[]` `{}` 와 문자열 리터럴 ('`, ', ") 안의 `,` 는 무시.
+ *
+ * @param {string} s
+ * @returns {string[]}
+ */
+function splitTopLevelPluginEntries(s) {
+  const entries = [];
+  let depth = 0;
+  let inStr = null;
+  let buf = '';
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inStr) {
+      buf += ch;
+      if (ch === '\\' && i + 1 < s.length) { buf += s[i + 1]; i++; continue; }
+      if (ch === inStr) inStr = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === '`') { inStr = ch; buf += ch; continue; }
+    if (ch === '(' || ch === '[' || ch === '{') { depth++; buf += ch; continue; }
+    if (ch === ')' || ch === ']' || ch === '}') { depth--; buf += ch; continue; }
+    if (ch === ',' && depth === 0) {
+      const t = buf.trim();
+      if (t) entries.push(t);
+      buf = '';
+      continue;
+    }
+    buf += ch;
+  }
+  const t = buf.trim();
+  if (t) entries.push(t);
+  return entries;
 }
 
 /**
@@ -1167,22 +1329,17 @@ async function patchViteConfigForI18n(targetDir, { i18nDirRel }) {
   const insertImportAt = src.indexOf('\n', lastImportIdx) + 1;
   src = src.slice(0, insertImportAt) + importLine + '\n' + src.slice(insertImportAt);
 
-  const pluginCall = `    viteStaticCopy({
+  // entry 본문만 넘기고 indent / 후행 comma 는 helper 가 붙인다.
+  const pluginCall = `viteStaticCopy({
       // i18n locale 파일을 public/locales 로 미러 — i18next-http-backend 의 loadPath 와 매칭.
       targets: [
         { src: '${i18nDirRel}/locales/*', dest: 'locales' },
       ],
-    }),`;
+    })`;
 
-  // plugins: [ ... ] 의 시작 직후에 새 plugin 삽입.
-  const pluginsMatch = src.match(/plugins:\s*\[/);
-  if (pluginsMatch) {
-    const insertAt = pluginsMatch.index + pluginsMatch[0].length;
-    src = src.slice(0, insertAt) + '\n' + pluginCall + src.slice(insertAt);
-  } else {
-    // 형태가 예상과 다르면 패치 포기 — config 가 깨지지 않도록.
-    return;
-  }
+  const patched = appendVitePluginEntry(src, pluginCall);
+  if (!patched) return; // 형태가 예상과 다르면 patch 포기 — config 가 깨지지 않도록.
+  src = patched;
 
   await fs.writeFile(viteConfigPath, src);
 }
@@ -1353,30 +1510,29 @@ async function patchViteConfigForSentry(targetDir) {
   }
 
   if (!cfg.includes("sentryVitePlugin(")) {
-    cfg = cfg.replace(
-      /(plugins:\s*\[[^\]]*?)(\s*\])/s,
-      (_, before, close) => {
-        const sep = /,\s*$/.test(before) ? ' ' : ', ';
-        return `${before}${sep}sentryVitePlugin({\n      org: process.env.SENTRY_ORG,\n      project: process.env.SENTRY_PROJECT,\n      authToken: process.env.SENTRY_AUTH_TOKEN,\n      disable: !process.env.SENTRY_AUTH_TOKEN,\n    })${close}`;
-      },
-    );
+    // i18n 의 viteStaticCopy 처럼 plugins 배열 안에 nested `[]` 가 있을 수 있으므로
+    // balanced-bracket helper 로 outer entry append.
+    const sentryCall = `sentryVitePlugin({
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      disable: !process.env.SENTRY_AUTH_TOKEN,
+    })`;
+    const patched = appendVitePluginEntry(cfg, sentryCall);
+    if (patched) cfg = patched;
   }
 
   if (!cfg.includes("sourcemap:")) {
     if (cfg.includes("server: {")) {
       cfg = cfg.replace(/(\n\s*server:\s*\{)/, `\n  build: { sourcemap: true },$1`);
-    } else if (cfg.includes("plugins: [")) {
-      cfg = cfg.replace(
-        /(plugins:\s*\[[^\]]*?\][^,\n]*[,;]?\n)/s,
-        `$1  build: { sourcemap: true },\n`,
-      );
     }
+    // server 가 없는 변종은 build 삽입 위치가 모호 → 보수적으로 skip (사용자가 수동 추가).
   }
 
   await fs.writeFile(viteCfgPath, cfg);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none', appName: appNameOpt = null, port: portOpt = null } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -1400,16 +1556,19 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
   }
   await fs.writeJson(turboPath, turbo, { spaces: 2 });
 
-  // Create first app
-  const appName = yes ? 'web' : await input({
-    message: '첫 번째 앱 이름:',
-    default: 'web',
-  });
+  // Create first app — `appName` 인자가 주어지면 그대로, 아니면 yes 모드 default 'web' / 대화모드 prompt.
+  // v0.96.0+ — describe_template 와 동일한 시그니처 (피드백 #3 의 API 일관성 항목).
+  const appName = appNameOpt
+    ? validateProjectName(appNameOpt, 'appName')
+    : (yes ? 'web' : await input({
+        message: '첫 번째 앱 이름:',
+        default: 'web',
+      }));
 
-  const port = yes ? '3000' : await input({
+  const port = portOpt ?? (yes ? '3000' : await input({
     message: '포트 번호:',
     default: '3000',
-  });
+  }));
 
   const appsDir = path.join(targetDir, 'apps', appName);
   if (platform === 'vite') {

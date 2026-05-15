@@ -228,6 +228,26 @@ describe('describeTemplate — 옵션 조합 → 파일 트리 사전 계산', (
       for (const g of r.groups) for (const p of g.paths) union.add(p);
       expect(new Set(r.files)).toEqual(union);
     });
+
+    it('gitignore 는 .gitignore 로 mock-rename (피드백 #3 buglet — finalizeProject 실제 emit 과 1:1)', () => {
+      // next monorepo — 루트 template 의 gitignore 가 .gitignore 로.
+      const nextMono = describeTemplate({ platform: 'next', structure: 'monorepo' });
+      expect(nextMono.files).toContain('.gitignore');
+      expect(nextMono.files.some((p) => p.endsWith('/gitignore') || p === 'gitignore')).toBe(false);
+
+      // vite monorepo — 루트 + apps/{name} 둘 다 (vite-app template 도 gitignore 보유).
+      const viteMono = describeTemplate({ platform: 'vite', structure: 'monorepo', arch: 'fsd' });
+      expect(viteMono.files).toContain('.gitignore');
+      expect(viteMono.files).toContain('apps/web/.gitignore');
+      expect(viteMono.files.some((p) => p.endsWith('/gitignore') || p === 'gitignore')).toBe(false);
+
+      // vite standalone + tauri — tauri-shell 의 src-tauri/.gitignore 는 이미 점 있음 (보존).
+      const viteTauri = describeTemplate({
+        platform: 'vite', structure: 'standalone', arch: 'fsd', tauri: true,
+      });
+      expect(viteTauri.files).toContain('.gitignore');
+      expect(viteTauri.files).toContain('src-tauri/.gitignore');
+    });
   });
 });
 

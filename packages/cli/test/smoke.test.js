@@ -731,6 +731,112 @@ describe('sh-ui create smoke tests', () => {
     const themeIdx = gp.indexOf('<ThemeProvider>');
     expect(sentryIdx).toBeLessThan(i18nIdx);
     expect(i18nIdx).toBeLessThan(themeIdx);
+
+    // v0.95.x 회귀 가드 — i18n 의 viteStaticCopy targets 배열 안에 sentryVitePlugin 이
+    // inject 되던 패치 anchor 경합 (feedback #3 P0).
+    // sentryVitePlugin 은 plugins 배열의 top-level entry 여야 하고,
+    // viteStaticCopy 의 `targets: [ ... ]` 안에 들어가서는 안 된다.
+    const viteCfg = await fs.readFile(path.join(tmpDir, 'v-stack/vite.config.ts'), 'utf-8');
+    // viteStaticCopy 호출이 sentryVitePlugin 보다 먼저 등장 (append 순서)
+    expect(viteCfg.indexOf('viteStaticCopy(')).toBeLessThan(viteCfg.indexOf('sentryVitePlugin('));
+    // targets: [ ... ] 안에 sentryVitePlugin 이 있으면 안 됨.
+    const targetsMatch = viteCfg.match(/targets:\s*\[[\s\S]*?\]/);
+    expect(targetsMatch).not.toBeNull();
+    expect(targetsMatch[0]).not.toContain('sentryVitePlugin');
+    // viteStaticCopy({ ... }) 가 닫힌 뒤에 sentryVitePlugin 이 옴.
+    expect(viteCfg).toMatch(/viteStaticCopy\(\{[\s\S]*?\}\),\s*\n\s*sentryVitePlugin\(/);
+  });
+
+  it('scenario V20b — sh_ui_create_project 의 appName 인자 (피드백 #3 — describe_template 와 1:1 일치)', async () => {
+    // 사용자가 첫 앱 이름을 'web' 외로 시작하려면 12+ 파일 손 rename 이 필요했음.
+    // appName='admin' 으로 한 번에 생성되어야 한다.
+    await createProject({
+      name: 'cp-app', platform: 'vite', structure: 'monorepo', arch: 'fsd',
+      css: 'tailwind',
+      appName: 'admin',
+      port: '4200',
+      yes: true,
+    });
+    const root = path.join(tmpDir, 'cp-app');
+    expect(await fs.pathExists(path.join(root, 'apps/admin/package.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(root, 'apps/web'))).toBe(false);
+    expect(await fs.pathExists(path.join(root, 'packages/ui/ui-apps/ui-admin/package.json'))).toBe(true);
+    const appPkg = await fs.readJson(path.join(root, 'apps/admin/package.json'));
+    expect(appPkg.name).toBe('admin');
+    // port 도 같이 전달 — vite.config.ts 의 server.port 가 사용자 값으로.
+    const viteCfg = await fs.readFile(path.join(root, 'apps/admin/vite.config.ts'), 'utf-8');
+    expect(viteCfg).toContain('4200');
+  });
+
+  it('scenario V20d — vite + i18n 켜면 Home.tsx / App.tsx 가 useTranslation 사용 (피드백 #2/#3)', async () => {
+    // vite-standalone + fsd → src/app/App.tsx 패치 검증
+    await createProject({
+      name: 'v-i18n-fsd', platform: 'vite', structure: 'standalone', arch: 'fsd',
+      css: 'tailwind', i18n: 'react-i18next', locales: 'ko,en', yes: true,
+    });
+    const appFsd = await fs.readFile(path.join(tmpDir, 'v-i18n-fsd/src/app/App.tsx'), 'utf-8');
+    expect(appFsd).toContain("import { useTranslation } from 'react-i18next'");
+    expect(appFsd).toContain('const { t } = useTranslation();');
+    expect(appFsd).toContain("{t('greeting')}");
+    expect(appFsd).not.toContain('Hello World');
+
+    // vite-standalone + flat → src/Home.tsx 패치 검증
+    await createProject({
+      name: 'v-i18n-flat', platform: 'vite', structure: 'standalone', arch: 'flat',
+      css: 'tailwind', i18n: 'react-i18next', locales: 'ko,en', yes: true,
+    });
+    const homeFlat = await fs.readFile(path.join(tmpDir, 'v-i18n-flat/src/Home.tsx'), 'utf-8');
+    expect(homeFlat).toContain("import { useTranslation } from 'react-i18next'");
+    expect(homeFlat).toContain("{t('greeting')}");
+    expect(homeFlat).not.toContain('Hello World');
+
+    // vite + i18n 안 켜면 Hello World 그대로 (회귀 가드)
+    await createProject({
+      name: 'v-no-i18n', platform: 'vite', structure: 'standalone', arch: 'fsd',
+      css: 'tailwind', yes: true,
+    });
+    const noI18n = await fs.readFile(path.join(tmpDir, 'v-no-i18n/src/app/App.tsx'), 'utf-8');
+    expect(noI18n).toContain('Hello World');
+    expect(noI18n).not.toContain('useTranslation');
+  });
+
+  it('scenario V20c — appName 미지정 시 default web (호환 유지)', async () => {
+    await createProject({
+      name: 'cp-default-app', platform: 'vite', structure: 'monorepo', arch: 'fsd',
+      css: 'tailwind', yes: true,
+    });
+    expect(await fs.pathExists(path.join(tmpDir, 'cp-default-app/apps/web/package.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, 'cp-default-app/packages/ui/ui-apps/ui-web'))).toBe(true);
+  });
+
+  it('scenario V20a — vite monorepo + tauri + i18n + sentry 동시 ON (all-options 회귀 가드)', async () => {
+    // ai-org 시나리오 — feedback #3 에서 emit 깨지던 조합.
+    // 모든 옵션이 동시에 켜져도 vite.config.ts 가 깨지지 않아야 한다.
+    await createProject({
+      name: 'all-on', platform: 'vite', structure: 'monorepo', arch: 'fsd',
+      css: 'tailwind', tauri: true,
+      i18n: 'react-i18next', locales: 'ko,en',
+      observability: 'sentry',
+      yes: true,
+    });
+    const appDir = path.join(tmpDir, 'all-on/apps/web');
+    expect(await fs.pathExists(path.join(appDir, 'src-tauri/Cargo.toml'))).toBe(true);
+    expect(await fs.pathExists(path.join(appDir, 'src/shared/i18n/index.ts'))).toBe(true);
+    expect(await fs.pathExists(path.join(appDir, 'src/shared/observability/sentry.ts'))).toBe(true);
+
+    const viteCfg = await fs.readFile(path.join(appDir, 'vite.config.ts'), 'utf-8');
+    // i18n 의 viteStaticCopy 와 sentry 의 sentryVitePlugin 모두 plugins 의 top-level entry.
+    expect(viteCfg).toContain('viteStaticCopy(');
+    expect(viteCfg).toContain('sentryVitePlugin(');
+    expect(viteCfg.indexOf('viteStaticCopy(')).toBeLessThan(viteCfg.indexOf('sentryVitePlugin('));
+    const targetsMatch = viteCfg.match(/targets:\s*\[[\s\S]*?\]/);
+    expect(targetsMatch).not.toBeNull();
+    expect(targetsMatch[0]).not.toContain('sentryVitePlugin');
+    // build.sourcemap 도 같이 들어가 있어야 — server 분기 정상.
+    expect(viteCfg).toContain('build: { sourcemap: true }');
+    // GlobalProvider 순서 검증.
+    const gp = await fs.readFile(path.join(appDir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
+    expect(gp.indexOf('<SentryProvider>')).toBeLessThan(gp.indexOf('<I18nProvider>'));
   });
 
   it('scenario 2 — monorepo, no plugins', async () => {
