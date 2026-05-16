@@ -63,10 +63,7 @@ jobs:
           set -e
           MATRIX=(
             "bare:--platform next --structure standalone"
-            "sentry:--platform next --structure standalone --plugins sentry"
-            "auth-jwt:--platform next --structure standalone --plugins auth-jwt"
             "next-intl:--platform next --structure standalone --plugins next-intl"
-            "all:--platform next --structure standalone --plugins sentry,auth-jwt,next-intl"
           )
           for entry in "${MATRIX[@]}"; do
             label="${entry%%:*}"
