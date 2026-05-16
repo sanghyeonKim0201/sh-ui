@@ -31,13 +31,12 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
  * @property {'next'|'flutter'|'vite'} [platform]
  * @property {'standalone'|'monorepo'} [structure]   next/vite 일 때만 의미
  * @property {string} [arch]                          next 일 때 'fsd'|'flat'|'mes'
- * @property {string[]} [plugins]                     ['sentry', 'next-intl', 'auth-jwt']
+ * @property {string[]} [plugins]                     ['next-intl']
  * @property {'tailwind'|'plain'|'css-modules'} [cssFramework]
  * @property {string} [projectName]
  * @property {string} [appName]                       monorepo 첫 앱 이름. 기본 'web'
  * @property {'none'|'react-i18next'} [i18n]          vite 전용 — react-i18next 셋업
  * @property {string} [locales]                       i18n 활성화 시 생성할 locale 코드 (comma-separated, default 'ko,en')
- * @property {'none'|'sentry'} [observability]        vite 전용 — Sentry 셋업 (v0.93.0+)
  */
 
 /**
@@ -67,7 +66,6 @@ export function describeTemplate(opts = {}) {
     appName: rawAppName = 'web',
     i18n = 'none',
     locales = 'ko,en',
-    observability = 'none',
   } = opts;
 
   if (platform === 'flutter') {
@@ -107,17 +105,6 @@ export function describeTemplate(opts = {}) {
           `${providersBase}/I18nProvider.tsx`,
         ];
         groups.push(makeGroup('i18n', `i18n (${i18n})`, i18nFiles));
-      }
-      if (observability === 'sentry') {
-        const isFsd = safeArchName === 'fsd';
-        const obsBase = isFsd ? 'src/shared/observability' : 'src/lib/observability';
-        const providersBase = isFsd ? 'src/app/providers' : 'src/components/providers';
-        groups.push(makeGroup('sentry', `Sentry observability`, [
-          `${obsBase}/sentry.ts`,
-          `${obsBase}/index.ts`,
-          `${providersBase}/SentryProvider.tsx`,
-          '.env.example',
-        ]));
       }
       return finalize(groups);
     }
@@ -172,18 +159,6 @@ export function describeTemplate(opts = {}) {
         `apps/${appName}/${providersBase}/I18nProvider.tsx`,
       ];
       groups.push(makeGroup('i18n', `i18n (${i18n}, apps/${appName}/)`, i18nFiles));
-    }
-
-    if (observability === 'sentry') {
-      const isFsd = safeArchName === 'fsd';
-      const obsBase = isFsd ? 'src/shared/observability' : 'src/lib/observability';
-      const providersBase = isFsd ? 'src/app/providers' : 'src/components/providers';
-      groups.push(makeGroup('sentry', `Sentry observability (apps/${appName}/)`, [
-        `apps/${appName}/${obsBase}/sentry.ts`,
-        `apps/${appName}/${obsBase}/index.ts`,
-        `apps/${appName}/${providersBase}/SentryProvider.tsx`,
-        `apps/${appName}/.env.example`,
-      ]));
     }
 
     return finalize(groups);
@@ -280,13 +255,9 @@ function buildNextGroups({ prefix, templateKey, arch, plugins, cssFramework }) {
   // generator.js applyCssFrameworkVariant 와 동일한 분기 — intl 활성 시 [locale]/, 아니면 app/.
   if (cssFramework === 'css-modules') {
     const intlActive = plugins.some((p) => p.name === 'next-intl');
-    const sentryActive = plugins.some((p) => p.name === 'sentry');
     const cssPaths = [];
     const pageDir = intlActive ? 'app/[locale]' : 'app';
     cssPaths.push(`${prefix}${pageDir}/page.module.css`);
-    if (sentryActive) {
-      cssPaths.push(`${prefix}${pageDir}/error.module.css`);
-    }
     groups.push(makeGroup(
       'css',
       'CSS: css-modules 변종',
@@ -337,7 +308,7 @@ function applyMovesAndDeletes(groups, moves, deletes) {
   const added = [];
   for (const { from, to } of moves) {
     const removed = removeFromAllGroups(groups, from);
-    // 원본이 어디에도 없었다면 (예: sentry 비활성 상태에서 error.tsx 이동) — 새로
+    // 원본이 어디에도 없었다면 (move 소스가 현재 file-plan 에 없음) — 새로
     // 추가하지 않는다. generator.js 의 `if (await fs.pathExists(fromPath))` 시맨틱.
     if (removed) added.push(to);
   }

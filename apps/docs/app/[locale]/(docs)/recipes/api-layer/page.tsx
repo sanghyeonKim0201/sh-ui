@@ -27,7 +27,6 @@ export default function ApiLayerRecipe() {
 
 [Client 컴포넌트] ──► clientFetch ──► /api/proxy/[...path] ──► API_URL
                                           · 쿠키 → Authorization 주입
-                                          · auth-jwt 활성화 시 401 → refresh 후 재시도
                                           · 응답 그대로 반환`}
       />
       <p>
@@ -43,14 +42,14 @@ export default function ApiLayerRecipe() {
 ├── http.ts            # isomorphic 진입점 (typeof window 분기)
 ├── serverFetch.ts     # RSC transport (cookies()로 AT 주입, 백엔드 직통)
 ├── clientFetch.ts     # 브라우저 transport (/api/proxy 경유, 401 → /sign-in)
-├── observability.ts   # 캡처/로그 훅 (Sentry 플러그인이 덮어씀)
+├── observability.ts   # 캡처/로그 훅 (no-op 기본 — 직접 구현)
 ├── queryClient.ts     # cache() 기반 RSC 스코프 + 브라우저 싱글톤
 ├── apiTypes.ts        # ApiResponse, PaginatedData
 └── error.ts           # ApiError
 
 app/api/proxy/[...path]/
 └── route.ts           # BFF — 베이스는 단순 패스스루.
-                         auth-jwt 플러그인이 refresh-aware 버전으로 덮어씀`}
+                         refresh 자리표시자 — 백엔드 명세 확정 후 구현`}
       />
 
       <h2>API 함수 작성</h2>
@@ -139,18 +138,19 @@ try {
       <h2>의도적으로 제외된 것 (베이스에 없음)</h2>
       <ul>
         <li>
-          <strong>토큰 refresh 로직</strong> — 401 자동 재발급은{" "}
-          <a href="/plugins/auth-jwt">auth-jwt 플러그인</a> 영역. 베이스 BFF 는
-          단순 패스스루다.
+          <strong>토큰 refresh 로직</strong> — 401 자동 재발급은 백엔드 인증
+          명세에 맞춰 직접 구현한다. 베이스 BFF 는 단순 패스스루이고,{" "}
+          <code>route.ts</code> 에 refresh 자리표시자만 있다.
         </li>
         <li>
           <strong>로그인/로그아웃 쿠키 특례 처리</strong> — Server Action
-          으로 처리한다 (auth-jwt 페이지 참조).
+          으로 처리한다 (쿠키 set / revalidate 가 필요하므로).
         </li>
         <li>
-          <strong>Sentry 캡처</strong> —{" "}
-          <a href="/plugins/sentry">Sentry 플러그인</a> 이{" "}
-          <code>observability.ts</code> 를 덮어쓰면 자동 활성화.
+          <strong>에러 캡처 (Sentry 등)</strong> —{" "}
+          <code>observability.ts</code> 의 <code>captureApiError()</code> /{" "}
+          <code>logApiError()</code> 는 베이스에서 no-op 이다. 원하는 모니터링
+          SDK 를 이 훅 본문에 직접 연결한다.
         </li>
       </ul>
 
@@ -159,13 +159,6 @@ try {
         <li>
           <a href="/recipes/data-fetching">데이터 페칭 (RSC prefetch + hydration)</a>{" "}
           — <code>queryOptions</code>, <code>HydrationBoundary</code>, useSuspenseQuery 패턴
-        </li>
-        <li>
-          <a href="/plugins/auth-jwt">auth-jwt 플러그인</a> — 인증된 요청, BFF
-          refresh, Server Action
-        </li>
-        <li>
-          <a href="/plugins/sentry">sentry 플러그인</a> — 5xx 자동 캡처
         </li>
       </ul>
     </main>

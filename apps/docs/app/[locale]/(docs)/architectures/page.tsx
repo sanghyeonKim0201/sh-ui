@@ -30,7 +30,7 @@ export default function ArchitecturesHub() {
 npx sh-ui-cli create my-app \\
   --platform next --structure standalone \\
   --arch flat \\
-  --plugins sentry,next-intl,auth-jwt \\
+  --plugins next-intl \\
   --yes
 
 # arch 미지정 시 기본 fsd

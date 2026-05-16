@@ -18,13 +18,11 @@ import {
   Folder,
   FolderGit2,
   FolderOpen,
-  KeyRound,
   Languages,
   Layers,
   LayoutGrid,
   Package,
   Palette,
-  ShieldAlert,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -102,9 +100,7 @@ function groupMeta(id: string): { Icon: LucideIcon; tone: "muted" | "primary" } 
   if (base === "ui-app") return { Icon: LayoutGrid, tone: "muted" };
   if (base === "css") return { Icon: Palette, tone: "primary" };
   if (base === "transform") return { Icon: ArrowRightLeft, tone: "primary" };
-  if (base === "plugin-sentry") return { Icon: ShieldAlert, tone: "primary" };
   if (base === "plugin-next-intl") return { Icon: Languages, tone: "primary" };
-  if (base === "plugin-auth-jwt") return { Icon: KeyRound, tone: "primary" };
   if (base.startsWith("plugin-")) return { Icon: Package, tone: "primary" };
   return { Icon: Package, tone: "muted" };
 }
@@ -528,9 +524,6 @@ function ContentViewer({
     if (options?.locales && options.locales !== 'ko,en') {
       params.set("locales", options.locales);
     }
-    if (options?.observability && options.observability !== 'none') {
-      params.set("observability", options.observability);
-    }
 
     fetch(`/api/template-content?${params.toString()}`, { signal: ctrl.signal })
       .then(async (r) => {
@@ -833,7 +826,6 @@ export function TemplatePreviewDialog({
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
   const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
   const [locales, setLocales] = useState<string>('ko,en');
-  const [observability, setObservability] = useState<'none' | 'sentry'>('none');
 
   const togglePlugin = (p: Plugin) => {
     setPlugins((prev) => {
@@ -875,8 +867,6 @@ export function TemplatePreviewDialog({
             onI18nChange={setI18n}
             locales={locales}
             onLocalesChange={setLocales}
-            observability={observability}
-            onObservabilityChange={setObservability}
           />
 
           <TemplatePreviewBody
@@ -889,7 +879,6 @@ export function TemplatePreviewDialog({
               appName: "web",
               i18n,
               locales,
-              observability,
             }}
           />
         </div>

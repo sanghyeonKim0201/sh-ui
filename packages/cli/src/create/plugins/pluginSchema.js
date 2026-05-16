@@ -40,7 +40,7 @@ const archAwareArray = z.union([z.array(z.any()), archAwareFn]);
 
 export const PluginSchema = z.object({
   name: z.string().regex(/^[a-z][a-z0-9-]*$/, {
-    message: 'Plugin name must be lowercase kebab-case (e.g., "auth-jwt")',
+    message: 'Plugin name must be lowercase kebab-case (e.g., "next-intl")',
   }),
   label: z.string().min(1),
   description: z.string().min(1).optional(),

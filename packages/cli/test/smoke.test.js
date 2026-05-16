@@ -259,32 +259,6 @@ describe('sh-ui create smoke tests', () => {
     expect(gi).toContain('*.tsbuildinfo');
   });
 
-  it('scenario V21 — vite + monorepo + observability=sentry — turbo globalEnv 에 SENTRY_* 선언', async () => {
-    // #3 회귀 가드 — vite sentry 는 플러그인 turboEnvVars 훅을 안 타므로 generateMonorepo
-    // 가 직접 turbo.globalEnv 에 넣어줘야 한다. 안 그러면 깨끗한 scaffold 가
-    // turbo/no-undeclared-env-vars 로 lint clean 이 아님.
-    await createProject({
-      name: 'v-mono-sentry',
-      platform: 'vite',
-      structure: 'monorepo',
-      arch: 'fsd',
-      css: 'tailwind',
-      observability: 'sentry',
-      yes: true,
-    });
-    const projectDir = path.join(tmpDir, 'v-mono-sentry');
-    const turbo = await fs.readJson(path.join(projectDir, 'turbo.json'));
-    for (const v of ['MODE', 'SENTRY_ORG', 'SENTRY_PROJECT', 'SENTRY_AUTH_TOKEN']) {
-      expect(turbo.globalEnv).toContain(v);
-    }
-    // 중복 없이 (Set dedupe 회귀 가드).
-    expect(new Set(turbo.globalEnv).size).toBe(turbo.globalEnv.length);
-    // sentry 모듈도 app 에 들어갔는지 (monorepo 경로의 emitSentry 회귀 가드).
-    expect(
-      await fs.pathExists(path.join(projectDir, 'apps/web/src/shared/observability/sentry.ts')),
-    ).toBe(true);
-  });
-
   it('scenario V8 — vite index.html 에 viewport-fit + theme-color meta 포함 (v0.88.1+ 모바일/PWA)', async () => {
     await createProject({
       name: 'v-mobile',
@@ -492,88 +466,6 @@ describe('sh-ui create smoke tests', () => {
     expect(viteCfg).toContain('locales');
   });
 
-  it('scenario V18 — vite + observability=sentry (v0.93.0+)', async () => {
-    await createProject({
-      name: 'v-sentry', platform: 'vite', structure: 'standalone', arch: 'fsd',
-      css: 'tailwind', observability: 'sentry', yes: true,
-    });
-    const dir = path.join(tmpDir, 'v-sentry');
-    expect(await fs.pathExists(path.join(dir, 'src/shared/observability/sentry.ts'))).toBe(true);
-    expect(await fs.pathExists(path.join(dir, 'src/shared/observability/index.ts'))).toBe(true);
-    expect(await fs.pathExists(path.join(dir, 'src/app/providers/SentryProvider.tsx'))).toBe(true);
-    expect(await fs.pathExists(path.join(dir, '.env.example'))).toBe(true);
-    const sentryTs = await fs.readFile(path.join(dir, 'src/shared/observability/sentry.ts'), 'utf-8');
-    expect(sentryTs).toContain("import * as Sentry from '@sentry/react'");
-    expect(sentryTs).toContain('import.meta.env.VITE_SENTRY_DSN');
-    expect(sentryTs).toContain('replaysSessionSampleRate: 0');
-    const gp = await fs.readFile(path.join(dir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
-    expect(gp).toContain("import { SentryProvider } from '../SentryProvider'");
-    expect(gp).toContain('<SentryProvider>');
-    expect(gp.indexOf('<SentryProvider>')).toBeLessThan(gp.indexOf('<ThemeProvider>'));
-    const pkg = await fs.readJson(path.join(dir, 'package.json'));
-    expect(pkg.dependencies['@sentry/react']).toBeDefined();
-    expect(pkg.devDependencies['@sentry/vite-plugin']).toBeDefined();
-    const viteCfg = await fs.readFile(path.join(dir, 'vite.config.ts'), 'utf-8');
-    expect(viteCfg).toContain("import { sentryVitePlugin } from '@sentry/vite-plugin'");
-    expect(viteCfg).toContain('sentryVitePlugin(');
-    expect(viteCfg).toContain('sourcemap: true');
-    const env = await fs.readFile(path.join(dir, '.env.example'), 'utf-8');
-    expect(env).toContain('VITE_SENTRY_DSN');
-    expect(env).toContain('SENTRY_AUTH_TOKEN');
-  });
-
-  it('scenario V19 — vite + observability=none (default) — Sentry 파일 안 들어감', async () => {
-    await createProject({
-      name: 'v-no-sentry', platform: 'vite', structure: 'standalone', arch: 'fsd',
-      css: 'tailwind', yes: true,
-    });
-    const dir = path.join(tmpDir, 'v-no-sentry');
-    expect(await fs.pathExists(path.join(dir, 'src/shared/observability'))).toBe(false);
-    expect(await fs.pathExists(path.join(dir, 'src/app/providers/SentryProvider.tsx'))).toBe(false);
-    const pkg = await fs.readJson(path.join(dir, 'package.json'));
-    expect(pkg.dependencies['@sentry/react']).toBeUndefined();
-    const gp = await fs.readFile(path.join(dir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
-    expect(gp).not.toContain('SentryProvider');
-  });
-
-  it('scenario V20 — vite + i18n + sentry — wrapper 순서 Sentry > I18n > Theme > Query', async () => {
-    await createProject({
-      name: 'v-stack', platform: 'vite', structure: 'standalone', arch: 'fsd',
-      css: 'tailwind', i18n: 'react-i18next', locales: 'ko,en', observability: 'sentry', yes: true,
-    });
-    const gp = await fs.readFile(path.join(tmpDir, 'v-stack/src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
-    expect(gp).toContain("import { I18nProvider } from '../I18nProvider'");
-    expect(gp).toContain("import { SentryProvider } from '../SentryProvider'");
-    const sentryIdx = gp.indexOf('<SentryProvider>');
-    const i18nIdx = gp.indexOf('<I18nProvider>');
-    const themeIdx = gp.indexOf('<ThemeProvider>');
-    expect(sentryIdx).toBeLessThan(i18nIdx);
-    expect(i18nIdx).toBeLessThan(themeIdx);
-
-    // v0.95.x 회귀 가드 — i18n 의 viteStaticCopy targets 배열 안에 sentryVitePlugin 이
-    // inject 되던 패치 anchor 경합 (feedback #3 P0).
-    // sentryVitePlugin 은 plugins 배열의 top-level entry 여야 하고,
-    // viteStaticCopy 의 `targets: [ ... ]` 안에 들어가서는 안 된다.
-    const viteCfg = await fs.readFile(path.join(tmpDir, 'v-stack/vite.config.ts'), 'utf-8');
-    // viteStaticCopy 호출이 sentryVitePlugin 보다 먼저 등장 (append 순서)
-    expect(viteCfg.indexOf('viteStaticCopy(')).toBeLessThan(viteCfg.indexOf('sentryVitePlugin('));
-    // targets: [ ... ] 안에 sentryVitePlugin 이 있으면 안 됨.
-    const targetsMatch = viteCfg.match(/targets:\s*\[[\s\S]*?\]/);
-    expect(targetsMatch).not.toBeNull();
-    expect(targetsMatch[0]).not.toContain('sentryVitePlugin');
-    // viteStaticCopy({ ... }) 가 닫힌 뒤에 sentryVitePlugin 이 옴.
-    expect(viteCfg).toMatch(/viteStaticCopy\(\{[\s\S]*?\}\),\s*\n\s*sentryVitePlugin\(/);
-
-    // 회귀 가드 — vite 메이저를 올릴 때 vite-plugin-static-copy peer 가 같이 안
-    // 따라오면 i18n 프로젝트가 pnpm install 에서 unmet peer → build/dev 깨짐.
-    const scPkg = await fs.readJson(path.join(tmpDir, 'v-stack/package.json'));
-    const scStatic = parseInt(
-      scPkg.devDependencies['vite-plugin-static-copy'].match(/\d+/)[0], 10,
-    );
-    const scVite = parseInt(scPkg.devDependencies.vite.match(/\d+/)[0], 10);
-    if (scVite >= 7) expect(scStatic).toBeGreaterThanOrEqual(3);
-  });
-
   it('scenario V20b — sh_ui_create_project 의 appName 인자 (피드백 #3 — describe_template 와 1:1 일치)', async () => {
     // 사용자가 첫 앱 이름을 'web' 외로 시작하려면 12+ 파일 손 rename 이 필요했음.
     // appName='admin' 으로 한 번에 생성되어야 한다.
@@ -636,33 +528,26 @@ describe('sh-ui create smoke tests', () => {
     expect(await fs.pathExists(path.join(tmpDir, 'cp-default-app/packages/ui/ui-apps/ui-web'))).toBe(true);
   });
 
-  it('scenario V20a — vite monorepo + i18n + sentry 동시 ON (all-options 회귀 가드)', async () => {
+  it('scenario V20a — vite monorepo + i18n (all-options 회귀 가드)', async () => {
     // ai-org 시나리오 — feedback #3 에서 emit 깨지던 조합.
     // 모든 옵션이 동시에 켜져도 vite.config.ts 가 깨지지 않아야 한다.
     await createProject({
       name: 'all-on', platform: 'vite', structure: 'monorepo', arch: 'fsd',
       css: 'tailwind',
       i18n: 'react-i18next', locales: 'ko,en',
-      observability: 'sentry',
       yes: true,
     });
     const appDir = path.join(tmpDir, 'all-on/apps/web');
     expect(await fs.pathExists(path.join(appDir, 'src/shared/i18n/index.ts'))).toBe(true);
-    expect(await fs.pathExists(path.join(appDir, 'src/shared/observability/sentry.ts'))).toBe(true);
 
     const viteCfg = await fs.readFile(path.join(appDir, 'vite.config.ts'), 'utf-8');
-    // i18n 의 viteStaticCopy 와 sentry 의 sentryVitePlugin 모두 plugins 의 top-level entry.
+    // i18n 의 viteStaticCopy 가 plugins 의 top-level entry.
     expect(viteCfg).toContain('viteStaticCopy(');
-    expect(viteCfg).toContain('sentryVitePlugin(');
-    expect(viteCfg.indexOf('viteStaticCopy(')).toBeLessThan(viteCfg.indexOf('sentryVitePlugin('));
     const targetsMatch = viteCfg.match(/targets:\s*\[[\s\S]*?\]/);
     expect(targetsMatch).not.toBeNull();
-    expect(targetsMatch[0]).not.toContain('sentryVitePlugin');
-    // build.sourcemap 도 같이 들어가 있어야 — server 분기 정상.
-    expect(viteCfg).toContain('build: { sourcemap: true }');
-    // GlobalProvider 순서 검증.
+    // GlobalProvider 에 I18nProvider 가 와이어링.
     const gp = await fs.readFile(path.join(appDir, 'src/app/providers/GlobalProvider/index.tsx'), 'utf-8');
-    expect(gp.indexOf('<SentryProvider>')).toBeLessThan(gp.indexOf('<I18nProvider>'));
+    expect(gp).toContain('<I18nProvider>');
   });
 
   it('scenario 2 — monorepo, no plugins', async () => {
@@ -717,59 +602,6 @@ describe('sh-ui create smoke tests', () => {
     expect(appTsconfig.compilerOptions?.paths?.['@workspace/ui-core/*']).toEqual([
       '../../packages/ui/ui-core/src/*',
     ]);
-  });
-  it('scenario 3 — standalone + sentry + next-intl', async () => {
-    // 플러그인은 이제 prompt 가 없고 --plugins 플래그로만 지정
-    await createProject({
-      name: 'my-app',
-      platform: 'next',
-      structure: 'standalone',
-      plugins: ['sentry', 'next-intl'],
-    });
-
-    const projectDir = path.join(tmpDir, 'my-app');
-
-    // dependencies 패치 확인
-    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
-    expect(pkg.dependencies['@sentry/nextjs']).toBeDefined();
-    expect(pkg.dependencies['next-intl']).toBeDefined();
-
-    // .env.example 에 Sentry 키 추가 확인
-    const envExample = await fs.readFile(path.join(projectDir, '.env.example'), 'utf-8');
-    expect(envExample).toContain('SENTRY_ORG=');
-
-    // next.config.ts 에 플러그인 반영 확인
-    const nextConfig = await fs.readFile(path.join(projectDir, 'next.config.ts'), 'utf-8');
-    expect(nextConfig).toContain('withSentryConfig');
-    expect(nextConfig).toContain('createNextIntlPlugin');
-
-    // next-intl transforms: app/page.tsx → app/[locale]/page.tsx
-    expect(await fs.pathExists(path.join(projectDir, 'app', 'page.tsx'))).toBe(false);
-    expect(await fs.pathExists(path.join(projectDir, 'app', '[locale]', 'page.tsx'))).toBe(true);
-
-    // Next 16 호환: app/layout.tsx 는 사라지고 [locale]/layout.tsx 가 root 역할.
-    // - app/layout.tsx 가 패스스루로 남으면 Next 16 이 "Missing <html>/<body>" 에러를 던진다.
-    // - globals.css side-effect import 는 새 root([locale]/layout.tsx) 로 이전돼 있어야 Tailwind 가 동작.
-    expect(await fs.pathExists(path.join(projectDir, 'app', 'layout.tsx'))).toBe(false);
-    const localeLayout = await fs.readFile(
-      path.join(projectDir, 'app', '[locale]', 'layout.tsx'),
-      'utf-8',
-    );
-    // v0.59.9 회귀 가드: globals.css import 의 상대 경로가 새 위치 기준으로 보정돼야 한다.
-    // 원본 app/layout.tsx 의 `./globals.css` 는 app/[locale]/layout.tsx 로 이동하면서
-    // `../globals.css` 가 돼야 하고, 그렇지 않으면 prod 빌드(`next build`) 가 모듈 미해결로 죽는다.
-    expect(localeLayout).toContain("import '../globals.css';");
-    expect(localeLayout).not.toContain("import './globals.css';");
-    expect(localeLayout).toContain('RootLayout');
-    expect(localeLayout).toContain('params');
-
-    // RootLayout 본체는 html/body 를 가진다 (Next 16 root layout 요건)
-    const rootLayout = await fs.readFile(
-      path.join(projectDir, 'src', 'app', 'layouts', 'RootLayout.tsx'),
-      'utf-8',
-    );
-    expect(rootLayout).toContain('<html');
-    expect(rootLayout).toContain('<body>');
   });
   it('scenario 4 — addApp in monorepo', async () => {
     // minimal monorepo fixture: pnpm-workspace.yaml 만 필요
@@ -877,28 +709,6 @@ describe('sh-ui create smoke tests', () => {
       'utf-8',
     );
     expect(mainDart).toContain("title: 'my-flutter-app'");
-  });
-
-  it('scenario 6 — 모든 플래그 (inquirer 호출 없음)', async () => {
-    // prompts 는 mock 된 상태 — 아무 mockResolvedValue 도 세팅 안 함
-    await createProject({
-      name: 'flaggy',
-      platform: 'next',
-      structure: 'standalone',
-      plugins: ['sentry'],
-      yes: true,
-    });
-
-    const projectDir = path.join(tmpDir, 'flaggy');
-    expect(await fs.pathExists(projectDir)).toBe(true);
-    const pkg = await fs.readJson(path.join(projectDir, 'package.json'));
-    expect(pkg.name).toBe('flaggy');
-    expect(pkg.dependencies['@sentry/nextjs']).toBeDefined();
-
-    // inquirer 는 한 번도 호출되지 않았어야 함
-    expect(prompts.input).not.toHaveBeenCalled();
-    expect(prompts.select).not.toHaveBeenCalled();
-    expect(prompts.checkbox).not.toHaveBeenCalled();
   });
 
   it('scenario 6b — --css 명시 시 cssFramework 프롬프트 우회', async () => {
@@ -1396,65 +1206,6 @@ describe('sh-ui create smoke tests', () => {
   // ─── 플러그인 구조 검증 (v0.32.0 의 src/proxy.ts 같은 회귀 차단) ───
 
   describe('plugin structure assertions', () => {
-    it('auth-jwt: proxy.ts 는 root 에 있어야 한다 (src/proxy.ts 금지)', async () => {
-      await createProject({
-        name: 'auth-app',
-        platform: 'next',
-        structure: 'standalone',
-        plugins: ['auth-jwt'],
-        yes: true,
-      });
-
-      const projectDir = path.join(tmpDir, 'auth-app');
-
-      // root proxy.ts 존재
-      expect(await fs.pathExists(path.join(projectDir, 'proxy.ts'))).toBe(true);
-      // src/proxy.ts 는 절대 안 됨 — Next 16 이 인식 못 함
-      expect(await fs.pathExists(path.join(projectDir, 'src', 'proxy.ts'))).toBe(false);
-
-      // 핵심 파일들 동반
-      expect(await fs.pathExists(path.join(projectDir, 'src', 'shared', 'api', 'refreshSession.ts'))).toBe(true);
-      expect(await fs.pathExists(path.join(projectDir, 'src', 'shared', 'api', 'withAuthRetry.ts'))).toBe(true);
-    });
-
-    it('auth-jwt + next-intl: proxy.ts 가 합성 (intl + 인증 가드)', async () => {
-      await createProject({
-        name: 'combo-app',
-        platform: 'next',
-        structure: 'standalone',
-        plugins: ['auth-jwt', 'next-intl'],
-        yes: true,
-      });
-
-      const proxyPath = path.join(tmpDir, 'combo-app', 'proxy.ts');
-      expect(await fs.pathExists(proxyPath)).toBe(true);
-
-      const content = await fs.readFile(proxyPath, 'utf-8');
-      // intl 미들웨어
-      expect(content).toContain('createIntlMiddleware');
-      // 인증 가드 (토큰 존재 체크)
-      expect(content).toContain('accessToken');
-      // locale prefix 처리
-      expect(content).toContain('stripLocalePrefix');
-    });
-
-    it('sentry: observability.ts 가 베이스를 덮어쓴다 (Sentry import 포함)', async () => {
-      await createProject({
-        name: 'sentry-app',
-        platform: 'next',
-        structure: 'standalone',
-        plugins: ['sentry'],
-        yes: true,
-      });
-
-      const obsPath = path.join(
-        tmpDir, 'sentry-app', 'src', 'shared', 'api', 'observability.ts',
-      );
-      const content = await fs.readFile(obsPath, 'utf-8');
-      expect(content).toContain("@sentry/nextjs");
-      expect(content).toContain('captureApiError');
-    });
-
     it('베이스 (플러그인 없음): observability.ts 는 no-op', async () => {
       await createProject({
         name: 'bare-app',
@@ -1489,22 +1240,6 @@ describe('sh-ui create smoke tests', () => {
       expect(content).toContain('serverFetch');
       expect(content).toContain('clientFetch');
     });
-
-    it('package.json 에 axios 가 들어있지 않다', async () => {
-      await createProject({
-        name: 'no-axios',
-        platform: 'next',
-        structure: 'standalone',
-        plugins: ['sentry', 'auth-jwt', 'next-intl'],
-        yes: true,
-      });
-
-      const pkg = await fs.readJson(
-        path.join(tmpDir, 'no-axios', 'package.json'),
-      );
-      expect(pkg.dependencies?.axios).toBeUndefined();
-      expect(pkg.devDependencies?.axios).toBeUndefined();
-    });
   });
 
   // ─── --dry-run 검증 ───
@@ -1515,7 +1250,7 @@ describe('sh-ui create smoke tests', () => {
         name: 'never-written',
         platform: 'next',
         structure: 'standalone',
-        plugins: ['auth-jwt'],
+        plugins: [],
         yes: true,
         dryRun: true,
       });
@@ -1716,29 +1451,6 @@ describe('sh-ui create smoke tests', () => {
       expect(await fs.pathExists(path.join(dir, 'lib', 'styles', 'tokens.css'))).toBe(true);
     });
 
-    it('flat standalone — sentry — observability 와 FallbackBoundary 가 flat 경로로', async () => {
-      await createProject({
-        name: 'flat-sentry',
-        platform: 'next',
-        structure: 'standalone',
-        plugins: ['sentry'],
-        arch: 'flat',
-        yes: true,
-      });
-      const dir = path.join(tmpDir, 'flat-sentry');
-      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'observability.ts'))).toBe(true);
-      expect(await fs.pathExists(path.join(dir, 'components', 'common', 'FallbackBoundary', 'index.tsx'))).toBe(true);
-      // FSD 경로엔 없어야 함
-      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(false);
-
-      // FallbackBoundary 가 ApiError 를 flat alias 로 import
-      const fb = await fs.readFile(
-        path.join(dir, 'components', 'common', 'FallbackBoundary', 'index.tsx'),
-        'utf-8',
-      );
-      expect(fb).toContain("from '@/lib/api/error'");
-    });
-
     it('flat standalone — next-intl — i18n 설정이 lib/config/i18n 으로', async () => {
       await createProject({
         name: 'flat-intl',
@@ -1773,71 +1485,17 @@ describe('sh-ui create smoke tests', () => {
       expect(nextConfig).toContain("'./lib/config/i18n/request.ts'");
     });
 
-    it('flat standalone — auth-jwt — refreshSession 등이 lib/api 로, BFF 가 flat alias 로', async () => {
-      await createProject({
-        name: 'flat-auth',
-        platform: 'next',
-        structure: 'standalone',
-        plugins: ['auth-jwt'],
-        arch: 'flat',
-        yes: true,
-      });
-      const dir = path.join(tmpDir, 'flat-auth');
-      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'refreshSession.ts'))).toBe(true);
-      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'withAuthRetry.ts'))).toBe(true);
-
-      const bff = await fs.readFile(
-        path.join(dir, 'app', 'api', 'proxy', '[...path]', 'route.ts'),
-        'utf-8',
-      );
-      expect(bff).toContain("from '@/lib/api/observability'");
-      expect(bff).toContain("from '@/lib/api/refreshSession'");
-    });
-
-    it('flat standalone — sentry + next-intl + auth-jwt 셋 다 — proxy 병합 + 모든 산출물 flat 경로', async () => {
-      await createProject({
-        name: 'flat-all',
-        platform: 'next',
-        structure: 'standalone',
-        plugins: ['sentry', 'next-intl', 'auth-jwt'],
-        arch: 'flat',
-        yes: true,
-      });
-      const dir = path.join(tmpDir, 'flat-all');
-
-      // 병합된 proxy.ts 는 flat alias 로 i18n routing import
-      const proxy = await fs.readFile(path.join(dir, 'proxy.ts'), 'utf-8');
-      expect(proxy).toContain("from '@/lib/config/i18n/routing'");
-      expect(proxy).toContain('createIntlMiddleware');
-      expect(proxy).toContain('accessToken');
-
-      // src/ 절대 부재
-      expect(await fs.pathExists(path.join(dir, 'src'))).toBe(false);
-
-      // 모든 산출물이 flat 경로
-      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'observability.ts'))).toBe(true);
-      expect(await fs.pathExists(path.join(dir, 'lib', 'api', 'refreshSession.ts'))).toBe(true);
-      expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'routing.ts'))).toBe(true);
-      expect(await fs.pathExists(path.join(dir, 'components', 'common', 'FallbackBoundary', 'index.tsx'))).toBe(true);
-
-      // 어디에도 @/src/ import 없음
-      const sources = await readAllSources(dir);
-      const violators = sources.filter((s) => /@\/src\//.test(s.content));
-      expect(violators).toEqual([]);
-    });
-
-    it('flat monorepo — apps/web 에 flat 구조 + 플러그인 산출물', async () => {
+    it('flat monorepo — apps/web 에 flat 구조', async () => {
       await createProject({
         name: 'flat-mono',
         platform: 'next',
         structure: 'monorepo',
-        plugins: ['sentry', 'next-intl', 'auth-jwt'],
+        plugins: ['next-intl'],
         arch: 'flat',
         yes: true,
       });
       const webDir = path.join(tmpDir, 'flat-mono', 'apps', 'web');
       expect(await fs.pathExists(path.join(webDir, 'src'))).toBe(false);
-      expect(await fs.pathExists(path.join(webDir, 'lib', 'api', 'observability.ts'))).toBe(true);
       expect(await fs.pathExists(path.join(webDir, 'components', 'layouts', 'RootLayout.tsx'))).toBe(true);
 
       const sources = await readAllSources(webDir);

@@ -28,7 +28,7 @@ export default function DataFetchingRecipe() {
         </li>
         <li>
           <strong>에러 자동 복구</strong> — RSC 가 401 등으로 prefetch 실패해도
-          클라 refetch 가 BFF 경유로 자연 복구 (auth-jwt 사용 시)
+          클라 refetch 가 BFF 경유로 자연 복구
         </li>
       </ul>
 
@@ -134,9 +134,7 @@ export function OrderList() {
       <h2>5. AsyncBoundary 와 조합</h2>
       <p>
         Suspense + ErrorBoundary 묶음.{" "}
-        <a href="/recipes/async-boundary">AsyncBoundary 레시피</a> 참고. Sentry
-        플러그인이 같이 켜지면 ErrorBoundary 안의 일반 에러는 자동 캡처되고
-        ApiError 는 제외.
+        <a href="/recipes/async-boundary">AsyncBoundary 레시피</a> 참고.
       </p>
       <CodePanel
         language="tsx"
@@ -171,9 +169,8 @@ export function CreateOrderButton() {
 }`}
       />
       <p className="muted">
-        Server Action 이 더 적합한 케이스 (쿠키 set, revalidateTag 등) 는{" "}
-        <a href="/plugins/auth-jwt">auth-jwt 페이지</a> 의 로그인/로그아웃 예시
-        참고.
+        쿠키 set · <code>revalidateTag</code> 등이 필요한 로그인/로그아웃류
+        변경은 <code>mutationFn</code> 대신 Server Action 으로 처리한다.
       </p>
 
       <h2>7. queryClient 기본 옵션</h2>
