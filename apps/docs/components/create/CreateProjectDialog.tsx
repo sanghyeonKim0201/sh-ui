@@ -115,7 +115,6 @@ export function CreateProjectDialog({
   const [cssFramework, setCssFramework] = useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
   const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
   const [locales, setLocales] = useState<string>('ko,en');
-  const [observability, setObservability] = useState<'none' | 'sentry'>('none');
   const [copied, setCopied] = useState(false);
 
   const nameError = useMemo(() => validateProjectName(projectName), [projectName]);
@@ -181,9 +180,8 @@ export function CreateProjectDialog({
         cssFramework,
         i18n,
         locales,
-        observability,
       } satisfies ComposerOptions),
-    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, i18n, locales, observability],
+    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, i18n, locales],
   );
 
   const togglePlugin = (p: Plugin) => {
@@ -288,8 +286,6 @@ export function CreateProjectDialog({
             onI18nChange={setI18n}
             locales={locales}
             onLocalesChange={setLocales}
-            observability={observability}
-            onObservabilityChange={setObservability}
           />
 
           {/* package manager + command preview */}

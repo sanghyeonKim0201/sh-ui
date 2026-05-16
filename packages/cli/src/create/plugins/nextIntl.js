@@ -130,10 +130,6 @@ export default function Error({
 }
 `,
     },
-    // auth-jwt 플러그인이 함께 활성화돼 있으면 sign-in 도 locale prefix 안으로 이동.
-    // auth-jwt 단독일 때 (= 이 transform 이 없을 때) 는 app/sign-in 이 그대로 root 에 남는다.
-    // `move` 트랜스폼은 from 파일이 없으면 silently skip 이라 auth-jwt 미활성 시 안전한 no-op.
-    { type: 'move', from: 'app/sign-in/page.tsx', to: 'app/[locale]/sign-in/page.tsx' },
     {
       // Next 16 부터 root layout (app/layout.tsx) 은 반드시 <html>/<body> 를 가져야 한다.
       // next-intl 적용 시에는 [locale] 가 root 역할을 맡으므로, 기본 app/layout.tsx 를 그대로

@@ -12,7 +12,7 @@
 sh-ui create my-app \
   --platform next --structure standalone \
   --arch flat \
-  --plugins sentry,next-intl,auth-jwt
+  --plugins next-intl
 ```
 
 플러그인은 arch 디스크립터의 논리 키 (`arch.paths.api`, `arch.aliases.layouts` 등) 를 조회해 자기 산출물의 fs 경로 / import 를 emit 한다. 플러그인 코드는 특정 arch 의 폴더명을 알지 못한다.
@@ -24,10 +24,9 @@ sh-ui create my-app \
                 │  aliases:  {…} │
                 └───────▲────────┘
                         │ (read-only)
-        ┌───────────────┼───────────────┐
-   ┌────┴────┐    ┌─────┴────┐    ┌─────┴─────┐
-   │ sentry  │    │ next-intl │    │ auth-jwt  │
-   └─────────┘    └──────────┘    └───────────┘
+                  ┌─────┴─────┐
+                  │ next-intl │
+                  └───────────┘
 ```
 
 ## 디스크립터 (`src/create/architectures/*.js`)
@@ -126,7 +125,7 @@ generator 의 `resolveArchField(field, arch)` 헬퍼가 함수면 호출하고 �
 4. **스모크 시나리오 추가** — `test/smoke.test.js` 의 `arch=clean 매트릭스` describe 블록
    - 핵심 산출물 위치 검증
    - `@/<old-arch>/...` import 가 누수되지 않는지 (회귀 가드)
-   - 플러그인 조합 (sentry/next-intl/auth-jwt) 별 산출물 검증
+   - 플러그인 (next-intl) 산출물 검증
 
 5. **Marker 테스트 갱신** — `test/markers.test.js` 의 `TOKEN_FILES` 에 새 tokens.css 위치 추가 (standalone 의 경우)
 
@@ -137,7 +136,7 @@ generator 의 `resolveArchField(field, arch)` 헬퍼가 함수면 호출하고 �
 
 ## 디자인 가드 — 자주 빠지는 함정
 
-- **상대 경로 (`../../api/error`) 는 arch 가 바뀌면 깨질 수 있다.** 같은 슬라이스 내부 형제 (`./routing` 같은 짧은 상대) 는 안전. 하지만 슬라이스 경계를 넘는 import 는 alias (`arch.aliases.api`) 를 써야 함. sentry 의 FallbackBoundary 가 v0.58 에서 alias 로 통일된 사례.
+- **상대 경로 (`../../api/error`) 는 arch 가 바뀌면 깨질 수 있다.** 같은 슬라이스 내부 형제 (`./routing` 같은 짧은 상대) 는 안전. 하지만 슬라이스 경계를 넘는 import 는 alias (`arch.aliases.api`) 를 써야 함. next-intl 이 RootLayout/GlobalProvider 를 `arch.aliases` 로 import 하는 것이 그 예.
 
 - **arch 디스크립터 자체에 플러그인 이름이 들어가면 안 된다.** `paths.i18n` 은 잘못된 키 — 플러그인 specific. `paths.config` (i18n 은 그 아래 `i18n/` 서브폴더) 가 올바른 추상화.
 

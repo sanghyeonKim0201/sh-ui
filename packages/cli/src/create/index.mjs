@@ -17,8 +17,8 @@ const THEME_PRESETS_LIST = THEME_PRESET_NAMES.join('|');
 export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next.js / Flutter)
 
 사용법:
-  sh-ui create [name] [options] [--observability <none|sentry>]
-  sh-ui create add-app [name] [--port <n>] [--platform <next|vite>] [--plugins ..] [--theme ..] [--css ..] [--i18n <react-i18next|none>] [--locales ko,en] [--observability <none|sentry>]
+  sh-ui create [name] [options]
+  sh-ui create add-app [name] [--port <n>] [--platform <next|vite>] [--plugins ..] [--theme ..] [--css ..] [--i18n <react-i18next|none>] [--locales ko,en]
   sh-ui create add-component <name> [--app <name>]
 
 옵션:
@@ -30,7 +30,6 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
   --css <${CSS_FRAMEWORKS_SUPPORTED.join('|')}>                        CSS 프레임워크. base 파일까지 분기 emit (tailwind/plain/css-modules)
   --i18n <react-i18next|none>        vite 전용 — react-i18next 셋업 emit (i18n config + I18nProvider). 기본 none (v0.92.0+)
   --locales <ko,en>                  i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 'ko,en'
-  --observability <none|sentry>      vite 전용 — Sentry 셋업 emit (@sentry/react + vite-plugin + SentryProvider). 기본 none (v0.93.0+)
   --yes                              디렉토리 덮어쓰기 + 모노레포 기본값 자동 채택
   --dry-run                          파일을 쓰지 않고 작성될 파일 목록만 출력
   -h, --help                         이 도움말
@@ -79,7 +78,6 @@ export async function runCreate(rest) {
       platform: flags.platform,
       i18n: flags.i18n,
       locales: flags.locales,
-      observability: flags.observability,
     });
   } else if (command === 'add-component') {
     // 호환 별칭 — 신규 진입점은 `sh-ui add <name>` (bin/sh-ui.mjs 가 walk-up 으로 라우팅).
@@ -98,7 +96,6 @@ export async function runCreate(rest) {
       css: flags.css,
       i18n: flags.i18n,
       locales: flags.locales,
-      observability: flags.observability,
       // create 컨텍스트에서는 --app 이 첫 앱 이름 (monorepo). 같은 플래그가
       // add-component 컨텍스트에서는 대상 앱 선택 — 의미가 컨텍스트마다 다름.
       appName: flags.app,

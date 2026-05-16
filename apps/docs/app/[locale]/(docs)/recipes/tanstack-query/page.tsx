@@ -255,8 +255,8 @@ export const useCreateOrder = () => {
         훅은 제출만 담당.
       </p>
       <p className="muted">
-        Server Action 이 더 적합한 케이스 (쿠키 set, revalidateTag 등) 는{" "}
-        <a href="/plugins/auth-jwt">auth-jwt 플러그인</a> 참고.
+        쿠키 set · <code>revalidateTag</code> 등이 필요한 케이스는{" "}
+        <code>mutationFn</code> 대신 Server Action 으로 처리한다.
       </p>
 
       <h2>queryOptions 전략 분기</h2>

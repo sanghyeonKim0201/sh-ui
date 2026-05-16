@@ -20,10 +20,6 @@ API_URL=http://localhost:8080/api
 # 프로덕션(HTTPS)에서는 true — secure 쿠키 발행
 COOKIE_SECURE=false
 
-# Sentry (선택, 레시피 참조)
-NEXT_PUBLIC_SENTRY_DSN=
-SENTRY_AUTH_TOKEN=
-
 # Next 자체
 PORT=3000
 NODE_ENV=production`}
@@ -148,13 +144,6 @@ RUN pnpm --filter app-name build`}
         핸들러의 <code>fetch</code> 양쪽이 같은 timeout 을 따르도록 한다.
       </p>
 
-      <h2>Sentry source map</h2>
-      <p>
-        Sentry 를 쓰면 source map 을 빌드 시 업로드하도록 wizard 가 next config
-        를 수정한다. CI 에서 <code>SENTRY_AUTH_TOKEN</code>을 secret 으로 주입하고
-        빌드 명령은 그대로 <code>pnpm build</code>.
-      </p>
-
       <h2>프로덕션 체크리스트</h2>
       <ul>
         <li>
@@ -162,9 +151,6 @@ RUN pnpm --filter app-name build`}
         </li>
         <li>
           ✅ <code>COOKIE_SECURE=true</code> 설정됨
-        </li>
-        <li>
-          ✅ Sentry DSN 환경변수 주입 (옵션)
         </li>
         <li>
           ✅ <code>output: 'standalone'</code>로 빌드되었는가

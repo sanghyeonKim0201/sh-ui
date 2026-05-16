@@ -22,7 +22,7 @@ npx sh-ui-cli create
 
 # 비대화형 (에이전트 / CI)
 npx sh-ui-cli create my-app --platform next --structure standalone --yes
-npx sh-ui-cli create my-app --platform next --structure monorepo --plugins sentry,next-intl,auth-jwt --yes
+npx sh-ui-cli create my-app --platform next --structure monorepo --plugins next-intl --yes
 npx sh-ui-cli create my-app --platform flutter --yes
 ```
 

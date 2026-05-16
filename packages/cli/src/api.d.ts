@@ -143,8 +143,6 @@ export interface DescribeTemplateOptions {
   i18n?: 'none' | 'react-i18next';
   /** i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 'ko,en' */
   locales?: string;
-  /** vite 전용 — Sentry observability opt-in. v0.93.0+ */
-  observability?: 'none' | 'sentry';
 }
 
 export interface DescribeTemplateGroup {

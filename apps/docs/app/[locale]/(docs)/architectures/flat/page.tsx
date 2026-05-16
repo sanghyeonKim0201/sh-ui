@@ -91,13 +91,6 @@ import { formatDate } from '${flat.aliases.utils}/formatDate';`}
         <li>
           <strong>next-intl</strong> — <code>{flat.paths.config}/i18n/</code>
         </li>
-        <li>
-          <strong>auth-jwt</strong> — <code>{flat.paths.api}/</code>
-        </li>
-        <li>
-          <strong>sentry</strong> — observability 가 <code>{flat.paths.api}/</code>
-          , FallbackBoundary 가 <code>{flat.paths.ui}/</code>
-        </li>
       </ul>
 
       <h2>언제 적합한가</h2>

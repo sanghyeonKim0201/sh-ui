@@ -220,13 +220,6 @@ export async function createProject(options = {}) {
     );
   }
 
-  // observability 옵션도 vite preset 전용. v0.93.0+.
-  if (options.observability && options.observability !== 'none' && platform !== 'vite') {
-    throw new Error(
-      `observability='${options.observability}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --observability none 또는 --platform vite 사용.`,
-    );
-  }
-
   // arch 결정 — platform 확정 후. 사용자가 --arch 미지정 시:
   //   - next  → DEFAULT_ARCH ('fsd')
   //   - flutter → 현재 Flutter arch 디스크립터 없음 → null. 미래에 flutter arch 추가되면
@@ -350,7 +343,6 @@ export async function createProject(options = {}) {
       await generateViteStandalone(targetDir, projectName, theme, cssFramework, arch, themeBase, {
         i18n: options.i18n ?? 'none',
         locales: options.locales ?? 'ko,en',
-        observability: options.observability ?? 'none',
       });
     } else {
       await generateMonorepo(targetDir, projectName, [], {
@@ -358,7 +350,6 @@ export async function createProject(options = {}) {
         platform: 'vite',
         i18n: options.i18n ?? 'none',
         locales: options.locales ?? 'ko,en',
-        observability: options.observability ?? 'none',
         appName: options.appName ?? null,
         port: options.port ?? null,
       });
@@ -394,7 +385,7 @@ export async function createProject(options = {}) {
   });
 
   // plugins 는 미지정시 기본 빈 배열 — prompt 띄우지 않는다.
-  // (플러그인을 쓰려면 명시적으로 --plugins sentry,next-intl,auth-jwt 등 사용)
+  // (플러그인을 쓰려면 명시적으로 --plugins next-intl 사용)
   const selectedPluginNames = options.plugins ?? [];
 
   const plugins = getPluginsByNames(selectedPluginNames);
@@ -518,11 +509,6 @@ export async function addApp(options = {}) {
       `i18n='${options.i18n}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}).`,
     );
   }
-  if (options.observability && options.observability !== 'none' && platform !== 'vite') {
-    throw new Error(
-      `observability='${options.observability}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --observability none 또는 --platform vite 사용.`,
-    );
-  }
 
   const appName = validateProjectName(
     options.name ?? await input({
@@ -576,7 +562,6 @@ export async function addApp(options = {}) {
     await generateViteApp(appsDir, appName, port, arch, css, {
       i18n: options.i18n ?? 'none',
       locales: options.locales ?? 'ko,en',
-      observability: options.observability ?? 'none',
     });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
@@ -833,7 +818,7 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
 
-async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
+async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { i18n = 'none', locales = 'ko,en' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateStandalone 과 같은 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-standalone'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -872,10 +857,6 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
   if (i18n === 'react-i18next') {
     const localesArr = parseLocales(locales);
     await emitI18n(targetDir, { arch, locales: localesArr });
-  }
-
-  if (observability === 'sentry') {
-    await emitSentry(targetDir, { arch, i18nActive: i18n === 'react-i18next' });
   }
 }
 
@@ -1083,8 +1064,8 @@ async function patchLandingForI18n(targetDir, { arch }) {
  *
  * - balanced bracket 으로 outer `]` 를 찾으므로 `viteStaticCopy({ targets: [...] })`
  *   처럼 안쪽에 `[]` 가 있어도 안전.
- * - 두 개 이상의 patch (i18n + sentry 등) 가 같은 vite.config.ts 를 순차로
- *   건드릴 때 anchor 경합으로 entry 가 안쪽 배열에 inject 되던 v0.92~0.95 회귀의 원인을 제거.
+ * - i18n 의 viteStaticCopy 처럼 nested `[]` 를 가진 plugin 을 append 할 때
+ *   anchor 경합으로 entry 가 안쪽 배열에 inject 되던 v0.92~0.95 회귀의 원인을 제거.
  *
  * 입력 src 가 예상 형태가 아니면 (`plugins: [` 못 찾음 / unbalanced bracket)
  * `null` 을 반환 → 호출부에서 patch 포기.
@@ -1221,182 +1202,7 @@ function parseLocales(input) {
   return cleaned.length > 0 ? cleaned : ['ko', 'en'];
 }
 
-/**
- * Sentry observability 셋업 emit (v0.93.0+). vite preset 전용 opt-in.
- *
- * - shared/observability/sentry.ts — Sentry.init (DSN 있을 때만)
- * - shared/observability/index.ts  — Sentry + ErrorBoundary re-export
- * - app/providers/SentryProvider.tsx — ErrorBoundary wrapper
- * - GlobalProvider 재작성 — Sentry > [I18n?] > Theme > Query 순서
- * - package.json — @sentry/react + @sentry/vite-plugin 추가
- * - vite.config.ts — sentryVitePlugin 삽입 + sourcemap: true
- * - .env.example — Sentry 변수 안내 블록 추가
- *
- * @param {string} targetDir — 앱 디렉토리
- * @param {object} opts
- * @param {object} opts.arch — arch descriptor
- * @param {boolean} [opts.i18nActive] — i18n 도 같이 켜져 있는지 (GlobalProvider wrapping 순서)
- */
-async function emitSentry(targetDir, { arch, i18nActive = false }) {
-  const isFsd = arch.name === 'fsd';
-  const obsDirRel = isFsd ? 'src/shared/observability' : 'src/lib/observability';
-  const obsAlias = isFsd ? '@/shared/observability' : '@/lib/observability';
-  const providersDirRel = isFsd ? 'src/app/providers' : 'src/components/providers';
-  const apiAlias = isFsd ? '@/shared/api/queryClient' : '@/lib/api/queryClient';
-
-  const obsDir = path.join(targetDir, obsDirRel);
-  await fs.ensureDir(obsDir);
-
-  const sentryTs = `/// <reference types="vite/client" />
-import * as Sentry from '@sentry/react';
-
-// VITE_SENTRY_DSN 이 있을 때만 init — 로컬 dev 에선 자동 skip.
-// GlitchTip self-hosted 도 같은 SDK — DSN 만 변경.
-if (import.meta.env.VITE_SENTRY_DSN) {
-  Sentry.init({
-    dsn: import.meta.env.VITE_SENTRY_DSN,
-    release: import.meta.env.VITE_APP_VERSION,
-    environment: import.meta.env.MODE,
-    tracesSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1.0,
-    replaysSessionSampleRate: 0,
-    integrations: [
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({ maskAllText: true, blockAllMedia: true }),
-    ],
-  });
-}
-
-export { Sentry };
-`;
-  await fs.writeFile(path.join(obsDir, 'sentry.ts'), sentryTs);
-
-  await fs.writeFile(
-    path.join(obsDir, 'index.ts'),
-    `export { Sentry } from './sentry';\nexport { ErrorBoundary } from '@sentry/react';\n`,
-  );
-
-  const providersDir = path.join(targetDir, providersDirRel);
-  await fs.ensureDir(providersDir);
-  const sentryProvider = `import { type ReactNode } from 'react';
-import { ErrorBoundary } from '${obsAlias}';
-
-function Fallback({ error }: { error: unknown }) {
-  return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>오류가 발생했습니다</h1>
-      <p style={{ marginTop: '0.5rem', color: 'var(--foreground-muted)' }}>
-        {error instanceof Error ? error.message : '알 수 없는 오류'}
-      </p>
-    </div>
-  );
-}
-
-export function SentryProvider({ children }: { children: ReactNode }) {
-  return (
-    <ErrorBoundary fallback={({ error }) => <Fallback error={error} />}>
-      {children}
-    </ErrorBoundary>
-  );
-}
-`;
-  await fs.writeFile(path.join(providersDir, 'SentryProvider.tsx'), sentryProvider);
-
-  // GlobalProvider rewrite — Sentry outermost, then optional I18n, then Theme + Query.
-  const globalProviderPath = path.join(targetDir, providersDirRel, 'GlobalProvider', 'index.tsx');
-  const i18nImport = i18nActive ? `import { I18nProvider } from '../I18nProvider';\n` : '';
-  const innerOpen = i18nActive ? '      <I18nProvider>\n        ' : '      ';
-  const innerClose = i18nActive ? '\n      </I18nProvider>' : '';
-  const globalProvider = `import { QueryClientProvider } from '@tanstack/react-query';
-import { type ReactNode, useState } from 'react';
-import { createQueryClient } from '${apiAlias}';
-import { ThemeProvider } from '../theme/ThemeProvider';
-${i18nImport}import { SentryProvider } from '../SentryProvider';
-
-export function GlobalProvider({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => createQueryClient());
-  return (
-    <SentryProvider>
-${innerOpen}<ThemeProvider>
-          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-        </ThemeProvider>${innerClose}
-    </SentryProvider>
-  );
-}
-`;
-  await fs.writeFile(globalProviderPath, globalProvider);
-
-  // package.json deps
-  const pkgPath = path.join(targetDir, 'package.json');
-  const pkg = await fs.readJson(pkgPath);
-  pkg.dependencies = pkg.dependencies ?? {};
-  pkg.devDependencies = pkg.devDependencies ?? {};
-  pkg.dependencies['@sentry/react'] = '^8.45.0';
-  pkg.devDependencies['@sentry/vite-plugin'] = '^2.22.7';
-  pkg.dependencies = sortObjectKeys(pkg.dependencies);
-  pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
-  await fs.writeJson(pkgPath, pkg, { spaces: 2 });
-
-  await patchViteConfigForSentry(targetDir);
-
-  // .env.example
-  const envExamplePath = path.join(targetDir, '.env.example');
-  const envBlock = `# Sentry observability (v0.93.0+) — 비워두면 init 자동 skip.
-VITE_SENTRY_DSN=
-VITE_APP_VERSION=
-# Source map upload (vite build 시).
-SENTRY_AUTH_TOKEN=
-SENTRY_ORG=
-SENTRY_PROJECT=
-`;
-  if (await fs.pathExists(envExamplePath)) {
-    const existing = await fs.readFile(envExamplePath, 'utf-8');
-    if (!existing.includes('VITE_SENTRY_DSN')) {
-      await fs.writeFile(envExamplePath, existing + '\n' + envBlock);
-    }
-  } else {
-    await fs.writeFile(envExamplePath, envBlock);
-  }
-}
-
-async function patchViteConfigForSentry(targetDir) {
-  const viteCfgPath = path.join(targetDir, 'vite.config.ts');
-  if (!(await fs.pathExists(viteCfgPath))) {
-    throw new Error(`vite.config.ts 가 ${targetDir} 에 없습니다.`);
-  }
-  let cfg = await fs.readFile(viteCfgPath, 'utf-8');
-
-  if (!cfg.includes("@sentry/vite-plugin")) {
-    cfg = cfg.replace(
-      /import { defineConfig } from 'vite';/,
-      `import { defineConfig } from 'vite';\nimport { sentryVitePlugin } from '@sentry/vite-plugin';`,
-    );
-  }
-
-  if (!cfg.includes("sentryVitePlugin(")) {
-    // i18n 의 viteStaticCopy 처럼 plugins 배열 안에 nested `[]` 가 있을 수 있으므로
-    // balanced-bracket helper 로 outer entry append.
-    const sentryCall = `sentryVitePlugin({
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      disable: !process.env.SENTRY_AUTH_TOKEN,
-    })`;
-    const patched = appendVitePluginEntry(cfg, sentryCall);
-    if (patched) cfg = patched;
-  }
-
-  if (!cfg.includes("sourcemap:")) {
-    if (cfg.includes("server: {")) {
-      cfg = cfg.replace(/(\n\s*server:\s*\{)/, `\n  build: { sourcemap: true },$1`);
-    }
-    // server 가 없는 변종은 build 삽입 위치가 모호 → 보수적으로 skip (사용자가 수동 추가).
-  }
-
-  await fs.writeFile(viteCfgPath, cfg);
-}
-
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', i18n = 'none', locales = 'ko,en', observability = 'none', appName: appNameOpt = null, port: portOpt = null } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', i18n = 'none', locales = 'ko,en', appName: appNameOpt = null, port: portOpt = null } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -1424,10 +1230,6 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
     turbo.tasks.build.outputs = ['dist/**'];
     // vite 는 클라이언트 노출 env 가 VITE_ 접두사 관례.
     turbo.globalEnv = turbo.globalEnv.map((e) => (e === 'API_URL' ? 'VITE_API_URL' : e));
-    // sentry observability 는 플러그인 turboEnvVars 훅을 안 타므로 직접 선언.
-    if (observability === 'sentry') {
-      turbo.globalEnv.push('MODE', 'SENTRY_ORG', 'SENTRY_PROJECT', 'SENTRY_AUTH_TOKEN');
-    }
   }
   turbo.globalEnv = [...new Set(turbo.globalEnv)];
   await fs.writeJson(turboPath, turbo, { spaces: 2 });
@@ -1448,7 +1250,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
 
   const appsDir = path.join(targetDir, 'apps', appName);
   if (platform === 'vite') {
-    await generateViteApp(appsDir, appName, port, arch, css, { i18n, locales, observability });
+    await generateViteApp(appsDir, appName, port, arch, css, { i18n, locales });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
   }
@@ -1549,7 +1351,7 @@ async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailw
   }
 }
 
-async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
+async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { i18n = 'none', locales = 'ko,en' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 동일 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-app'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -1612,10 +1414,6 @@ async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind',
   if (i18n === 'react-i18next') {
     const localesArr = parseLocales(locales);
     await emitI18n(targetDir, { arch, locales: localesArr });
-  }
-
-  if (observability === 'sentry') {
-    await emitSentry(targetDir, { arch, i18nActive: i18n === 'react-i18next' });
   }
 }
 
@@ -1812,30 +1610,10 @@ export default function Home() {
     }
   }
 
-  // 6) sentry plugin 의 error.tsx 변환 — Tailwind 클래스가 박혀있어서 plain/cssmodules 에서 작동 안 함.
-  // intl + sentry 면 nextIntl 이 [locale]/error.tsx 를 i18n-aware 로 replace 하므로 그것도 변환.
-  const sentryActive = plugins?.some((p) => p.name === 'sentry');
-  if (sentryActive) {
-    const errorCandidates = intlActive
-      ? [path.join(targetDir, 'app/[locale]/error.tsx')]
-      : [path.join(targetDir, 'app/error.tsx')];
-    for (const errPath of errorCandidates) {
-      if (!(await fs.pathExists(errPath))) continue;
-      const useI18n = intlActive;
-      await fs.writeFile(errPath, buildErrorTsxNonTailwind({ useI18n, cssFramework, arch }));
-      if (cssFramework === 'css-modules') {
-        await fs.writeFile(
-          path.join(path.dirname(errPath), 'error.module.css'),
-          buildErrorModuleCss(),
-        );
-      }
-    }
-  }
-
-  // 7) .prettierrc — tailwind plugin 제거.
+  // 6) .prettierrc — tailwind plugin 제거.
   await stripTailwindFromPrettier(path.join(targetDir, '.prettierrc'));
 
-  // 8) monorepo 인 경우 root .prettierrc 와 root package.json 도 정리 (root 의 prettier-plugin-tailwindcss).
+  // 7) monorepo 인 경우 root .prettierrc 와 root package.json 도 정리 (root 의 prettier-plugin-tailwindcss).
   // applyCssFrameworkVariant 는 apps/web 마다 호출되지만 root 정리는 1회면 충분 — idempotent 라 OK.
   if (isMonorepo && !isUiPackage) {
     const monorepoRoot = path.resolve(targetDir, '..', '..');
@@ -1863,365 +1641,6 @@ async function stripTailwindFromPrettier(prettierPath) {
   c.plugins = c.plugins.filter((p) => p !== 'prettier-plugin-tailwindcss');
   if (c.plugins.length === 0) delete c.plugins;
   await fs.writeJson(prettierPath, c, { spaces: 2 });
-}
-
-/**
- * sentry 의 error.tsx 를 plain/cssmodules 로 변환한 콘텐츠 생성.
- * useI18n=true 면 next-intl 의 useTranslations + Link 사용.
- */
-function buildErrorTsxNonTailwind({ useI18n, cssFramework, arch }) {
-  const i18nImports = useI18n
-    ? `import { useTranslations } from 'next-intl';\n`
-    : '';
-  const configAlias = arch ? arch.aliases.config : '@/src/shared/config';
-  const linkImport = useI18n
-    ? `import { Link } from '${configAlias}/i18n/navigation';\n`
-    : `import Link from 'next/link';\n`;
-  const tHook = useI18n ? `  const t = useTranslations('error');\n` : '';
-  const titleText = useI18n ? `{t('title')}` : `오류가 발생했습니다`;
-  const descText = useI18n
-    ? `{t('description')}`
-    : `예상치 못한 오류가 발생했습니다. 다시 시도해주세요.`;
-  const fallback = useI18n ? `t('unexpectedError')` : `'알 수 없는 오류'`;
-  const tryAgain = useI18n ? `{t('button.tryAgain')}` : `다시 시도`;
-  const goHome = useI18n ? `{t('button.goHome')}` : `홈으로 이동`;
-
-  if (cssFramework === 'css-modules') {
-    return `'use client';
-
-import * as Sentry from '@sentry/nextjs';
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
-${i18nImports}${linkImport}import { useEffect } from 'react';
-
-import styles from './error.module.css';
-
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-${tHook}  useEffect(() => {
-    Sentry.captureException(error);
-  }, [error]);
-
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.card}>
-        <div className={styles.iconRow}>
-          <div className={styles.iconCircle}>
-            <AlertTriangle className={styles.icon} />
-          </div>
-        </div>
-
-        <h2 className={styles.title}>${titleText}</h2>
-        <p className={styles.description}>${descText}</p>
-
-        <div className={styles.errorBox}>
-          <p className={styles.errorText}>{error.message || ${fallback}}</p>
-        </div>
-
-        <div className={styles.actions}>
-          <button onClick={reset} className={styles.primaryButton}>
-            <RefreshCw className={styles.buttonIcon} />
-            ${tryAgain}
-          </button>
-
-          <Link href='/' className={styles.secondaryButton}>
-            <Home className={styles.buttonIcon} />
-            ${goHome}
-          </Link>
-        </div>
-
-        {process.env.NODE_ENV === 'development' && error.digest && (
-          <div className={styles.digest}>
-            <p className={styles.digestText}>Error ID: {error.digest}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-`;
-  }
-
-  // plain — inline style (토큰 var 활용)
-  return `'use client';
-
-import * as Sentry from '@sentry/nextjs';
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
-${i18nImports}${linkImport}import { useEffect } from 'react';
-
-const wrapper: React.CSSProperties = {
-  display: 'flex',
-  minHeight: '100vh',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '0 16px',
-};
-const card: React.CSSProperties = {
-  width: '100%',
-  maxWidth: 448,
-  borderRadius: 8,
-  border: '1px solid var(--border)',
-  background: 'var(--background)',
-  padding: 24,
-  boxShadow: 'var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.15))',
-};
-
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-${tHook}  useEffect(() => {
-    Sentry.captureException(error);
-  }, [error]);
-
-  return (
-    <div style={wrapper}>
-      <div style={card}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: '50%',
-              background: 'color-mix(in srgb, var(--danger) 10%, transparent)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <AlertTriangle style={{ width: 32, height: 32, color: 'var(--danger)' }} />
-          </div>
-        </div>
-
-        <h2
-          style={{
-            fontSize: 24,
-            fontWeight: 700,
-            textAlign: 'center',
-            color: 'var(--foreground)',
-            margin: '0 0 8px',
-          }}
-        >
-          ${titleText}
-        </h2>
-        <p
-          style={{
-            fontSize: 14,
-            color: 'var(--foreground-muted)',
-            textAlign: 'center',
-            margin: '0 0 24px',
-          }}
-        >
-          ${descText}
-        </p>
-
-        <div
-          style={{
-            borderRadius: 6,
-            border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)',
-            background: 'color-mix(in srgb, var(--danger) 5%, transparent)',
-            padding: 12,
-          }}
-        >
-          <p style={{ fontSize: 14, color: 'var(--danger)', margin: 0 }}>
-            {error.message || ${fallback}}
-          </p>
-        </div>
-
-        <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <button
-            onClick={reset}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              padding: '8px 16px',
-              borderRadius: 6,
-              border: 'none',
-              background: 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: 'pointer',
-            }}
-          >
-            <RefreshCw style={{ width: 16, height: 16 }} />
-            ${tryAgain}
-          </button>
-
-          <Link
-            href='/'
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              padding: '8px 16px',
-              borderRadius: 6,
-              border: '1px solid var(--border)',
-              color: 'var(--foreground)',
-              fontSize: 14,
-              fontWeight: 500,
-              textDecoration: 'none',
-            }}
-          >
-            <Home style={{ width: 16, height: 16 }} />
-            ${goHome}
-          </Link>
-        </div>
-
-        {process.env.NODE_ENV === 'development' && error.digest && (
-          <div
-            style={{
-              marginTop: 16,
-              borderRadius: 6,
-              background: 'var(--background-subtle)',
-              padding: 12,
-            }}
-          >
-            <p style={{ fontSize: 12, color: 'var(--foreground-subtle)', margin: 0 }}>
-              Error ID: {error.digest}
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-`;
-}
-
-function buildErrorModuleCss() {
-  return `.wrapper {
-  display: flex;
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16px;
-}
-
-.card {
-  width: 100%;
-  max-width: 448px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--background);
-  padding: 24px;
-  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.15));
-}
-
-.iconRow {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-
-.iconCircle {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--danger) 10%, transparent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon {
-  width: 32px;
-  height: 32px;
-  color: var(--danger);
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  color: var(--foreground);
-  margin: 0 0 8px;
-}
-
-.description {
-  font-size: 14px;
-  color: var(--foreground-muted);
-  text-align: center;
-  margin: 0 0 24px;
-}
-
-.errorBox {
-  border-radius: 6px;
-  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
-  background: color-mix(in srgb, var(--danger) 5%, transparent);
-  padding: 12px;
-}
-
-.errorText {
-  font-size: 14px;
-  color: var(--danger);
-  margin: 0;
-}
-
-.actions {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.primaryButton,
-.secondaryButton {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.primaryButton {
-  border: none;
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-
-.secondaryButton {
-  border: 1px solid var(--border);
-  color: var(--foreground);
-  background: transparent;
-}
-
-.buttonIcon {
-  width: 16px;
-  height: 16px;
-}
-
-.digest {
-  margin-top: 16px;
-  border-radius: 6px;
-  background: var(--background-subtle);
-  padding: 12px;
-}
-
-.digestText {
-  font-size: 12px;
-  color: var(--foreground-subtle);
-  margin: 0;
-}
-`;
 }
 
 /**
@@ -2379,81 +1798,6 @@ async function writePluginFiles(targetDir, plugins, arch) {
         await fs.writeFile(fullPath, content);
       }
     }
-  }
-
-  // auth-jwt + next-intl 동시 활성화 시 proxy.ts 병합
-  // (각 플러그인이 단독으로 깐 proxy.ts 를 합친 버전으로 덮어쓴다)
-  // i18n routing import 는 arch.aliases.config 기준 — FSD 면 @/src/shared/config,
-  // flat 이면 @/lib/config 로 해석.
-  const names = new Set(plugins.map((p) => p.name));
-  if (names.has('auth-jwt') && names.has('next-intl')) {
-    const configAlias = arch ? arch.aliases.config : '@/src/shared/config';
-    const mergedProxy = `import createIntlMiddleware from 'next-intl/middleware';
-import { NextRequest, NextResponse } from 'next/server';
-
-import { routing } from '${configAlias}/i18n/routing';
-
-const AUTH_ROUTES = ['/sign-in', '/sign-up'];
-
-/**
- * 홈(\`/\`, \`/{locale}\`) 진입 시 redirect 할 path. 빈 문자열이면
- * \`app/[locale]/page.tsx\` 가 그대로 노출. 예: '/dashboard', '/projects'.
- * 인증 가드 위에서 동작하므로 미인증이면 그대로 \`/sign-in\` 으로 빠진다.
- */
-const HOME_REDIRECT = '';
-
-const intl = createIntlMiddleware(routing);
-
-/**
- * 로케일 prefix (/ko, /en) 를 벗겨 인증 라우트 매칭에 사용한다.
- * 예: /ko/sign-in → /sign-in
- */
-const stripLocalePrefix = (pathname: string): string => {
-  const locales = routing.locales as readonly string[];
-  const segments = pathname.split('/').filter(Boolean);
-  if (segments[0] && locales.includes(segments[0])) {
-    const rest = segments.slice(1).join('/');
-    return \`/\${rest}\`.replace(/\\/$/, '') || '/';
-  }
-  return pathname;
-};
-
-/**
- * Next 16+ proxy.ts (구 middleware.ts).
- * next-intl 라우팅 + auth-jwt 토큰 존재 체크 합성 버전.
- *
- * - \`/\` + HOME_REDIRECT 설정 → 해당 경로로 리다이렉트 (인증 가드보다 먼저)
- * - intl 이 로케일 prefix 처리 + NEXT_LOCALE 쿠키 set
- * - 그 위에 인증 가드 — 토큰 없고 인증 라우트도 아니면 /sign-in 으로 redirect
- * - dev + \`NEXT_PUBLIC_DEV_AUTH_BYPASS=true\` → 가드 전체 우회 (개발용)
- * - AT 만료 검사나 refresh 는 하지 않는다 (BFF 가 처리)
- */
-const DEV_BYPASS =
-  process.env.NODE_ENV !== 'production' &&
-  process.env.NEXT_PUBLIC_DEV_AUTH_BYPASS === 'true';
-
-export default function proxy(req: NextRequest) {
-  const intlRes = intl(req);
-  const pathname = stripLocalePrefix(req.nextUrl.pathname);
-  const hasToken = !!req.cookies.get('accessToken')?.value;
-  const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
-
-  if (pathname === '/' && HOME_REDIRECT) {
-    return NextResponse.redirect(new URL(HOME_REDIRECT, req.url));
-  }
-
-  if (DEV_BYPASS) return intlRes;
-  if (isAuthRoute) return intlRes;
-  if (!hasToken) return NextResponse.redirect(new URL('/sign-in', req.url));
-
-  return intlRes;
-}
-
-export const config = {
-  matcher: '/((?!api|_next|_vercel|monitoring|.*\\\\..*).*)',
-};
-`;
-    await fs.writeFile(path.join(targetDir, 'proxy.ts'), mergedProxy);
   }
 }
 

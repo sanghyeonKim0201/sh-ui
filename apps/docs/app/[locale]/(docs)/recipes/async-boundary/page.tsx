@@ -8,8 +8,7 @@ export default function AsyncBoundaryRecipe() {
       <h1>AsyncBoundary 패턴</h1>
       <p className="muted">
         Suspense + ErrorBoundary 를 한 번에 묶고, Skeleton · Error fallback 을
-        해당 UI 폴더 안에 동거시키는 컨벤션. 베이스에 직접 만들거나, Sentry
-        플러그인의 <code>FallbackBoundary</code> 를 그대로 쓰면 된다.
+        해당 UI 폴더 안에 동거시키는 컨벤션. 베이스에 직접 만들어 쓴다.
       </p>
 
       <h2>왜 묶나</h2>
@@ -28,16 +27,7 @@ export default function AsyncBoundaryRecipe() {
         </li>
       </ul>
 
-      <h2>Sentry 플러그인을 쓴다면 — FallbackBoundary 가 이미 있음</h2>
-      <p>
-        <code>--plugins sentry</code> 로 스캐폴드한 프로젝트는{" "}
-        <code>src/shared/ui/FallbackBoundary/index.tsx</code> 가 이미 깔려 있다.
-        같은 패턴 + Sentry 캡처 + ApiError 자동 제외가 포함된 버전이다. 직접
-        만들 필요 없이 그대로 쓰면 됨. 자세한 건{" "}
-        <a href="/plugins/sentry">sentry 플러그인 페이지</a>.
-      </p>
-
-      <h2>설치 — 직접 만드는 경우</h2>
+      <h2>설치</h2>
       <CodePanel
         language="bash"
         showLineNumbers={false}
@@ -227,8 +217,8 @@ export function ResettableAsyncBoundary({
 }`}
       />
       <p className="muted">
-        대부분의 케이스는 단순 <code>AsyncBoundary</code>로 충분. Sentry
-        플러그인의 <code>FallbackBoundary</code> 는 이 통합이 이미 포함돼 있음.
+        대부분의 케이스는 단순 <code>AsyncBoundary</code>로 충분. 일시적
+        실패가 잦은 화면만 위 <code>QueryErrorResetBoundary</code> 통합을 쓴다.
       </p>
 
       <h2>중첩 AsyncBoundary</h2>

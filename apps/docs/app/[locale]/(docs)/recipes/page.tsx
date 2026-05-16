@@ -8,8 +8,7 @@ export default function Recipes() {
       <h1>레시피</h1>
       <p className="muted">
         플러그인이 없어도 베이스 템플릿에 적용 가능한 일반 패턴 모음. CLI 가
-        깔아주는 인증 / 모니터링 / 다국어는{" "}
-        <Link href="/plugins">플러그인</Link> 섹션을 참고.
+        깔아주는 다국어는 <Link href="/plugins">플러그인</Link> 섹션을 참고.
       </p>
 
       <h2>API 통신 / 데이터 페칭</h2>
@@ -59,12 +58,6 @@ export default function Recipes() {
 
       <h2>플러그인 (CLI 가 깔아주는 코드 묶음)</h2>
       <ul>
-        <li>
-          <Link href="/plugins/auth-jwt">auth-jwt</Link> — 쿠키 기반 JWT 인증
-        </li>
-        <li>
-          <Link href="/plugins/sentry">sentry</Link> — 에러 모니터링
-        </li>
         <li>
           <Link href="/plugins/next-intl">next-intl</Link> — 다국어
         </li>

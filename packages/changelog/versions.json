@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.98.0",
+      "date": "2026-05-16",
+      "title": "auth-jwt · sentry 플러그인 제거 — 스캐폴더에서 두 통합 완전 삭제 (breaking)",
+      "type": "minor",
+      "highlights": [
+        "**`sentry` 플러그인 + `--observability` 옵션 제거 (breaking)** — Next 의 `--plugins sentry` 와 vite 전용 `--observability sentry` 를 둘 다 삭제. `sh_ui_create_project` · `sh_ui_add_app` · `sh_ui_describe_template` 의 `observability` 인자, `DescribeTemplateOptions.observability` 타입, `emitSentry()` 도 함께 제거. 이제 `--observability` 는 '알 수 없는 플래그', `--plugins sentry` 는 '알 수 없는 플러그인' 으로 거부된다.",
+        "**`auth-jwt` 플러그인 제거 (breaking)** — `--plugins auth-jwt` 및 auth-jwt+next-intl proxy.ts 병합 로직 삭제. `next-intl` 단독 scaffold 는 자체 proxy.ts 를 그대로 emit (회귀 가드 smoke 유지).",
+        "**유지: i18n / next-intl** — `--plugins next-intl` 과 vite `--i18n react-i18next` / `--locales` 는 그대로. 스캐폴더 플러그인은 이제 `next-intl` 단일. Sentry/JWT 는 프로젝트마다 설정이 갈려 baked-in scaffold 가치가 낮고, 특히 Sentry 의 Next 통합은 버전 churn 유지보수 부채라 의도적으로 축소.",
+        "**마이그레이션** — Sentry 가 필요하면 생성 후 공식 `@sentry/nextjs` 또는 `@sentry/react` 를 직접 추가. 인증은 프로젝트 백엔드 명세에 맞춰 직접 구성. docs `/plugins/sentry`·`/plugins/auth-jwt` 페이지 및 `/create` UI 토글 제거, smoke 시나리오 정리."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.98.0"
+    },
+    {
       "version": "0.97.0",
       "date": "2026-05-16",
       "title": "Tauri 통합 제거 — 스캐폴더에서 src-tauri/ shell 및 --tauri 옵션 삭제 (breaking)",

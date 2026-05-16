@@ -119,54 +119,6 @@ describe("Phase 3 — cssFramework 별 base 파일 분기 emit", () => {
     });
   });
 
-  describe("--css plain + sentry — error.tsx inline style 변종", () => {
-    let dir;
-
-    beforeEach(async () => {
-      await createProject({
-        name: "plain-sentry",
-        platform: "next",
-        structure: "standalone",
-        arch: "fsd",
-        css: "plain",
-        plugins: ["sentry"],
-        yes: true,
-      });
-      dir = path.join(tmpDir, "plain-sentry");
-    });
-
-    it("error.tsx 가 inline style 변종 (Tailwind 클래스 없음)", async () => {
-      const c = await fs.readFile(path.join(dir, "app/error.tsx"), "utf-8");
-      expect(c).not.toMatch(/className=['"]bg-/);
-      expect(c).toMatch(/style:\s*React\.CSSProperties|: React\.CSSProperties/);
-      expect(c).toContain("var(--danger)");
-    });
-  });
-
-  describe("--css css-modules + sentry — error.module.css 같이 emit", () => {
-    let dir;
-
-    beforeEach(async () => {
-      await createProject({
-        name: "cm-sentry",
-        platform: "next",
-        structure: "standalone",
-        arch: "fsd",
-        css: "css-modules",
-        plugins: ["sentry"],
-        yes: true,
-      });
-      dir = path.join(tmpDir, "cm-sentry");
-    });
-
-    it("error.tsx 가 styles import + error.module.css 같이 emit", async () => {
-      const tsx = await fs.readFile(path.join(dir, "app/error.tsx"), "utf-8");
-      expect(tsx).toContain("import styles from './error.module.css'");
-      expect(tsx).toContain("className={styles.wrapper}");
-      expect(await fs.pathExists(path.join(dir, "app/error.module.css"))).toBe(true);
-    });
-  });
-
   describe("--css tailwind (default) — 베이스 그대로 유지", () => {
     let dir;
 
@@ -352,7 +304,7 @@ describe("Phase 1 — 정리 fix 회귀 가드", () => {
       structure: "standalone",
       arch: "fsd",
       css: "tailwind",
-      plugins: ["auth-jwt"],
+      plugins: [],
       yes: true,
     });
     const c = await fs.readFile(
@@ -381,14 +333,14 @@ describe("Phase 1 — 정리 fix 회귀 가드", () => {
     expect(c).not.toMatch(/export default function getQueryClient/);
   });
 
-  it("package.json deps 가 알파벳 정렬 (sentry/intl 도 sort 후 자기 위치)", async () => {
+  it("package.json deps 가 알파벳 정렬 (next-intl 도 sort 후 자기 위치)", async () => {
     await createProject({
       name: "sorted",
       platform: "next",
       structure: "standalone",
       arch: "fsd",
       css: "tailwind",
-      plugins: ["sentry", "next-intl", "auth-jwt"],
+      plugins: ["next-intl"],
       yes: true,
     });
     const pkg = await fs.readJson(path.join(tmpDir, "sorted/package.json"));

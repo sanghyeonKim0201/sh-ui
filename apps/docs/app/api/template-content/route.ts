@@ -213,7 +213,6 @@ export async function GET(req: NextRequest) {
   const i18n = (searchParams.get("i18n") ?? "none") as "none" | "react-i18next";
   const locales = searchParams.get("locales") ?? "ko,en";
   void locales; // describeTemplate 일관성 — 라우트는 locales 별 content 직접 emit 안 함.
-  const observability = (searchParams.get("observability") ?? "none") as "none" | "sentry";
   const path = searchParams.get("path");
 
   if (!path) {
@@ -242,26 +241,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  // observability 파일은 emitSentry 가 런타임에 emit — 디스크에 소스 템플릿 없음.
-  if (
-    observability === 'sentry' &&
-    (path.endsWith('/observability/sentry.ts') ||
-     path.endsWith('/observability/index.ts') ||
-     path.endsWith('/providers/SentryProvider.tsx') ||
-     path === '.env.example' ||
-     path.endsWith('/.env.example'))
-  ) {
-    return NextResponse.json({
-      content:
-        "// 이 파일은 sh-ui-cli 가 scaffold 시점에 generated (emitSentry).\n" +
-        "// 실제 내용은 arch (fsd/flat) + i18n active 조합에 따라 결정.\n" +
-        "// 패턴 미리보기: @sentry/react + browserTracingIntegration + replayIntegration (PII 보호).\n",
-      from: "generated:emitSentry",
-      truncated: false,
-    });
-  }
-
-  // 1) 플러그인 emit 파일 우선 (베이스/arch 파일을 덮어쓰는 경우가 있음 — 예: sentry 의 observability.ts)
+  // 1) 플러그인 emit 파일 우선 (베이스/arch 파일을 덮어쓰는 경우가 있음 — 예: next-intl 의 proxy.ts)
   const pluginHit = resolvePluginFile({
     arch,
     plugins,

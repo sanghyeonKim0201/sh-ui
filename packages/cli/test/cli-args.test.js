@@ -21,17 +21,42 @@ describe('parseArgs', () => {
       'node', 'create.js', 'x',
       '--platform', 'next',
       '--structure', 'standalone',
-      '--plugins', 'sentry,next-intl',
+      '--plugins', 'next-intl',
       '--theme', 'eyJsaWdodCI6e30=',
       '--yes',
     ]);
     expect(r.flags).toEqual({
       platform: 'next',
       structure: 'standalone',
-      plugins: ['sentry', 'next-intl'],
+      plugins: ['next-intl'],
       theme: 'eyJsaWdodCI6e30=',
       yes: true,
     });
+  });
+
+  // v0.98.0 — sentry / auth-jwt 플러그인 + --observability 옵션 제거 (breaking).
+  // 거부 경로 회귀 가드: 제거된 표면이 다시 통과되면 즉시 실패한다.
+  it('--observability 는 제거된 플래그 → 알 수 없는 플래그 에러', () => {
+    expect(() =>
+      parseArgs(['node', 'create.js', 'x', '--observability', 'sentry']),
+    ).toThrow(/알 수 없는 플래그: --observability/);
+  });
+
+  it('--plugins sentry 는 거부 (sentry 플러그인 제거됨)', () => {
+    expect(() =>
+      parseArgs(['node', 'create.js', 'x', '--plugins', 'sentry']),
+    ).toThrow(/알 수 없는 플러그인: sentry/);
+  });
+
+  it('--plugins auth-jwt 는 거부 (auth-jwt 플러그인 제거됨)', () => {
+    expect(() =>
+      parseArgs(['node', 'create.js', 'x', '--plugins', 'auth-jwt']),
+    ).toThrow(/알 수 없는 플러그인: auth-jwt/);
+  });
+
+  it('--plugins next-intl 은 계속 허용', () => {
+    const r = parseArgs(['node', 'create.js', 'x', '--plugins', 'next-intl']);
+    expect(r.flags.plugins).toEqual(['next-intl']);
   });
 
   it('add-app / add-component 서브커맨드 인식', () => {

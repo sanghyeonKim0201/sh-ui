@@ -88,15 +88,6 @@ import { formatDate } from '${fsd.aliases.utils}/formatDate';`}
           <code>{fsd.paths.config}/i18n/</code> 에 떨어짐 (routing.ts,
           request.ts, navigation.ts, messages/*.json)
         </li>
-        <li>
-          <strong>auth-jwt</strong> — refreshSession.ts / withAuthRetry.ts 가{" "}
-          <code>{fsd.paths.api}/</code> 에 떨어짐
-        </li>
-        <li>
-          <strong>sentry</strong> — observability.ts 가{" "}
-          <code>{fsd.paths.api}/</code> 에 깔리고 (베이스 no-op 을 덮어씀),
-          FallbackBoundary 가 <code>{fsd.paths.ui}/</code> 에 추가됨
-        </li>
       </ul>
 
       <h2>언제 적합한가</h2>

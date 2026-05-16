@@ -47,7 +47,7 @@ export default function NextIntlPlugin() {
         showLineNumbers={false}
         code={`my-app/
 ├── next.config.ts                                  ← MODIFY  withNextIntl 로 감싸짐
-├── proxy.ts                                        ← NEW    intl 미들웨어 (auth-jwt 같이 켜면 인증 가드와 합성)
+├── proxy.ts                                        ← NEW    intl 미들웨어
 ├── src/
 │   └── shared/
 │       └── config/
@@ -79,9 +79,7 @@ export default function NextIntlPlugin() {
         </li>
         <li>
           <code>proxy.ts</code> — Next 16 미들웨어. <code>createIntlMiddleware</code>{" "}
-          가 로케일 라우팅을 처리. auth-jwt 같이 켜면 generator 가 자동으로
-          인증 가드와 합성된 버전을 출력 — AUTH_ROUTES 매칭은 locale prefix 를
-          벗긴 pathname 기준.
+          가 로케일 라우팅을 처리.
         </li>
         <li>
           <code>app/[locale]/layout.tsx</code> —{" "}
@@ -97,7 +95,6 @@ export default function NextIntlPlugin() {
         showLineNumbers={false}
         code={`browser → /ko/orders 진입
   proxy.ts: intl 미들웨어가 locale prefix 검증 + NEXT_LOCALE 쿠키 set
-            (인증 가드 같이 켜져 있으면 그 위에 합성)
             ↓
   RSC → http() → serverFetch
                     ↓
@@ -216,20 +213,6 @@ t('title', { id: 42 });          // "주문 #42"
 t('status.shipped');             // "배송됨"`}
       />
 
-      <h2 id="combinations">8. 다른 플러그인과 조합</h2>
-      <ul>
-        <li>
-          <strong>+ auth-jwt</strong> — proxy.ts 가 합성된 형태로 깔린다. intl
-          미들웨어가 라우팅 처리 → 그 결과 위에 인증 가드 적용. AUTH_ROUTES (예:{" "}
-          <code>/sign-in</code>) 매칭은 locale prefix 를 벗긴 pathname 기준.
-          제너레이터가 자동 처리하지만, 직접 수정할 일이 있으면{" "}
-          <a href="/plugins/auth-jwt#combinations">auth-jwt 페이지</a> 참고.
-        </li>
-        <li>
-          <strong>+ sentry</strong> — 충돌 없음. Sentry 는 캡처 레이어, intl 은
-          라우팅/번역 레이어라 서로 무관.
-        </li>
-      </ul>
     </main>
   );
 }
