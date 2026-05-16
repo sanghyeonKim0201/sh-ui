@@ -228,6 +228,61 @@ describe('sh-ui create smoke tests', () => {
     // ui-app sh-ui.config.json 에 tokens-only role 확인
     const uiAppCfg = await fs.readJson(path.join(projectDir, 'packages/ui/ui-apps/ui-web/sh-ui.config.json'));
     expect(uiAppCfg.role).toBe('tokens-only');
+
+    // #1 회귀 가드 — vite 모노레포 turbo build outputs 가 .next/** 잔재가 아니라 dist/**.
+    // (smoke 는 toolchain 을 안 돌리므로 구조 단언으로 캐시-사망 회귀를 잡는다.)
+    const turbo = await fs.readJson(path.join(projectDir, 'turbo.json'));
+    expect(turbo.tasks.build.outputs).toEqual(['dist/**']);
+    expect(turbo.globalEnv).not.toContain('API_URL');
+    expect(turbo.globalEnv).toContain('VITE_API_URL');
+
+    // #2 회귀 가드 — vitest 4 는 vite ^6||^7||^8 필요. vite 가 5.x 면 test 가 startup 에서 죽음.
+    const viteMajor = parseInt(appPkg.devDependencies.vite.match(/\d+/)[0], 10);
+    const vitestMajor = parseInt(appPkg.devDependencies.vitest.match(/\d+/)[0], 10);
+    if (vitestMajor >= 4) expect(viteMajor).toBeGreaterThanOrEqual(6);
+
+    // #4 회귀 가드 — ThemeProvider 가 effect 안에서 setState 안 함 (set-state-in-effect).
+    const tp = await fs.readFile(
+      path.join(projectDir, 'apps/web/src/app/providers/theme/ThemeProvider.tsx'),
+      'utf-8',
+    );
+    expect(tp).toContain('useSyncExternalStore');
+    expect(tp).not.toContain('setResolvedTheme');
+
+    // #5 회귀 가드 — tsc -b 가 config 산출물 / tsbuildinfo 를 소스 옆에 흘리지 않음.
+    const tsNode = await fs.readJson(path.join(projectDir, 'apps/web/tsconfig.node.json'));
+    expect(tsNode.compilerOptions.noEmit).toBe(true);
+    expect(tsNode.compilerOptions.tsBuildInfoFile).toContain('node_modules/.tmp');
+    const tsAppJson = await fs.readJson(path.join(projectDir, 'apps/web/tsconfig.app.json'));
+    expect(tsAppJson.compilerOptions.tsBuildInfoFile).toContain('node_modules/.tmp');
+    const gi = await fs.readFile(path.join(projectDir, 'apps/web/.gitignore'), 'utf-8');
+    expect(gi).toContain('*.tsbuildinfo');
+  });
+
+  it('scenario V21 — vite + monorepo + observability=sentry — turbo globalEnv 에 SENTRY_* 선언', async () => {
+    // #3 회귀 가드 — vite sentry 는 플러그인 turboEnvVars 훅을 안 타므로 generateMonorepo
+    // 가 직접 turbo.globalEnv 에 넣어줘야 한다. 안 그러면 깨끗한 scaffold 가
+    // turbo/no-undeclared-env-vars 로 lint clean 이 아님.
+    await createProject({
+      name: 'v-mono-sentry',
+      platform: 'vite',
+      structure: 'monorepo',
+      arch: 'fsd',
+      css: 'tailwind',
+      observability: 'sentry',
+      yes: true,
+    });
+    const projectDir = path.join(tmpDir, 'v-mono-sentry');
+    const turbo = await fs.readJson(path.join(projectDir, 'turbo.json'));
+    for (const v of ['MODE', 'SENTRY_ORG', 'SENTRY_PROJECT', 'SENTRY_AUTH_TOKEN']) {
+      expect(turbo.globalEnv).toContain(v);
+    }
+    // 중복 없이 (Set dedupe 회귀 가드).
+    expect(new Set(turbo.globalEnv).size).toBe(turbo.globalEnv.length);
+    // sentry 모듈도 app 에 들어갔는지 (monorepo 경로의 emitSentry 회귀 가드).
+    expect(
+      await fs.pathExists(path.join(projectDir, 'apps/web/src/shared/observability/sentry.ts')),
+    ).toBe(true);
   });
 
   it('scenario V7a — vite standalone + tauri:true emits src-tauri/ shell', async () => {
@@ -745,6 +800,15 @@ describe('sh-ui create smoke tests', () => {
     expect(targetsMatch[0]).not.toContain('sentryVitePlugin');
     // viteStaticCopy({ ... }) 가 닫힌 뒤에 sentryVitePlugin 이 옴.
     expect(viteCfg).toMatch(/viteStaticCopy\(\{[\s\S]*?\}\),\s*\n\s*sentryVitePlugin\(/);
+
+    // 회귀 가드 — vite 메이저를 올릴 때 vite-plugin-static-copy peer 가 같이 안
+    // 따라오면 i18n 프로젝트가 pnpm install 에서 unmet peer → build/dev 깨짐.
+    const scPkg = await fs.readJson(path.join(tmpDir, 'v-stack/package.json'));
+    const scStatic = parseInt(
+      scPkg.devDependencies['vite-plugin-static-copy'].match(/\d+/)[0], 10,
+    );
+    const scVite = parseInt(scPkg.devDependencies.vite.match(/\d+/)[0], 10);
+    if (scVite >= 7) expect(scStatic).toBeGreaterThanOrEqual(3);
   });
 
   it('scenario V20b — sh_ui_create_project 의 appName 인자 (피드백 #3 — describe_template 와 1:1 일치)', async () => {

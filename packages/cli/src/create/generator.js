@@ -1144,7 +1144,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   pkg.devDependencies = pkg.devDependencies ?? {};
   // dev/build 양쪽에서 src/shared/i18n/locales/* (또는 src/lib/i18n/locales/*) 를
   // public/locales/* 로 자동 미러 → i18next-http-backend 의 /locales/{{lng}}/{{ns}}.json 이 동작.
-  pkg.devDependencies['vite-plugin-static-copy'] = '^2.2.0';
+  pkg.devDependencies['vite-plugin-static-copy'] = '^3.2.0';
   pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
@@ -1554,6 +1554,18 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
       turbo.globalEnv.push(...plugin.turboEnvVars);
     }
   }
+  // 템플릿 turbo.json 은 .next/** 기준이라 vite 앱에선 turbo 가 산출물을
+  // 못 찾아 build 캐시가 전혀 안 잡힌다 — 플랫폼별 outputs 로 교정.
+  if (platform === 'vite') {
+    turbo.tasks.build.outputs = ['dist/**'];
+    // vite 는 클라이언트 노출 env 가 VITE_ 접두사 관례.
+    turbo.globalEnv = turbo.globalEnv.map((e) => (e === 'API_URL' ? 'VITE_API_URL' : e));
+    // sentry observability 는 플러그인 turboEnvVars 훅을 안 타므로 직접 선언.
+    if (observability === 'sentry') {
+      turbo.globalEnv.push('MODE', 'SENTRY_ORG', 'SENTRY_PROJECT', 'SENTRY_AUTH_TOKEN');
+    }
+  }
+  turbo.globalEnv = [...new Set(turbo.globalEnv)];
   await fs.writeJson(turboPath, turbo, { spaces: 2 });
 
   // Create first app — `appName` 인자가 주어지면 그대로, 아니면 yes 모드 default 'web' / 대화모드 prompt.
