@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.96.3",
+      "date": "2026-05-16",
+      "title": "vite 스캐폴드 fix — vite 7 전환 + turbo outputs/env + tsconfig 누수 + ThemeProvider",
+      "type": "patch",
+      "highlights": [
+        "**vite `^5` → `^7` (+ `vite-plugin-static-copy` `^3.2.0`)** — vitest 4 와 vite 5 의 메이저 불일치로 `pnpm test` 가 테스트 0개에서도 startup 에서 죽던 문제 해소. i18n 이 끌어오는 static-copy peer 도 vite 7 라인으로 동반 상향.",
+        "**monorepo `turbo.json` 플랫폼 인지** — vite 앱은 `build.outputs` 가 `dist/**`, `globalEnv` 의 `API_URL` → `VITE_API_URL`. 그동안 `.next/**` 잔재로 turbo build 캐시가 전혀 안 잡히던 것 교정 (이제 FULL TURBO).",
+        "**`observability=sentry` + monorepo** — `MODE`·`SENTRY_ORG`·`SENTRY_PROJECT`·`SENTRY_AUTH_TOKEN` 를 turbo `globalEnv` 에 자동 선언해 깨끗한 scaffold 가 `turbo/no-undeclared-env-vars` 경고 없이 lint clean.",
+        "**tsconfig 누수 + ThemeProvider** — `tsc -b` 가 `vite.config.js`/`*.tsbuildinfo` 를 소스 옆에 흘리던 것을 `noEmit` + `node_modules/.tmp` 로 차단하고 `*.tsbuildinfo` gitignore. ThemeProvider 는 `useSyncExternalStore` 로 재작성해 React 19 set-state-in-effect 경고 제거."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.96.3"
+    },
+    {
       "version": "0.96.2",
       "date": "2026-05-15",
       "title": "의존성 유지보수 — @inquirer/prompts v8, @types/node v25 + sh-ui-cli engines 명시",
