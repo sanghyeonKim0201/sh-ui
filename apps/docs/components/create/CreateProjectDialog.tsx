@@ -113,7 +113,6 @@ export function CreateProjectDialog({
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
   const [packageManager, setPackageManager] = useState<PackageManager>("pnpm");
   const [cssFramework, setCssFramework] = useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
-  const [tauri, setTauri] = useState<boolean>(false);
   const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
   const [locales, setLocales] = useState<string>('ko,en');
   const [observability, setObservability] = useState<'none' | 'sentry'>('none');
@@ -180,12 +179,11 @@ export function CreateProjectDialog({
         packageManager,
         themeBase64,
         cssFramework,
-        tauri,
         i18n,
         locales,
         observability,
       } satisfies ComposerOptions),
-    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, tauri, i18n, locales, observability],
+    [projectName, platform, structure, arch, plugins, packageManager, themeBase64, cssFramework, i18n, locales, observability],
   );
 
   const togglePlugin = (p: Plugin) => {
@@ -286,8 +284,6 @@ export function CreateProjectDialog({
             onCssFrameworkChange={setCssFramework}
             plugins={plugins}
             onTogglePlugin={togglePlugin}
-            tauri={tauri}
-            onTauriChange={setTauri}
             i18n={i18n}
             onI18nChange={setI18n}
             locales={locales}

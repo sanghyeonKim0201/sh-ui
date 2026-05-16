@@ -139,8 +139,6 @@ export interface DescribeTemplateOptions {
   projectName?: string;
   /** monorepo 첫 앱 이름. 기본 'web'. */
   appName?: string;
-  /** platform=vite + structure=standalone 일 때 Tauri 2.x 셸(`src-tauri/`) 동시 emit. */
-  tauri?: boolean;
   /** vite 전용 — react-i18next opt-in. v0.92.0+ */
   i18n?: 'none' | 'react-i18next';
   /** i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 'ko,en' */
