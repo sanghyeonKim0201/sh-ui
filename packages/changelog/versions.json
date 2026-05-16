@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.97.0",
+      "date": "2026-05-16",
+      "title": "Tauri 통합 제거 — 스캐폴더에서 src-tauri/ shell 및 --tauri 옵션 삭제 (breaking)",
+      "type": "minor",
+      "highlights": [
+        "**`--tauri` / MCP `tauri` 옵션 제거 (breaking)** — `sh-ui-cli create` / `add-app` 의 `--tauri` 플래그, `sh_ui_create_project` · `sh_ui_add_app` · `sh_ui_describe_template` 의 `tauri` 인자, `DescribeTemplateOptions.tauri` 타입을 모두 삭제. 이제 `--tauri` 는 '알 수 없는 플래그' 에러로 거부된다.",
+        "**`tauri-shell` 템플릿 + `emitTauri`/`patchViteForTauri` 삭제** — `src-tauri/` (Cargo.toml·tauri.conf.json·Rust 소스) 를 더 이상 emit 하지 않는다. `@tauri-apps/*` 의존성·`tauri:dev`/`tauri:build` scripts·`src-tauri/target/` gitignore 주입도 제거. Tauri 가 필요하면 공식 `@tauri-apps/cli init` 을 직접 쓰면 된다 (vite 의 `dist/` 표준 산출물과 그대로 호환).",
+        "**docs `/create` UI 정리** — Tauri 데스크탑 셸 토글 제거, `/api/template-content` 의 src-tauri resolve 분기 삭제. vite 의 mobile/PWA 친화 디폴트(`viewport-fit=cover`·`theme-color`·webview reset)는 그대로 유지 — Tauri 전용이 아니라 일반 모바일 하드닝이라 보존.",
+        "**smoke 정리** — tauri 전용 시나리오(V7a–f, V12–14) 삭제, all-options 가드(V20a)는 i18n+sentry 조합으로 축소 유지. 마이그레이션: `--tauri` 쓰던 사용자는 플래그를 빼고 생성 후 `@tauri-apps/cli init` 으로 desktop shell 을 별도 추가."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.97.0"
+    },
+    {
       "version": "0.96.3",
       "date": "2026-05-16",
       "title": "vite 스캐폴드 fix — vite 7 전환 + turbo outputs/env + tsconfig 누수 + ThemeProvider",

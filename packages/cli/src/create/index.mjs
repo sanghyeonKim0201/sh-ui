@@ -18,7 +18,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
 
 사용법:
   sh-ui create [name] [options] [--observability <none|sentry>]
-  sh-ui create add-app [name] [--port <n>] [--platform <next|vite>] [--plugins ..] [--theme ..] [--css ..] [--tauri] [--i18n <react-i18next|none>] [--locales ko,en] [--observability <none|sentry>]
+  sh-ui create add-app [name] [--port <n>] [--platform <next|vite>] [--plugins ..] [--theme ..] [--css ..] [--i18n <react-i18next|none>] [--locales ko,en] [--observability <none|sentry>]
   sh-ui create add-component <name> [--app <name>]
 
 옵션:
@@ -77,7 +77,6 @@ export async function runCreate(rest) {
       theme: flags.theme,
       css: flags.css,
       platform: flags.platform,
-      tauri: flags.tauri,
       i18n: flags.i18n,
       locales: flags.locales,
       observability: flags.observability,
@@ -97,7 +96,6 @@ export async function runCreate(rest) {
       arch: flags.arch,
       theme: flags.theme,
       css: flags.css,
-      tauri: flags.tauri,
       i18n: flags.i18n,
       locales: flags.locales,
       observability: flags.observability,

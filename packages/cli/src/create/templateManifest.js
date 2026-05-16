@@ -314,18 +314,6 @@ export const TEMPLATE_MANIFEST = {
       ]
     }
   },
-  "tauri-shell": {
-    "base": [
-      ".gitignore",
-      "Cargo.toml",
-      "README.md",
-      "build.rs",
-      "capabilities/default.json",
-      "src/lib.rs",
-      "src/main.rs",
-      "tauri.conf.json"
-    ]
-  },
   "ui-app-template": {
     "base": [
       "eslint.config.js",

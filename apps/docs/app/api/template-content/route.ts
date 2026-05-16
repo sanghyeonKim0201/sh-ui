@@ -76,7 +76,6 @@ async function resolveDiskFile(opts: {
   arch: string;
   appName: string;
   path: string;
-  tauri?: boolean;
 }): Promise<{ full: string; from: string } | null> {
   const TEMPLATES = TEMPLATES_ROOT;
   const { platform, structure, arch, appName, path: p } = opts;
@@ -88,13 +87,6 @@ async function resolveDiskFile(opts: {
   }
 
   if (platform === "vite") {
-    // standalone + tauri: src-tauri/* 는 tauri-shell 템플릿에서
-    if (opts.tauri && structure === "standalone" && p.startsWith("src-tauri/")) {
-      const inner = p.slice("src-tauri/".length);
-      const full = await tryDiskFile(join(TEMPLATES, "tauri-shell"), inner);
-      if (full) return { full, from: "tauri-shell" };
-      return null;
-    }
     if (structure === "standalone") {
       const base = await tryDiskFile(join(TEMPLATES, "vite-standalone"), p);
       if (base) return { full: base, from: "vite-standalone" };
@@ -107,16 +99,6 @@ async function resolveDiskFile(opts: {
       return null;
     }
     // structure === "monorepo" (v0.87+)
-    // monorepo + tauri: apps/{appName}/src-tauri/* → tauri-shell 템플릿 (v0.90+)
-    if (opts.tauri && structure === "monorepo") {
-      const monoTauriPrefix = `apps/${appName}/src-tauri/`;
-      if (p.startsWith(monoTauriPrefix)) {
-        const inner = p.slice(monoTauriPrefix.length);
-        const full = await tryDiskFile(join(TEMPLATES, "tauri-shell"), inner);
-        if (full) return { full, from: "tauri-shell" };
-        return null;
-      }
-    }
     const appPrefix = `apps/${appName}/`;
     const uiPrefix = `packages/ui/ui-apps/ui-${appName}/`;
     if (p.startsWith(appPrefix)) {
@@ -228,7 +210,6 @@ export async function GET(req: NextRequest) {
   const appName = searchParams.get("appName") ?? "web";
   const pluginsParam = searchParams.get("plugins") ?? "";
   const plugins = pluginsParam ? pluginsParam.split(",").filter(Boolean) : [];
-  const tauri = searchParams.get("tauri") === "true";
   const i18n = (searchParams.get("i18n") ?? "none") as "none" | "react-i18next";
   const locales = searchParams.get("locales") ?? "ko,en";
   void locales; // describeTemplate 일관성 — 라우트는 locales 별 content 직접 emit 안 함.
@@ -303,7 +284,6 @@ export async function GET(req: NextRequest) {
     arch,
     appName,
     path,
-    tauri,
   });
   if (diskHit) {
     try {

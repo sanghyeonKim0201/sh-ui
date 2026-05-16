@@ -35,7 +35,6 @@ import { CSS_FRAMEWORK_DEFAULT } from '../constants.js';
  * @property {'tailwind'|'plain'|'css-modules'} [cssFramework]
  * @property {string} [projectName]
  * @property {string} [appName]                       monorepo 첫 앱 이름. 기본 'web'
- * @property {boolean} [tauri]                        platform=vite (standalone/monorepo 둘 다) 일 때 Tauri 2.x 셸 같이 emit
  * @property {'none'|'react-i18next'} [i18n]          vite 전용 — react-i18next 셋업
  * @property {string} [locales]                       i18n 활성화 시 생성할 locale 코드 (comma-separated, default 'ko,en')
  * @property {'none'|'sentry'} [observability]        vite 전용 — Sentry 셋업 (v0.93.0+)
@@ -66,7 +65,6 @@ export function describeTemplate(opts = {}) {
     plugins: pluginNames = [],
     cssFramework = CSS_FRAMEWORK_DEFAULT,
     appName: rawAppName = 'web',
-    tauri = false,
     i18n = 'none',
     locales = 'ko,en',
     observability = 'none',
@@ -97,14 +95,6 @@ export function describeTemplate(opts = {}) {
         makeGroup('base', '베이스 (vite-standalone)', baseFiles),
         makeGroup('arch', `Arch (${safeArchName})`, archFiles),
       ];
-      if (tauri) {
-        const tauriTpl = TEMPLATE_MANIFEST['tauri-shell'];
-        if (!tauriTpl) {
-          throw new Error("Template manifest missing entry for 'tauri-shell'.");
-        }
-        const tauriFiles = tauriTpl.base.map((p) => `src-tauri/${p}`);
-        groups.push(makeGroup('tauri', 'Tauri 셸 (src-tauri/)', tauriFiles));
-      }
       if (i18n === 'react-i18next') {
         const isFsd = safeArchName === 'fsd';
         const i18nBase = isFsd ? 'src/shared/i18n' : 'src/lib/i18n';
@@ -169,15 +159,6 @@ export function describeTemplate(opts = {}) {
         (p) => `packages/ui/ui-apps/ui-${appName}/${p}`,
       ),
     ));
-
-    if (tauri) {
-      const tauriTpl = TEMPLATE_MANIFEST['tauri-shell'];
-      if (!tauriTpl) {
-        throw new Error("Template manifest missing entry for 'tauri-shell'.");
-      }
-      const tauriFiles = tauriTpl.base.map((p) => `apps/${appName}/src-tauri/${p}`);
-      groups.push(makeGroup('tauri', `Tauri 셸 (apps/${appName}/src-tauri/)`, tauriFiles));
-    }
 
     if (i18n === 'react-i18next') {
       const isFsd = safeArchName === 'fsd';
@@ -426,7 +407,7 @@ function finalize(groups) {
  * 현재 규칙:
  *  - basename 이 정확히 'gitignore' 인 경로 → '.gitignore' 로 prefix dot 추가.
  *    (npm publish 가 .gitignore 를 strip 하므로 템플릿엔 점 없이 두고 emit 후 dot-prefix.)
- *  - 이미 '.gitignore' 인 경로 (예: tauri-shell 의 src-tauri/.gitignore) 는 그대로.
+ *  - 이미 '.gitignore' 인 경로는 그대로.
  *
  * 미래에 다른 fs-level rename 이 추가되면 여기에 같이 등록 (describeTemplate 의
  * file-plan ↔ create_project 의 실제 emit 1:1 정합성 유지).

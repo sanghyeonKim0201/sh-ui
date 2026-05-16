@@ -213,17 +213,6 @@ export async function createProject(options = {}) {
     ],
   });
 
-  // tauri 옵션은 platform=vite + structure=standalone 일 때만 의미. 다른 조합은 명시적 에러.
-  // (MCP 진입점은 mcp.mjs 가 이미 동일 가드 — CLI 직접 호출에도 동일 안전망.)
-  if (options.tauri) {
-    if (platform !== 'vite') {
-      throw new Error(
-        `tauri: true 는 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). ` +
-        `--tauri 옵션 제거 또는 --platform vite 사용.`,
-      );
-    }
-  }
-
   // i18n 옵션도 vite preset 전용. v0.92.0+.
   if (options.i18n && options.i18n !== 'none' && platform !== 'vite') {
     throw new Error(
@@ -359,7 +348,6 @@ export async function createProject(options = {}) {
 
     if (projectType === 'standalone') {
       await generateViteStandalone(targetDir, projectName, theme, cssFramework, arch, themeBase, {
-        tauri: !!options.tauri,
         i18n: options.i18n ?? 'none',
         locales: options.locales ?? 'ko,en',
         observability: options.observability ?? 'none',
@@ -368,7 +356,6 @@ export async function createProject(options = {}) {
       await generateMonorepo(targetDir, projectName, [], {
         yes: options.yes, theme, css: cssFramework, arch, themeBase,
         platform: 'vite',
-        tauri: options.tauri,
         i18n: options.i18n ?? 'none',
         locales: options.locales ?? 'ko,en',
         observability: options.observability ?? 'none',
@@ -392,14 +379,6 @@ export async function createProject(options = {}) {
     console.log(`\n  cd ${projectName}`);
     console.log('  pnpm install');
     console.log('  pnpm dev\n');
-    if (options.tauri) {
-      console.log('Tauri 데스크탑 셸:');
-      if (projectType === 'monorepo') {
-        console.log('  cd apps/web   # 또는 첫 앱 이름');
-      }
-      console.log('  pnpm tauri dev     # Rust 처음 빌드는 5~10분 — 캐시 후 5~10초');
-      console.log('  (Rust 미설치 시 https://rustup.rs/ 참고)\n');
-    }
     console.log('다음 단계 — 베이스 컴포넌트 추가 (예시):');
     console.log('  npx sh-ui-cli add button card input dialog\n');
     return;
@@ -534,11 +513,6 @@ export async function addApp(options = {}) {
       `add-app 는 platform=next 또는 vite 만 지원 (받은 값: ${platform}). flutter 는 standalone 만 지원.`,
     );
   }
-  if (options.tauri && platform !== 'vite') {
-    throw new Error(
-      `tauri 는 platform=vite 일 때만 지원합니다 (현재 platform=${platform}). --platform vite 사용 또는 tauri 옵션 제거.`,
-    );
-  }
   if (options.i18n && options.i18n !== 'none' && platform !== 'vite') {
     throw new Error(
       `i18n='${options.i18n}' 은 platform=vite 일 때만 지원합니다 (현재 platform=${platform}).`,
@@ -600,7 +574,6 @@ export async function addApp(options = {}) {
 
   if (platform === 'vite') {
     await generateViteApp(appsDir, appName, port, arch, css, {
-      tauri: !!options.tauri,
       i18n: options.i18n ?? 'none',
       locales: options.locales ?? 'ko,en',
       observability: options.observability ?? 'none',
@@ -620,13 +593,6 @@ export async function addApp(options = {}) {
   console.log(`\n✅ apps/${appName} 이 추가되었습니다!`);
   console.log('\n  pnpm install');
   console.log(`  pnpm --filter ${appName} dev\n`);
-
-  if (platform === 'vite' && options.tauri) {
-    console.log('Tauri 데스크탑 셸:');
-    console.log(`  cd apps/${appName}`);
-    console.log('  pnpm tauri dev     # Rust 처음 빌드는 5~10분 — 캐시 후 5~10초');
-    console.log('  (Rust 미설치 시 https://rustup.rs/ 참고)\n');
-  }
 }
 
 /**
@@ -867,7 +833,7 @@ async function generateStandalone(targetDir, projectName, plugins, theme, css, a
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 }
 
-async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
+async function generateViteStandalone(targetDir, projectName, theme, css, arch, themeBase, { i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateStandalone 과 같은 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-standalone'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -903,12 +869,6 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
   await injectCssTheme(targetDir, theme);
   await patchShUiConfig(path.join(targetDir, 'sh-ui.config.json'), css, themeBase);
 
-  // Tauri 셸 emit (옵션) — vite SPA + native window. standalone 만 v1 지원.
-  if (tauri) {
-    await emitTauri(targetDir, projectName, { devPort: 5173 });
-    await patchViteForTauri(targetDir, { port: 5173 });
-  }
-
   if (i18n === 'react-i18next') {
     const localesArr = parseLocales(locales);
     await emitI18n(targetDir, { arch, locales: localesArr });
@@ -916,101 +876,6 @@ async function generateViteStandalone(targetDir, projectName, theme, css, arch, 
 
   if (observability === 'sentry') {
     await emitSentry(targetDir, { arch, i18nActive: i18n === 'react-i18next' });
-  }
-}
-
-/**
- * tauri-shell 템플릿을 `<targetDir>/src-tauri/` 로 복사하고 placeholder 치환.
- *
- * - `{{project_name}}` → projectName (kebab-case 유지, npm 패키지명과 동일)
- * - `{{tauri_crate_name}}` → snake_case 변환 (Rust crate name 규칙: 영숫자+언더스코어).
- *   하이픈/점/대문자가 들어 있으면 모두 안전한 형태로 정규화.
- *
- * generateViteStandalone 에서 tauri: true 인 경우 호출. monorepo+tauri 는 v0.89 후속.
- */
-async function emitTauri(targetDir, projectName, { devPort = 5173 } = {}) {
-  const srcTauriDir = path.join(targetDir, 'src-tauri');
-  await fs.copy(path.join(TEMPLATES_DIR, 'tauri-shell'), srcTauriDir);
-
-  // crate name: snake_case 강제 — Rust 식별자는 영숫자+'_' 만 허용
-  const tauriCrateName = projectName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-
-  await replaceInAllFiles(srcTauriDir, '{{tauri_crate_name}}', tauriCrateName);
-  await replaceInAllFiles(srcTauriDir, '{{project_name}}', projectName);
-  await replaceInAllFiles(srcTauriDir, '{{tauri_dev_url}}', `http://localhost:${devPort}`);
-}
-
-/**
- * vite 앱의 package.json + vite.config.ts 를 Tauri 친화적으로 패치.
- *
- * - package.json: `@tauri-apps/cli` (devDep), `@tauri-apps/api` (dep), `tauri`/`tauri:dev`/`tauri:build` scripts 추가
- * - vite.config.ts: Tauri 공식 권장값 추가 — `clearScreen: false`, `server.strictPort: true`,
- *   `server.host: false`, `server.port: 5173`. 그래야 Tauri 가 dev server 를 안정적으로 wrap.
- *
- * NOTE: vite.config.ts 를 전부 재작성한다. 현재 base template 의 vite.config.ts 는 arch-neutral
- * 이라 안전. 후속 task 에서 arch-specific vite.config.ts overlay 가 생기면 이 자리에서 머지 전략
- * 필요 (현재는 단순 overwrite).
- */
-async function patchViteForTauri(targetDir, { port = 5173 } = {}) {
-  const pkgPath = path.join(targetDir, 'package.json');
-  const pkg = await fs.readJson(pkgPath);
-
-  pkg.dependencies = pkg.dependencies ?? {};
-  pkg.devDependencies = pkg.devDependencies ?? {};
-  pkg.scripts = pkg.scripts ?? {};
-
-  pkg.dependencies['@tauri-apps/api'] = '^2.0.0';
-  pkg.dependencies['@tauri-apps/plugin-opener'] = '^2.0.0';
-  pkg.devDependencies['@tauri-apps/cli'] = '^2.0.0';
-
-  pkg.scripts.tauri = 'tauri';
-  pkg.scripts['tauri:dev'] = 'tauri dev';
-  pkg.scripts['tauri:build'] = 'tauri build';
-
-  pkg.dependencies = sortObjectKeys(pkg.dependencies);
-  pkg.devDependencies = sortObjectKeys(pkg.devDependencies);
-  await fs.writeJson(pkgPath, pkg, { spaces: 2 });
-
-  // vite.config.ts 재작성 — Tauri 공식 권장 설정 추가.
-  const viteCfgPath = path.join(targetDir, 'vite.config.ts');
-  const viteCfg = `import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
-
-// Tauri 권장 설정 (https://v2.tauri.app/start/frontend/vite/)
-//  - clearScreen: false   — Rust 컴파일 에러가 터미널을 가리지 않게
-//  - server.strictPort    — Tauri 가 사용할 포트를 고정 (충돌 시 에러)
-//  - server.host: false   — Tauri dev 가 host network 안 열어도 됨
-export default defineConfig({
-  plugins: [react(), tailwindcss(), tsconfigPaths()],
-  clearScreen: false,
-  server: {
-    port: ${port},
-    strictPort: true,
-    host: false,
-  },
-});
-`;
-  await fs.writeFile(viteCfgPath, viteCfg);
-
-  // .gitignore 에 src-tauri/target 추가 — Rust 빌드 산출물 (수 GB 가능).
-  // 스캐폴드 단계에서는 파일명이 `gitignore` (점 없음); finalizeProject 가 나중에 `.gitignore` 로 rename.
-  // 양쪽 이름 모두 시도해서 호출 순서가 달라져도 안전하게 적용.
-  const gitignoreCandidates = ['.gitignore', 'gitignore'];
-  for (const name of gitignoreCandidates) {
-    const p = path.join(targetDir, name);
-    if (await fs.pathExists(p)) {
-      let ignore = await fs.readFile(p, 'utf-8');
-      if (!ignore.includes('src-tauri/target')) {
-        ignore += `\n# Tauri build artifacts\nsrc-tauri/target/\n`;
-        await fs.writeFile(p, ignore);
-      }
-      break;
-    }
   }
 }
 
@@ -1054,7 +919,6 @@ import { initReactI18next } from 'react-i18next';
 // 클라이언트 측 lazy-load — 빌드 산출물에서 public/locales/{lng}/{ns}.json 경로로 fetch.
 // 원본 locale 파일은 ${i18nDirRel}/locales/* 에 두고, vite-plugin-static-copy 가
 // dev/build 양쪽에서 public/locales/* 로 자동 미러링한다 (vite.config.ts 참고).
-// Tauri 빌드의 경우도 dist/locales 에 그대로 포함된다.
 
 i18n
   .use(HttpBackend)
@@ -1532,7 +1396,7 @@ async function patchViteConfigForSentry(targetDir) {
   await fs.writeFile(viteCfgPath, cfg);
 }
 
-async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none', appName: appNameOpt = null, port: portOpt = null } = {}) {
+async function generateMonorepo(targetDir, projectName, plugins, { yes = false, theme, css, arch, themeBase, platform = 'next', i18n = 'none', locales = 'ko,en', observability = 'none', appName: appNameOpt = null, port: portOpt = null } = {}) {
   await fs.copy(path.join(TEMPLATES_DIR, 'monorepo'), targetDir);
 
   // Update root package.json
@@ -1543,7 +1407,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
 
   // CLAUDE.md 의 platform 분기 placeholder 치환. AI 에이전트가 Next.js 가정으로
   // 잘못된 컨벤션을 적용하지 않도록 (v0.94.0+).
-  const platformAppDesc = describeAppPlatform(platform, { tauri });
+  const platformAppDesc = describeAppPlatform(platform);
   await replaceInAllFiles(targetDir, '{{PLATFORM_APP_DESCRIPTION}}', platformAppDesc);
 
   // Update turbo.json
@@ -1584,7 +1448,7 @@ async function generateMonorepo(targetDir, projectName, plugins, { yes = false, 
 
   const appsDir = path.join(targetDir, 'apps', appName);
   if (platform === 'vite') {
-    await generateViteApp(appsDir, appName, port, arch, css, { tauri, i18n, locales, observability });
+    await generateViteApp(appsDir, appName, port, arch, css, { i18n, locales, observability });
   } else {
     await generateApp(appsDir, appName, port, plugins, arch, css);
   }
@@ -1685,7 +1549,7 @@ async function generateApp(targetDir, appName, port, plugins, arch, css = 'tailw
   }
 }
 
-async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { tauri = false, i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
+async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind', { i18n = 'none', locales = 'ko,en', observability = 'none' } = {}) {
   // 베이스 (arch-neutral) + arch 오버레이 — generateApp 과 동일 패턴.
   await fs.copy(path.join(TEMPLATES_DIR, 'vite-app'), targetDir, {
     filter: (src) => !src.includes(`${path.sep}_arch${path.sep}`) && !src.endsWith(`${path.sep}_arch`),
@@ -1743,15 +1607,6 @@ async function generateViteApp(targetDir, appName, port, arch, css = 'tailwind',
   await applyCssFrameworkVariant(targetDir, css, { isMonorepo: true, plugins: [], arch });
   if (await fs.pathExists(uiPkgDir)) {
     await applyCssFrameworkVariant(uiPkgDir, css, { isMonorepo: true, plugins: [], arch, isUiPackage: true });
-  }
-
-  // tauri 가 켜져 있으면 이 app 안에 src-tauri/ shell 을 떨어뜨린다 (v0.90.0+).
-  // standalone 과 달리 monorepo 에서는 app 단위로 별도 dev port (default 3000) 가 있고,
-  // tauri 의 devUrl 이 그 port 와 일치해야 한다. frontendDist 는 src-tauri 기준 `../dist`.
-  if (tauri) {
-    const devPort = Number(port) || 3000;
-    await emitTauri(targetDir, appName, { devPort });
-    await patchViteForTauri(targetDir, { port: devPort });
   }
 
   if (i18n === 'react-i18next') {
@@ -2396,12 +2251,9 @@ async function finalizeProject(targetDir, { dryRun = false } = {}) {
  * CLAUDE.md 의 `{{PLATFORM_APP_DESCRIPTION}}` 치환용 문장 — AI 에이전트에게 어떤 플랫폼인지
  * 정확히 전달해서 잘못된 컨벤션 (예: vite 프로젝트에 App Router 가정) 적용 방지.
  */
-function describeAppPlatform(platform, { tauri = false } = {}) {
+function describeAppPlatform(platform) {
   if (platform === 'vite') {
-    const tauriSuffix = tauri
-      ? ' Tauri 데스크탑 셸이 동봉되어 있어 `src-tauri/` 가 native 진입점이다.'
-      : '';
-    return `Vite SPA (React + TypeScript). 라우트 + 비즈니스 로직. RSC / App Router 없음 — 모든 코드가 클라이언트 사이드 실행이다.${tauriSuffix}`;
+    return `Vite SPA (React + TypeScript). 라우트 + 비즈니스 로직. RSC / App Router 없음 — 모든 코드가 클라이언트 사이드 실행이다.`;
   }
   // 디폴트: Next.js. 향후 platform 추가 시 분기 늘릴 것.
   return 'Next.js 앱 (App Router + Server Components). 라우트 + 비즈니스 로직.';

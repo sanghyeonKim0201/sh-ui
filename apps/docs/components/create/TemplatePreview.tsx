@@ -522,9 +522,6 @@ function ContentViewer({
     if (options?.plugins && options.plugins.length) {
       params.set("plugins", options.plugins.join(","));
     }
-    if (options?.tauri) {
-      params.set("tauri", "true");
-    }
     if (options?.i18n && options.i18n !== 'none') {
       params.set("i18n", options.i18n);
     }
@@ -834,7 +831,6 @@ export function TemplatePreviewDialog({
   const [cssFramework, setCssFramework] =
     useState<CssFramework>(CSS_FRAMEWORK_DEFAULT);
   const [plugins, setPlugins] = useState<Set<Plugin>>(new Set());
-  const [tauri, setTauri] = useState<boolean>(false);
   const [i18n, setI18n] = useState<'none' | 'react-i18next'>('none');
   const [locales, setLocales] = useState<string>('ko,en');
   const [observability, setObservability] = useState<'none' | 'sentry'>('none');
@@ -875,8 +871,6 @@ export function TemplatePreviewDialog({
             onCssFrameworkChange={setCssFramework}
             plugins={plugins}
             onTogglePlugin={togglePlugin}
-            tauri={tauri}
-            onTauriChange={setTauri}
             i18n={i18n}
             onI18nChange={setI18n}
             locales={locales}
@@ -893,7 +887,6 @@ export function TemplatePreviewDialog({
               plugins: Array.from(plugins),
               cssFramework,
               appName: "web",
-              tauri,
               i18n,
               locales,
               observability,

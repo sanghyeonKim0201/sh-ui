@@ -432,7 +432,6 @@ export async function startMcpServer() {
     {
       description:
         "빈 폴더에 sh-ui 프로젝트 스캐폴드 — Next.js (standalone/monorepo) | Vite (standalone/monorepo) | Flutter. " +
-        "+ vite 인 경우 `tauri: true` 로 Tauri 2.x 데스크탑 셸 (`src-tauri/`) 까지 한 번에 emit (Rust toolchain 필요). " +
         `FSD 폴더 구조 + 토큰 + sh-ui.config.json 일괄 생성. 사용자가 '새 프로젝트' / '빈 폴더' / '스캐폴드부터' 류 요청을 하면 이 툴 사용 (Bash 로 npx ${cliName} create 직접 호출보다 우선). ` +
         "**단일 진입점** — theme/plugins/cssFramework/structure 모두 호출 시점에 정해서 한 번에 박는다. 호출 후 sh-ui.config.json/tokens.css 를 손으로 패치하지 말 것 (다음 재스캐폴드 시 유실). " +
         "산출물: theme 인자가 프리셋이면 sh-ui.config.json 의 theme.base 가 그 이름, base64 면 'custom'. paths.styles · paths.tokens 도 자동 박혀서 sh_ui_add_component 가 사후 패치 없이 동작.",
@@ -461,13 +460,6 @@ export async function startMcpServer() {
           .describe("부모 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()
           .describe("기존 디렉토리 덮어쓰기. 기본 false (안전)"),
-        tauri: z.boolean().optional()
-          .describe(
-            "Tauri 2.x 데스크탑 셸 (`src-tauri/`) 함께 emit. platform=vite (standalone/monorepo 둘 다) 일 때만 지원. " +
-            "monorepo 의 경우 src-tauri/ 는 apps/{appName}/ 안에 emit, devUrl 은 해당 app 의 dev port 와 자동 동기화. " +
-            "Rust toolchain (`cargo`/`rustc`) 가 시스템에 설치되어 있어야 첫 `pnpm tauri dev` 가 동작. " +
-            "기본 false.",
-          ),
         i18n: z.enum(I18N_LIBRARIES).optional()
           .describe(
             "i18n 라이브러리 — platform=vite 일 때만 의미. 'react-i18next' 로 설정 시 i18next + react-i18next + browser-languagedetector + http-backend 셋업 + " +
@@ -513,15 +505,6 @@ export async function startMcpServer() {
       } catch (e) {
         return { isError: true, content: [{ type: "text", text: e.message }] };
       }
-      if (input.tauri && input.platform !== "vite") {
-        return {
-          isError: true,
-          content: [{
-            type: "text",
-            text: "tauri: true 는 platform=vite 일 때만 지원합니다 (현재 platform=" + input.platform + ").",
-          }],
-        };
-      }
       if (input.i18n && input.i18n !== "none" && input.platform !== "vite") {
         return {
           isError: true,
@@ -565,7 +548,6 @@ export async function startMcpServer() {
             arch: input.arch,
             theme: input.theme,
             css: input.cssFramework,
-            tauri: input.tauri,
             i18n: input.i18n,
             locales: input.locales,
             observability: input.observability,
@@ -589,7 +571,7 @@ export async function startMcpServer() {
         "사용자가 '앱 추가' / 'monorepo 에 새 앱' / 'add admin app' 류 요청을 하면 이 툴 사용 (Bash 로 npx " + cliName + " add-app 직접 호출보다 우선). " +
         "v0.65+ 레이아웃 준수 — ui-{name} 은 tokens-only role, 컴포넌트는 sibling ui-core 가 SoT. " +
         "theme/css 는 새 ui-app 에만 적용 (다른 앱 영향 없음). monorepo 가 아니면 (pnpm-workspace.yaml 없음) 에러. " +
-        "platform 미지정 시 기존 apps/* 스캔해 추론 (모든 앱이 같은 플랫폼이면 그것으로). vite + tauri:true 면 apps/{name}/src-tauri/ 도 함께 emit.",
+        "platform 미지정 시 기존 apps/* 스캔해 추론 (모든 앱이 같은 플랫폼이면 그것으로).",
       inputSchema: {
         name: z.string().min(1)
           .describe("앱 이름 — apps/{name}/ + packages/ui/ui-apps/ui-{name}/ 디렉토리명. 영숫자 + 하이픈."),
@@ -603,8 +585,6 @@ export async function startMcpServer() {
           .describe("CSS 프레임워크. 기본 plain. 새 앱의 컴포넌트 변종 결정 — 같은 모노레포 내 다른 앱과 다른 값 가능."),
         platform: z.enum(["next", "vite"]).optional()
           .describe("플랫폼 — next | vite. 미지정 시 기존 apps/* 의 deps 로 추론 (모든 앱이 같은 플랫폼이면 그것으로, 혼재면 명시 필요)."),
-        tauri: z.boolean().optional()
-          .describe("Tauri 2.x 데스크탑 셸 — platform=vite 일 때만 의미. apps/{name}/src-tauri/ 에 emit. 기본 false."),
         i18n: z.enum(I18N_LIBRARIES).optional()
           .describe(
             "i18n 라이브러리 — platform=vite 일 때만 의미. 'react-i18next' 로 설정 시 i18next + react-i18next + " +
@@ -628,15 +608,6 @@ export async function startMcpServer() {
         validateProjectName(input.name, "name");
       } catch (e) {
         return { isError: true, content: [{ type: "text", text: e.message }] };
-      }
-      if (input.tauri && input.platform === "next") {
-        return {
-          isError: true,
-          content: [{
-            type: "text",
-            text: "tauri 는 platform=vite 일 때만 지원합니다. --platform vite 사용 또는 tauri 옵션 제거.",
-          }],
-        };
       }
       if (input.i18n && input.i18n !== "none" && input.platform && input.platform !== "vite") {
         return {
@@ -664,7 +635,6 @@ export async function startMcpServer() {
           theme: input.theme,
           css: input.cssFramework,
           platform: input.platform,
-          tauri: input.tauri,
           i18n: input.i18n,
           locales: input.locales,
           observability: input.observability,
@@ -1017,8 +987,6 @@ export async function startMcpServer() {
           .describe("monorepo 첫 앱 이름. 기본 web"),
         // vite 전용 — sh_ui_create_project 의 동일 옵션과 1:1 대응. describe ↔ create 가 같은
         // file-plan 을 보장하려면 여기서 받아 describeTemplate 에 전달해야 한다 (v0.95.0+).
-        tauri: z.boolean().optional()
-          .describe("Tauri 2.x 데스크탑 셸 emit (platform=vite 전용). 기본 false"),
         i18n: z.enum(I18N_LIBRARIES).optional()
           .describe(`i18n 라이브러리 (platform=vite 전용). 옵션: ${I18N_LIBRARIES.join(', ')}. 기본 none`),
         locales: z.string().optional()
@@ -1036,7 +1004,6 @@ export async function startMcpServer() {
           plugins: input.plugins,
           cssFramework: input.cssFramework,
           appName: input.appName,
-          tauri: input.tauri,
           i18n: input.i18n,
           locales: input.locales,
           observability: input.observability,

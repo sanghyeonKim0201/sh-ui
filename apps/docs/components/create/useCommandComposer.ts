@@ -26,7 +26,6 @@ export type ComposerOptions = {
   packageManager: PackageManager;
   themeBase64: string;
   cssFramework: CssFramework;
-  tauri: boolean;
   i18n: 'none' | 'react-i18next';
   locales: string;
   observability: 'none' | 'sentry';
@@ -40,7 +39,7 @@ const packageManagerPrefix: Record<PackageManager, string> = {
 };
 
 export const composeCommand = (opts: ComposerOptions): string => {
-  const { projectName, platform, structure, plugins, arch, packageManager, themeBase64, cssFramework, tauri, i18n, locales, observability } = opts;
+  const { projectName, platform, structure, plugins, arch, packageManager, themeBase64, cssFramework, i18n, locales, observability } = opts;
 
   const parts = [packageManagerPrefix[packageManager], projectName];
   parts.push("--platform", platform);
@@ -49,10 +48,6 @@ export const composeCommand = (opts: ComposerOptions): string => {
     parts.push("--structure", structure);
     if (arch !== DEFAULT_ARCH) {
       parts.push("--arch", arch);
-    }
-    // tauri: standalone(src-tauri/) + monorepo(apps/{name}/src-tauri/) 둘 다 OK (v0.90+)
-    if (tauri) {
-      parts.push("--tauri");
     }
     // i18n opt-in (v0.92.0+) — 디폴트(none) 가 아닐 때만 emit.
     if (i18n && i18n !== 'none') {

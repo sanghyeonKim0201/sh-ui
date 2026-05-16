@@ -29,8 +29,6 @@ type Props = {
   onCssFrameworkChange: (v: CssFramework) => void;
   plugins: Set<Plugin>;
   onTogglePlugin: (p: Plugin) => void;
-  tauri: boolean;
-  onTauriChange: (v: boolean) => void;
   i18n: 'none' | 'react-i18next';
   onI18nChange: (v: 'none' | 'react-i18next') => void;
   locales: string;
@@ -55,8 +53,6 @@ export function ProjectOptionsForm(props: Props) {
     onCssFrameworkChange,
     plugins,
     onTogglePlugin,
-    tauri,
-    onTauriChange,
     i18n,
     onI18nChange,
     locales,
@@ -165,28 +161,6 @@ export function ProjectOptionsForm(props: Props) {
           )}
           {platform === "vite" && (
             <>
-              <div>
-                <Label htmlFor="tauri-toggle">Tauri 데스크탑 셸</Label>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
-                  <Button
-                    id="tauri-toggle"
-                    type="button"
-                    variant={tauri ? "primary" : "secondary"}
-                    size="sm"
-                    aria-pressed={tauri}
-                    title="Tauri 2.x 셸을 emit (standalone: src-tauri/, monorepo: apps/{name}/src-tauri/). Rust toolchain 필요."
-                    onClick={() => onTauriChange(!tauri)}
-                  >
-                    {tauri ? "✓ " : ""}
-                    --tauri
-                  </Button>
-                  <span style={{ fontSize: "0.75rem", color: "var(--foreground-muted)" }}>
-                    {structure === "standalone"
-                      ? "Vite SPA + 네이티브 윈도우 (Rust toolchain 필요)"
-                      : "Vite SPA + 네이티브 윈도우 — Tauri 셸은 apps/{name}/src-tauri/ 안 (Rust toolchain 필요)"}
-                  </span>
-                </div>
-              </div>
               <div>
                 <Label>i18n (react-i18next)</Label>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.25rem" }}>
