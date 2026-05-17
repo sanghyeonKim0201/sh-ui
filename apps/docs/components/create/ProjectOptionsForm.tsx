@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
+import { NextLogo, ViteLogo, FlutterLogo } from "./FrameworkLogo";
 import type {
   Arch,
   CssFramework,
@@ -68,9 +69,21 @@ export function ProjectOptionsForm(props: Props) {
             if (next) onPlatformChange(next);
           }}
         >
-          <ToggleGroupItem value="next">Next.js</ToggleGroupItem>
-          <ToggleGroupItem value="vite">Vite (SPA)</ToggleGroupItem>
-          <ToggleGroupItem value="flutter">Flutter</ToggleGroupItem>
+          <ToggleGroupItem value="next">
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+              <NextLogo /> Next.js
+            </span>
+          </ToggleGroupItem>
+          <ToggleGroupItem value="vite">
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+              <ViteLogo /> Vite (SPA)
+            </span>
+          </ToggleGroupItem>
+          <ToggleGroupItem value="flutter">
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+              <FlutterLogo /> Flutter
+            </span>
+          </ToggleGroupItem>
         </ToggleGroup>
       </div>
 
