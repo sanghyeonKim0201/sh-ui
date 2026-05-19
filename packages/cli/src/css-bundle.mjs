@@ -89,6 +89,66 @@ export function stripStylesImport(tsxText) {
 }
 
 /**
+ * 크로스컴포넌트 상대 import 매칭 정규식 생성 (호출마다 새 RegExp — lastIndex 상태 회피).
+ *
+ * 매칭: `... from "../<comp>..."` / `... from "../<comp>/index.tsx"` 형태.
+ *   - group1: `from` 키워드 + 공백 (re-export `export {…} from` 도 포함)
+ *   - group2: 따옴표
+ *   - 리터럴 `../` 다음 negative-lookahead `(?!\.)` — `../../` / `../.x` 는 제외
+ *     (sh-ui 컴포넌트는 항상 형제 디렉터리라 정확히 한 단계 `../`)
+ *   - group3: 컴포넌트 경로 (따옴표/개행 없음, subpath 포함 가능: `form/types`)
+ * 같은 디렉터리(`./styles.css` 등)와 side-effect import(`import "..."`)는 매칭 안 됨.
+ */
+function crossComponentImportRe() {
+  return /(\bfrom\s+)(["'])\.\.\/(?!\.)([^"'\n]+)\2/g;
+}
+
+/**
+ * 컴포넌트 소스에 다른 sh-ui 컴포넌트를 가리키는 상대 import 가 있는지.
+ * add 시 aliases.components 미설정을 사전 차단하는 게이트로 사용.
+ */
+export function hasCrossComponentImport(content) {
+  return crossComponentImportRe().test(content);
+}
+
+/**
+ * registry 컴포넌트의 크로스컴포넌트 상대 import 를 사용자 config 의
+ * `aliases.components` 경유 모듈 스펙으로 재작성.
+ *
+ * 왜: registry 소스는 가독성을 위해 형제 컴포넌트를 `import … from "../popover"`
+ * 처럼 상대경로로 적는다. 이게 그대로 소비자 프로젝트에 emit 되면
+ * `moduleResolution: "NodeNext"`/`"Node16"` 환경에서 깨진다 — NodeNext 는
+ * 확장자 없는/디렉터리 상대 import 를 허용하지 않고, 과거 일부 버전이 emit 한
+ * `"../popover/index.tsx"` 는 명시적 `.tsx` 확장자라 TS5097 로 막힌다. 소비자는
+ * `allowImportingTsExtensions`+`noEmit` 같은 침습적 tsconfig 변경을 강요당한다.
+ * `@SH_UI_UTILS@` 가 `aliases.utils` 로 치환되는 것과 동일하게, 크로스컴포넌트
+ * import 도 add 시점에 `aliases.components` 로 재작성하면 Bundler/NodeNext
+ * 양쪽에서 소비자 tsconfig 변경 없이 resolve 된다.
+ *
+ * 변환 규칙: `../<rest>` → `<componentsAlias>/<rest>` (선행 `../` 제거),
+ * 그리고 말미의 `/index`(+`.tsx|.ts|.jsx|.js`)는 제거 — `../popover`,
+ * `../popover/index.tsx`, `../form/types` 가 모두 동일하게
+ * `<alias>/popover`, `<alias>/form/types` 로 정규화된다.
+ *
+ * `componentsAlias` 가 falsy 면 그대로 반환 (remove.mjs 의 best-effort 재생 replay
+ * 처럼 alias 미설정 컨텍스트에서 throw 하지 않기 위함 — 검증/차단은 add.mjs 책임).
+ *
+ * @param {string} content 컴포넌트 소스
+ * @param {string} componentsAlias 예: `@workspace/ui-core/components`
+ * @returns {string} 재작성된 소스
+ */
+export function rewriteCrossComponentImports(content, componentsAlias) {
+  if (!componentsAlias) return content;
+  return content.replace(
+    crossComponentImportRe(),
+    (_m, fromKw, quote, spec) => {
+      const rest = spec.replace(/\/index(\.[tj]sx?)?$/, "");
+      return `${fromKw}${quote}${componentsAlias}/${rest}${quote}`;
+    },
+  );
+}
+
+/**
  * registry 의 file 엔트리가 CSS 변종인지 (bundled 모드에서 별도 처리 대상).
  */
 export function isStyleFile(file) {
