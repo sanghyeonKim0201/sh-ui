@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.98.1",
+      "date": "2026-05-19",
+      "title": "크로스컴포넌트 상대 import 를 aliases.components 로 재작성 — NodeNext 소비자 호환",
+      "type": "patch",
+      "highlights": [
+        "**크로스컴포넌트 import 가 이제 `aliases.components` 경유로 emit** — `sidebar`(→popover), `calendar`(→select), `date-picker`(→calendar), `markdown-editor`(→code-editor), `code-tabs`(→tabs/code-panel), `form-rhf`/`form-tanstack`/`form-yup`(→form) 등 형제 컴포넌트를 import 하던 모든 컴포넌트가, registry 의 `import … from \"../popover\"` 상대경로 대신 사용자 `sh-ui.config.json` 의 `aliases.components`(예: `@workspace/ui-core/components/popover`)로 재작성된다. `@SH_UI_UTILS@` → `aliases.utils` 치환과 동일한 add-time 변환.",
+        "**`moduleResolution: \"NodeNext\"`/`\"Node16\"` 소비자 깨짐 수정** — 상대경로/디렉터리 import 는 NodeNext 가 거부하고, 과거 일부 버전이 emit 한 `\"../popover/index.tsx\"` 의 명시적 `.tsx` 확장자는 TS5097 을 유발해 소비자가 `allowImportingTsExtensions`+`noEmit`(패키지 전체 declaration emit 비활성화) 같은 침습적 tsconfig 변경을 강요당했다. 이제 `\"Bundler\"`·`\"NodeNext\"` 양쪽에서 소비자 tsconfig 변경 없이 resolve 된다.",
+        "**add/remove 대칭 + registry 불변** — `remove` 의 unmodified 판정도 같은 재작성을 replay 해 형제-import 컴포넌트 삭제 시 '사용자 수정됨' false positive 가 나지 않는다. registry 소스·docs 듀얼카피·generated 산출물은 변경 없음(CLI 변환만). `aliases.components` 미설정 시 `@SH_UI_UTILS@` 와 동일한 톤의 친절 에러로 사전 안내. 회귀 단위 테스트 추가(전 스위트 407 통과, dual-copy drift 47 components 0)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.98.1"
+    },
+    {
       "version": "0.98.0",
       "date": "2026-05-16",
       "title": "auth-jwt · sentry 플러그인 제거 — 스캐폴더에서 두 통합 완전 삭제 (breaking)",
