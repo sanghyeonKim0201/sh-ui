@@ -6,6 +6,8 @@ import {
   stripStylesImport,
   isStyleFile,
   isTsxFile,
+  hasCrossComponentImport,
+  rewriteCrossComponentImports,
 } from '../src/css-bundle.mjs';
 
 describe('upsertSection', () => {
@@ -88,6 +90,84 @@ import { foo } from "@/lib/x";`;
     const after = stripStylesImport(before);
     expect(after).toContain('@/lib/x');
     expect(after).not.toContain('./styles.css');
+  });
+});
+
+describe('hasCrossComponentImport', () => {
+  it.each([
+    ['import { Popover } from "../popover";', true],
+    ['import { Popover } from "../popover/index.tsx";', true],
+    ['import type { T } from "../form/types";', true],
+    ['} from "../select";', true],
+    ['export { X } from "../code-panel";', true],
+    ['import { cn } from "@SH_UI_UTILS@";', false],
+    ['import "./styles.css";', false],
+    ['import { Field } from "./field";', false],
+    ['import * as React from "react";', false],
+    ['import x from "../../escape";', false],
+  ])('%s → %s', (src, expected) => {
+    expect(hasCrossComponentImport(src)).toBe(expected);
+  });
+});
+
+describe('rewriteCrossComponentImports', () => {
+  const ALIAS = '@workspace/ui-core/components';
+
+  it('확장자 없는 형제 import → alias', () => {
+    expect(
+      rewriteCrossComponentImports(
+        'import { Popover, PopoverContent } from "../popover";',
+        ALIAS,
+      ),
+    ).toBe('import { Popover, PopoverContent } from "@workspace/ui-core/components/popover";');
+  });
+
+  it('레거시 명시적 /index.tsx 확장자 → alias (확장자 제거, NodeNext TS5097 회피)', () => {
+    expect(
+      rewriteCrossComponentImports(
+        'import { Popover } from "../popover/index.tsx";',
+        ALIAS,
+      ),
+    ).toBe('import { Popover } from "@workspace/ui-core/components/popover";');
+  });
+
+  it('subpath 보존 (../form/types → alias/form/types)', () => {
+    expect(
+      rewriteCrossComponentImports('import type { T } from "../form/types";', ALIAS),
+    ).toBe('import type { T } from "@workspace/ui-core/components/form/types";');
+  });
+
+  it('멀티라인 named import 의 닫는 줄 `} from "../select"` 도 재작성', () => {
+    const src = 'import {\n  Select,\n  SelectItem,\n} from "../select";';
+    expect(rewriteCrossComponentImports(src, ALIAS)).toBe(
+      'import {\n  Select,\n  SelectItem,\n} from "@workspace/ui-core/components/select";',
+    );
+  });
+
+  it('re-export 도 재작성', () => {
+    expect(
+      rewriteCrossComponentImports('export { CodeEditor } from "../code-editor";', ALIAS),
+    ).toBe('export { CodeEditor } from "@workspace/ui-core/components/code-editor";');
+  });
+
+  it('같은 디렉터리/패키지 import 는 불변', () => {
+    const src =
+      'import { cn } from "@SH_UI_UTILS@";\nimport "./styles.css";\nimport { Field } from "./field";\nimport * as React from "react";';
+    expect(rewriteCrossComponentImports(src, ALIAS)).toBe(src);
+  });
+
+  it('alias 미설정(falsy)이면 그대로 반환 (remove.mjs best-effort replay 대칭)', () => {
+    const src = 'import { Popover } from "../popover";';
+    expect(rewriteCrossComponentImports(src, undefined)).toBe(src);
+    expect(rewriteCrossComponentImports(src, '')).toBe(src);
+  });
+
+  it('add→remove 대칭: 같은 alias 로 재작성하면 결과가 안정 (idempotent)', () => {
+    const once = rewriteCrossComponentImports(
+      'import { Popover } from "../popover";',
+      ALIAS,
+    );
+    expect(rewriteCrossComponentImports(once, ALIAS)).toBe(once);
   });
 });
 

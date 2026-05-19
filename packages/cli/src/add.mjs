@@ -16,6 +16,8 @@ import {
   stripStylesImport,
   isStyleFile,
   isTsxFile,
+  hasCrossComponentImport,
+  rewriteCrossComponentImports,
 } from "./css-bundle.mjs";
 
 /**
@@ -96,26 +98,49 @@ function resolveDest(template, config) {
 }
 
 /**
- * registry source 안의 placeholder 를 사용자 config 값으로 치환.
- * 현재 지원: `@SH_UI_UTILS@` → `aliases.utils` (예: `@/src/shared/lib/utils`).
+ * registry source 안의 placeholder / 상대 import 를 사용자 config 값으로 치환.
  *
- * registry 컴포넌트는 cn 유틸을 `import { cn } from "@SH_UI_UTILS@"` 로 import 한다 —
- * CLI 가 add 시점에 사용자 프로젝트의 alias 로 치환해 TS module resolution 이 동작.
+ * 1) `@SH_UI_UTILS@` → `aliases.utils` (예: `@/src/shared/lib/utils`).
+ *    registry 컴포넌트는 cn 유틸을 `import { cn } from "@SH_UI_UTILS@"` 로
+ *    import 한다 — add 시점에 사용자 프로젝트 alias 로 치환해 module resolution 동작.
+ * 2) 크로스컴포넌트 상대 import (`from "../popover"` /
+ *    `from "../popover/index.tsx"` / `from "../form/types"`) →
+ *    `aliases.components` 경유 (예: `@workspace/ui-core/components/popover`).
+ *    상대경로/명시적 `.tsx` 확장자가 그대로 emit 되면 NodeNext 소비자가 깨지므로
+ *    (TS5097 → `allowImportingTsExtensions`+`noEmit` 강요), utils 와 동일하게
+ *    add 시점에 alias 로 정규화한다. 변환 규칙은 css-bundle.mjs 의
+ *    rewriteCrossComponentImports 참조 (remove.mjs 가 동일 함수로 대칭 replay).
  *
- * aliases.utils 가 미설정인데 placeholder 가 등장하면 친절 에러로 안내. 사용자가 매 컴포넌트
- * 추가 후 import 깨진 것을 발견하기 전에 시점에 잡는다.
+ * 해당 alias 가 미설정인데 placeholder/상대 import 가 등장하면 친절 에러로
+ * 안내 — 사용자가 매 컴포넌트 추가 후 import 깨진 것을 발견하기 전에 잡는다.
  */
 function substitutePlaceholders(content, config, srcRel) {
+  let out = content;
+
   const PLACEHOLDER = "@SH_UI_UTILS@";
-  if (!content.includes(PLACEHOLDER)) return content;
-  const alias = config.aliases?.utils;
-  if (!alias) {
-    throw new Error(
-      `${srcRel} 가 cn 유틸을 import 합니다. sh-ui.config.json 에 aliases.utils 를 설정하세요.\n` +
-        `  예: "aliases": { "utils": "@/src/lib/utils" }`,
-    );
+  if (out.includes(PLACEHOLDER)) {
+    const alias = config.aliases?.utils;
+    if (!alias) {
+      throw new Error(
+        `${srcRel} 가 cn 유틸을 import 합니다. sh-ui.config.json 에 aliases.utils 를 설정하세요.\n` +
+          `  예: "aliases": { "utils": "@/src/lib/utils" }`,
+      );
+    }
+    out = out.replaceAll(PLACEHOLDER, alias);
   }
-  return content.replaceAll(PLACEHOLDER, alias);
+
+  if (hasCrossComponentImport(out)) {
+    const componentsAlias = config.aliases?.components;
+    if (!componentsAlias) {
+      throw new Error(
+        `${srcRel} 가 다른 sh-ui 컴포넌트를 import 합니다. sh-ui.config.json 에 aliases.components 를 설정하세요.\n` +
+          `  예: "aliases": { "components": "@/src/components" }`,
+      );
+    }
+    out = rewriteCrossComponentImports(out, componentsAlias);
+  }
+
+  return out;
 }
 
 async function ensureDir(filePath) {
