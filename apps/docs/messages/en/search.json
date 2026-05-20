@@ -18,7 +18,10 @@
     "theming": "Theming",
     "guidelines": "Guidelines",
     "changelog": "Changelog",
-    "create": "Create project"
+    "create": "Create project",
+    "foundations": "Foundations",
+    "cssFramework": "CSS framework",
+    "architectures": "Architectures"
   },
   "hints": {
     "navigate": "Navigate",
