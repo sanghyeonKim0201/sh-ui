@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.104.0",
+      "date": "2026-05-21",
+      "title": "토큰 — letter-spacing(`--tracking-*`) + 의도 shadow(`--shadow-popover/modal/toast`)",
+      "type": "minor",
+      "highlights": [
+        "**letter-spacing 토큰 신규** — `--tracking-tighter` / `--tracking-tight` / `--tracking-normal` / `--tracking-wide` / `--tracking-wider` 5단계. 한↔영 혼용에서 자간이 시각 톤을 결정짓는 만큼 토큰화 (Aifice 피드백 2.5). Tailwind utility `tracking-*` 도 함께 작동.",
+        "**의도 기반 shadow 토큰 신규** — 기존 size scale (`--shadow-sm/md/lg/xl/menu`) 에 더해 의도 시맨틱 `--shadow-popover` / `--shadow-modal` / `--shadow-toast` 추가. 컴포넌트별 inline box-shadow 박아쓰던 일관성 깨짐 케이스 해결. 디폴트 값은 각각 lg / xl / md 매핑이라 시각 변화 없음 — 사용자가 톤만 별도로 조정 가능.",
+        "**적용 범위** — `@sh-ui/tokens` semantic.json + primitives (letterSpacing 그룹 신규) + 6 templates 의 tokens.css :root + 6 templates 의 globals.css `@theme inline` + apps/docs/app/styles/tokens.css 동기화. 기존 사용자가 `var(--tracking-*)` / `var(--shadow-popover)` 직접 호출하거나 `tracking-*` Tailwind utility 로 활용 가능.",
+        "**out of scope** — radius scale 의 :root 직접 노출은 Tailwind v4 의 `@theme inline { --radius-sm: calc(...) }` derive 와 충돌 + 마이그 영향 우려로 별 PR 로 미룸 (현재도 Tailwind `rounded-*` utility 는 정상 작동). 회귀 영향 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.104.0"
+    },
+    {
       "version": "0.103.0",
       "date": "2026-05-21",
       "title": "create — `--locale ko` 옵션으로 Pretendard 자동 적용",
