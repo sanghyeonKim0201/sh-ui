@@ -35,10 +35,10 @@
     },
     "ring": { "$value": "{color.{base}.400}", "$type": "color" },
     "sidebar": {
-      "bg":         { "$value": "{color.{base}.50}",  "$type": "color" },
+      "bg":         { "$value": "{color.{base}.100}", "$type": "color" },
       "fg":         { "$value": "{color.{base}.950}", "$type": "color" },
       "border":     { "$value": "{color.{base}.200}", "$type": "color" },
-      "accent":     { "$value": "{color.{base}.100}", "$type": "color" },
+      "accent":     { "$value": "{color.{base}.200}", "$type": "color" },
       "accent-fg":  { "$value": "{color.{base}.950}", "$type": "color" }
     }
   },

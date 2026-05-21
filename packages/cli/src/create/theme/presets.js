@@ -34,10 +34,10 @@ const NEUTRAL_LIGHT = {
   'warning-foreground': '#FFFFFF',
   'info': '#2563EB',
   'info-foreground': '#FFFFFF',
-  'sidebar-bg': '#FAFAFA',
+  'sidebar-bg': '#F5F5F5',
   'sidebar-fg': '#0A0A0A',
   'sidebar-border': '#E5E5E5',
-  'sidebar-accent': '#F5F5F5',
+  'sidebar-accent': '#E5E5E5',
   'sidebar-accent-fg': '#0A0A0A',
 };
 
@@ -112,10 +112,10 @@ export const THEME_PRESETS = {
       'warning-foreground': '#FFFFFF',
       'info': '#2563EB',
       'info-foreground': '#FFFFFF',
-      'sidebar-bg': '#F8FAFC',
+      'sidebar-bg': '#F1F5F9',
       'sidebar-fg': '#0F172A',
       'sidebar-border': '#E2E8F0',
-      'sidebar-accent': '#F1F5F9',
+      'sidebar-accent': '#E2E8F0',
       'sidebar-accent-fg': '#0F172A',
     },
     dark: {
