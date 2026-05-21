@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.105.0",
+      "date": "2026-05-21",
+      "title": "next-intl plugin — `localePrefix: 'as-needed'` 디폴트",
+      "type": "minor",
+      "highlights": [
+        "**`next-intl` 플러그인의 routing 디폴트 변경** — `localePrefix: 'as-needed'` 추가. ko 는 prefix 없이 `/`, en 만 `/en/...` 로 라우팅 — 한국 사용자 베이스 + 영문 보조 페어가 흔한 패턴 (Aifice 피드백 3.3). 모든 locale 에 prefix 강제하고 싶으면 `'always'`, 절대 prefix 안 붙이면 `'never'` 로 routing.ts 한 줄 수정.",
+        "**기존 P3 항목은 이미 templates 에 구현돼 있음** — `formatDate` / `formatDateTime` / `formatPrice` util (ko-KR 고정 locale, SSR-safe) 과 ESLint `no-restricted-syntax` 룰 (raw `.toLocaleDateString()` / `.toLocaleString()` / `.toLocaleTimeString()` 인자 0개 호출 차단) 은 v0.93.x 부터 모든 next templates 의 `lib/utils/` 및 `eslint.config.js` 에 포함. 이번 릴리즈로 마지막 누락이었던 routing 디폴트만 보완.",
+        "**호환성** — 새 init 만 영향. 기존 사용자의 routing.ts 는 변경 없음. 회귀 테스트 1건 (smoke) 추가: `--plugins next-intl --arch flat` 시 routing.ts 에 `localePrefix: 'as-needed'` 포함."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.105.0"
+    },
+    {
       "version": "0.104.0",
       "date": "2026-05-21",
       "title": "토큰 — letter-spacing(`--tracking-*`) + 의도 shadow(`--shadow-popover/modal/toast`)",
