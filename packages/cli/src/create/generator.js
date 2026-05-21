@@ -320,7 +320,7 @@ export async function createProject(options = {}) {
 
   if (platform === 'flutter') {
     await generateFlutter(targetDir, projectName, theme, cssFramework, themeBase);
-    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit });
+    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit, locale: options.locale });
     console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
     console.log(`\n  cd ${projectName}`);
     console.log('  flutter pub get');
@@ -355,7 +355,7 @@ export async function createProject(options = {}) {
       });
     }
 
-    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit });
+    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit, locale: options.locale });
 
     if (options.dryRun) {
       const files = await listAllFiles(targetDir);
@@ -401,7 +401,7 @@ export async function createProject(options = {}) {
     });
   }
 
-  await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit });
+  await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit, locale: options.locale });
 
   if (options.dryRun) {
     const files = await listAllFiles(targetDir);
@@ -1658,10 +1658,16 @@ async function stripTailwindFromPrettier(prettierPath) {
  *
  * git init 은 dry-run 에서는 스킵하고, 실패해도(git 미설치 등) 조용히 넘어간다.
  */
-async function finalizeProject(targetDir, { dryRun = false, gitInit } = {}) {
+async function finalizeProject(targetDir, { dryRun = false, gitInit, locale } = {}) {
   // 모노레포 / sub-app 까지 모든 `gitignore` 를 `.gitignore` 로 rename.
   // root 만 처리하면 apps/<name>/gitignore 가 그대로 남아 node_modules/dist 가 staged 된다 (v0.93.0 버그).
   await renameAllGitignoreRecursive(targetDir);
+
+  // locale 후처리 — 한국어면 globals.css 들에 Pretendard 자동 적용 (Aifice 피드백 3.1).
+  // dryRun 이면 skip — globals.css 가 디스크에 안 써졌을 수 있다.
+  if (!dryRun && locale === 'ko') {
+    await injectLocaleFont(targetDir, 'ko');
+  }
 
   if (dryRun) return;
 
@@ -1680,6 +1686,58 @@ async function finalizeProject(targetDir, { dryRun = false, gitInit } = {}) {
     execSync('git init -q', { cwd: targetDir, stdio: 'ignore' });
   } catch {
     // git 미설치 / 권한 문제 — 스캐폴드 자체는 성공이므로 조용히 넘어간다.
+  }
+}
+
+/**
+ * `locale` 옵션 후처리 — locale=ko 면 스캐폴드된 모든 globals.css 에 Pretendard 폰트 적용.
+ *
+ * 한국어 사용자가 sh-ui 를 init 한 직후 "Pretendard 로 교체" 가 거의 100% 첫 작업이라
+ * (Aifice 피드백 3.1), 이를 옵션 하나로 자동화. 적용 방식:
+ *   - external-imports 마커 안에 Pretendard CDN @import 라인 prepend (Tailwind import 보다 먼저)
+ *   - 파일 끝에 `body { font-family: 'Pretendard Variable', ... }` rule 추가
+ *
+ * idempotent: 이미 'Pretendard Variable' 문자열이 있으면 skip.
+ * monorepo 도 안전 — targetDir 하위 모든 globals.css 를 재귀 스캔 (node_modules / .git / _arch 제외).
+ * Flutter 는 globals.css 가 없어 자동 no-op.
+ */
+async function injectLocaleFont(targetDir, locale) {
+  if (locale !== 'ko') return;
+
+  const PRETENDARD_IMPORT =
+    "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');\n";
+  const FONT_FAMILY_RULE =
+    "\n/* sh-ui:locale=ko — Pretendard 기본 적용. 사용자 정의로 override 가능. */\n" +
+    "body { font-family: 'Pretendard Variable', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }\n";
+  const END_MARKER = '/* sh-ui:external-imports-end */';
+
+  const targets = [];
+  async function walk(dir) {
+    let entries;
+    try {
+      entries = await fs.readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) {
+        if (['node_modules', '.git', '.next', 'dist', '_arch'].includes(e.name)) continue;
+        await walk(full);
+      } else if (e.isFile() && e.name === 'globals.css') {
+        targets.push(full);
+      }
+    }
+  }
+  await walk(targetDir);
+
+  for (const abs of targets) {
+    let css = await fs.readFile(abs, 'utf-8');
+    if (css.includes("'Pretendard Variable'")) continue;
+    if (!css.includes(END_MARKER)) continue; // 우리 마커 없는 파일은 안전상 건드리지 않음
+    css = css.replace(END_MARKER, `${PRETENDARD_IMPORT}${END_MARKER}`);
+    css += FONT_FAMILY_RULE;
+    await fs.writeFile(abs, css);
   }
 }
 

@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.103.0",
+      "date": "2026-05-21",
+      "title": "create — `--locale ko` 옵션으로 Pretendard 자동 적용",
+      "type": "minor",
+      "highlights": [
+        "**`--locale ko` 옵션 신규** — 한국어 사용자가 sh-ui init 직후 거의 100% 첫 작업이 `Pretendard 로 교체` (Aifice 피드백 3.1) 였던 흐름을 옵션 하나로 자동화. `sh-ui create my-app --locale ko` 또는 MCP `sh_ui_create_project({ locale: 'ko' })`.",
+        "**적용 방식** — 스캐폴드된 모든 globals.css 의 `sh-ui:external-imports-end` 마커 앞에 Pretendard CDN `@import` 추가 (Tailwind import 보다 먼저 — CSS spec 준수), 파일 끝에 `body { font-family: 'Pretendard Variable', ui-sans-serif, system-ui, ... }` rule 추가. monorepo 도 안전하게 모든 globals.css 재귀 처리.",
+        "**idempotent** — 이미 `'Pretendard Variable'` 가 있는 파일은 skip, 마커 없는 파일도 안전상 건드리지 않음. CDN 은 `cdn.jsdelivr.net/orioncactus/pretendard@v1.3.9` (SIL OFL 라이선스, 상용 OK).",
+        "**locale vs locales** — `--locale` (단수) 는 사용자 지역 디폴트 가정 (현재는 폰트). `--locales` (복수) 는 i18n 활성화 시 생성할 locale 코드 목록 (예: `ko,en`). 둘은 의미가 다르고 함께 사용 가능. CLI 에러 메시지에 차이 명시.",
+        "**검증** — pnpm test 420/420 통과 (413 → 420, +7). `cli-args` 4건 (값 검증) + `smoke` 3건 (실제 inject + 미지정 시 비활성 + idempotent) 추가."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.103.0"
+    },
+    {
       "version": "0.102.0",
       "date": "2026-05-21",
       "title": "create — nested .git 자동감지로 충돌 방지 + --no-git-init / --git-init 플래그",

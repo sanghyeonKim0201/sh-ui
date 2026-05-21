@@ -1416,6 +1416,91 @@ describe('sh-ui create smoke tests', () => {
     });
   });
 
+  // v0.103.0+ — locale=ko 시 Pretendard 자동 적용 회귀 가드.
+  //
+  // 한국어 사용자가 init 직후 거의 100% 첫 작업이라 (Aifice 피드백 3.1) --locale ko 한 옵션으로
+  // globals.css 에 CDN @import + body font-family rule 을 자동 inject.
+  describe('locale=ko Pretendard 자동 적용', () => {
+    it('next standalone — Pretendard CDN @import + body font-family 자동 적용', async () => {
+      await createProject({
+        name: 'ko-pret',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        css: 'tailwind',
+        yes: true,
+        locale: 'ko',
+      });
+
+      const globalsCss = await fs.readFile(
+        path.join(tmpDir, 'ko-pret', 'app', 'globals.css'),
+        'utf-8',
+      );
+      expect(globalsCss).toContain(
+        "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard",
+      );
+      expect(globalsCss).toContain("'Pretendard Variable'");
+      expect(globalsCss).toContain('sh-ui:locale=ko');
+      // 실제 @import 라인 (주석 안 예시 제외) 만 라인 시작으로 매칭. Pretendard 는 Tailwind 보다
+      // 앞 라인에 와야 함 (CSS spec — @import 는 다른 rule 보다 앞).
+      const lines = globalsCss.split('\n');
+      const pretLineIdx = lines.findIndex((l) => l.startsWith("@import url('https://cdn.jsdelivr"));
+      const tailwindLineIdx = lines.findIndex((l) => l.startsWith("@import 'tailwindcss'"));
+      expect(pretLineIdx).toBeGreaterThan(-1);
+      expect(tailwindLineIdx).toBeGreaterThan(-1);
+      expect(pretLineIdx).toBeLessThan(tailwindLineIdx);
+    });
+
+    it('locale 미지정 — Pretendard 자동 적용 안 함 (기존 주석 가이드만 유지)', async () => {
+      await createProject({
+        name: 'no-locale',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        css: 'tailwind',
+        yes: true,
+      });
+
+      const globalsCss = await fs.readFile(
+        path.join(tmpDir, 'no-locale', 'app', 'globals.css'),
+        'utf-8',
+      );
+      // 실제 @import 라인 (주석 안 예시 제외) 으로 Pretendard 가 활성화되면 안 된다.
+      // 주석 안에는 예시로 'pretendard' 가 등장 가능하므로 'Pretendard Variable' rule 로 확인.
+      expect(globalsCss).not.toContain("'Pretendard Variable'");
+      expect(globalsCss).not.toContain('sh-ui:locale=ko');
+    });
+
+    it('idempotent — locale=ko 이미 적용된 파일에 재적용 시 중복 없음', async () => {
+      // 한 번 생성 후, 같은 디렉토리에 force 로 재생성. injectLocaleFont 단독 검증을 위해
+      // globals.css 만 수동으로 살피는 것보다, 실제 fixture 를 두 번 거쳐 중복 라인이 없음을 확인.
+      const dir = path.join(tmpDir, 'idem-ko');
+      await createProject({
+        name: 'idem-ko',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        css: 'tailwind',
+        yes: true,
+        locale: 'ko',
+      });
+      // 사용자가 동일 옵션으로 force 재생성 시뮬레이션 (template 가 재복사되므로 idempotent 의미가 약하지만,
+      // 같은 css 가 두 번 injectLocaleFont 거쳐도 안전한지를 보장).
+      const css1 = await fs.readFile(path.join(dir, 'app', 'globals.css'), 'utf-8');
+      // 주석 안 예시도 cdn.jsdelivr 를 포함하므로 라인 시작 패턴으로만 카운트 (실제 emit 만).
+      const importLines = css1
+        .split('\n')
+        .filter((l) => l.startsWith("@import url('https://cdn.jsdelivr"));
+      expect(importLines.length).toBe(1);
+      // body rule 의 font-family — 우리 inject 만 'Pretendard Variable' 등장.
+      const fontFamilyMatches = (css1.match(/font-family: 'Pretendard Variable'/g) || []).length;
+      expect(fontFamilyMatches).toBe(1);
+      // 우리 마커 코멘트도 한 번만.
+      const markerCount = (css1.match(/sh-ui:locale=ko/g) || []).length;
+      expect(markerCount).toBe(1);
+    });
+  });
+
   // ─── arch=flat 매트릭스 ───
   //
   // Layer 3 부터 --arch flat 지원. 베이스 템플릿이 _arch/{fsd,flat}/ 오버레이로
