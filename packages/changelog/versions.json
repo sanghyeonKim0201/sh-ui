@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.108.0",
+      "date": "2026-05-21",
+      "title": "토큰 — sidebar 디폴트를 background.subtle / .muted 와 동일 값으로 일치",
+      "type": "minor",
+      "highlights": [
+        "**sidebar 토큰 디폴트가 일반 surface 토큰과 일치** — light: `--sidebar-bg` 가 `{base}.50` (~#FAFAFA) → `{base}.100` (~#F5F5F5, = `--background-subtle`), `--sidebar-accent` 가 `{base}.100` → `{base}.200` (= `--background-muted`). 사용자 메시지 \"sidebar 만 분리된 어정쩡함\" 해소 (Aifice 피드백 2.6).",
+        "**대신 분리 능력은 유지** — sidebar 토큰 자체는 그대로 존재하므로 사용자가 sidebar 만 별 톤 (예: 어두운 sidebar on light 페이지) 으로 커스터마이즈하고 싶으면 `--sidebar-bg` 등 hex 만 별도 값으로 override. 즉 \"디폴트 일관 + 사용자 분리 가능\" 의 절충.",
+        "**dark 모드는 변경 없음** — sidebar.bg (`{base}.900`) 가 이미 background.subtle dark 값과 일치, sidebar.accent (`{base}.800`) 도 background.muted dark 와 일치. light 만 step 분리 (v0.107.0) 와 함께 일관성 회복.",
+        "**시각 영향** — light 모드에서 sidebar 가 약간 더 진한 톤 (#FAFAFA → #F5F5F5). 메인 콘텐츠 (#FFFFFF) 와 더 명확한 구분. v0.107.0 의 background-subtle/muted 분리와 같은 방향. dark 모드 영향 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.108.0"
+    },
+    {
       "version": "0.107.0",
       "date": "2026-05-21",
       "title": "토큰 — light 모드 `background-subtle` / `background-muted` 한 step 더 분리",
