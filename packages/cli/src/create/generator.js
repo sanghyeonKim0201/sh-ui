@@ -320,7 +320,7 @@ export async function createProject(options = {}) {
 
   if (platform === 'flutter') {
     await generateFlutter(targetDir, projectName, theme, cssFramework, themeBase);
-    await finalizeProject(targetDir, { dryRun: options.dryRun });
+    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit });
     console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
     console.log(`\n  cd ${projectName}`);
     console.log('  flutter pub get');
@@ -355,7 +355,7 @@ export async function createProject(options = {}) {
       });
     }
 
-    await finalizeProject(targetDir, { dryRun: options.dryRun });
+    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit });
 
     if (options.dryRun) {
       const files = await listAllFiles(targetDir);
@@ -401,7 +401,7 @@ export async function createProject(options = {}) {
     });
   }
 
-  await finalizeProject(targetDir, { dryRun: options.dryRun });
+  await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit });
 
   if (options.dryRun) {
     const files = await listAllFiles(targetDir);
@@ -1650,20 +1650,74 @@ async function stripTailwindFromPrettier(prettierPath) {
  * strip 한다(없으면 `.npmignore` fallback 으로 사용). 사용자에게 도착하지 않으니
  * 템플릿엔 `gitignore` 로 두고 복사 직후 dot-prefix 를 붙인다.
  *
+ * gitInit 옵션:
+ *   - undefined (auto): parent 가 이미 git tree 안이면 스킵, 아니면 init. nested .git
+ *     충돌 방지 — 기존 monorepo / 사용자 작업 트리 안에서 호출 시 안전.
+ *   - true: 무조건 init (parent 가 git tree 안이어도). nested 가 의도된 경우.
+ *   - false: 무조건 스킵.
+ *
  * git init 은 dry-run 에서는 스킵하고, 실패해도(git 미설치 등) 조용히 넘어간다.
  */
-async function finalizeProject(targetDir, { dryRun = false } = {}) {
+async function finalizeProject(targetDir, { dryRun = false, gitInit } = {}) {
   // 모노레포 / sub-app 까지 모든 `gitignore` 를 `.gitignore` 로 rename.
   // root 만 처리하면 apps/<name>/gitignore 가 그대로 남아 node_modules/dist 가 staged 된다 (v0.93.0 버그).
   await renameAllGitignoreRecursive(targetDir);
 
   if (dryRun) return;
 
+  const decision = resolveGitInit(targetDir, gitInit);
+  if (!decision.init) {
+    if (decision.reason === 'nested') {
+      console.log(
+        `\n  ℹ 이미 git tree 안이라 .git 초기화를 스킵했습니다 (parent: ${decision.parentRepo}).\n` +
+        `    nested git repo 가 의도된 경우 --git-init 으로 강제할 수 있습니다.`,
+      );
+    }
+    return;
+  }
+
   try {
     execSync('git init -q', { cwd: targetDir, stdio: 'ignore' });
   } catch {
     // git 미설치 / 권한 문제 — 스캐폴드 자체는 성공이므로 조용히 넘어간다.
   }
+}
+
+/**
+ * git init 실행 여부 결정. auto 모드는 parent 가 git tree 안이면 스킵 — nested .git
+ * 충돌 방지. 명시 override (true/false) 가 있으면 그대로 따른다.
+ *
+ * 감지: `git -C <parentDir> rev-parse --is-inside-work-tree` 출력이 "true" 면 안.
+ * git 미설치 / 권한 문제 등으로 명령이 실패하면 트리 밖으로 간주 (안전 디폴트: init 시도).
+ */
+function resolveGitInit(targetDir, override) {
+  if (override === false) return { init: false, reason: 'explicit-skip' };
+  if (override === true) return { init: true, reason: 'explicit-force' };
+
+  const parentDir = path.dirname(targetDir);
+  try {
+    const result = execSync('git rev-parse --is-inside-work-tree', {
+      cwd: parentDir,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .toString()
+      .trim();
+    if (result === 'true') {
+      let parentRepo = parentDir;
+      try {
+        parentRepo = execSync('git rev-parse --show-toplevel', {
+          cwd: parentDir,
+          stdio: ['ignore', 'pipe', 'ignore'],
+        })
+          .toString()
+          .trim() || parentDir;
+      } catch {}
+      return { init: false, reason: 'nested', parentRepo };
+    }
+  } catch {
+    // parent 가 git tree 밖 (또는 git 미설치) — 안전 디폴트: init 시도.
+  }
+  return { init: true, reason: 'auto' };
 }
 
 /**

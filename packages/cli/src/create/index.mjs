@@ -32,6 +32,8 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
   --locales <ko,en>                  i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 'ko,en'
   --yes                              디렉토리 덮어쓰기 + 모노레포 기본값 자동 채택
   --dry-run                          파일을 쓰지 않고 작성될 파일 목록만 출력
+  --no-git-init                      git init 스킵 (기존 git tree 안에서 호출 시 nested .git 충돌 방지). 기본 auto — parent 가 git tree 안이면 자동 스킵
+  --git-init                         git init 무조건 실행 (nested 가 의도된 경우)
   -h, --help                         이 도움말
 
 예 (대화형):

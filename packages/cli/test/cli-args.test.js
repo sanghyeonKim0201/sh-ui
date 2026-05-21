@@ -135,4 +135,21 @@ describe('parseArgs', () => {
     expect(() => parseArgs(['node', 'create.js', '--arch', 'clean']))
       .toThrow(/--arch/);
   });
+
+  // ─── git-init / no-git-init (v0.102.0+) ───
+
+  it('--no-git-init → flags.gitInit = false', () => {
+    const r = parseArgs(['node', 'create.js', '--no-git-init']);
+    expect(r.flags.gitInit).toBe(false);
+  });
+
+  it('--git-init → flags.gitInit = true', () => {
+    const r = parseArgs(['node', 'create.js', '--git-init']);
+    expect(r.flags.gitInit).toBe(true);
+  });
+
+  it('git-init 플래그 없음 → flags.gitInit undefined (auto 모드)', () => {
+    const r = parseArgs(['node', 'create.js', '--platform', 'next']);
+    expect(r.flags.gitInit).toBeUndefined();
+  });
 });

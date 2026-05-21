@@ -14,7 +14,7 @@ const VALID_PLUGINS = allPlugins.map((p) => p.name);
 const VALID_ARCHES = allArchitectures.map((a) => a.name);
 
 const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch', 'port', 'i18n', 'locales'];
-const BOOL_FLAGS = ['yes', 'help', 'dry-run'];
+const BOOL_FLAGS = ['yes', 'help', 'dry-run', 'no-git-init', 'git-init'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
 
@@ -40,9 +40,11 @@ export const parseArgs = (argv) => {
     }
     const name = arg.slice(2);
     if (BOOL_FLAGS.includes(name)) {
-      // dry-run 은 dryRun 으로 캐멀 케이스
-      const key = name === 'dry-run' ? 'dryRun' : name;
-      flags[key] = true;
+      // dry-run → dryRun. --no-git-init → gitInit:false. --git-init → gitInit:true.
+      if (name === 'dry-run') flags.dryRun = true;
+      else if (name === 'no-git-init') flags.gitInit = false;
+      else if (name === 'git-init') flags.gitInit = true;
+      else flags[name] = true;
       continue;
     }
     if (!VALUE_FLAGS.includes(name)) {

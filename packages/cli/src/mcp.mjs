@@ -478,6 +478,11 @@ export async function startMcpServer() {
           ),
         port: z.string().optional()
           .describe("monorepo 첫 앱의 dev 포트. 기본 '3000'. structure=monorepo 일 때만 의미."),
+        gitInit: z.boolean().optional()
+          .describe(
+            "git init 실행 여부. 기본 auto — parent 가 이미 git tree 안이면 자동 스킵 (nested .git 충돌 방지), 밖이면 init. " +
+            "true 로 nested 강제, false 로 명시 스킵. v0.102.0+ 신규.",
+          ),
       },
     },
     async (input) => {
@@ -537,6 +542,7 @@ export async function startMcpServer() {
             locales: input.locales,
             appName: input.appName,
             port: input.port,
+            gitInit: input.gitInit,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );

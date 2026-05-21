@@ -1355,6 +1355,65 @@ describe('sh-ui create smoke tests', () => {
 
       expect(await fs.pathExists(path.join(tmpDir, 'dry-git'))).toBe(false);
     });
+
+    // v0.102.0+ nested .git 자동감지 회귀 가드.
+    //
+    // 기존 git tree 안에서 `sh-ui create` 호출 시 parent 의 .git 과 충돌하는 nested
+    // .git 이 생기지 않아야 한다. parent 가 `git init` 으로 트리화돼 있으면 스킵.
+    it('nested git tree — parent 가 git tree 안이면 .git 자동 스킵', async () => {
+      // tmpDir 자체를 git tree 로 만든다 — sh-ui 사용자가 기존 repo 안에서 호출하는 시나리오 재현.
+      const { execSync } = await import('node:child_process');
+      execSync('git init -q', { cwd: tmpDir, stdio: 'ignore' });
+      // -c init.defaultBranch 없는 환경에서도 안전하도록 첫 커밋은 skip — `--is-inside-work-tree`
+      // 는 빈 repo 도 true 를 반환한다.
+
+      await createProject({
+        name: 'nested-git',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+      });
+
+      const projectDir = path.join(tmpDir, 'nested-git');
+      expect(await fs.pathExists(path.join(projectDir, '.gitignore'))).toBe(true);
+      // 핵심: nested .git/ 디렉토리가 생기면 안 된다.
+      expect(await fs.pathExists(path.join(projectDir, '.git'))).toBe(false);
+    });
+
+    it('nested + gitInit:true — 명시 force 시 nested 라도 .git 생성', async () => {
+      const { execSync } = await import('node:child_process');
+      execSync('git init -q', { cwd: tmpDir, stdio: 'ignore' });
+
+      await createProject({
+        name: 'force-nested',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+        gitInit: true,
+      });
+
+      expect(await fs.pathExists(path.join(tmpDir, 'force-nested', '.git'))).toBe(true);
+    });
+
+    it('gitInit:false — git tree 밖이어도 명시 스킵 시 .git 생성 안 함', async () => {
+      // tmpDir 는 git tree 밖 (mktemp). 평소엔 auto = init 인데 false 면 무조건 스킵.
+      await createProject({
+        name: 'skip-git',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+        gitInit: false,
+      });
+
+      const projectDir = path.join(tmpDir, 'skip-git');
+      // .gitignore 는 rename 되어야 함 (gitignore → .gitignore)
+      expect(await fs.pathExists(path.join(projectDir, '.gitignore'))).toBe(true);
+      // 단 .git 디렉토리는 만들면 안 됨
+      expect(await fs.pathExists(path.join(projectDir, '.git'))).toBe(false);
+    });
   });
 
   // ─── arch=flat 매트릭스 ───
