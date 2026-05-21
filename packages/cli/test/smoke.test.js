@@ -1609,6 +1609,14 @@ describe('sh-ui create smoke tests', () => {
       expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'request.ts'))).toBe(true);
       expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'messages', 'ko.json'))).toBe(true);
 
+      // v0.105.0+ — routing.ts 의 localePrefix 가 'as-needed' 디폴트.
+      // 한국 사용자 베이스 + 영문 prefix 가 흔한 패턴 (ko 는 prefix 없이 '/', en 만 '/en/...').
+      const routingTs = await fs.readFile(
+        path.join(dir, 'lib', 'config', 'i18n', 'routing.ts'),
+        'utf-8',
+      );
+      expect(routingTs).toContain("localePrefix: 'as-needed'");
+
       // [locale]/layout.tsx 는 flat alias 로 RootLayout import
       const localeLayout = await fs.readFile(
         path.join(dir, 'app', '[locale]', 'layout.tsx'),
