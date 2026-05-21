@@ -101,6 +101,7 @@ const components: { title: string; href: string }[] = [
   { title: "Progress", href: "/components/progress" },
   { title: "Radio", href: "/components/radio" },
   { title: "RichTextEditor", href: "/components/rich-text-editor" },
+  { title: "ScrollArea", href: "/components/scroll-area" },
   { title: "Select", href: "/components/select" },
   { title: "Separator", href: "/components/separator" },
   { title: "Sidebar", href: "/components/sidebar" },

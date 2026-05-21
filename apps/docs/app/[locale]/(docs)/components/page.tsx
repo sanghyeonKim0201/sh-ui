@@ -49,6 +49,7 @@ const groups: Group[] = [
       { name: "ContextMenu", slug: "context-menu", description: "우클릭 컨텍스트 메뉴." },
       { name: "Card", slug: "card", description: "카드 컨테이너 — Header/Body/Footer." },
       { name: "Separator", slug: "separator", description: "수평/수직 구분선." },
+      { name: "ScrollArea", slug: "scroll-area", description: "커스텀 스크롤 컨테이너 — orientation · viewportClassName." },
     ],
   },
   {

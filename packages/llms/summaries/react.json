@@ -55,6 +55,7 @@
     "form-yup": "yup 스키마 → sh-ui Form 의 Standard Schema 어댑터. `yupSchema(yupObject)` 로 감싸 Form 의 `validation` prop 에 전달. yup 자체는 peerDependency.",
     "form-rhf": "React Hook Form 인스턴스 → sh-ui FormStore 어댑터. `adaptReactHookForm(rhfInstance, config)` — RHF 가 state owner, sh-ui 가 메타(steps/sections) 관리. react-hook-form 은 peerDependency.",
     "form-tanstack": "TanStack Form 인스턴스 → sh-ui FormStore 어댑터. `adaptTanstackForm(tanstackInstance, config)` — TanStack Form 이 state owner. @tanstack/react-form 은 peerDependency.",
-    "calendar": "내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장."
+    "calendar": "내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장.",
+    "scroll-area": "커스텀 스크롤 컨테이너 — composite export ScrollArea (Base UI). 내부에서 viewport + scrollbar + thumb + corner 를 자동 구성하며 OS-native 스크롤바를 대체한다. orientation: \"vertical\" | \"horizontal\" | \"both\" (기본 vertical). 외부 height/width 가 정해진 컨테이너 안에서 사용. viewportClassName 으로 viewport 의 패딩/레이아웃 분리 적용. 스크롤바는 hover/scrolling 시 fade in, prefers-reduced-motion 존중."
   }
 }
