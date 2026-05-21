@@ -122,11 +122,22 @@
   },
 
   "shadow": {
-    "sm":   { "$value": "{shadow.sm}", "$type": "shadow" },
-    "md":   { "$value": "{shadow.md}", "$type": "shadow" },
-    "lg":   { "$value": "{shadow.lg}", "$type": "shadow" },
-    "xl":   { "$value": "{shadow.xl}", "$type": "shadow" },
-    "menu": { "$value": "{shadow.lg}", "$type": "shadow" }
+    "sm":      { "$value": "{shadow.sm}", "$type": "shadow" },
+    "md":      { "$value": "{shadow.md}", "$type": "shadow" },
+    "lg":      { "$value": "{shadow.lg}", "$type": "shadow" },
+    "xl":      { "$value": "{shadow.xl}", "$type": "shadow" },
+    "menu":    { "$value": "{shadow.lg}", "$type": "shadow" },
+    "popover": { "$value": "{shadow.lg}", "$type": "shadow" },
+    "modal":   { "$value": "{shadow.xl}", "$type": "shadow" },
+    "toast":   { "$value": "{shadow.md}", "$type": "shadow" }
+  },
+
+  "tracking": {
+    "tighter": { "$value": "{letterSpacing.tighter}", "$type": "dimension" },
+    "tight":   { "$value": "{letterSpacing.tight}",   "$type": "dimension" },
+    "normal":  { "$value": "{letterSpacing.normal}",  "$type": "dimension" },
+    "wide":    { "$value": "{letterSpacing.wide}",    "$type": "dimension" },
+    "wider":   { "$value": "{letterSpacing.wider}",   "$type": "dimension" }
   },
 
   "duration": {

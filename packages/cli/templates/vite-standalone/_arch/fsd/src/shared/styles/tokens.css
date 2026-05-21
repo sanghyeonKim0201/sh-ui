@@ -142,6 +142,9 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.18);
   --shadow-menu: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.18);
+  --shadow-toast: 0 4px 12px rgba(0, 0, 0, 0.12);
   /* sh-ui:theme-shadow-end */
   /* sh-ui:theme-duration-start */
   --duration-fast: 120ms;
@@ -151,6 +154,13 @@
   /* sh-ui:theme-ease-start */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  /* sh-ui:theme-tracking-start */
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.04em;
+  /* sh-ui:theme-tracking-end */
   /* sh-ui:theme-ease-end */
   /* sh-ui:theme-control-start */
   --control-sm: 2rem;
