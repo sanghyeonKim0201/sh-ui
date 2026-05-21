@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.107.0",
+      "date": "2026-05-21",
+      "title": "토큰 — light 모드 `background-subtle` / `background-muted` 한 step 더 분리",
+      "type": "minor",
+      "highlights": [
+        "**`--background-subtle` / `--background-muted` 시각 차이 명확화** — 기존 light 의 subtle (`{base}.50`, ~#FAFAFA) 과 muted (`{base}.100`, ~#F5F5F5) 가 99% 디스플레이에서 구분 안 되던 문제 (Aifice 피드백 2.2). 한 step 씩 더 진하게 이동 — subtle: `{base}.100` (#F5F5F5), muted: `{base}.200` (#E5E5E5). `bg < bg-subtle < bg-muted` 어두워지는 의도가 시각으로 드러남.",
+        "**dark 모드는 그대로** — 현재도 `.950 / .900 / .800` 으로 충분히 분리. 변경 없음.",
+        "**영향 범위** — semantic.json (light.background.subtle / .muted) + presets.js (NEUTRAL_LIGHT + slate light) + 6 templates 의 tokens.css `:root` (light 블록만) + apps/docs tokens.css. dark @media 와 `.dark` 블록은 미변경.",
+        "**시각 영향** — tabs/sidebar/pagination/code-editor 등 background-subtle 을 hover/active 표면으로 사용하는 컴포넌트에서 hover state 가 더 명확해진다. 인접 nested surface (예: card 안의 input group bg) 도 명확한 단계 분리. 사용자 base 색 (neutral/zinc/slate) 별로 동일 비율 차이 유지."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.107.0"
+    },
+    {
       "version": "0.106.0",
       "date": "2026-05-21",
       "title": "DX 묶음 — generator 가이드 주석 + 한국어 자연어 매핑 + radius scale 절대값화",

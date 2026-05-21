@@ -4,8 +4,8 @@
   "light": {
     "background": {
       "default": { "$value": "{color.white}", "$type": "color" },
-      "subtle":   { "$value": "{color.{base}.50}", "$type": "color" },
-      "muted":    { "$value": "{color.{base}.100}", "$type": "color" },
+      "subtle":   { "$value": "{color.{base}.100}", "$type": "color" },
+      "muted":    { "$value": "{color.{base}.200}", "$type": "color" },
       "inverse":  { "$value": "{color.{base}.950}", "$type": "color" }
     },
     "foreground": {

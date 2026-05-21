@@ -6,8 +6,8 @@
 /* sh-ui:theme-colors-start */
 :root {
   --background: #FFFFFF;
-  --background-subtle: #FAFAFA;
-  --background-muted: #F5F5F5;
+  --background-subtle: #F5F5F5;
+  --background-muted: #E5E5E5;
   --background-inverse: #0A0A0A;
   --foreground: #0A0A0A;
   --foreground-muted: #525252;

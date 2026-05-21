@@ -8,8 +8,8 @@
 
 const NEUTRAL_LIGHT = {
   'background': '#FFFFFF',
-  'background-subtle': '#FAFAFA',
-  'background-muted': '#F5F5F5',
+  'background-subtle': '#F5F5F5',
+  'background-muted': '#E5E5E5',
   'background-inverse': '#0A0A0A',
   'foreground': '#0A0A0A',
   'foreground-muted': '#525252',
@@ -87,8 +87,8 @@ export const THEME_PRESETS = {
     label: '슬레이트 — 차분한 슬레이트 + 인디고 (정보 밀도)',
     light: {
       'background': '#FFFFFF',
-      'background-subtle': '#F8FAFC',
-      'background-muted': '#F1F5F9',
+      'background-subtle': '#F1F5F9',
+      'background-muted': '#E2E8F0',
       'background-inverse': '#0F172A',
       'foreground': '#0F172A',
       'foreground-muted': '#475569',
