@@ -93,6 +93,34 @@ const INIT_DESCRIPTIONS = {
     tailwind: "Tailwind v4 utility class — class-variance-authority 기반",
     "css-modules": "CSS Modules — .module.css + styles.X 참조, 빌드 타임 hash 격리",
   },
+  // theme 프리셋 — sh_ui_create_project 의 theme 인자에 그대로 전달 가능.
+  // 사용자가 "다크 모던" / "따뜻한 종이" 같이 자연어로 의도를 표현하면 아래 keywordHints 로 매핑.
+  theme: {
+    neutral: "뉴트럴 — 흑백 강조 (sh-ui 기본). 어떤 브랜드에도 무난.",
+    slate: "슬레이트 — 차분한 슬레이트 + 인디고 (정보 밀도). 대시보드/관리자 인상.",
+    rose: "로즈 — 핑크 강조 + 둥근 모서리 (친근·여유). 소비자 앱·캐주얼.",
+    emerald: "에메랄드 — 그린 강조. 자연·금융·헬스 인상.",
+    violet: "바이올렛 — 퍼플 강조 + 살짝 라운드 (모던·또렷). 크리에이티브/디자인 도구.",
+  },
+  // 자연어 의도 → enum/preset 매핑 힌트 (한국어 표현 위주).
+  // 사용자가 "다크 모던" / "따뜻한 종이" / "한국 핀테크 스타일" 같이 의도만 던지면 AI 가
+  // 이 사전을 보고 platform/base/radius/mode/theme 조합으로 매핑한다.
+  keywordHints: {
+    "다크 모던 / dark modern / 검정 모던": "base=zinc · mode=dark · radius=sm · theme=neutral",
+    "라이트 모던 / 밝은 모던 / clean": "base=zinc · mode=light · radius=sm · theme=neutral",
+    "따뜻한 / 따뜻한 종이 / warm paper / 종이": "theme=rose 또는 neutral · radius=md · mode=light-dark",
+    "친근한 / 캐주얼 / 부드러운 / 동글동글 / soft": "theme=rose · radius=lg · mode=light-dark",
+    "한국 핀테크 / 핀테크 / fintech / 금융": "theme=slate (indigo) 또는 violet · radius=sm · mode=light-dark",
+    "기업 관리자 / 관리자 / 어드민 / admin / MES / ERP / 백오피스": "theme=slate · arch=mes · radius=sm",
+    "차분한 / 프로페셔널 / 푸른빛 / 정보 밀도": "base=slate 또는 theme=slate · radius=sm",
+    "그린 강조 / 자연 / 헬스 / 환경": "theme=emerald · radius=md",
+    "퍼플 강조 / 크리에이티브 / 디자인 도구": "theme=violet · radius=lg · borders=두꺼움",
+    "쇼핑몰 / 커머스 / 소비자 앱": "theme=rose 또는 emerald · radius=lg · mode=light-dark",
+    "데이터 대시보드 / 차트 / 분석 도구": "theme=slate · base=slate · radius=sm · 정보 밀도 ↑",
+    "AI / 챗봇 / 생성형": "theme=violet 또는 neutral · radius=md · mode=light-dark",
+    "스타트업 / 모던 / 트렌디": "theme=violet 또는 rose · radius=md",
+    "교육 / 학습 / 친근": "theme=rose 또는 emerald · radius=lg",
+  },
 };
 
 /** stdout 으로 출력되는 console.* 호출을 버퍼에 캡처해 텍스트로 반환. */
@@ -419,8 +447,10 @@ export async function startMcpServer() {
     "sh_ui_describe_init",
     {
       description:
-        "sh-ui init 의 4개 축(platform/base/radius/mode) 선택지와 한글 설명 반환. " +
-        "사용자의 자연어 의도(\"다크 모던\", \"따뜻한 느낌\")를 enum 값으로 매핑할 때 먼저 호출.",
+        "sh-ui init 의 선택지 사전 — platform/base/radius/mode/cssFramework/theme 의 enum + 한글 설명, " +
+        "그리고 사용자 자연어 의도 (\"다크 모던\" / \"따뜻한 종이\" / \"한국 핀테크 스타일\" 등) 를 " +
+        "enum/preset 조합으로 매핑하는 keywordHints 사전을 함께 반환. " +
+        "사용자가 톤을 자연어로 던지면 이 툴을 먼저 호출해 매핑 후 sh_ui_create_project 의 theme/base/radius 인자에 반영. v0.106.0+ 에서 theme + keywordHints 키 추가.",
       inputSchema: {},
     },
     async () => jsonResult(INIT_DESCRIPTIONS),

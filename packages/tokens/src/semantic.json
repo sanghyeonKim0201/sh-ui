@@ -86,7 +86,12 @@
   },
 
   "radius": {
-    "default": { "$value": "{radius.{radius}}", "$type": "dimension" }
+    "default": { "$value": "{radius.{radius}}", "$type": "dimension" },
+    "sm":   { "$value": "{radius.sm}",   "$type": "dimension" },
+    "md":   { "$value": "{radius.md}",   "$type": "dimension" },
+    "lg":   { "$value": "{radius.lg}",   "$type": "dimension" },
+    "xl":   { "$value": "{radius.xl}",   "$type": "dimension" },
+    "full": { "$value": "{radius.full}", "$type": "dimension" }
   },
 
   "space": {
