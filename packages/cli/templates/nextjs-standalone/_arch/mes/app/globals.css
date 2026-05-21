@@ -57,10 +57,11 @@
   --tracking-normal: var(--tracking-normal);
   --tracking-wide: var(--tracking-wide);
   --tracking-wider: var(--tracking-wider);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
 }
 
 @layer base {

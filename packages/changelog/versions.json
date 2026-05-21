@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.106.0",
+      "date": "2026-05-21",
+      "title": "DX 묶음 — generator 가이드 주석 + 한국어 자연어 매핑 + radius scale 절대값화",
+      "type": "minor",
+      "highlights": [
+        "**(4.1) tokens.css 헤더에 재생성 가이드** — Generated 주석 다음에 `Input: sh-ui.config.json (theme block)` + `Regenerate: npx sh-ui-cli tokens upgrade --replace` 두 줄 추가. 사용자가 generated tokens.css 를 직접 수정해 다음 upgrade 시 손실되던 케이스 사전 안내. 6 templates + apps/docs 동기화 (Aifice 피드백 4.1).",
+        "**(4.2) `sh_ui_describe_init` 자연어 매핑 확장** — INIT_DESCRIPTIONS 에 `theme` 프리셋 5종 (neutral/slate/rose/emerald/violet) 한국어 풀이 + `keywordHints` 사전 신규. \"다크 모던\" / \"따뜻한 종이\" / \"한국 핀테크 스타일\" / \"기업 관리자\" 등 자연어 의도를 `base`/`radius`/`mode`/`theme` 조합으로 매핑하는 가이드 (Aifice 피드백 4.2).",
+        "**(2.5) radius scale 절대값화** — `--radius-sm/md/lg/xl/full` 을 tokens.css `:root` 에 직접 정의 (Tailwind 표준값 `0.25/0.5/0.75/1rem` + `9999px`). globals.css `@theme inline` 의 calc derive (`calc(var(--radius) - 2px)` 등) 도 같은 절대값으로 교체. 사용자가 `var(--radius-sm)` 직접 호출 또는 Tailwind `rounded-*` utility 양쪽이 동일 절대값 사용 (Aifice 피드백 2.5).",
+        "**⚠ 마이그 영향 (2.5)** — `--radius` (사용자 base) 변경 시 `rounded-md` 등 utility 가 더 이상 따라가지 않음 (이전 calc derive 동작). `--radius` 는 컴포넌트 default (input/button 등) 만 영향, utility 는 절대 scale 사용. 디폴트 (`--radius: 0.5rem`) 사용자는 `rounded-md` 값 동일 (0.5rem) — 실제 영향 거의 없음. base radius 변경한 사용자만 utility 결과가 변함."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.106.0"
+    },
+    {
       "version": "0.105.0",
       "date": "2026-05-21",
       "title": "next-intl plugin — `localePrefix: 'as-needed'` 디폴트",
