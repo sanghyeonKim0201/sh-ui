@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.101.0",
+      "date": "2026-05-21",
+      "title": "sheet — side drawer 컴포넌트 신규 추가",
+      "type": "minor",
+      "highlights": [
+        "**`sheet` 컴포넌트 신규** — Base UI `Drawer` 위에 sh-ui 토큰 스타일을 얹은 composite. 헤더 알림함 · 글로벌 작업 큐 · 보조 설정 패널처럼 **사이드바와 무관한 위치**에서 슬라이드 인 하는 모달 시트가 필요한 케이스. 중앙 모달이 어울리는 흐름은 `Dialog`, 사이드바 인접 detail 패널은 `SidebarPanel` 그대로 사용 — 세 컴포넌트의 책임이 명확히 분리.",
+        "**API** — separate exports: `Sheet` / `SheetTrigger` / `SheetClose` / `SheetContent` / `SheetTitle` / `SheetDescription` / `SheetHeader` / `SheetFooter` / `SheetCloseX`. `<SheetContent side>` 으로 진입 방향 지정 — `\"right\"` (기본) / `\"left\"` / `\"top\"` / `\"bottom\"`. Trigger/Close 는 자체로 `<button>` 이라 다른 엘리먼트로 슬롯하려면 `render` prop.",
+        "**a11y & motion** — Base UI Drawer 의 포커스 트랩 / ESC 닫기 / 바깥 클릭 닫기 / 트리거 포커스 복귀 기본 동작. Title / Description 이 있으면 `aria-labelledby` / `aria-describedby` 자동. `prefers-reduced-motion` 사용자에게는 transform 트랜지션 제거 — 즉시 표시.",
+        "**styles** — backdrop 은 `rgba(0,0,0,0.25)` + `backdrop-filter: blur(8px)`. 시트 본체는 `--background` / `--border` / `--shadow-xl` / `--space-6` 토큰. side 별 transform (enter/exit 시 100% 이동) + 모서리 한 면만 border 노출로 화면에 \"붙은\" 느낌."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.101.0"
+    },
+    {
       "version": "0.100.0",
       "date": "2026-05-21",
       "title": "토큰 — `--accent` / `--accent-foreground` / `--accent-hover` 분리 노출 (옵셔널, primary 와 분리)",
