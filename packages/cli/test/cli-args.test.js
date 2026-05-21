@@ -152,4 +152,28 @@ describe('parseArgs', () => {
     const r = parseArgs(['node', 'create.js', '--platform', 'next']);
     expect(r.flags.gitInit).toBeUndefined();
   });
+
+  // ─── locale (v0.103.0+) ───
+
+  it('--locale ko → flags.locale = "ko"', () => {
+    const r = parseArgs(['node', 'create.js', '--locale', 'ko']);
+    expect(r.flags.locale).toBe('ko');
+  });
+
+  it('--locale default → flags.locale = "default"', () => {
+    const r = parseArgs(['node', 'create.js', '--locale', 'default']);
+    expect(r.flags.locale).toBe('default');
+  });
+
+  it('--locale 알 수 없는 값 → 친절한 에러 + locales 와 차이 안내', () => {
+    expect(() => parseArgs(['node', 'create.js', '--locale', 'ja']))
+      .toThrow(/--locale/);
+    expect(() => parseArgs(['node', 'create.js', '--locale', 'ja']))
+      .toThrow(/locales \(복수\)/);
+  });
+
+  it('locale 플래그 없음 → flags.locale undefined (default 동작)', () => {
+    const r = parseArgs(['node', 'create.js', '--platform', 'next']);
+    expect(r.flags.locale).toBeUndefined();
+  });
 });

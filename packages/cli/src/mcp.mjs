@@ -483,6 +483,12 @@ export async function startMcpServer() {
             "git init 실행 여부. 기본 auto — parent 가 이미 git tree 안이면 자동 스킵 (nested .git 충돌 방지), 밖이면 init. " +
             "true 로 nested 강제, false 로 명시 스킵. v0.102.0+ 신규.",
           ),
+        locale: z.enum(["default", "ko"]).optional()
+          .describe(
+            "사용자 지역 디폴트 가정. 'ko' 선택 시 globals.css 에 Pretendard 폰트가 자동 적용 (CDN @import + body font-family). " +
+            "한국어 사용자가 init 직후 거의 100% 첫 작업이라 한 옵션으로 자동화. " +
+            "locales (복수) 와 다름 — locales 는 i18n 활성화 시 생성할 locale 코드 목록. v0.103.0+ 신규.",
+          ),
       },
     },
     async (input) => {
@@ -543,6 +549,7 @@ export async function startMcpServer() {
             appName: input.appName,
             port: input.port,
             gitInit: input.gitInit,
+            locale: input.locale,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
