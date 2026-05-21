@@ -1,0 +1,64 @@
+.scroll-area__root {
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-area__viewport {
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.scroll-area__viewport:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+  outline-offset: -2px;
+}
+
+.scroll-area__scrollbar {
+  display: flex;
+  touch-action: none;
+  user-select: none;
+  padding: 2px;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.scroll-area__scrollbar--vertical {
+  width: 0.625rem;
+}
+
+.scroll-area__scrollbar--horizontal {
+  flex-direction: column;
+  height: 0.625rem;
+}
+
+.scroll-area__root:hover .scroll-area__scrollbar,
+.scroll-area__scrollbar[data-hovering],
+.scroll-area__scrollbar[data-scrolling] {
+  opacity: 1;
+}
+
+.scroll-area__thumb {
+  flex: 1;
+  background: var(--border-strong);
+  border-radius: 9999px;
+  transition: background-color 120ms ease;
+}
+
+.scroll-area__scrollbar:hover .scroll-area__thumb,
+.scroll-area__scrollbar[data-scrolling] .scroll-area__thumb {
+  background: var(--foreground-muted);
+}
+
+.scroll-area__corner {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-area__scrollbar,
+  .scroll-area__thumb {
+    transition: none;
+  }
+}

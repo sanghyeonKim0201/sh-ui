@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.99.0",
+      "date": "2026-05-21",
+      "title": "scroll-area — 커스텀 스크롤 컨테이너 신규 추가",
+      "type": "minor",
+      "highlights": [
+        "**`scroll-area` 컴포넌트 신규** — Base UI `ScrollArea` 위에 sh-ui 토큰 스타일을 얹은 composite. `<ScrollArea>` 하나로 viewport + scrollbar + thumb + corner 가 자동 구성되어 OS-native 스크롤바를 가리고 디자인 시스템 톤의 떠다니는 스크롤바를 보여준다. 사이드바·긴 리스트·채팅 메시지 영역처럼 워크스페이스 UI 전반에서 필요했던 패턴 (Aifice 실사용 피드백 반영).",
+        "**API** — `orientation: \"vertical\" | \"horizontal\" | \"both\"` (기본 vertical), `viewportClassName` 으로 viewport 의 패딩·flex 등 콘텐츠 레이아웃을 외곽 컨테이너 className 과 분리해 적용. 외곽 height/width 가 정해진 컨테이너 안에서 사용한다.",
+        "**a11y & motion** — Viewport 가 native 스크롤 컨테이너로 동작해 키보드 ↑/↓·PageUp/PageDown·Home/End 가 그대로 작동, focus 시 토큰 색 ring 표시, `prefers-reduced-motion` 시 fade in/out 트랜지션 제거. 스크롤바 thumb 색은 `--border-strong` 기본 + hover/scrolling 시 `--foreground-muted` 로 진해진다."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.99.0"
+    },
+    {
       "version": "0.98.1",
       "date": "2026-05-19",
       "title": "크로스컴포넌트 상대 import 를 aliases.components 로 재작성 — NodeNext 소비자 호환",
