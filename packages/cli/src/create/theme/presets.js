@@ -132,9 +132,11 @@ export const THEME_PRESETS = {
       'primary': '#818CF8',
       'primary-foreground': '#1E1B4B',
       'primary-hover': '#A5B4FC',
-      'accent': '#818CF8',
+      // accent chroma 상향 — primary 보다 한 단계 lighter+saturated 한 indigo-300.
+      // 어두운 배경 위에서 highlight (링크/선택 상태) 가독성 ↑ (v0.109.0+).
+      'accent': '#A5B4FC',
       'accent-foreground': '#1E1B4B',
-      'accent-hover': '#A5B4FC',
+      'accent-hover': '#C7D2FE',
       'danger': '#F87171',
       'danger-foreground': '#450A0A',
       'danger-hover': '#FCA5A5',
@@ -172,9 +174,10 @@ export const THEME_PRESETS = {
       'primary': '#FB7185',
       'primary-foreground': '#4C0519',
       'primary-hover': '#FDA4AF',
-      'accent': '#FB7185',
+      // accent chroma 상향 — rose-300 (v0.109.0+).
+      'accent': '#FDA4AF',
       'accent-foreground': '#4C0519',
-      'accent-hover': '#FDA4AF',
+      'accent-hover': '#FECDD3',
     },
     radius: 0.75,
     // 큰 모서리 + 큼직한 컨트롤 — 소비자 앱 / 캐주얼 인상
@@ -196,9 +199,10 @@ export const THEME_PRESETS = {
       'primary': '#34D399',
       'primary-foreground': '#022C22',
       'primary-hover': '#6EE7B7',
-      'accent': '#34D399',
+      // accent chroma 상향 — emerald-300 (v0.109.0+).
+      'accent': '#6EE7B7',
       'accent-foreground': '#022C22',
-      'accent-hover': '#6EE7B7',
+      'accent-hover': '#A7F3D0',
     },
     radius: 0.5,
   },
@@ -218,9 +222,10 @@ export const THEME_PRESETS = {
       'primary': '#A78BFA',
       'primary-foreground': '#1E1B4B',
       'primary-hover': '#C4B5FD',
-      'accent': '#A78BFA',
+      // accent chroma 상향 — violet-300 (v0.109.0+).
+      'accent': '#C4B5FD',
       'accent-foreground': '#1E1B4B',
-      'accent-hover': '#C4B5FD',
+      'accent-hover': '#DDD6FE',
     },
     radius: 0.625,
     // 살짝 큰 컨트롤 + 진한 강조 보더 (creative/디자인 도구 인상)
