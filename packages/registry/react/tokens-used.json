@@ -1,6 +1,6 @@
 {
   "$description": "컴포넌트별 토큰 의존성 (var(--*) 추출). build-registry-tokens.mjs 가 자동 생성.",
-  "$generated": "2026-05-21T05:58:38.832Z",
+  "$generated": "2026-05-21T06:29:49.122Z",
   "components": {
     "button": {
       "plain": [
@@ -1992,6 +1992,73 @@
         "--border-width-strong",
         "--foreground-muted",
         "--ring"
+      ],
+      "vanilla-extract": []
+    },
+    "sheet": {
+      "plain": [
+        "--background",
+        "--background-subtle",
+        "--border",
+        "--border-width-strong",
+        "--control-sm",
+        "--duration-fast",
+        "--duration-slow",
+        "--foreground",
+        "--foreground-muted",
+        "--radius",
+        "--ring",
+        "--shadow-xl",
+        "--space-1",
+        "--space-2",
+        "--space-3",
+        "--space-4",
+        "--space-6",
+        "--text-lg",
+        "--text-sm",
+        "--weight-semibold",
+        "--z-modal",
+        "--z-overlay"
+      ],
+      "tailwind": [
+        "--border-width-strong",
+        "--control-sm",
+        "--duration-fast",
+        "--duration-slow",
+        "--radius",
+        "--shadow-xl",
+        "--space-1",
+        "--space-2",
+        "--space-4",
+        "--space-6",
+        "--text-lg",
+        "--text-sm",
+        "--z-modal",
+        "--z-overlay"
+      ],
+      "css-modules": [
+        "--background",
+        "--background-subtle",
+        "--border",
+        "--border-width-strong",
+        "--control-sm",
+        "--duration-fast",
+        "--duration-slow",
+        "--foreground",
+        "--foreground-muted",
+        "--radius",
+        "--ring",
+        "--shadow-xl",
+        "--space-1",
+        "--space-2",
+        "--space-3",
+        "--space-4",
+        "--space-6",
+        "--text-lg",
+        "--text-sm",
+        "--weight-semibold",
+        "--z-modal",
+        "--z-overlay"
       ],
       "vanilla-extract": []
     },

@@ -56,6 +56,7 @@ const groups: Group[] = [
     title: "Feedback & Overlay",
     items: [
       { name: "Dialog", slug: "dialog", description: "모달 다이얼로그 — 포커스 트랩." },
+      { name: "Sheet", slug: "sheet", description: "side drawer — 사이드바와 무관한 글로벌 모달 시트." },
       { name: "Popover", slug: "popover", description: "트리거 기준 위치 floating." },
       { name: "Tooltip", slug: "tooltip", description: "짧은 힌트 — hover/focus." },
       { name: "Toast", slug: "toast", description: "임시 알림 — useToast 훅." },
