@@ -802,8 +802,9 @@ export async function startMcpServer() {
       success: HEX.optional(), "success-foreground": HEX.optional(),
       warning: HEX.optional(), "warning-foreground": HEX.optional(),
       info: HEX.optional(), "info-foreground": HEX.optional(),
+      accent: HEX.optional(), "accent-foreground": HEX.optional(), "accent-hover": HEX.optional(),
     })
-    .describe("15개 필수 색 토큰 + 옵셔널 6개(success/warning/info × -foreground). 각 값은 #RRGGBB hex");
+    .describe("15개 필수 색 토큰 + 옵셔널 9개(success/warning/info × -foreground + accent/accent-foreground/accent-hover). 각 값은 #RRGGBB hex");
 
   server.registerTool(
     "sh_ui_encode_theme",

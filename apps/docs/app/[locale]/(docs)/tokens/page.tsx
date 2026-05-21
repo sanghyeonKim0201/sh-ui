@@ -9,6 +9,7 @@ export default function TokensPage() {
     "foreground", "foreground-muted", "foreground-subtle", "foreground-inverse",
     "border", "border-strong",
     "primary", "primary-foreground", "primary-hover",
+    "accent", "accent-foreground", "accent-hover",
     "danger", "danger-foreground",
   ];
 

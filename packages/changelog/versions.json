@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.100.0",
+      "date": "2026-05-21",
+      "title": "토큰 — `--accent` / `--accent-foreground` / `--accent-hover` 분리 노출 (옵셔널, primary 와 분리)",
+      "type": "minor",
+      "highlights": [
+        "**accent 토큰 그룹 신규 (옵셔널)** — `--accent` / `--accent-foreground` / `--accent-hover` 세 토큰을 정식 노출. primary 가 \"브랜드 action 색 (버튼·강조 액션)\" 이라면 accent 는 \"signature highlight (링크·선택 상태·hover bg)\". 기존엔 sidebar.accent 만 분리돼 있었고 일반 accent 가 없어 두 의미를 primary 에 묶어쓰던 케이스가 있었음 (Aifice 실사용 피드백).",
+        "**디폴트는 primary 와 동일 → 시각적 no-op** — 5 개 프리셋 (neutral/slate/rose/emerald/violet) 모두 light/dark 양쪽에 accent 디폴트가 primary 와 같은 값. 분리 의도가 없는 사용자는 아무 작업 없이도 기존 동작 그대로 유지. accent 를 분리하려면 tokens.css 에서 세 값만 override.",
+        "**적용 범위** — `@sh-ui/tokens` semantic.json + CLI 의 `theme-extract` / `decode` / `presets` / 6 개 templates 의 tokens.css + globals.css 의 `@theme inline` 매핑 + docs tokens.css + docs/create wizard 의 token 정의 + MCP `sh_ui_encode_theme` 스키마. 기존 base64 theme 은 OPTIONAL 키라 accent 없이도 정상 디코드 — 하위 호환.",
+        "**사용** — Tailwind utility `bg-accent` / `text-accent-foreground` 또는 CSS `var(--accent)` 그대로. 사이드바 hover/active bg (`--sidebar-accent`) 는 이 변경과 별개로 그대로 유지."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.100.0"
+    },
+    {
       "version": "0.99.0",
       "date": "2026-05-21",
       "title": "scroll-area — 커스텀 스크롤 컨테이너 신규 추가",
