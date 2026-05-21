@@ -3,6 +3,22 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.109.0",
+      "date": "2026-05-21",
+      "title": "다크 모드 — accent chroma 상향 (slate/rose/emerald/violet 프리셋)",
+      "type": "minor",
+      "highlights": [
+        "**dark accent 디폴트를 primary 보다 한 단계 lighter+saturated 톤으로** — Aifice 피드백 2.1 의 \"accent chroma 상향 (어두운 배경 위에서 highlight 가독성)\" 항목. 컬러 프리셋 4종 의 dark accent 가 primary (-400 톤) 보다 한 단계 lighter 한 -300 톤으로 이동:",
+        "- **slate**: `#818CF8` (indigo-400) → `#A5B4FC` (indigo-300) + accent-hover `#C7D2FE` (indigo-200)",
+        "- **rose**: `#FB7185` → `#FDA4AF` (rose-300) + accent-hover `#FECDD3` (rose-200)",
+        "- **emerald**: `#34D399` → `#6EE7B7` (emerald-300) + accent-hover `#A7F3D0` (emerald-200)",
+        "- **violet**: `#A78BFA` → `#C4B5FD` (violet-300) + accent-hover `#DDD6FE` (violet-200)",
+        "**`neutral` 은 변경 없음** (무채색이라 chroma 의미 없음). **light 모드도 변경 없음** (밝은 배경 위 saturated 톤은 그대로 OK). **primary 채도 보정 (desaturate)** 은 brand 톤 손상 위험 + 디자이너 손맛 필요로 미적용 — 별도 PR 권장.",
+        "**시각 영향** — dark mode + 컬러 프리셋 사용자가 `bg-accent` / `text-accent` utility 또는 `var(--accent)` 직접 호출 시 더 밝고 saturated 한 highlight 톤. accent 를 분리해 사용한 케이스 (링크 / 선택 상태) 만 영향, 미사용 사용자는 영향 없음. backward-compat 거의 유지."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.109.0"
+    },
+    {
       "version": "0.108.0",
       "date": "2026-05-21",
       "title": "토큰 — sidebar 디폴트를 background.subtle / .muted 와 동일 값으로 일치",
