@@ -23,6 +23,11 @@
       "foreground": { "$value": "{color.{base}.50}", "$type": "color" },
       "hover":      { "$value": "{color.{base}.800}", "$type": "color" }
     },
+    "accent": {
+      "default":    { "$value": "{color.{base}.900}", "$type": "color" },
+      "foreground": { "$value": "{color.{base}.50}", "$type": "color" },
+      "hover":      { "$value": "{color.{base}.800}", "$type": "color" }
+    },
     "danger": {
       "default":    { "$value": "{color.red.600}", "$type": "color" },
       "foreground": { "$value": "{color.white}", "$type": "color" },
@@ -56,6 +61,11 @@
       "strong":  { "$value": "{color.{base}.700}", "$type": "color" }
     },
     "primary": {
+      "default":    { "$value": "{color.{base}.50}", "$type": "color" },
+      "foreground": { "$value": "{color.{base}.900}", "$type": "color" },
+      "hover":      { "$value": "{color.{base}.200}", "$type": "color" }
+    },
+    "accent": {
       "default":    { "$value": "{color.{base}.50}", "$type": "color" },
       "foreground": { "$value": "{color.{base}.900}", "$type": "color" },
       "hover":      { "$value": "{color.{base}.200}", "$type": "color" }

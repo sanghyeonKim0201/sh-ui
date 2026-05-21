@@ -24,6 +24,9 @@ const OPTIONAL_TOKEN_KEYS = [
   // fallback 을 두지만, Tailwind @theme inline 의 --color-sidebar-* 가 :root 에서 해석되도록
   // tokens.css 에도 끌어올린다.
   'sidebar-bg', 'sidebar-fg', 'sidebar-border', 'sidebar-accent', 'sidebar-accent-fg',
+  // v0.100.0+ — accent 토큰. primary 와 의미 분리: primary = 브랜드 action color,
+  // accent = signature highlight (선택 상태·링크·hover bg 등). 디폴트는 primary 와 동일.
+  'accent', 'accent-foreground', 'accent-hover',
 ];
 
 /**

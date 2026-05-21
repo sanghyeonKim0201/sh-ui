@@ -25,6 +25,9 @@ export type TokenKey =
   | "primary"
   | "primary-foreground"
   | "primary-hover"
+  | "accent"
+  | "accent-foreground"
+  | "accent-hover"
   | "danger"
   | "danger-foreground"
   | "success"
@@ -50,6 +53,10 @@ export const lightDefaults: Record<TokenKey, string> = {
   primary: "#171717",
   "primary-foreground": "#FAFAFA",
   "primary-hover": "#262626",
+  // accent 디폴트는 primary 와 동일 — 분리 의도가 없으면 시각적 no-op.
+  accent: "#171717",
+  "accent-foreground": "#FAFAFA",
+  "accent-hover": "#262626",
   danger: "#DC2626",
   "danger-foreground": "#FFFFFF",
   // Badge 컴포넌트 fallback 값과 동일 — 디폴트 그대로 두면 시각적 변화 없음.
@@ -75,6 +82,9 @@ export const darkDefaults: Record<TokenKey, string> = {
   primary: "#FAFAFA",
   "primary-foreground": "#171717",
   "primary-hover": "#E5E5E5",
+  accent: "#FAFAFA",
+  "accent-foreground": "#171717",
+  "accent-hover": "#E5E5E5",
   danger: "#DC2626",
   "danger-foreground": "#FFFFFF",
   // 다크에서는 한 단계 밝은 채도 — 어두운 배경 위에서도 식별 보장.
@@ -92,6 +102,7 @@ export const TOKEN_GROUPS: { label: string; keys: TokenKey[] }[] = [
   { label: "Foreground", keys: ["foreground", "foreground-muted", "foreground-subtle", "foreground-inverse"] },
   { label: "Border", keys: ["border", "border-strong"] },
   { label: "Primary", keys: ["primary", "primary-foreground", "primary-hover"] },
+  { label: "Accent", keys: ["accent", "accent-foreground", "accent-hover"] },
   { label: "Danger", keys: ["danger", "danger-foreground"] },
   { label: "Success", keys: ["success", "success-foreground"] },
   { label: "Warning", keys: ["warning", "warning-foreground"] },

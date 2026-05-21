@@ -16,6 +16,9 @@
   --primary: #171717;
   --primary-foreground: #FAFAFA;
   --primary-hover: #262626;
+  --accent: #171717;
+  --accent-foreground: #FAFAFA;
+  --accent-hover: #262626;
   --ring: color-mix(in srgb, var(--primary) 50%, transparent);
   --danger: #DC2626;
   --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
@@ -47,6 +50,9 @@
     --primary: #FAFAFA;
     --primary-foreground: #171717;
     --primary-hover: #E5E5E5;
+    --accent: #FAFAFA;
+    --accent-foreground: #171717;
+    --accent-hover: #E5E5E5;
     --danger: #DC2626;
     --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
     --danger-foreground: #FFFFFF;
@@ -77,6 +83,9 @@
   --primary: #FAFAFA;
   --primary-foreground: #171717;
   --primary-hover: #E5E5E5;
+  --accent: #FAFAFA;
+  --accent-foreground: #171717;
+  --accent-hover: #E5E5E5;
   --danger: #DC2626;
   --danger-hover: color-mix(in srgb, var(--danger) 90%, black);
   --danger-foreground: #FFFFFF;

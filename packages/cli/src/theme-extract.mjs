@@ -55,6 +55,7 @@ const TOKEN_KEYS_OPTIONAL = [
   "info", "info-foreground",
   "danger-hover",
   "ring",
+  "accent", "accent-foreground", "accent-hover",
 ];
 
 const HEX_RE = /^#[0-9A-Fa-f]{6}$/;
