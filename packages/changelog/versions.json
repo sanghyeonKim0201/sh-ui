@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.109.1",
+      "date": "2026-05-22",
+      "title": "CLI/MCP npm 게시 동기화 — 0.99~0.109 토큰 업데이트 반영",
+      "type": "patch",
+      "highlights": [
+        "**npm `sh-ui-cli` 가 0.98.1 에 멈춰 있던 문제 수정** — 0.99~0.109 의 토큰/스캐폴드 변경이 `packages/cli/src` 에는 반영됐지만 `packages/cli/package.json` version 범프 누락으로 npm 에 게시되지 않고 있었음. CLI 버전을 제품 버전과 일치(0.109.1)시켜 누락분을 일괄 반영.",
+        "**MCP 서버도 함께 갱신** — MCP 는 `sh-ui-cli` 패키지에 내장돼 함께 게시되므로, 이 릴리즈로 MCP 가 보고하는 버전과 번들된 토큰이 모두 최신화됨.",
+        "**publish.yml 에 태그/버전 일치 가드 추가** — 태그 `vX.Y.Z` 와 `packages/cli/package.json` version 이 다르면 게시를 즉시 실패시킴. 기존엔 \"이미 게시됨\" 스킵 로직이 버전 드리프트를 조용히 삼켜 11개 버전이 누락된 재발 원인을 차단."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.109.1"
+    },
+    {
       "version": "0.109.0",
       "date": "2026-05-21",
       "title": "다크 모드 — accent chroma 상향 (slate/rose/emerald/violet 프리셋)",
