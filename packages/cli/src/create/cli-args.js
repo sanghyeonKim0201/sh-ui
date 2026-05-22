@@ -18,7 +18,7 @@ const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 
 // `locale` (단수) 은 한국어/일본어 같은 사용자 지역 디폴트 가정 (폰트 등) 을 활성화하는
 // 옵션. `locales` (복수) 와 다르다: locales 는 i18n 활성화 시 생성할 locale 코드 목록.
 const VALID_LOCALES = ['default', 'ko'];
-const BOOL_FLAGS = ['yes', 'help', 'dry-run', 'no-git-init', 'git-init'];
+const BOOL_FLAGS = ['yes', 'help', 'dry-run', 'no-git-init', 'git-init', 'in-place'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
 
@@ -45,9 +45,11 @@ export const parseArgs = (argv) => {
     const name = arg.slice(2);
     if (BOOL_FLAGS.includes(name)) {
       // dry-run → dryRun. --no-git-init → gitInit:false. --git-init → gitInit:true.
+      // --in-place → inPlace:true (기존 디렉토리 비파괴 머지).
       if (name === 'dry-run') flags.dryRun = true;
       else if (name === 'no-git-init') flags.gitInit = false;
       else if (name === 'git-init') flags.gitInit = true;
+      else if (name === 'in-place') flags.inPlace = true;
       else flags[name] = true;
       continue;
     }

@@ -290,19 +290,28 @@ export async function createProject(options = {}) {
     }
   }
 
-  // dry-run 은 tmpdir 에 그대로 생성한 뒤 파일 목록 출력 + 정리.
-  // 사용자 cwd 를 건드리지 않으면서 실제 generation 흐름을 그대로 검증한다.
+  // inPlace — 이미 커스터마이즈된 디렉토리(루트 docs·git 보존)에 비파괴 머지.
+  // generation 은 dry-run 과 동일하게 tmpdir 에서 돌린 뒤, 이미 있는 파일은
+  // 건드리지 않고 새 파일만 realTargetDir 로 복사한다.
+  const inPlace = options.inPlace === true && !options.dryRun;
+  const realTargetDir = path.resolve(process.cwd(), projectName);
+
+  // dry-run / inPlace 는 tmpdir 에 생성. dry-run 은 목록 출력 후 정리,
+  // inPlace 는 realTargetDir 로 비파괴 머지. 일반 모드는 cwd/name 에 직접 생성.
   const targetDir = options.dryRun
     ? await fs.mkdtemp(path.join(os.tmpdir(), 'sh-ui-dry-'))
-    : path.resolve(process.cwd(), projectName);
+    : inPlace
+      ? await fs.mkdtemp(path.join(os.tmpdir(), 'sh-ui-inplace-'))
+      : realTargetDir;
 
-  // 방어 가드 — projectName 검증을 이미 통과했어도 `fs.remove` 직전에 한 번 더 확인.
-  // dry-run 은 tmpdir 이라 parent 가 cwd 가 아니므로 스킵.
+  // 방어 가드 — projectName 검증을 이미 통과했어도 fs 쓰기 직전에 한 번 더 확인.
+  // dry-run / inPlace 의 targetDir 는 tmpdir 이므로 실제 목적지를 검증한다.
   if (!options.dryRun) {
-    assertWithin(process.cwd(), targetDir);
+    assertWithin(process.cwd(), realTargetDir);
   }
 
-  if (!options.dryRun && await fs.pathExists(targetDir)) {
+  // 일반 모드만 기존 디렉토리 덮어쓰기 확인. inPlace 는 비파괴라 remove 하지 않는다.
+  if (!options.dryRun && !inPlace && await fs.pathExists(targetDir)) {
     if (options.yes) {
       await fs.remove(targetDir);
     } else {
@@ -318,9 +327,29 @@ export async function createProject(options = {}) {
     }
   }
 
+  // finalizeProject + (inPlace 면) temp → realTargetDir 비파괴 머지.
+  // 세 플랫폼 경로(flutter/vite/next)가 공통으로 호출한다.
+  async function finalizeAndCommit() {
+    await finalizeProject(targetDir, {
+      dryRun: options.dryRun,
+      // inPlace 는 temp 에서 git init 해봐야 버려지므로 스킵 — realTargetDir 의
+      // 기존 .git 을 그대로 둔다 (gitignore/npmrc 복원은 finalize 안에서 수행됨).
+      gitInit: inPlace ? false : options.gitInit,
+      locale: options.locale,
+    });
+    if (inPlace) {
+      await fs.ensureDir(realTargetDir);
+      await fs.copy(targetDir, realTargetDir, { overwrite: false, errorOnExist: false });
+      await fs.remove(targetDir);
+      console.log(
+        `\n  ℹ inPlace — 기존 디렉토리에 비파괴 머지 완료 (이미 있는 파일은 보존).`,
+      );
+    }
+  }
+
   if (platform === 'flutter') {
     await generateFlutter(targetDir, projectName, theme, cssFramework, themeBase);
-    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit, locale: options.locale });
+    await finalizeAndCommit();
     console.log(`\n✅ ${projectName} Flutter 프로젝트가 생성되었습니다!`);
     console.log(`\n  cd ${projectName}`);
     console.log('  flutter pub get');
@@ -355,7 +384,7 @@ export async function createProject(options = {}) {
       });
     }
 
-    await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit, locale: options.locale });
+    await finalizeAndCommit();
 
     if (options.dryRun) {
       const files = await listAllFiles(targetDir);
@@ -401,7 +430,7 @@ export async function createProject(options = {}) {
     });
   }
 
-  await finalizeProject(targetDir, { dryRun: options.dryRun, gitInit: options.gitInit, locale: options.locale });
+  await finalizeAndCommit();
 
   if (options.dryRun) {
     const files = await listAllFiles(targetDir);
@@ -1644,11 +1673,17 @@ async function stripTailwindFromPrettier(prettierPath) {
 }
 
 /**
- * 스캐폴드 마무리 — `gitignore` 파일을 `.gitignore` 로 되돌리고 `git init` 실행.
- *
- * 왜 이름을 우회하는가: npm publish 는 패키지 안의 `.gitignore` 를 자동으로
- * strip 한다(없으면 `.npmignore` fallback 으로 사용). 사용자에게 도착하지 않으니
- * 템플릿엔 `gitignore` 로 두고 복사 직후 dot-prefix 를 붙인다.
+ * npm publish 가 패키지 tarball 에서 strip/변형하는 dotfile 들 — 템플릿엔 점 없는
+ * 이름으로 두고 스캐폴드 직후 점을 복원한다.
+ *   - `.gitignore` → npm 이 strip (없으면 `.npmignore` fallback 으로 사용)
+ *   - `.npmrc`     → npm 이 항상 strip (publish 시 레지스트리 토큰 유출 방지)
+ * 둘 다 published CLI 엔 도착하지 않으므로 템플릿엔 `gitignore` / `npmrc` 로 둔다.
+ */
+const STRIPPED_DOTFILES = { gitignore: '.gitignore', npmrc: '.npmrc' };
+
+/**
+ * 스캐폴드 마무리 — strip 된 dotfile(`gitignore`/`npmrc`) 을 점 붙은 이름으로
+ * 되돌리고 `git init` 실행.
  *
  * gitInit 옵션:
  *   - undefined (auto): parent 가 이미 git tree 안이면 스킵, 아니면 init. nested .git
@@ -1659,9 +1694,9 @@ async function stripTailwindFromPrettier(prettierPath) {
  * git init 은 dry-run 에서는 스킵하고, 실패해도(git 미설치 등) 조용히 넘어간다.
  */
 async function finalizeProject(targetDir, { dryRun = false, gitInit, locale } = {}) {
-  // 모노레포 / sub-app 까지 모든 `gitignore` 를 `.gitignore` 로 rename.
+  // 모노레포 / sub-app 까지 strip 된 dotfile(gitignore/npmrc) 을 점 붙은 이름으로 복원.
   // root 만 처리하면 apps/<name>/gitignore 가 그대로 남아 node_modules/dist 가 staged 된다 (v0.93.0 버그).
-  await renameAllGitignoreRecursive(targetDir);
+  await restoreStrippedDotfilesRecursive(targetDir);
 
   // locale 후처리 — 한국어면 globals.css 들에 Pretendard 자동 적용 (Aifice 피드백 3.1).
   // dryRun 이면 skip — globals.css 가 디스크에 안 써졌을 수 있다.
@@ -1790,7 +1825,7 @@ function describeAppPlatform(platform) {
   return 'Next.js 앱 (App Router + Server Components). 라우트 + 비즈니스 로직.';
 }
 
-async function renameAllGitignoreRecursive(dir) {
+async function restoreStrippedDotfilesRecursive(dir) {
   let entries;
   try {
     entries = await fs.readdir(dir, { withFileTypes: true });
@@ -1802,9 +1837,9 @@ async function renameAllGitignoreRecursive(dir) {
     if (entry.isDirectory()) {
       // 스캐폴드 직후엔 node_modules / .git 가 없지만 방어적으로.
       if (entry.name === 'node_modules' || entry.name === '.git') continue;
-      await renameAllGitignoreRecursive(fullPath);
-    } else if (entry.name === 'gitignore') {
-      await fs.move(fullPath, path.join(dir, '.gitignore'), { overwrite: true });
+      await restoreStrippedDotfilesRecursive(fullPath);
+    } else if (STRIPPED_DOTFILES[entry.name]) {
+      await fs.move(fullPath, path.join(dir, STRIPPED_DOTFILES[entry.name]), { overwrite: true });
     }
   }
 }

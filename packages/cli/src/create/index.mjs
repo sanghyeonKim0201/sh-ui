@@ -32,6 +32,7 @@ export const HELP_TEXT = `sh-ui create — sh-ui 프로젝트 스캐폴드 (Next
   --locales <ko,en>                  i18n 활성화 시 생성할 locale 코드 (comma-separated). 기본 'ko,en'
   --locale <default|ko>              사용자 지역 디폴트 가정 — 'ko' 선택 시 globals.css 에 Pretendard 자동 적용 (v0.103.0+)
   --yes                              디렉토리 덮어쓰기 + 모노레포 기본값 자동 채택
+  --in-place                         기존 디렉토리에 비파괴 머지 — 이미 있는 파일은 보존, 없는 파일만 채움. 커스텀 루트 docs·.git 보존하며 재생성 (디렉토리 삭제 안 함)
   --dry-run                          파일을 쓰지 않고 작성될 파일 목록만 출력
   --no-git-init                      git init 스킵 (기존 git tree 안에서 호출 시 nested .git 충돌 방지). 기본 auto — parent 가 git tree 안이면 자동 스킵
   --git-init                         git init 무조건 실행 (nested 가 의도된 경우)
@@ -105,6 +106,11 @@ export async function runCreate(rest) {
       port: flags.port,
       yes: flags.yes,
       dryRun: flags.dryRun,
+      // gitInit / locale / inPlace — 이전엔 파싱만 하고 createProject 로
+      // 전달하지 않아 무시되던 버그. v0.110.0 에서 함께 연결.
+      gitInit: flags.gitInit,
+      locale: flags.locale,
+      inPlace: flags.inPlace,
     });
   }
 }

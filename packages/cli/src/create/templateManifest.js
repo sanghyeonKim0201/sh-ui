@@ -17,11 +17,11 @@ export const TEMPLATE_MANIFEST = {
   "monorepo": {
     "base": [
       ".dockerignore",
-      ".npmrc",
       ".prettierrc",
       "CLAUDE.md",
       "README.md",
       "gitignore",
+      "npmrc",
       "package.json",
       "packages/eslint-config/base.js",
       "packages/eslint-config/flat.js",

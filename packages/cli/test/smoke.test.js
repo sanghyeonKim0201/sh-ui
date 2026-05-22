@@ -603,6 +603,41 @@ describe('sh-ui create smoke tests', () => {
       '../../packages/ui/ui-core/src/*',
     ]);
   });
+
+  it('scenario 2b — inPlace: 기존 디렉토리 비파괴 머지 (커스텀 파일 보존 + 새 파일 생성)', async () => {
+    // 이미 커스터마이즈된 디렉토리를 흉내낸다 — 루트 docs + 커스텀 .gitignore.
+    const projDir = path.join(tmpDir, 'inplace-mono');
+    await fs.ensureDir(path.join(projDir, 'docs'));
+    await fs.writeFile(path.join(projDir, 'CLAUDE.md'), 'CUSTOM CLAUDE\n');
+    await fs.writeFile(path.join(projDir, 'docs', 'note.md'), 'my note\n');
+    await fs.writeFile(path.join(projDir, '.gitignore'), 'custom ignore\n');
+
+    await createProject({
+      name: 'inplace-mono',
+      platform: 'next',
+      structure: 'monorepo',
+      appName: 'web',
+      inPlace: true,
+      yes: true,
+      gitInit: false,
+    });
+
+    // 보존 — 이미 있던 파일은 템플릿 값으로 덮이지 않는다.
+    expect(await fs.readFile(path.join(projDir, 'CLAUDE.md'), 'utf-8')).toBe('CUSTOM CLAUDE\n');
+    expect(await fs.readFile(path.join(projDir, 'docs', 'note.md'), 'utf-8')).toBe('my note\n');
+    expect(await fs.readFile(path.join(projDir, '.gitignore'), 'utf-8')).toBe('custom ignore\n');
+
+    // 생성 — 없던 파일은 새로 채워진다.
+    expect(await fs.pathExists(path.join(projDir, 'apps', 'web', 'package.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projDir, 'packages', 'ui', 'ui-core'))).toBe(true);
+    expect(await fs.pathExists(path.join(projDir, 'turbo.json'))).toBe(true);
+    // npm 이 strip 하는 .npmrc 도 정상 emit.
+    expect(await fs.pathExists(path.join(projDir, '.npmrc'))).toBe(true);
+
+    // 임시 작업 디렉토리는 머지 후 정리된다 (tmpdir 누수 가드).
+    const leftover = (await fs.readdir(os.tmpdir())).filter((n) => n.startsWith('sh-ui-inplace-'));
+    expect(leftover).toEqual([]);
+  });
   it('scenario 4 — addApp in monorepo', async () => {
     // minimal monorepo fixture: pnpm-workspace.yaml 만 필요
     await fs.writeFile(

@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.110.0",
+      "date": "2026-05-22",
+      "title": "create — inPlace 비파괴 머지 + .npmrc 템플릿 parity",
+      "type": "minor",
+      "highlights": [
+        "**`inPlace` 옵션 신규** — `sh_ui_create_project` 의 `inPlace` 인자 / `sh-ui create --in-place`. 기존 디렉토리를 삭제하지 않고 비파괴 머지 — 이미 있는 파일은 보존하고 없는 파일만 채운다. 커스터마이즈된 monorepo 루트(`CLAUDE.md`·`.gitignore` 등)와 `.git` 을 지키며 `apps/`·`packages/` 를 재생성할 때 사용. tmpdir 에 스캐폴드 후 `overwrite:false` 머지로 구현 — 전체 generator 파이프라인은 그대로, 마지막 머지만 비파괴.",
+        "**`.npmrc` 템플릿 parity 수정** — npm publish 가 패키지 tarball 에서 `.npmrc` 를 항상 strip(레지스트리 토큰 유출 방지)해, published CLI 의 monorepo 스캐폴드에 `.npmrc` 가 누락되던 버그. `describe_template` 은 정적 매니페스트 기준이라 계속 `.npmrc` 를 보고 → dry-run ↔ 실제 산출물 불일치. `gitignore` 와 동일 패턴으로 템플릿을 `npmrc`(점 없음)로 두고 `finalizeProject` 가 `.npmrc` 로 복원하도록 수정 (`STRIPPED_DOTFILES` 맵으로 일반화).",
+        "**CLI `--git-init`/`--locale` 전달 버그 수정** — 두 플래그를 파싱·검증만 하고 `createProject` 로 넘기지 않아 무시되던 문제. `--in-place` 와 함께 연결."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.110.0"
+    },
+    {
       "version": "0.109.1",
       "date": "2026-05-22",
       "title": "CLI/MCP npm 게시 동기화 — 0.99~0.109 토큰 업데이트 반영",
