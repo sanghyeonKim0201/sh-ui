@@ -488,7 +488,14 @@ export async function startMcpServer() {
         cwd: z.string().optional()
           .describe("부모 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()
-          .describe("기존 디렉토리 덮어쓰기. 기본 false (안전)"),
+          .describe("기존 디렉토리 덮어쓰기 — 디렉토리 전체를 삭제 후 새로 스캐폴드. 기본 false (안전)."),
+        inPlace: z.boolean().optional()
+          .describe(
+            "기존 디렉토리에 비파괴 머지 — 디렉토리를 삭제하지 않고, 이미 있는 파일은 보존한 채 " +
+            "없는 파일만 채워 넣는다. 커스터마이즈된 monorepo 루트(CLAUDE.md·.gitignore 등)·.git 을 " +
+            "지키면서 apps/·packages/ 를 재생성할 때 사용. force 와 상호배타 — force 는 전체 삭제, " +
+            "inPlace 는 보존. 재생성하려는 파일은 미리 지워두면 그 자리만 새로 채워진다. v0.110.0+ 신규.",
+          ),
         i18n: z.enum(I18N_LIBRARIES).optional()
           .describe(
             "i18n 라이브러리 — platform=vite 일 때만 의미. 'react-i18next' 로 설정 시 i18next + react-i18next + browser-languagedetector + http-backend 셋업 + " +
@@ -549,15 +556,25 @@ export async function startMcpServer() {
           }],
         };
       }
+      if (input.force && input.inPlace) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: "force 와 inPlace 는 동시에 쓸 수 없습니다 — force 는 디렉토리 전체 삭제, inPlace 는 보존 머지.",
+          }],
+        };
+      }
       const targetParent = resolveCwd(input);
       const targetDir = resolve(targetParent, input.name);
-      if (existsSync(targetDir) && !input.force) {
+      // inPlace 는 기존 디렉토리를 전제로 하므로 '이미 존재' 가 에러가 아니다.
+      if (existsSync(targetDir) && !input.force && !input.inPlace) {
         return {
           isError: true,
           content: [
             {
               type: "text",
-              text: `'${targetDir}' 가 이미 존재합니다. 덮어쓰려면 force: true.`,
+              text: `'${targetDir}' 가 이미 존재합니다. 덮어쓰려면 force: true, 보존 머지하려면 inPlace: true.`,
             },
           ],
         };
@@ -580,6 +597,7 @@ export async function startMcpServer() {
             port: input.port,
             gitInit: input.gitInit,
             locale: input.locale,
+            inPlace: input.inPlace,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
