@@ -29,7 +29,7 @@
     "jsdom": "^29.1.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-hook-form": "^7.76.0",
+    "react-hook-form": "^7.76.1",
     "tailwind-merge": "^3.6.0",
     "vitest": "^4.1.7"
   }
