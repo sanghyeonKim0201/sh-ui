@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.112.0",
+      "date": "2026-05-22",
+      "title": "template — sh-ui-discipline ESLint 룰을 모노레포 스캐폴드에 기본 박음",
+      "type": "minor",
+      "highlights": [
+        "**`@workspace/eslint-config/sh-ui-discipline` 신규 export** — 모노레포 스캐폴드 시 `packages/eslint-config/sh-ui-discipline.js` 가 함께 생성. `no-restricted-syntax` 로 native `<button>`·`<input>`·`<select>`·`<textarea>`·`<label>` JSX 금지 + `@workspace/ui-core` 의 대응 컴포넌트 안내. AI 가 시안 mimic 으로 native + Tailwind 를 쓰는 패턴을 lint 단계에서 자동 차단 — 디자인 시스템 우회를 시끄럽게 실패시킨다.",
+        "**`nextjs-app` (fsd/flat/mes 3 arch) + `vite-app` 의 `eslint.config.js` 가 자동 적용** — 스캐폴드 직후 새 앱이 즉시 룰을 받는다. 예외는 `// eslint-disable-next-line no-restricted-syntax -- <이유>` 인라인 override.",
+        "**severity** — 모노레포 기본 `eslint-plugin-only-warn` 이 error → warning 다운그레이드. CI hard-fail 은 lint 스크립트에서 `--max-warnings 0` 으로 강제."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.112.0"
+    },
+    {
       "version": "0.111.0",
       "date": "2026-05-22",
       "title": "theme — extraTokens 패스스루 + 모노레포 공유 theme",
