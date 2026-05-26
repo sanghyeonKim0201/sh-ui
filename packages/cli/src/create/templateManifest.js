@@ -30,6 +30,7 @@ export const TEMPLATE_MANIFEST = {
       "packages/eslint-config/next.js",
       "packages/eslint-config/package.json",
       "packages/eslint-config/react-internal.js",
+      "packages/eslint-config/sh-ui-discipline.js",
       "packages/typescript-config/base.json",
       "packages/typescript-config/nextjs.json",
       "packages/typescript-config/package.json",

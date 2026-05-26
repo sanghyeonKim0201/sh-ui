@@ -9,7 +9,8 @@
     "./react-internal": "./react-internal.js",
     "./fsd": "./fsd.js",
     "./flat": "./flat.js",
-    "./mes": "./mes.js"
+    "./mes": "./mes.js",
+    "./sh-ui-discipline": "./sh-ui-discipline.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

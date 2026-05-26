@@ -1,5 +1,6 @@
 import { nextJsConfig } from "@workspace/eslint-config/next-js"
 import { mesConfig } from "@workspace/eslint-config/mes"
+import { shUiDisciplineConfig } from "@workspace/eslint-config/sh-ui-discipline"
 
 export default [
   {
@@ -7,4 +8,5 @@ export default [
   },
   ...nextJsConfig,
   ...mesConfig,
+  ...shUiDisciplineConfig,
 ]

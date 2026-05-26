@@ -602,6 +602,22 @@ describe('sh-ui create smoke tests', () => {
     expect(appTsconfig.compilerOptions?.paths?.['@workspace/ui-core/*']).toEqual([
       '../../packages/ui/ui-core/src/*',
     ]);
+
+    // v0.112.0+ — sh-ui-discipline ESLint config 가 모노레포 스캐폴드에 박혀 있어야.
+    // packages/eslint-config 에 rule 파일 + apps 의 eslint.config.js 가 그걸 import.
+    expect(
+      await fs.pathExists(path.join(monoDir, 'packages/eslint-config/sh-ui-discipline.js')),
+    ).toBe(true);
+    const eslintPkg = await fs.readJson(
+      path.join(monoDir, 'packages/eslint-config/package.json'),
+    );
+    expect(eslintPkg.exports?.['./sh-ui-discipline']).toBe('./sh-ui-discipline.js');
+    const appEslint = await fs.readFile(
+      path.join(monoDir, 'apps/web/eslint.config.js'),
+      'utf-8',
+    );
+    expect(appEslint).toContain('shUiDisciplineConfig');
+    expect(appEslint).toContain('@workspace/eslint-config/sh-ui-discipline');
   });
 
   it('scenario 2b — inPlace: 기존 디렉토리 비파괴 머지 (커스텀 파일 보존 + 새 파일 생성)', async () => {
