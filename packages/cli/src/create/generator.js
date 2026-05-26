@@ -604,6 +604,23 @@ export async function addApp(options = {}) {
   }
   await patchShUiConfig(path.join(uiAppDir, 'sh-ui.config.json'), css, themeBase);
 
+  // v0.111.0+ — ui-core 가 공유 theme 을 호스팅하고 사용자가 --theme 미지정 시,
+  // 새 ui-app 의 theme 블록을 제거해 ui-core 로부터 묵시적 상속. 같은 디자인 시스템을
+  // 쓰는 모노레포 다중 앱이 토큰을 중복 정의하지 않도록.
+  if (!options.theme) {
+    const uiAppConfigPath = path.join(uiAppDir, 'sh-ui.config.json');
+    const uiCoreConfigPath = path.resolve(cwd, 'packages', 'ui', 'ui-core', 'sh-ui.config.json');
+    if (await fs.pathExists(uiCoreConfigPath)) {
+      const coreCfg = await fs.readJson(uiCoreConfigPath);
+      if (coreCfg.theme && (coreCfg.theme.extraTokens || coreCfg.theme.base || coreCfg.theme.radius || coreCfg.theme.mode)) {
+        const appCfg = await fs.readJson(uiAppConfigPath);
+        delete appCfg.theme;
+        await fs.writeJson(uiAppConfigPath, appCfg, { spaces: 2 });
+        console.log(`\n  ℹ ui-core 가 공유 theme 을 호스팅 — 새 ui-app 은 theme 블록을 두지 않고 상속.`);
+      }
+    }
+  }
+
   console.log(`\n✅ apps/${appName} 이 추가되었습니다!`);
   console.log('\n  pnpm install');
   console.log(`  pnpm --filter ${appName} dev\n`);

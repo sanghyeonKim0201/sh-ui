@@ -46,6 +46,16 @@
         "mode": {
           "enum": ["light", "dark", "light-dark"],
           "description": "다크 모드 전략. light-dark = OS 자동 + .light/.dark 클래스 토글, light/dark = 강제 단일 모드."
+        },
+        "extraTokens": {
+          "type": "object",
+          "description": "v0.111.0+ 신규. 디자인 시스템 자유 추가 토큰 — TOKEN_KEYS/OPTIONAL_TOKEN_KEYS 에 없는 임의 키(`accent-soft`, `surface`, `cta-bg` 등) 를 tokens.css 와 globals.css `@theme` 에 자동 emit. root=모드 무관 고정, light/dark=모드별. 모노레포에서 ui-core 의 theme 에 두면 모든 ui-app 이 상속 (app 측 override 시 deep-merge).",
+          "additionalProperties": false,
+          "properties": {
+            "root":  { "type": "object", "additionalProperties": { "type": "string" }, "description": "모드 무관 고정 토큰 (예: CTA 밴드 색 — light/dark 동일)." },
+            "light": { "type": "object", "additionalProperties": { "type": "string" }, "description": "라이트 모드 토큰." },
+            "dark":  { "type": "object", "additionalProperties": { "type": "string" }, "description": "다크 모드 토큰." }
+          }
         }
       }
     },

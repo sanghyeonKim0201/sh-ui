@@ -34,23 +34,41 @@ async function loadConfig(cwd) {
 
 /**
  * config 로 expected tokens.css 를 생성. custom / non-buildable preset 은 throw.
+ *
+ * v0.111.0+ — 모노레포 ui-app 의 경우 sibling ui-core/sh-ui.config.json 의
+ * 공유 theme 을 merge (resolveTheme: app 키가 core 키 override).
  */
-async function buildExpected(config) {
-  if (config.theme?.base === "custom") {
+async function buildExpected(config, cwd) {
+  const effectiveConfig = await applySharedTheme(config, cwd);
+  const effectiveBase = effectiveConfig.theme?.base;
+  if (effectiveBase === "custom") {
     throw new Error(
       "custom theme 은 buildTokens 로 재생성 불가 (base64 가 단일 진실). " +
         "tokens diff/upgrade 는 buildable preset (neutral/zinc/slate) 에서만 동작합니다.",
     );
   }
-  const base = config.theme?.base;
-  if (base && !THEME_BASES.includes(base)) {
+  if (effectiveBase && !THEME_BASES.includes(effectiveBase)) {
     throw new Error(
-      `'${base}' preset 은 buildTokens 로 재생성 불가 (primitives 미정의 — buildable: ${THEME_BASES.join("/")}). ` +
+      `'${effectiveBase}' preset 은 buildTokens 로 재생성 불가 (primitives 미정의 — buildable: ${THEME_BASES.join("/")}). ` +
         "diff/upgrade 는 base 가 neutral/zinc/slate 일 때만 사용 가능합니다.",
     );
   }
   const { buildTokens } = await loadTokensBuilder();
-  return buildTokens(config);
+  return buildTokens(effectiveConfig);
+}
+
+/** 모노레포 ui-app 의 sibling ui-core 의 theme 을 머지한 config 를 반환. ui-core 없으면 그대로. */
+async function applySharedTheme(config, cwd) {
+  const { findUiCoreConfigPath, readShUiConfig, resolveThemeFromConfigs } =
+    await import("./create/theme/resolveTheme.js");
+  const appConfigPath = resolve(cwd, "sh-ui.config.json");
+  const corePath = await findUiCoreConfigPath(appConfigPath);
+  // 같은 파일을 가리키면 (이게 곧 ui-core) merge 불필요.
+  if (!corePath || corePath === appConfigPath) return config;
+  const coreConfig = await readShUiConfig(corePath);
+  if (!coreConfig?.theme) return config;
+  const mergedTheme = resolveThemeFromConfigs(coreConfig, config);
+  return { ...config, theme: mergedTheme };
 }
 
 async function loadCurrent(config, cwd) {
@@ -106,7 +124,7 @@ function renderDiffReport({ added, removed, changed, unchangedCount }, rel) {
 
 export async function runTokensDiff({ cwd }) {
   const config = await loadConfig(cwd);
-  const expectedText = await buildExpected(config);
+  const expectedText = await buildExpected(config, cwd);
   const { text: currentText, rel } = await loadCurrent(config, cwd);
   const diff =
     config.platform === "flutter"
@@ -117,7 +135,7 @@ export async function runTokensDiff({ cwd }) {
 
 export async function runTokensUpgrade({ cwd, mode }) {
   const config = await loadConfig(cwd);
-  const expectedText = await buildExpected(config);
+  const expectedText = await buildExpected(config, cwd);
   const current = await loadCurrent(config, cwd);
   const isFlutter = config.platform === "flutter";
 
