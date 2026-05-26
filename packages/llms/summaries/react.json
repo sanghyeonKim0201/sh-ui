@@ -35,7 +35,7 @@
     "badge": "상태 뱃지 — variant, size.",
     "progress": "선형 진행률 — value 0~100, indeterminate.",
     "spinner": "로딩 스피너 — size.",
-    "separator": "구분선 — orientation(horizontal/vertical).",
+    "separator": "구분선 — 두 변종 한 컴포넌트: children 없으면 가로/세로 1px 선(orientation), children 있으면 가운데 라벨 \"── label ──\"(align=start/center/end, horizontal 강제). decorative={false} 시 role=separator.",
     "skeleton": "스켈레톤 로딩 플레이스홀더.",
     "code-panel": "Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.",
     "code-tabs": "여러 코드 뷰(예: React/Flutter, 강조/전체)를 탭으로 전환 — Tabs + CodePanel 합성, 각 탭 내용은 CodePanelProps 그대로.",
