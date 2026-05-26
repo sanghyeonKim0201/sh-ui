@@ -13,3 +13,23 @@
   height: 100%;
   align-self: stretch;
 }
+
+.separator__labeled {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  width: 100%;
+  flex-shrink: 0;
+}
+.separator__line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.separator__label {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--foreground-subtle);
+}

@@ -13,3 +13,24 @@
   height: 100%;
   align-self: stretch;
 }
+
+/* labeled — children 있을 때 적용. 컨테이너 자체에는 배경 없음 (내부 .line 만 1px). */
+.sh-ui-separator--labeled {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  width: 100%;
+  flex-shrink: 0;
+}
+.sh-ui-separator__line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.sh-ui-separator__label {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--foreground-subtle);
+}
