@@ -674,6 +674,86 @@ describe('sh-ui create smoke tests', () => {
       await fs.pathExists(path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin', 'src', 'components')),
     ).toBe(false);
   });
+  it('scenario 4d — addApp: ui-core 가 공유 theme 호스팅 시 새 ui-app 은 theme 상속 (v0.111.0+)', async () => {
+    // v0.111.0: ui-core 의 theme 블록(특히 extraTokens) 을 공유 디자인 시스템으로
+    // 인식. 새 ui-app 추가 시 사용자가 --theme 미지정이면 새 ui-app 의 theme 블록을
+    // 제거 → ui-core 로부터 묵시적 상속 → 다중 앱이 토큰을 중복 정의하지 않음.
+    await fs.writeFile(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'apps/*'\n  - 'packages/*'\n",
+    );
+    // ui-core 셋업 + 공유 theme 박기 (extraTokens 포함)
+    const uiCoreDir = path.join(tmpDir, 'packages', 'ui', 'ui-core');
+    await fs.ensureDir(uiCoreDir);
+    await fs.writeJson(path.join(uiCoreDir, 'sh-ui.config.json'), {
+      platform: 'react',
+      cssFramework: 'tailwind',
+      paths: { components: 'src/components' },
+      theme: {
+        base: 'neutral',
+        radius: 'md',
+        mode: 'light-dark',
+        extraTokens: {
+          light: { 'accent-soft': '#E7EFEB', surface: '#FFFFFF' },
+          dark:  { 'accent-soft': '#1F3F35', surface: '#1C1B17' },
+          root:  { 'cta-bg': '#1A332C' },
+        },
+      },
+    }, { spaces: 2 });
+
+    await addApp({
+      name: 'second-app',
+      port: '3002',
+      plugins: [],
+      css: 'tailwind',
+      platform: 'next',
+    });
+
+    // 새 ui-app 의 config 가 생성됐는지 + theme 블록이 제거됐는지 (= 상속)
+    const newUiAppCfgPath = path.join(
+      tmpDir, 'packages', 'ui', 'ui-apps', 'ui-second-app', 'sh-ui.config.json',
+    );
+    expect(await fs.pathExists(newUiAppCfgPath)).toBe(true);
+    const newCfg = await fs.readJson(newUiAppCfgPath);
+    expect(newCfg.theme).toBeUndefined();    // 핵심 — theme 블록 없음 (상속)
+    expect(newCfg.role).toBe('tokens-only'); // 다른 필드는 유지
+
+    // ui-core 의 공유 theme 은 그대로 보존
+    const coreCfg = await fs.readJson(path.join(uiCoreDir, 'sh-ui.config.json'));
+    expect(coreCfg.theme.extraTokens.light['accent-soft']).toBe('#E7EFEB');
+  });
+  it('scenario 4e — addApp: ui-core theme 없으면 새 ui-app 은 본인 theme 유지 (회귀 가드)', async () => {
+    // v0.111.0 의 공유-theme 감지가 ui-core 가 theme 을 호스팅하지 않는 경우엔
+    // 동작하지 않아야 함 (backward-compat). 새 ui-app 은 템플릿 기본 theme 을 유지.
+    await fs.writeFile(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'apps/*'\n  - 'packages/*'\n",
+    );
+    // ui-core 셋업하지만 theme 블록 없음
+    const uiCoreDir = path.join(tmpDir, 'packages', 'ui', 'ui-core');
+    await fs.ensureDir(uiCoreDir);
+    await fs.writeJson(path.join(uiCoreDir, 'sh-ui.config.json'), {
+      platform: 'react',
+      cssFramework: 'tailwind',
+      paths: { components: 'src/components' },
+      // theme 필드 없음
+    }, { spaces: 2 });
+
+    await addApp({
+      name: 'standalone-app',
+      port: '3003',
+      plugins: [],
+      css: 'tailwind',
+      platform: 'next',
+    });
+
+    const newCfg = await fs.readJson(path.join(
+      tmpDir, 'packages', 'ui', 'ui-apps', 'ui-standalone-app', 'sh-ui.config.json',
+    ));
+    // 템플릿 기본 theme 이 유지되어야 (ui-core 가 호스팅 안 하니 상속할 게 없음)
+    expect(newCfg.theme).toBeDefined();
+    expect(newCfg.theme.base).toBe('neutral');
+  });
   it('scenario 4b — addApp 옵션 객체 (비대화형 — MCP/CI 경로)', async () => {
     // v0.66: addApp 이 옵션 객체를 받아 MCP sh_ui_add_app 와 CLI 양쪽이 같은 진입점 사용.
     // 핵심 검증: name/port/css 옵션이 prompt 없이 전달되고 결과물에 반영되는지.

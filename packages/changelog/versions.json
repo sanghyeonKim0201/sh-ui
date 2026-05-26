@@ -3,6 +3,19 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.111.0",
+      "date": "2026-05-22",
+      "title": "theme — extraTokens 패스스루 + 모노레포 공유 theme",
+      "type": "minor",
+      "highlights": [
+        "**`theme.extraTokens` 신규** — `sh-ui.config.json` 의 `theme.extraTokens: { root, light, dark }` 에 임의 토큰(`accent-soft`·`surface`·`cta-*`·`border-focus` 등)을 정의하면 tokens.css 와 `@theme inline` 양쪽에 자동 emit. TOKEN_KEYS/OPTIONAL_TOKEN_KEYS 의 고정 스키마를 벗어나는 디자인 시스템 확장을 config-driven 으로 — tokens.css 손-편집 후 `tokens upgrade`/재스캐폴드 시 날아가던 클로버 문제 해결. `root` 는 모드 무관 고정(CTA 같은 light/dark 공통), `light`/`dark` 는 모드별.",
+        "**모노레포 공유 theme** — `packages/ui/ui-core/sh-ui.config.json` 에 `theme` 블록을 두면 sibling `ui-apps/ui-*` 들이 묵시적 상속. ui-app 측 `theme` 가 있으면 deep-merge (app 키가 core 키 override). 같은 디자인 시스템을 쓰는 다중 앱이 토큰을 중복 정의하지 않음. `add_app` 가 ui-core 의 공유 theme 을 감지하면 새 ui-app 의 `theme` 블록을 자동으로 비워서 상속하게 만든다.",
+        "**`tokens upgrade` 가 공유 theme 반영** — `sh-ui tokens upgrade` 가 sibling ui-core 의 theme 을 머지한 effective config 로 buildTokens 호출 → ui-app 단독에 있는 토큰만 갖고 빌드하던 종전 동작 보강.",
+        "**Tailwind 유틸 자동 매핑** — `buildTokensCss` 의 `@theme inline` 블록이 extraTokens 키마다 `--color-<key>: var(--<key>)` 를 함께 emit → `bg-cta-bg`/`text-accent-soft-fg` 같은 Tailwind utility 가 별도 손-매핑 없이 즉시 사용 가능."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.111.0"
+    },
+    {
       "version": "0.110.0",
       "date": "2026-05-22",
       "title": "create — inPlace 비파괴 머지 + .npmrc 템플릿 parity",
