@@ -1,0 +1,37 @@
+.sh-ui-divider {
+  flex-shrink: 0;
+}
+
+/* plain — 라벨 없는 1px 선. Separator 와 동일. */
+.sh-ui-divider--plain {
+  background: var(--border);
+}
+.sh-ui-divider--horizontal {
+  width: 100%;
+  height: 1px;
+}
+.sh-ui-divider--vertical {
+  width: 1px;
+  height: 100%;
+  align-self: stretch;
+}
+
+/* labeled — 가운데 라벨이 있는 "── label ──" 형식. */
+.sh-ui-divider--labeled {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  width: 100%;
+}
+.sh-ui-divider__line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.sh-ui-divider__label {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--foreground-subtle);
+}

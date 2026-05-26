@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.113.0",
+      "date": "2026-05-26",
+      "title": "components — Divider (label 슬롯 + plain)",
+      "type": "minor",
+      "highlights": [
+        "**`Divider` 신규** — 시각적 구분선. 두 변종을 한 컴포넌트로: `<Divider />` 는 라벨 없는 1px 선(orientation=`horizontal`/`vertical`), `<Divider>섹션 라벨</Divider>` 는 가운데 라벨이 있는 `──── label ────` 형식. 라벨이 있을 때는 horizontal 로 강제되고 `align` prop(`start`/`center`/`end`) 으로 라벨 위치 지정. `decorative={false}` 시 `role=\"separator\"` 부여 — 의미 있는 구분에 사용.",
+        "**Separator 와의 관계** — `Separator` 는 라벨 없는 단순 선만 다루는 기존 컴포넌트로 backwards compat 유지. `Divider` 는 superset 이라 새 코드에선 `Divider` 권장. Tailwind / CSS Modules / plain CSS 세 변종 모두 동봉.",
+        "**디자인 토큰 활용** — 선 색은 `--border`, 라벨은 `--foreground-subtle` + uppercase + tracking-wide 기본. 시안 빈도 높은 \"섹션 라벨 양옆 1px 선\" 패턴(login OAuth 구분, 워크스페이스 스위처 invite 섹션 등) 을 1줄로 줄여준다."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.113.0"
+    },
+    {
       "version": "0.112.0",
       "date": "2026-05-22",
       "title": "template — sh-ui-discipline ESLint 룰을 모노레포 스캐폴드에 기본 박음",

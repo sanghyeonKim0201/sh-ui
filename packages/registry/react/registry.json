@@ -1243,6 +1243,51 @@
         "utils"
       ]
     },
+    "divider": {
+      "name": "divider",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/divider/index.tsx",
+          "dest": "{components}/divider/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/divider/styles.css",
+          "dest": "{components}/divider/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/divider/index.tailwind.tsx",
+          "dest": "{components}/divider/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
+        },
+        {
+          "src": "components/divider/index.module.tsx",
+          "dest": "{components}/divider/index.tsx",
+          "frameworks": [
+            "css-modules"
+          ]
+        },
+        {
+          "src": "components/divider/styles.module.css",
+          "dest": "{components}/divider/styles.module.css",
+          "frameworks": [
+            "css-modules"
+          ]
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "utils"
+      ]
+    },
     "dropdown-menu": {
       "name": "dropdown-menu",
       "type": "component",
