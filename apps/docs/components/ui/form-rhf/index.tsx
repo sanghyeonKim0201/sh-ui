@@ -1,3 +1,6 @@
+"use client";
+
+import * as React from "react";
 import type { UseFormReturn, FieldValues } from "react-hook-form";
 import type {
   FormStore,
@@ -286,4 +289,35 @@ export function adaptReactHookForm<T extends FieldValues>(
   };
 
   return store;
+}
+
+/**
+ * useReactHookFormAdapter — `adaptReactHookForm` 의 hook 변종.
+ *
+ * 어댑터는 호출마다 새 `FormStore` 인스턴스 (listeners Set, snapshot cache 등)
+ * 를 만들기 때문에, 컴포넌트 body 에서 직접 호출하면 매 렌더 새 store →
+ * `<Form form={...}>` 의 context value 가 매 렌더 바뀜 → 자식
+ * `<Form.Field>` 가 매번 register/unregister → perf hit + 잠재 race.
+ *
+ * 본 hook 은 `useRef` 로 첫 마운트에 한 번만 어댑터를 생성해 안정화한다.
+ * RHF 인스턴스 (`rhf`) 자체가 `useForm` 결과라 mount 후 안정 → ref 도 안전.
+ *
+ *   const rhf = useForm<FormValues>({ resolver: zodResolver(schema) });
+ *   const form = useReactHookFormAdapter<FormValues>(rhf);
+ *
+ *   return <Form form={form}>...</Form>;
+ *
+ * `config` 의 onSubmit 은 초기 캡처 — 매 렌더 다른 함수 넘기면 무시. 동적
+ * 콜백이 필요하면 `<Form onSubmit={...}>` prop 으로 (Form 컴포넌트가 매
+ * 렌더 capture).
+ */
+export function useReactHookFormAdapter<T extends FieldValues>(
+  rhf: UseFormReturn<T>,
+  config: AdapterConfig<T> = {}
+): FormStore<T> {
+  const ref = React.useRef<FormStore<T> | null>(null);
+  if (!ref.current) {
+    ref.current = adaptReactHookForm<T>(rhf, config);
+  }
+  return ref.current;
 }
