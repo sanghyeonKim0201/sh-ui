@@ -315,9 +315,50 @@ export function useReactHookFormAdapter<T extends FieldValues>(
   rhf: UseFormReturn<T>,
   config: AdapterConfig<T> = {}
 ): FormStore<T> {
+  // 1) adapter 인스턴스 안정화 (mount 시 한 번 생성).
   const ref = React.useRef<FormStore<T> | null>(null);
   if (!ref.current) {
     ref.current = adaptReactHookForm<T>(rhf, config);
   }
+
+  // 2) RHF 의 form state 변경을 React render path 에 명시적으로 결선.
+  //
+  // 어댑터 내부의 `rhf.subscribe` 만으로는 React `useSyncExternalStore` 의
+  // listener 가 useFormField 에서 호출되긴 하지만, **자식 컴포넌트 (Field /
+  // FieldRenderBridge)** 가 부모로부터 props · context 변경 신호를 못 받아
+  // 재렌더 안 되는 케이스가 있다 (특히 어댑터를 useRef 로 안정화한 경우
+  // FormContext value 가 동일 reference 라 React 가 sub-tree 를 skip).
+  //
+  // 본 컴포넌트에서 useReducer 로 force update 를 발화해 트리 전체가 재평가
+  // 되게 한다 — `rhf.watch(...)` 같은 hook 을 외부에서 쓰는 부담을 hook 자체에
+  // 흡수.
+  const [, forceUpdate] = React.useReducer((x: number) => x + 1, 0);
+  React.useEffect(() => {
+    if (typeof (rhf as unknown as { subscribe?: unknown }).subscribe !== "function") {
+      return;
+    }
+    let unsub: (() => void) | undefined;
+    try {
+      unsub = (rhf as unknown as {
+        subscribe: (opts: {
+          formState: Record<string, boolean>;
+          callback: () => void;
+        }) => () => void;
+      }).subscribe({
+        formState: { values: true, errors: true, isSubmitting: true, touchedFields: true },
+        callback: () => forceUpdate(),
+      });
+    } catch {
+      // 구버전 RHF (< 7.50) 의 subscribe 미지원 — fallback 없음.
+    }
+    return () => {
+      try {
+        unsub?.();
+      } catch {
+        // ignore
+      }
+    };
+  }, [rhf]);
+
   return ref.current;
 }
