@@ -743,6 +743,63 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
   }
 );
 
+/* ───────────── Menu trailing slots (badge / action) ─────────────
+ * SidebarMenuButton 의 `> span { flex: 1 }` 흐름 밖(absolute)에 위치해 라벨을
+ * 밀어내지 않는다. SidebarMenuItem 이 trailing 슬롯 존재를 :has() 로 감지해
+ * 내부 button/anchor 에 우측 패딩을 확보한다 (styles.module.css 참고). */
+
+/**
+ * SidebarMenuItem 의 우측 trailing 배지 (안 읽음 수 등). SidebarMenuButton 의
+ * 형제로 둔다 — absolute 라 라벨을 밀어내지 않고, pointer-events:none 으로 클릭은
+ * 행 전체 button 으로 통과한다.
+ *
+ *   <SidebarMenuItem>
+ *     <SidebarMenuButton render={<Link href='/x'>채팅</Link>} />
+ *     <SidebarMenuBadge>8</SidebarMenuBadge>
+ *   </SidebarMenuItem>
+ */
+export function SidebarMenuBadge({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-sidebar="menu-badge"
+      className={cn(styles["sidebar__menu-badge"], className)}
+      {...props}
+    />
+  );
+}
+
+export interface SidebarMenuActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** 행 hover/포커스 시에만 노출. 기본은 항상 표시. */
+  showOnHover?: boolean;
+}
+
+/**
+ * SidebarMenuItem 의 우측 trailing 액션 버튼 (… 메뉴, 추가 등). badge 와 달리
+ * 클릭 가능. `showOnHover` 면 행 hover/포커스 시에만 노출 (CSS 부모 hover 셀렉터).
+ *
+ *   <SidebarMenuItem>
+ *     <SidebarMenuButton render={<Link href='/x'>채널</Link>} />
+ *     <SidebarMenuAction showOnHover aria-label='채널 설정'><MoreIcon /></SidebarMenuAction>
+ *   </SidebarMenuItem>
+ */
+export const SidebarMenuAction = React.forwardRef<HTMLButtonElement, SidebarMenuActionProps>(
+  function SidebarMenuAction({ className, showOnHover, ...props }, ref) {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        data-sidebar="menu-action"
+        className={cn(
+          styles["sidebar__menu-action"],
+          showOnHover && styles["sidebar__menu-action--hover"],
+          className,
+        )}
+        {...props}
+      />
+    );
+  }
+);
+
 /* ───────────── Sub menu ───────────── */
 
 /** 메뉴 항목 내부의 서브 메뉴 리스트. SidebarMenuItem 안에 둔다. */

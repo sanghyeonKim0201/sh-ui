@@ -412,6 +412,15 @@
   margin: 0;
 }
 
+/* trailing 슬롯(badge/action)이 있으면 내부 button/anchor 에 우측 패딩을 확보해
+ * 라벨이 trailing 요소 밑으로 들어가지 않게 한다. */
+.sidebar__menu-item:has(.sidebar__menu-badge) > a,
+.sidebar__menu-item:has(.sidebar__menu-badge) > button,
+.sidebar__menu-item:has(.sidebar__menu-action) > a,
+.sidebar__menu-item:has(.sidebar__menu-action) > button {
+  padding-inline-end: 2rem;
+}
+
 .sidebar__menu-button {
   display: flex;
   width: 100%;
@@ -476,6 +485,73 @@
 .sidebar__menu-button--lg {
   padding: var(--space-3);
   font-size: 0.9375rem;
+}
+
+/* ───────────── Menu trailing slots (badge / action) ───────────── */
+.sidebar__menu-badge {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  padding: 0 0.25rem;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--sidebar-fg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.sidebar__menu-action {
+  position: absolute;
+  right: var(--space-1);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  transition: background-color var(--duration-fast), color var(--duration-fast), opacity var(--duration-fast);
+}
+.sidebar__menu-action > svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+.sidebar__menu-action:hover {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-fg);
+}
+.sidebar__menu-action:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+}
+
+/* showOnHover — 행 hover/포커스 시에만 노출. 부모 menu-item hover/focus-within 셀렉터. */
+.sidebar__menu-action--hover {
+  opacity: 0;
+}
+.sidebar__menu-item:hover .sidebar__menu-action--hover,
+.sidebar__menu-item:focus-within .sidebar__menu-action--hover,
+.sidebar__menu-action--hover:focus-visible,
+.sidebar__menu-action--hover[data-active] {
+  opacity: 1;
+}
+
+/* collapsed=icon 모드에서는 trailing 슬롯 숨김 (라벨도 숨겨지므로) */
+.sidebar[data-state="collapsed"][data-collapsible="icon"] .sidebar__menu-badge,
+.sidebar[data-state="collapsed"][data-collapsible="icon"] .sidebar__menu-action {
+  display: none;
 }
 
 /* ───────────── Sub menu ───────────── */
@@ -575,6 +651,7 @@
   .sidebar__trigger,
   .sidebar__menu-button,
   .sidebar__menu-sub-button,
+  .sidebar__menu-action,
   .sidebar__panel-close,
   .sidebar__chevron {
     transition: none;
