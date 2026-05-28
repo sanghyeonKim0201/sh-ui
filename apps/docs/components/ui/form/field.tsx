@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@SH_UI_UTILS@";
+function cn(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import {
   FormContext,
   FieldContext,
