@@ -93,6 +93,34 @@ const INIT_DESCRIPTIONS = {
     tailwind: "Tailwind v4 utility class — class-variance-authority 기반",
     "css-modules": "CSS Modules — .module.css + styles.X 참조, 빌드 타임 hash 격리",
   },
+  // theme 프리셋 — sh_ui_create_project 의 theme 인자에 그대로 전달 가능.
+  // 사용자가 "다크 모던" / "따뜻한 종이" 같이 자연어로 의도를 표현하면 아래 keywordHints 로 매핑.
+  theme: {
+    neutral: "뉴트럴 — 흑백 강조 (sh-ui 기본). 어떤 브랜드에도 무난.",
+    slate: "슬레이트 — 차분한 슬레이트 + 인디고 (정보 밀도). 대시보드/관리자 인상.",
+    rose: "로즈 — 핑크 강조 + 둥근 모서리 (친근·여유). 소비자 앱·캐주얼.",
+    emerald: "에메랄드 — 그린 강조. 자연·금융·헬스 인상.",
+    violet: "바이올렛 — 퍼플 강조 + 살짝 라운드 (모던·또렷). 크리에이티브/디자인 도구.",
+  },
+  // 자연어 의도 → enum/preset 매핑 힌트 (한국어 표현 위주).
+  // 사용자가 "다크 모던" / "따뜻한 종이" / "한국 핀테크 스타일" 같이 의도만 던지면 AI 가
+  // 이 사전을 보고 platform/base/radius/mode/theme 조합으로 매핑한다.
+  keywordHints: {
+    "다크 모던 / dark modern / 검정 모던": "base=zinc · mode=dark · radius=sm · theme=neutral",
+    "라이트 모던 / 밝은 모던 / clean": "base=zinc · mode=light · radius=sm · theme=neutral",
+    "따뜻한 / 따뜻한 종이 / warm paper / 종이": "theme=rose 또는 neutral · radius=md · mode=light-dark",
+    "친근한 / 캐주얼 / 부드러운 / 동글동글 / soft": "theme=rose · radius=lg · mode=light-dark",
+    "한국 핀테크 / 핀테크 / fintech / 금융": "theme=slate (indigo) 또는 violet · radius=sm · mode=light-dark",
+    "기업 관리자 / 관리자 / 어드민 / admin / MES / ERP / 백오피스": "theme=slate · arch=mes · radius=sm",
+    "차분한 / 프로페셔널 / 푸른빛 / 정보 밀도": "base=slate 또는 theme=slate · radius=sm",
+    "그린 강조 / 자연 / 헬스 / 환경": "theme=emerald · radius=md",
+    "퍼플 강조 / 크리에이티브 / 디자인 도구": "theme=violet · radius=lg · borders=두꺼움",
+    "쇼핑몰 / 커머스 / 소비자 앱": "theme=rose 또는 emerald · radius=lg · mode=light-dark",
+    "데이터 대시보드 / 차트 / 분석 도구": "theme=slate · base=slate · radius=sm · 정보 밀도 ↑",
+    "AI / 챗봇 / 생성형": "theme=violet 또는 neutral · radius=md · mode=light-dark",
+    "스타트업 / 모던 / 트렌디": "theme=violet 또는 rose · radius=md",
+    "교육 / 학습 / 친근": "theme=rose 또는 emerald · radius=lg",
+  },
 };
 
 /** stdout 으로 출력되는 console.* 호출을 버퍼에 캡처해 텍스트로 반환. */
@@ -419,8 +447,10 @@ export async function startMcpServer() {
     "sh_ui_describe_init",
     {
       description:
-        "sh-ui init 의 4개 축(platform/base/radius/mode) 선택지와 한글 설명 반환. " +
-        "사용자의 자연어 의도(\"다크 모던\", \"따뜻한 느낌\")를 enum 값으로 매핑할 때 먼저 호출.",
+        "sh-ui init 의 선택지 사전 — platform/base/radius/mode/cssFramework/theme 의 enum + 한글 설명, " +
+        "그리고 사용자 자연어 의도 (\"다크 모던\" / \"따뜻한 종이\" / \"한국 핀테크 스타일\" 등) 를 " +
+        "enum/preset 조합으로 매핑하는 keywordHints 사전을 함께 반환. " +
+        "사용자가 톤을 자연어로 던지면 이 툴을 먼저 호출해 매핑 후 sh_ui_create_project 의 theme/base/radius 인자에 반영. v0.106.0+ 에서 theme + keywordHints 키 추가.",
       inputSchema: {},
     },
     async () => jsonResult(INIT_DESCRIPTIONS),
@@ -458,7 +488,14 @@ export async function startMcpServer() {
         cwd: z.string().optional()
           .describe("부모 디렉토리. 기본 process.cwd()"),
         force: z.boolean().optional()
-          .describe("기존 디렉토리 덮어쓰기. 기본 false (안전)"),
+          .describe("기존 디렉토리 덮어쓰기 — 디렉토리 전체를 삭제 후 새로 스캐폴드. 기본 false (안전)."),
+        inPlace: z.boolean().optional()
+          .describe(
+            "기존 디렉토리에 비파괴 머지 — 디렉토리를 삭제하지 않고, 이미 있는 파일은 보존한 채 " +
+            "없는 파일만 채워 넣는다. 커스터마이즈된 monorepo 루트(CLAUDE.md·.gitignore 등)·.git 을 " +
+            "지키면서 apps/·packages/ 를 재생성할 때 사용. force 와 상호배타 — force 는 전체 삭제, " +
+            "inPlace 는 보존. 재생성하려는 파일은 미리 지워두면 그 자리만 새로 채워진다. v0.110.0+ 신규.",
+          ),
         i18n: z.enum(I18N_LIBRARIES).optional()
           .describe(
             "i18n 라이브러리 — platform=vite 일 때만 의미. 'react-i18next' 로 설정 시 i18next + react-i18next + browser-languagedetector + http-backend 셋업 + " +
@@ -478,6 +515,17 @@ export async function startMcpServer() {
           ),
         port: z.string().optional()
           .describe("monorepo 첫 앱의 dev 포트. 기본 '3000'. structure=monorepo 일 때만 의미."),
+        gitInit: z.boolean().optional()
+          .describe(
+            "git init 실행 여부. 기본 auto — parent 가 이미 git tree 안이면 자동 스킵 (nested .git 충돌 방지), 밖이면 init. " +
+            "true 로 nested 강제, false 로 명시 스킵. v0.102.0+ 신규.",
+          ),
+        locale: z.enum(["default", "ko"]).optional()
+          .describe(
+            "사용자 지역 디폴트 가정. 'ko' 선택 시 globals.css 에 Pretendard 폰트가 자동 적용 (CDN @import + body font-family). " +
+            "한국어 사용자가 init 직후 거의 100% 첫 작업이라 한 옵션으로 자동화. " +
+            "locales (복수) 와 다름 — locales 는 i18n 활성화 시 생성할 locale 코드 목록. v0.103.0+ 신규.",
+          ),
       },
     },
     async (input) => {
@@ -508,15 +556,25 @@ export async function startMcpServer() {
           }],
         };
       }
+      if (input.force && input.inPlace) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: "force 와 inPlace 는 동시에 쓸 수 없습니다 — force 는 디렉토리 전체 삭제, inPlace 는 보존 머지.",
+          }],
+        };
+      }
       const targetParent = resolveCwd(input);
       const targetDir = resolve(targetParent, input.name);
-      if (existsSync(targetDir) && !input.force) {
+      // inPlace 는 기존 디렉토리를 전제로 하므로 '이미 존재' 가 에러가 아니다.
+      if (existsSync(targetDir) && !input.force && !input.inPlace) {
         return {
           isError: true,
           content: [
             {
               type: "text",
-              text: `'${targetDir}' 가 이미 존재합니다. 덮어쓰려면 force: true.`,
+              text: `'${targetDir}' 가 이미 존재합니다. 덮어쓰려면 force: true, 보존 머지하려면 inPlace: true.`,
             },
           ],
         };
@@ -537,6 +595,9 @@ export async function startMcpServer() {
             locales: input.locales,
             appName: input.appName,
             port: input.port,
+            gitInit: input.gitInit,
+            locale: input.locale,
+            inPlace: input.inPlace,
             yes: true, // 사전 검사를 마쳤으니 generator 의 confirm 프롬프트 우회
           }),
         );
@@ -802,8 +863,9 @@ export async function startMcpServer() {
       success: HEX.optional(), "success-foreground": HEX.optional(),
       warning: HEX.optional(), "warning-foreground": HEX.optional(),
       info: HEX.optional(), "info-foreground": HEX.optional(),
+      accent: HEX.optional(), "accent-foreground": HEX.optional(), "accent-hover": HEX.optional(),
     })
-    .describe("15개 필수 색 토큰 + 옵셔널 6개(success/warning/info × -foreground). 각 값은 #RRGGBB hex");
+    .describe("15개 필수 색 토큰 + 옵셔널 9개(success/warning/info × -foreground + accent/accent-foreground/accent-hover). 각 값은 #RRGGBB hex");
 
   server.registerTool(
     "sh_ui_encode_theme",

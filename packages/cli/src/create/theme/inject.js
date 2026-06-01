@@ -37,15 +37,31 @@ export const buildCssColorsBlock = (theme) => {
   );
   const allKeys = [...TOKEN_KEYS, ...optionalKeys];
 
-  const lightLines = allKeys.map((k) => cssColorLine(k, theme.light[k])).join('\n');
-  const darkLines = allKeys.map((k) => cssColorLine(k, theme.dark[k])).join('\n');
+  // extraTokens (v0.111.0+) — TOKEN_KEYS/OPTIONAL_TOKEN_KEYS 에 없는 자유 추가 토큰.
+  // root: 모드 무관 고정 — :root 에만 emit (dark 블록에 덮어쓰지 않아 자동 cascade).
+  // light: :root 에 emit (light 가 :root 기본). dark: dark 블록 두 곳에 emit.
+  const extra = theme.extraTokens ?? {};
+  const extraRootLines = entriesToCssLines(extra.root);
+  const extraLightLines = entriesToCssLines(extra.light);
+  const extraDarkLines = entriesToCssLines(extra.dark);
+
+  const lightSection = [
+    ...allKeys.map((k) => cssColorLine(k, theme.light[k])),
+    ...extraLightLines,
+    ...extraRootLines,
+  ].join('\n');
+
+  const darkLines = [
+    ...allKeys.map((k) => cssColorLine(k, theme.dark[k])),
+    ...extraDarkLines,
+  ];
   // 미디어쿼리 안의 다크 라인은 한 단계 더 들여쓰기 (`:root:not(...)` 안쪽).
-  const darkLinesIndented = allKeys
-    .map((k) => `  ${cssColorLine(k, theme.dark[k])}`)
-    .join('\n');
+  const darkLinesIndented = darkLines.map((line) => `  ${line}`).join('\n');
+  const darkSection = darkLines.join('\n');
+
   return [
     ':root {',
-    lightLines,
+    lightSection,
     '}',
     '@media (prefers-color-scheme: dark) {',
     '  :root:not(.light):not(.dark) {',
@@ -53,10 +69,19 @@ export const buildCssColorsBlock = (theme) => {
     '  }',
     '}',
     '.dark {',
-    darkLines,
+    darkSection,
     '}',
   ].join('\n');
 };
+
+/** extraTokens 카테고리(plain object) → CSS 라인 배열. key 가 '--' 로 시작하면 그대로, 아니면 prepend. */
+function entriesToCssLines(map) {
+  if (!map || typeof map !== 'object') return [];
+  return Object.entries(map).map(([rawKey, value]) => {
+    const key = rawKey.startsWith('--') ? rawKey.slice(2) : rawKey;
+    return cssColorLine(key, value);
+  });
+}
 
 export const buildCssRadiusBlock = (theme) => {
   return `  --radius: ${theme.radius}rem;`;

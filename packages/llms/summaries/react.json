@@ -35,7 +35,7 @@
     "badge": "상태 뱃지 — variant, size.",
     "progress": "선형 진행률 — value 0~100, indeterminate.",
     "spinner": "로딩 스피너 — size.",
-    "separator": "구분선 — orientation(horizontal/vertical).",
+    "separator": "구분선 — 두 변종 한 컴포넌트: children 없으면 가로/세로 1px 선(orientation), children 있으면 가운데 라벨 \"── label ──\"(align=start/center/end, horizontal 강제). decorative={false} 시 role=separator.",
     "skeleton": "스켈레톤 로딩 플레이스홀더.",
     "code-panel": "Shiki 기반 코드 하이라이트 패널 — 복사 버튼 포함.",
     "code-tabs": "여러 코드 뷰(예: React/Flutter, 강조/전체)를 탭으로 전환 — Tabs + CodePanel 합성, 각 탭 내용은 CodePanelProps 그대로.",
@@ -55,6 +55,8 @@
     "form-yup": "yup 스키마 → sh-ui Form 의 Standard Schema 어댑터. `yupSchema(yupObject)` 로 감싸 Form 의 `validation` prop 에 전달. yup 자체는 peerDependency.",
     "form-rhf": "React Hook Form 인스턴스 → sh-ui FormStore 어댑터. `adaptReactHookForm(rhfInstance, config)` — RHF 가 state owner, sh-ui 가 메타(steps/sections) 관리. react-hook-form 은 peerDependency.",
     "form-tanstack": "TanStack Form 인스턴스 → sh-ui FormStore 어댑터. `adaptTanstackForm(tanstackInstance, config)` — TanStack Form 이 state owner. @tanstack/react-form 은 peerDependency.",
-    "calendar": "내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장."
+    "calendar": "내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장.",
+    "scroll-area": "커스텀 스크롤 컨테이너 — composite export ScrollArea (Base UI). 내부에서 viewport + scrollbar + thumb + corner 를 자동 구성하며 OS-native 스크롤바를 대체한다. orientation: \"vertical\" | \"horizontal\" | \"both\" (기본 vertical). 외부 height/width 가 정해진 컨테이너 안에서 사용. viewportClassName 으로 viewport 의 패딩/레이아웃 분리 적용. 스크롤바는 hover/scrolling 시 fade in, prefers-reduced-motion 존중.",
+    "sheet": "화면 가장자리에서 슬라이드 인 하는 side drawer — separate exports: Sheet / SheetTrigger / SheetClose / SheetContent / SheetTitle / SheetDescription / SheetHeader / SheetFooter / SheetCloseX (Base UI Drawer 래핑, 포커스 트랩). 글로벌 알림함 · 작업 큐 · 보조 패널 같은 사이드바 무관 모달 시트용. 사이드바 인근 detail 패널은 SidebarPanel, 중앙 강제 모달은 Dialog 권장. SheetContent 의 side: \"right\" | \"left\" | \"top\" | \"bottom\" (기본 right) 으로 진입 방향 지정. SheetTrigger·SheetClose 는 자체 button — 다른 엘리먼트 슬롯은 `render` prop. ESC/바깥 클릭/포커스 복귀 자동, prefers-reduced-motion 시 transform 트랜지션 제거."
   }
 }

@@ -18,7 +18,10 @@
     "theming": "테마",
     "guidelines": "가이드라인",
     "changelog": "변경 내역",
-    "create": "프로젝트 생성"
+    "create": "프로젝트 생성",
+    "foundations": "파운데이션",
+    "cssFramework": "CSS 프레임워크",
+    "architectures": "아키텍처"
   },
   "hints": {
     "navigate": "이동",

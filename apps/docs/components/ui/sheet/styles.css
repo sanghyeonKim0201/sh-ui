@@ -1,0 +1,183 @@
+/* ── Backdrop ── */
+
+.sh-ui-sheet__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
+  transition: opacity var(--duration-slow) ease;
+}
+
+.sh-ui-sheet__backdrop[data-starting-style],
+.sh-ui-sheet__backdrop[data-ending-style] {
+  opacity: 0;
+}
+
+/* ── Content (Popup) ── */
+
+.sh-ui-sheet__content {
+  position: fixed;
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xl);
+  outline: none;
+  overflow-y: auto;
+  transition:
+    opacity var(--duration-slow) ease,
+    transform var(--duration-slow) ease;
+}
+
+.sh-ui-sheet__content[data-side="right"] {
+  top: 0;
+  right: 0;
+  height: 100dvh;
+  width: calc(100% - 2rem);
+  max-width: 28rem;
+  border-left: 1px solid var(--border);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.sh-ui-sheet__content[data-side="left"] {
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  width: calc(100% - 2rem);
+  max-width: 28rem;
+  border-right: 1px solid var(--border);
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+}
+
+.sh-ui-sheet__content[data-side="top"] {
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  max-height: calc(100dvh - 4rem);
+  border-bottom: 1px solid var(--border);
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.sh-ui-sheet__content[data-side="bottom"] {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  max-height: calc(100dvh - 4rem);
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+}
+
+/* Enter/exit transforms — slide from the edge */
+
+.sh-ui-sheet__content[data-side="right"][data-starting-style],
+.sh-ui-sheet__content[data-side="right"][data-ending-style] {
+  transform: translateX(100%);
+}
+
+.sh-ui-sheet__content[data-side="left"][data-starting-style],
+.sh-ui-sheet__content[data-side="left"][data-ending-style] {
+  transform: translateX(-100%);
+}
+
+.sh-ui-sheet__content[data-side="top"][data-starting-style],
+.sh-ui-sheet__content[data-side="top"][data-ending-style] {
+  transform: translateY(-100%);
+}
+
+.sh-ui-sheet__content[data-side="bottom"][data-starting-style],
+.sh-ui-sheet__content[data-side="bottom"][data-ending-style] {
+  transform: translateY(100%);
+}
+
+.sh-ui-sheet__content:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+  outline-offset: -2px;
+}
+
+/* ── Close X ── */
+
+.sh-ui-sheet__close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: var(--control-sm);
+  height: var(--control-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--foreground-muted);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: background var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.sh-ui-sheet__close:hover {
+  background: var(--background-subtle);
+  color: var(--foreground);
+}
+
+.sh-ui-sheet__close:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ── Header / Footer ── */
+
+.sh-ui-sheet__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.sh-ui-sheet__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+/* ── Title / Description ── */
+
+.sh-ui-sheet__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  text-wrap: balance;
+}
+
+.sh-ui-sheet__description {
+  margin: 0;
+  color: var(--foreground-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-sheet__backdrop,
+  .sh-ui-sheet__content {
+    transition: opacity 0.01ms;
+  }
+  .sh-ui-sheet__content[data-starting-style],
+  .sh-ui-sheet__content[data-ending-style] {
+    transform: none;
+  }
+}

@@ -13,8 +13,12 @@ const VALID_STRUCTURES = CREATE_STRUCTURES;
 const VALID_PLUGINS = allPlugins.map((p) => p.name);
 const VALID_ARCHES = allArchitectures.map((a) => a.name);
 
-const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch', 'port', 'i18n', 'locales'];
-const BOOL_FLAGS = ['yes', 'help', 'dry-run'];
+const VALUE_FLAGS = ['platform', 'structure', 'plugins', 'theme', 'app', 'css', 'arch', 'port', 'i18n', 'locales', 'locale'];
+
+// `locale` (단수) 은 한국어/일본어 같은 사용자 지역 디폴트 가정 (폰트 등) 을 활성화하는
+// 옵션. `locales` (복수) 와 다르다: locales 는 i18n 활성화 시 생성할 locale 코드 목록.
+const VALID_LOCALES = ['default', 'ko'];
+const BOOL_FLAGS = ['yes', 'help', 'dry-run', 'no-git-init', 'git-init', 'in-place'];
 
 const SUBCOMMANDS = ['add-app', 'add-component'];
 
@@ -40,9 +44,13 @@ export const parseArgs = (argv) => {
     }
     const name = arg.slice(2);
     if (BOOL_FLAGS.includes(name)) {
-      // dry-run 은 dryRun 으로 캐멀 케이스
-      const key = name === 'dry-run' ? 'dryRun' : name;
-      flags[key] = true;
+      // dry-run → dryRun. --no-git-init → gitInit:false. --git-init → gitInit:true.
+      // --in-place → inPlace:true (기존 디렉토리 비파괴 머지).
+      if (name === 'dry-run') flags.dryRun = true;
+      else if (name === 'no-git-init') flags.gitInit = false;
+      else if (name === 'git-init') flags.gitInit = true;
+      else if (name === 'in-place') flags.inPlace = true;
+      else flags[name] = true;
       continue;
     }
     if (!VALUE_FLAGS.includes(name)) {
@@ -78,6 +86,13 @@ export const parseArgs = (argv) => {
     }
     if (name === 'i18n' && !I18N_LIBRARIES.includes(value)) {
       throw new Error(`--i18n 은 ${I18N_LIBRARIES.join('/')} 중 하나여야 함 (받은 값: ${value})`);
+    }
+    if (name === 'locale' && !VALID_LOCALES.includes(value)) {
+      throw new Error(
+        `--locale 은 ${VALID_LOCALES.join('/')} 중 하나여야 함 (받은 값: ${value}). ` +
+        `'ko' 선택 시 Pretendard 폰트가 globals.css 에 자동 적용됩니다. ` +
+        `(주의: --locales (복수) 는 i18n 활성화 시 생성할 locale 코드 목록 — 다른 의미).`,
+      );
     }
     if (name === 'css' && !CSS_FRAMEWORKS_SUPPORTED.includes(value)) {
       // planned 값은 '곧 옵니다' 신호로 분기 — 사용자 의도가 더 명확히 전달.

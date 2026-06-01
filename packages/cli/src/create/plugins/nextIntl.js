@@ -231,6 +231,9 @@ export function RootLayout({
 export const routing = defineRouting({
   locales: ['ko', 'en'],
   defaultLocale: 'ko',
+  // ko 는 prefix 없이 '/', en 만 '/en/...' — 한국 사용자 베이스 + 영문 보조 페어가 흔한 패턴.
+  // 모든 locale 에 prefix 강제하고 싶으면 'always', 절대 prefix 안 붙이면 'never'.
+  localePrefix: 'as-needed',
 });
 `,
 

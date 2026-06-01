@@ -21,6 +21,9 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-hover: var(--accent-hover);
   --color-ring: var(--ring);
   --color-danger: var(--danger);
   --color-danger-hover: var(--danger-hover);
@@ -32,6 +35,19 @@
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
   --color-sidebar-bg: var(--sidebar-bg);
+  --shadow-popover: var(--shadow-popover);
+  --shadow-modal: var(--shadow-modal);
+  --shadow-toast: var(--shadow-toast);
+  --tracking-tighter: var(--tracking-tighter);
+  --tracking-tight: var(--tracking-tight);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: var(--tracking-wide);
+  --tracking-wider: var(--tracking-wider);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
 }
 
 /* sh-ui:webview-base-start — 모바일 브라우저 / PWA 공통 기본값.

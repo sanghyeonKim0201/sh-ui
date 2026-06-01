@@ -2322,6 +2322,100 @@
         "form"
       ]
     },
+    "scroll-area": {
+      "name": "scroll-area",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/scroll-area/index.tsx",
+          "dest": "{components}/scroll-area/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/scroll-area/styles.css",
+          "dest": "{components}/scroll-area/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/scroll-area/index.tailwind.tsx",
+          "dest": "{components}/scroll-area/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
+        },
+        {
+          "src": "components/scroll-area/index.module.tsx",
+          "dest": "{components}/scroll-area/index.tsx",
+          "frameworks": [
+            "css-modules"
+          ]
+        },
+        {
+          "src": "components/scroll-area/styles.module.css",
+          "dest": "{components}/scroll-area/styles.module.css",
+          "frameworks": [
+            "css-modules"
+          ]
+        }
+      ],
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ]
+    },
+    "sheet": {
+      "name": "sheet",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/sheet/index.tsx",
+          "dest": "{components}/sheet/index.tsx",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/sheet/styles.css",
+          "dest": "{components}/sheet/styles.css",
+          "frameworks": [
+            "plain"
+          ]
+        },
+        {
+          "src": "components/sheet/index.tailwind.tsx",
+          "dest": "{components}/sheet/index.tsx",
+          "frameworks": [
+            "tailwind"
+          ]
+        },
+        {
+          "src": "components/sheet/index.module.tsx",
+          "dest": "{components}/sheet/index.tsx",
+          "frameworks": [
+            "css-modules"
+          ]
+        },
+        {
+          "src": "components/sheet/styles.module.css",
+          "dest": "{components}/sheet/styles.module.css",
+          "frameworks": [
+            "css-modules"
+          ]
+        }
+      ],
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ]
+    },
     "utils": {
       "name": "utils",
       "type": "lib",

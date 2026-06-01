@@ -1,0 +1,64 @@
+.sh-ui-scroll-area__root {
+  position: relative;
+  overflow: hidden;
+}
+
+.sh-ui-scroll-area__viewport {
+  width: 100%;
+  height: 100%;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.sh-ui-scroll-area__viewport:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+  outline-offset: -2px;
+}
+
+.sh-ui-scroll-area__scrollbar {
+  display: flex;
+  touch-action: none;
+  user-select: none;
+  padding: 2px;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.sh-ui-scroll-area__scrollbar--vertical {
+  width: 0.625rem;
+}
+
+.sh-ui-scroll-area__scrollbar--horizontal {
+  flex-direction: column;
+  height: 0.625rem;
+}
+
+.sh-ui-scroll-area__root:hover .sh-ui-scroll-area__scrollbar,
+.sh-ui-scroll-area__scrollbar[data-hovering],
+.sh-ui-scroll-area__scrollbar[data-scrolling] {
+  opacity: 1;
+}
+
+.sh-ui-scroll-area__thumb {
+  flex: 1;
+  background: var(--border-strong);
+  border-radius: 9999px;
+  transition: background-color 120ms ease;
+}
+
+.sh-ui-scroll-area__scrollbar:hover .sh-ui-scroll-area__thumb,
+.sh-ui-scroll-area__scrollbar[data-scrolling] .sh-ui-scroll-area__thumb {
+  background: var(--foreground-muted);
+}
+
+.sh-ui-scroll-area__corner {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-scroll-area__scrollbar,
+  .sh-ui-scroll-area__thumb {
+    transition: none;
+  }
+}

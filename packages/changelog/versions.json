@@ -3,6 +3,224 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.113.0",
+      "date": "2026-05-26",
+      "title": "components — Separator label 슬롯 + align",
+      "type": "minor",
+      "highlights": [
+        "**`Separator` 라벨 슬롯 신규** — `<Separator />` 는 기존처럼 가로/세로 1px 선이지만, `<Separator>섹션 라벨</Separator>` 처럼 children 을 넘기면 가운데 라벨이 있는 `──── label ────` 형식으로 렌더. 라벨이 있을 땐 horizontal 로 강제되고 `align` prop(`start`/`center`/`end`) 으로 라벨 위치를 정한다. 기존 사용처는 그대로 — children 없는 호출은 동작 변화 없음.",
+        "**디자인 토큰 활용** — 선 색은 `--border`, 라벨은 `--foreground-subtle` + uppercase + tracking-wide 가 기본. 시안 빈도 높은 \"섹션 라벨 양옆 1px 선\" 패턴 (login OAuth 구분, 워크스페이스 스위처 invite 섹션 등) 을 1줄로 줄여준다. `className` 으로 라벨 컨테이너의 typography·spacing 도 override 가능.",
+        "**Tailwind / CSS Modules / plain CSS 세 변종 모두 갱신** — 라벨이 있을 때만 `flex items-center gap` 컨테이너로 전환되고 plain 변종은 컨테이너 자체에 background 를 두지 않아 visual side effect 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.113.0"
+    },
+    {
+      "version": "0.112.0",
+      "date": "2026-05-22",
+      "title": "template — sh-ui-discipline ESLint 룰을 모노레포 스캐폴드에 기본 박음",
+      "type": "minor",
+      "highlights": [
+        "**`@workspace/eslint-config/sh-ui-discipline` 신규 export** — 모노레포 스캐폴드 시 `packages/eslint-config/sh-ui-discipline.js` 가 함께 생성. `no-restricted-syntax` 로 native `<button>`·`<input>`·`<select>`·`<textarea>`·`<label>` JSX 금지 + `@workspace/ui-core` 의 대응 컴포넌트 안내. AI 가 시안 mimic 으로 native + Tailwind 를 쓰는 패턴을 lint 단계에서 자동 차단 — 디자인 시스템 우회를 시끄럽게 실패시킨다.",
+        "**`nextjs-app` (fsd/flat/mes 3 arch) + `vite-app` 의 `eslint.config.js` 가 자동 적용** — 스캐폴드 직후 새 앱이 즉시 룰을 받는다. 예외는 `// eslint-disable-next-line no-restricted-syntax -- <이유>` 인라인 override.",
+        "**severity** — 모노레포 기본 `eslint-plugin-only-warn` 이 error → warning 다운그레이드. CI hard-fail 은 lint 스크립트에서 `--max-warnings 0` 으로 강제."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.112.0"
+    },
+    {
+      "version": "0.111.0",
+      "date": "2026-05-22",
+      "title": "theme — extraTokens 패스스루 + 모노레포 공유 theme",
+      "type": "minor",
+      "highlights": [
+        "**`theme.extraTokens` 신규** — `sh-ui.config.json` 의 `theme.extraTokens: { root, light, dark }` 에 임의 토큰(`accent-soft`·`surface`·`cta-*`·`border-focus` 등)을 정의하면 tokens.css 와 `@theme inline` 양쪽에 자동 emit. TOKEN_KEYS/OPTIONAL_TOKEN_KEYS 의 고정 스키마를 벗어나는 디자인 시스템 확장을 config-driven 으로 — tokens.css 손-편집 후 `tokens upgrade`/재스캐폴드 시 날아가던 클로버 문제 해결. `root` 는 모드 무관 고정(CTA 같은 light/dark 공통), `light`/`dark` 는 모드별.",
+        "**모노레포 공유 theme** — `packages/ui/ui-core/sh-ui.config.json` 에 `theme` 블록을 두면 sibling `ui-apps/ui-*` 들이 묵시적 상속. ui-app 측 `theme` 가 있으면 deep-merge (app 키가 core 키 override). 같은 디자인 시스템을 쓰는 다중 앱이 토큰을 중복 정의하지 않음. `add_app` 가 ui-core 의 공유 theme 을 감지하면 새 ui-app 의 `theme` 블록을 자동으로 비워서 상속하게 만든다.",
+        "**`tokens upgrade` 가 공유 theme 반영** — `sh-ui tokens upgrade` 가 sibling ui-core 의 theme 을 머지한 effective config 로 buildTokens 호출 → ui-app 단독에 있는 토큰만 갖고 빌드하던 종전 동작 보강.",
+        "**Tailwind 유틸 자동 매핑** — `buildTokensCss` 의 `@theme inline` 블록이 extraTokens 키마다 `--color-<key>: var(--<key>)` 를 함께 emit → `bg-cta-bg`/`text-accent-soft-fg` 같은 Tailwind utility 가 별도 손-매핑 없이 즉시 사용 가능."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.111.0"
+    },
+    {
+      "version": "0.110.0",
+      "date": "2026-05-22",
+      "title": "create — inPlace 비파괴 머지 + .npmrc 템플릿 parity",
+      "type": "minor",
+      "highlights": [
+        "**`inPlace` 옵션 신규** — `sh_ui_create_project` 의 `inPlace` 인자 / `sh-ui create --in-place`. 기존 디렉토리를 삭제하지 않고 비파괴 머지 — 이미 있는 파일은 보존하고 없는 파일만 채운다. 커스터마이즈된 monorepo 루트(`CLAUDE.md`·`.gitignore` 등)와 `.git` 을 지키며 `apps/`·`packages/` 를 재생성할 때 사용. tmpdir 에 스캐폴드 후 `overwrite:false` 머지로 구현 — 전체 generator 파이프라인은 그대로, 마지막 머지만 비파괴.",
+        "**`.npmrc` 템플릿 parity 수정** — npm publish 가 패키지 tarball 에서 `.npmrc` 를 항상 strip(레지스트리 토큰 유출 방지)해, published CLI 의 monorepo 스캐폴드에 `.npmrc` 가 누락되던 버그. `describe_template` 은 정적 매니페스트 기준이라 계속 `.npmrc` 를 보고 → dry-run ↔ 실제 산출물 불일치. `gitignore` 와 동일 패턴으로 템플릿을 `npmrc`(점 없음)로 두고 `finalizeProject` 가 `.npmrc` 로 복원하도록 수정 (`STRIPPED_DOTFILES` 맵으로 일반화).",
+        "**CLI `--git-init`/`--locale` 전달 버그 수정** — 두 플래그를 파싱·검증만 하고 `createProject` 로 넘기지 않아 무시되던 문제. `--in-place` 와 함께 연결."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.110.0"
+    },
+    {
+      "version": "0.109.1",
+      "date": "2026-05-22",
+      "title": "CLI/MCP npm 게시 동기화 — 0.99~0.109 토큰 업데이트 반영",
+      "type": "patch",
+      "highlights": [
+        "**npm `sh-ui-cli` 가 0.98.1 에 멈춰 있던 문제 수정** — 0.99~0.109 의 토큰/스캐폴드 변경이 `packages/cli/src` 에는 반영됐지만 `packages/cli/package.json` version 범프 누락으로 npm 에 게시되지 않고 있었음. CLI 버전을 제품 버전과 일치(0.109.1)시켜 누락분을 일괄 반영.",
+        "**MCP 서버도 함께 갱신** — MCP 는 `sh-ui-cli` 패키지에 내장돼 함께 게시되므로, 이 릴리즈로 MCP 가 보고하는 버전과 번들된 토큰이 모두 최신화됨.",
+        "**publish.yml 에 태그/버전 일치 가드 추가** — 태그 `vX.Y.Z` 와 `packages/cli/package.json` version 이 다르면 게시를 즉시 실패시킴. 기존엔 \"이미 게시됨\" 스킵 로직이 버전 드리프트를 조용히 삼켜 11개 버전이 누락된 재발 원인을 차단."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.109.1"
+    },
+    {
+      "version": "0.109.0",
+      "date": "2026-05-21",
+      "title": "다크 모드 — accent chroma 상향 (slate/rose/emerald/violet 프리셋)",
+      "type": "minor",
+      "highlights": [
+        "**dark accent 디폴트를 primary 보다 한 단계 lighter+saturated 톤으로** — Aifice 피드백 2.1 의 \"accent chroma 상향 (어두운 배경 위에서 highlight 가독성)\" 항목. 컬러 프리셋 4종 의 dark accent 가 primary (-400 톤) 보다 한 단계 lighter 한 -300 톤으로 이동:",
+        "- **slate**: `#818CF8` (indigo-400) → `#A5B4FC` (indigo-300) + accent-hover `#C7D2FE` (indigo-200)",
+        "- **rose**: `#FB7185` → `#FDA4AF` (rose-300) + accent-hover `#FECDD3` (rose-200)",
+        "- **emerald**: `#34D399` → `#6EE7B7` (emerald-300) + accent-hover `#A7F3D0` (emerald-200)",
+        "- **violet**: `#A78BFA` → `#C4B5FD` (violet-300) + accent-hover `#DDD6FE` (violet-200)",
+        "**`neutral` 은 변경 없음** (무채색이라 chroma 의미 없음). **light 모드도 변경 없음** (밝은 배경 위 saturated 톤은 그대로 OK). **primary 채도 보정 (desaturate)** 은 brand 톤 손상 위험 + 디자이너 손맛 필요로 미적용 — 별도 PR 권장.",
+        "**시각 영향** — dark mode + 컬러 프리셋 사용자가 `bg-accent` / `text-accent` utility 또는 `var(--accent)` 직접 호출 시 더 밝고 saturated 한 highlight 톤. accent 를 분리해 사용한 케이스 (링크 / 선택 상태) 만 영향, 미사용 사용자는 영향 없음. backward-compat 거의 유지."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.109.0"
+    },
+    {
+      "version": "0.108.0",
+      "date": "2026-05-21",
+      "title": "토큰 — sidebar 디폴트를 background.subtle / .muted 와 동일 값으로 일치",
+      "type": "minor",
+      "highlights": [
+        "**sidebar 토큰 디폴트가 일반 surface 토큰과 일치** — light: `--sidebar-bg` 가 `{base}.50` (~#FAFAFA) → `{base}.100` (~#F5F5F5, = `--background-subtle`), `--sidebar-accent` 가 `{base}.100` → `{base}.200` (= `--background-muted`). 사용자 메시지 \"sidebar 만 분리된 어정쩡함\" 해소 (Aifice 피드백 2.6).",
+        "**대신 분리 능력은 유지** — sidebar 토큰 자체는 그대로 존재하므로 사용자가 sidebar 만 별 톤 (예: 어두운 sidebar on light 페이지) 으로 커스터마이즈하고 싶으면 `--sidebar-bg` 등 hex 만 별도 값으로 override. 즉 \"디폴트 일관 + 사용자 분리 가능\" 의 절충.",
+        "**dark 모드는 변경 없음** — sidebar.bg (`{base}.900`) 가 이미 background.subtle dark 값과 일치, sidebar.accent (`{base}.800`) 도 background.muted dark 와 일치. light 만 step 분리 (v0.107.0) 와 함께 일관성 회복.",
+        "**시각 영향** — light 모드에서 sidebar 가 약간 더 진한 톤 (#FAFAFA → #F5F5F5). 메인 콘텐츠 (#FFFFFF) 와 더 명확한 구분. v0.107.0 의 background-subtle/muted 분리와 같은 방향. dark 모드 영향 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.108.0"
+    },
+    {
+      "version": "0.107.0",
+      "date": "2026-05-21",
+      "title": "토큰 — light 모드 `background-subtle` / `background-muted` 한 step 더 분리",
+      "type": "minor",
+      "highlights": [
+        "**`--background-subtle` / `--background-muted` 시각 차이 명확화** — 기존 light 의 subtle (`{base}.50`, ~#FAFAFA) 과 muted (`{base}.100`, ~#F5F5F5) 가 99% 디스플레이에서 구분 안 되던 문제 (Aifice 피드백 2.2). 한 step 씩 더 진하게 이동 — subtle: `{base}.100` (#F5F5F5), muted: `{base}.200` (#E5E5E5). `bg < bg-subtle < bg-muted` 어두워지는 의도가 시각으로 드러남.",
+        "**dark 모드는 그대로** — 현재도 `.950 / .900 / .800` 으로 충분히 분리. 변경 없음.",
+        "**영향 범위** — semantic.json (light.background.subtle / .muted) + presets.js (NEUTRAL_LIGHT + slate light) + 6 templates 의 tokens.css `:root` (light 블록만) + apps/docs tokens.css. dark @media 와 `.dark` 블록은 미변경.",
+        "**시각 영향** — tabs/sidebar/pagination/code-editor 등 background-subtle 을 hover/active 표면으로 사용하는 컴포넌트에서 hover state 가 더 명확해진다. 인접 nested surface (예: card 안의 input group bg) 도 명확한 단계 분리. 사용자 base 색 (neutral/zinc/slate) 별로 동일 비율 차이 유지."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.107.0"
+    },
+    {
+      "version": "0.106.0",
+      "date": "2026-05-21",
+      "title": "DX 묶음 — generator 가이드 주석 + 한국어 자연어 매핑 + radius scale 절대값화",
+      "type": "minor",
+      "highlights": [
+        "**(4.1) tokens.css 헤더에 재생성 가이드** — Generated 주석 다음에 `Input: sh-ui.config.json (theme block)` + `Regenerate: npx sh-ui-cli tokens upgrade --replace` 두 줄 추가. 사용자가 generated tokens.css 를 직접 수정해 다음 upgrade 시 손실되던 케이스 사전 안내. 6 templates + apps/docs 동기화 (Aifice 피드백 4.1).",
+        "**(4.2) `sh_ui_describe_init` 자연어 매핑 확장** — INIT_DESCRIPTIONS 에 `theme` 프리셋 5종 (neutral/slate/rose/emerald/violet) 한국어 풀이 + `keywordHints` 사전 신규. \"다크 모던\" / \"따뜻한 종이\" / \"한국 핀테크 스타일\" / \"기업 관리자\" 등 자연어 의도를 `base`/`radius`/`mode`/`theme` 조합으로 매핑하는 가이드 (Aifice 피드백 4.2).",
+        "**(2.5) radius scale 절대값화** — `--radius-sm/md/lg/xl/full` 을 tokens.css `:root` 에 직접 정의 (Tailwind 표준값 `0.25/0.5/0.75/1rem` + `9999px`). globals.css `@theme inline` 의 calc derive (`calc(var(--radius) - 2px)` 등) 도 같은 절대값으로 교체. 사용자가 `var(--radius-sm)` 직접 호출 또는 Tailwind `rounded-*` utility 양쪽이 동일 절대값 사용 (Aifice 피드백 2.5).",
+        "**⚠ 마이그 영향 (2.5)** — `--radius` (사용자 base) 변경 시 `rounded-md` 등 utility 가 더 이상 따라가지 않음 (이전 calc derive 동작). `--radius` 는 컴포넌트 default (input/button 등) 만 영향, utility 는 절대 scale 사용. 디폴트 (`--radius: 0.5rem`) 사용자는 `rounded-md` 값 동일 (0.5rem) — 실제 영향 거의 없음. base radius 변경한 사용자만 utility 결과가 변함."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.106.0"
+    },
+    {
+      "version": "0.105.0",
+      "date": "2026-05-21",
+      "title": "next-intl plugin — `localePrefix: 'as-needed'` 디폴트",
+      "type": "minor",
+      "highlights": [
+        "**`next-intl` 플러그인의 routing 디폴트 변경** — `localePrefix: 'as-needed'` 추가. ko 는 prefix 없이 `/`, en 만 `/en/...` 로 라우팅 — 한국 사용자 베이스 + 영문 보조 페어가 흔한 패턴 (Aifice 피드백 3.3). 모든 locale 에 prefix 강제하고 싶으면 `'always'`, 절대 prefix 안 붙이면 `'never'` 로 routing.ts 한 줄 수정.",
+        "**기존 P3 항목은 이미 templates 에 구현돼 있음** — `formatDate` / `formatDateTime` / `formatPrice` util (ko-KR 고정 locale, SSR-safe) 과 ESLint `no-restricted-syntax` 룰 (raw `.toLocaleDateString()` / `.toLocaleString()` / `.toLocaleTimeString()` 인자 0개 호출 차단) 은 v0.93.x 부터 모든 next templates 의 `lib/utils/` 및 `eslint.config.js` 에 포함. 이번 릴리즈로 마지막 누락이었던 routing 디폴트만 보완.",
+        "**호환성** — 새 init 만 영향. 기존 사용자의 routing.ts 는 변경 없음. 회귀 테스트 1건 (smoke) 추가: `--plugins next-intl --arch flat` 시 routing.ts 에 `localePrefix: 'as-needed'` 포함."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.105.0"
+    },
+    {
+      "version": "0.104.0",
+      "date": "2026-05-21",
+      "title": "토큰 — letter-spacing(`--tracking-*`) + 의도 shadow(`--shadow-popover/modal/toast`)",
+      "type": "minor",
+      "highlights": [
+        "**letter-spacing 토큰 신규** — `--tracking-tighter` / `--tracking-tight` / `--tracking-normal` / `--tracking-wide` / `--tracking-wider` 5단계. 한↔영 혼용에서 자간이 시각 톤을 결정짓는 만큼 토큰화 (Aifice 피드백 2.5). Tailwind utility `tracking-*` 도 함께 작동.",
+        "**의도 기반 shadow 토큰 신규** — 기존 size scale (`--shadow-sm/md/lg/xl/menu`) 에 더해 의도 시맨틱 `--shadow-popover` / `--shadow-modal` / `--shadow-toast` 추가. 컴포넌트별 inline box-shadow 박아쓰던 일관성 깨짐 케이스 해결. 디폴트 값은 각각 lg / xl / md 매핑이라 시각 변화 없음 — 사용자가 톤만 별도로 조정 가능.",
+        "**적용 범위** — `@sh-ui/tokens` semantic.json + primitives (letterSpacing 그룹 신규) + 6 templates 의 tokens.css :root + 6 templates 의 globals.css `@theme inline` + apps/docs/app/styles/tokens.css 동기화. 기존 사용자가 `var(--tracking-*)` / `var(--shadow-popover)` 직접 호출하거나 `tracking-*` Tailwind utility 로 활용 가능.",
+        "**out of scope** — radius scale 의 :root 직접 노출은 Tailwind v4 의 `@theme inline { --radius-sm: calc(...) }` derive 와 충돌 + 마이그 영향 우려로 별 PR 로 미룸 (현재도 Tailwind `rounded-*` utility 는 정상 작동). 회귀 영향 없음."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.104.0"
+    },
+    {
+      "version": "0.103.0",
+      "date": "2026-05-21",
+      "title": "create — `--locale ko` 옵션으로 Pretendard 자동 적용",
+      "type": "minor",
+      "highlights": [
+        "**`--locale ko` 옵션 신규** — 한국어 사용자가 sh-ui init 직후 거의 100% 첫 작업이 `Pretendard 로 교체` (Aifice 피드백 3.1) 였던 흐름을 옵션 하나로 자동화. `sh-ui create my-app --locale ko` 또는 MCP `sh_ui_create_project({ locale: 'ko' })`.",
+        "**적용 방식** — 스캐폴드된 모든 globals.css 의 `sh-ui:external-imports-end` 마커 앞에 Pretendard CDN `@import` 추가 (Tailwind import 보다 먼저 — CSS spec 준수), 파일 끝에 `body { font-family: 'Pretendard Variable', ui-sans-serif, system-ui, ... }` rule 추가. monorepo 도 안전하게 모든 globals.css 재귀 처리.",
+        "**idempotent** — 이미 `'Pretendard Variable'` 가 있는 파일은 skip, 마커 없는 파일도 안전상 건드리지 않음. CDN 은 `cdn.jsdelivr.net/orioncactus/pretendard@v1.3.9` (SIL OFL 라이선스, 상용 OK).",
+        "**locale vs locales** — `--locale` (단수) 는 사용자 지역 디폴트 가정 (현재는 폰트). `--locales` (복수) 는 i18n 활성화 시 생성할 locale 코드 목록 (예: `ko,en`). 둘은 의미가 다르고 함께 사용 가능. CLI 에러 메시지에 차이 명시.",
+        "**검증** — pnpm test 420/420 통과 (413 → 420, +7). `cli-args` 4건 (값 검증) + `smoke` 3건 (실제 inject + 미지정 시 비활성 + idempotent) 추가."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.103.0"
+    },
+    {
+      "version": "0.102.0",
+      "date": "2026-05-21",
+      "title": "create — nested .git 자동감지로 충돌 방지 + --no-git-init / --git-init 플래그",
+      "type": "minor",
+      "highlights": [
+        "**기존 git tree 안에서 `sh-ui create` 호출 시 nested .git 자동 스킵** — parent 디렉토리가 이미 git tree 안이면 `git init` 을 자동으로 건너뛰어 nested .git 충돌을 막는다. 모노레포 / 작업 트리 안에서 호출하는 흔한 시나리오에서 더 이상 nested repo 가 생기지 않는다 (Aifice 피드백 1.3).",
+        "**명시 옵션** — `--no-git-init` (CLI) / `gitInit:false` (MCP) 으로 무조건 스킵, `--git-init` / `gitInit:true` 로 nested 라도 강제 init. 자동 감지가 거슬리거나 nested 가 의도된 경우 override.",
+        "**감지 방식** — `git -C <parent> rev-parse --is-inside-work-tree` 실행. true 면 스킵 + 사용자에게 친절한 메시지 출력 (어느 parent repo 안인지 함께), 명령이 실패하면 (git 미설치 / parent 가 tree 밖) 트리 밖으로 간주해 init 시도. 안전 디폴트.",
+        "**적용 범위** — `sh_ui_create_project` MCP 툴 + CLI `create` 모든 경로 (next standalone / next monorepo / vite / flutter / dryRun 무관). 회귀 테스트 3 건 추가 (nested 자동 스킵 / force / 명시 스킵). 전체 테스트 413/413 통과."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.102.0"
+    },
+    {
+      "version": "0.101.0",
+      "date": "2026-05-21",
+      "title": "sheet — side drawer 컴포넌트 신규 추가",
+      "type": "minor",
+      "highlights": [
+        "**`sheet` 컴포넌트 신규** — Base UI `Drawer` 위에 sh-ui 토큰 스타일을 얹은 composite. 헤더 알림함 · 글로벌 작업 큐 · 보조 설정 패널처럼 **사이드바와 무관한 위치**에서 슬라이드 인 하는 모달 시트가 필요한 케이스. 중앙 모달이 어울리는 흐름은 `Dialog`, 사이드바 인접 detail 패널은 `SidebarPanel` 그대로 사용 — 세 컴포넌트의 책임이 명확히 분리.",
+        "**API** — separate exports: `Sheet` / `SheetTrigger` / `SheetClose` / `SheetContent` / `SheetTitle` / `SheetDescription` / `SheetHeader` / `SheetFooter` / `SheetCloseX`. `<SheetContent side>` 으로 진입 방향 지정 — `\"right\"` (기본) / `\"left\"` / `\"top\"` / `\"bottom\"`. Trigger/Close 는 자체로 `<button>` 이라 다른 엘리먼트로 슬롯하려면 `render` prop.",
+        "**a11y & motion** — Base UI Drawer 의 포커스 트랩 / ESC 닫기 / 바깥 클릭 닫기 / 트리거 포커스 복귀 기본 동작. Title / Description 이 있으면 `aria-labelledby` / `aria-describedby` 자동. `prefers-reduced-motion` 사용자에게는 transform 트랜지션 제거 — 즉시 표시.",
+        "**styles** — backdrop 은 `rgba(0,0,0,0.25)` + `backdrop-filter: blur(8px)`. 시트 본체는 `--background` / `--border` / `--shadow-xl` / `--space-6` 토큰. side 별 transform (enter/exit 시 100% 이동) + 모서리 한 면만 border 노출로 화면에 \"붙은\" 느낌."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.101.0"
+    },
+    {
+      "version": "0.100.0",
+      "date": "2026-05-21",
+      "title": "토큰 — `--accent` / `--accent-foreground` / `--accent-hover` 분리 노출 (옵셔널, primary 와 분리)",
+      "type": "minor",
+      "highlights": [
+        "**accent 토큰 그룹 신규 (옵셔널)** — `--accent` / `--accent-foreground` / `--accent-hover` 세 토큰을 정식 노출. primary 가 \"브랜드 action 색 (버튼·강조 액션)\" 이라면 accent 는 \"signature highlight (링크·선택 상태·hover bg)\". 기존엔 sidebar.accent 만 분리돼 있었고 일반 accent 가 없어 두 의미를 primary 에 묶어쓰던 케이스가 있었음 (Aifice 실사용 피드백).",
+        "**디폴트는 primary 와 동일 → 시각적 no-op** — 5 개 프리셋 (neutral/slate/rose/emerald/violet) 모두 light/dark 양쪽에 accent 디폴트가 primary 와 같은 값. 분리 의도가 없는 사용자는 아무 작업 없이도 기존 동작 그대로 유지. accent 를 분리하려면 tokens.css 에서 세 값만 override.",
+        "**적용 범위** — `@sh-ui/tokens` semantic.json + CLI 의 `theme-extract` / `decode` / `presets` / 6 개 templates 의 tokens.css + globals.css 의 `@theme inline` 매핑 + docs tokens.css + docs/create wizard 의 token 정의 + MCP `sh_ui_encode_theme` 스키마. 기존 base64 theme 은 OPTIONAL 키라 accent 없이도 정상 디코드 — 하위 호환.",
+        "**사용** — Tailwind utility `bg-accent` / `text-accent-foreground` 또는 CSS `var(--accent)` 그대로. 사이드바 hover/active bg (`--sidebar-accent`) 는 이 변경과 별개로 그대로 유지."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.100.0"
+    },
+    {
+      "version": "0.99.0",
+      "date": "2026-05-21",
+      "title": "scroll-area — 커스텀 스크롤 컨테이너 신규 추가",
+      "type": "minor",
+      "highlights": [
+        "**`scroll-area` 컴포넌트 신규** — Base UI `ScrollArea` 위에 sh-ui 토큰 스타일을 얹은 composite. `<ScrollArea>` 하나로 viewport + scrollbar + thumb + corner 가 자동 구성되어 OS-native 스크롤바를 가리고 디자인 시스템 톤의 떠다니는 스크롤바를 보여준다. 사이드바·긴 리스트·채팅 메시지 영역처럼 워크스페이스 UI 전반에서 필요했던 패턴 (Aifice 실사용 피드백 반영).",
+        "**API** — `orientation: \"vertical\" | \"horizontal\" | \"both\"` (기본 vertical), `viewportClassName` 으로 viewport 의 패딩·flex 등 콘텐츠 레이아웃을 외곽 컨테이너 className 과 분리해 적용. 외곽 height/width 가 정해진 컨테이너 안에서 사용한다.",
+        "**a11y & motion** — Viewport 가 native 스크롤 컨테이너로 동작해 키보드 ↑/↓·PageUp/PageDown·Home/End 가 그대로 작동, focus 시 토큰 색 ring 표시, `prefers-reduced-motion` 시 fade in/out 트랜지션 제거. 스크롤바 thumb 색은 `--border-strong` 기본 + hover/scrolling 시 `--foreground-muted` 로 진해진다."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.99.0"
+    },
+    {
+      "version": "0.98.1",
+      "date": "2026-05-19",
+      "title": "크로스컴포넌트 상대 import 를 aliases.components 로 재작성 — NodeNext 소비자 호환",
+      "type": "patch",
+      "highlights": [
+        "**크로스컴포넌트 import 가 이제 `aliases.components` 경유로 emit** — `sidebar`(→popover), `calendar`(→select), `date-picker`(→calendar), `markdown-editor`(→code-editor), `code-tabs`(→tabs/code-panel), `form-rhf`/`form-tanstack`/`form-yup`(→form) 등 형제 컴포넌트를 import 하던 모든 컴포넌트가, registry 의 `import … from \"../popover\"` 상대경로 대신 사용자 `sh-ui.config.json` 의 `aliases.components`(예: `@workspace/ui-core/components/popover`)로 재작성된다. `@SH_UI_UTILS@` → `aliases.utils` 치환과 동일한 add-time 변환.",
+        "**`moduleResolution: \"NodeNext\"`/`\"Node16\"` 소비자 깨짐 수정** — 상대경로/디렉터리 import 는 NodeNext 가 거부하고, 과거 일부 버전이 emit 한 `\"../popover/index.tsx\"` 의 명시적 `.tsx` 확장자는 TS5097 을 유발해 소비자가 `allowImportingTsExtensions`+`noEmit`(패키지 전체 declaration emit 비활성화) 같은 침습적 tsconfig 변경을 강요당했다. 이제 `\"Bundler\"`·`\"NodeNext\"` 양쪽에서 소비자 tsconfig 변경 없이 resolve 된다.",
+        "**add/remove 대칭 + registry 불변** — `remove` 의 unmodified 판정도 같은 재작성을 replay 해 형제-import 컴포넌트 삭제 시 '사용자 수정됨' false positive 가 나지 않는다. registry 소스·docs 듀얼카피·generated 산출물은 변경 없음(CLI 변환만). `aliases.components` 미설정 시 `@SH_UI_UTILS@` 와 동일한 톤의 친절 에러로 사전 안내. 회귀 단위 테스트 추가(전 스위트 407 통과, dual-copy drift 47 components 0)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.98.1"
+    },
+    {
       "version": "0.98.0",
       "date": "2026-05-16",
       "title": "auth-jwt · sentry 플러그인 제거 — 스캐폴더에서 두 통합 완전 삭제 (breaking)",

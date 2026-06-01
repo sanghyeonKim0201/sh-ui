@@ -44,6 +44,9 @@ const CATEGORY_KEYS: Record<string, string> = {
   guidelines: "guidelines",
   changelog: "changelog",
   create: "create",
+  foundations: "foundations",
+  "css-framework": "cssFramework",
+  architectures: "architectures",
 };
 
 function isMac() {
@@ -271,10 +274,8 @@ export function SearchDialog() {
                           : buildSnippet(rec?.body ?? "", query);
                         return (
                           <li key={hit.id}>
-                            <Button
+                            <button
                               type="button"
-                              variant="ghost"
-                              size="md"
                               id={`sh-ui-search-result-${idx}`}
                               role="option"
                               aria-selected={idx === active}
@@ -291,7 +292,7 @@ export function SearchDialog() {
                                   {highlight(sub, query)}
                                 </span>
                               )}
-                            </Button>
+                            </button>
                           </li>
                         );
                       })}

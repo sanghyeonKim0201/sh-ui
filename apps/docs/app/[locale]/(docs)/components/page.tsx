@@ -49,12 +49,14 @@ const groups: Group[] = [
       { name: "ContextMenu", slug: "context-menu", description: "우클릭 컨텍스트 메뉴." },
       { name: "Card", slug: "card", description: "카드 컨테이너 — Header/Body/Footer." },
       { name: "Separator", slug: "separator", description: "수평/수직 구분선." },
+      { name: "ScrollArea", slug: "scroll-area", description: "커스텀 스크롤 컨테이너 — orientation · viewportClassName." },
     ],
   },
   {
     title: "Feedback & Overlay",
     items: [
       { name: "Dialog", slug: "dialog", description: "모달 다이얼로그 — 포커스 트랩." },
+      { name: "Sheet", slug: "sheet", description: "side drawer — 사이드바와 무관한 글로벌 모달 시트." },
       { name: "Popover", slug: "popover", description: "트리거 기준 위치 floating." },
       { name: "Tooltip", slug: "tooltip", description: "짧은 힌트 — hover/focus." },
       { name: "Toast", slug: "toast", description: "임시 알림 — useToast 훅." },

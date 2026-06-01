@@ -2,7 +2,13 @@ import { readFile, rm, rmdir, readdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, resolve, relative } from "node:path";
 import { getRegistryRoot } from "./paths.mjs";
-import { removeSection, isStyleFile, stripStylesImport, isTsxFile } from "./css-bundle.mjs";
+import {
+  removeSection,
+  isStyleFile,
+  stripStylesImport,
+  isTsxFile,
+  rewriteCrossComponentImports,
+} from "./css-bundle.mjs";
 
 /** registry file 엔트리가 현재 cssFramework 와 호환되는지 (add.mjs 와 동일 규칙). */
 function frameworkMatches(entry, cssFramework) {
@@ -104,6 +110,9 @@ export async function remove({ cwd, names, force = false, dryRun = false }) {
         let out = text;
         if (config.aliases?.utils) {
           out = out.replaceAll("@SH_UI_UTILS@", config.aliases.utils);
+        }
+        if (config.aliases?.components) {
+          out = rewriteCrossComponentImports(out, config.aliases.components);
         }
         if (bundled && isTsxFile(file)) out = stripStylesImport(out);
         return out;

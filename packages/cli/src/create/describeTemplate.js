@@ -375,18 +375,20 @@ function finalize(groups) {
  * generator.js 의 `finalizeProject` 가 실제 fs 단계에서 적용하는 rename 을
  * file plan 텍스트 레벨에서 mock-apply (v0.96.0+ — 피드백 #3 buglet).
  *
- * 현재 규칙:
- *  - basename 이 정확히 'gitignore' 인 경로 → '.gitignore' 로 prefix dot 추가.
- *    (npm publish 가 .gitignore 를 strip 하므로 템플릿엔 점 없이 두고 emit 후 dot-prefix.)
- *  - 이미 '.gitignore' 인 경로는 그대로.
+ * 현재 규칙 — npm publish 가 strip 하는 dotfile 의 점 없는 템플릿 이름을 복원:
+ *  - 'gitignore' → '.gitignore'  (npm 이 strip, generator 의 STRIPPED_DOTFILES 와 일치)
+ *  - 'npmrc'     → '.npmrc'      (npm 이 publish 시 항상 strip)
+ *  - 이미 점 붙은 경로는 그대로.
  *
- * 미래에 다른 fs-level rename 이 추가되면 여기에 같이 등록 (describeTemplate 의
- * file-plan ↔ create_project 의 실제 emit 1:1 정합성 유지).
+ * 미래에 다른 fs-level rename 이 추가되면 generator.js 의 STRIPPED_DOTFILES 와
+ * 함께 여기에 등록 (describeTemplate 의 file-plan ↔ create_project 실제 emit 1:1 정합성).
  */
+const STRIPPED_DOTFILES = { gitignore: '.gitignore', npmrc: '.npmrc' };
+
 function applyFinalizeRenames(p) {
   const slash = p.lastIndexOf('/');
   const dir = slash === -1 ? '' : p.slice(0, slash + 1);
   const base = slash === -1 ? p : p.slice(slash + 1);
-  if (base === 'gitignore') return dir + '.gitignore';
+  if (STRIPPED_DOTFILES[base]) return dir + STRIPPED_DOTFILES[base];
   return p;
 }

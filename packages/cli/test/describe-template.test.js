@@ -201,6 +201,15 @@ describe('describeTemplate — 옵션 조합 → 파일 트리 사전 계산', (
       expect(viteMono.files).toContain('apps/web/.gitignore');
       expect(viteMono.files.some((p) => p.endsWith('/gitignore') || p === 'gitignore')).toBe(false);
     });
+
+    it('npmrc 는 .npmrc 로 mock-rename — npm publish 가 .npmrc 를 strip 하므로 템플릿엔 점 없이 둠', () => {
+      // 모노레포 루트 template 의 npmrc 가 .npmrc 로 emit 되어야 한다.
+      // (describeTemplate file-plan ↔ create_project 실제 emit 1:1 정합성)
+      const nextMono = describeTemplate({ platform: 'next', structure: 'monorepo' });
+      expect(nextMono.files).toContain('.npmrc');
+      // 점 없는 'npmrc' 가 file-plan 에 남아 있으면 안 됨.
+      expect(nextMono.files.some((p) => p.endsWith('/npmrc') || p === 'npmrc')).toBe(false);
+    });
   });
 });
 

@@ -602,6 +602,57 @@ describe('sh-ui create smoke tests', () => {
     expect(appTsconfig.compilerOptions?.paths?.['@workspace/ui-core/*']).toEqual([
       '../../packages/ui/ui-core/src/*',
     ]);
+
+    // v0.112.0+ — sh-ui-discipline ESLint config 가 모노레포 스캐폴드에 박혀 있어야.
+    // packages/eslint-config 에 rule 파일 + apps 의 eslint.config.js 가 그걸 import.
+    expect(
+      await fs.pathExists(path.join(monoDir, 'packages/eslint-config/sh-ui-discipline.js')),
+    ).toBe(true);
+    const eslintPkg = await fs.readJson(
+      path.join(monoDir, 'packages/eslint-config/package.json'),
+    );
+    expect(eslintPkg.exports?.['./sh-ui-discipline']).toBe('./sh-ui-discipline.js');
+    const appEslint = await fs.readFile(
+      path.join(monoDir, 'apps/web/eslint.config.js'),
+      'utf-8',
+    );
+    expect(appEslint).toContain('shUiDisciplineConfig');
+    expect(appEslint).toContain('@workspace/eslint-config/sh-ui-discipline');
+  });
+
+  it('scenario 2b — inPlace: 기존 디렉토리 비파괴 머지 (커스텀 파일 보존 + 새 파일 생성)', async () => {
+    // 이미 커스터마이즈된 디렉토리를 흉내낸다 — 루트 docs + 커스텀 .gitignore.
+    const projDir = path.join(tmpDir, 'inplace-mono');
+    await fs.ensureDir(path.join(projDir, 'docs'));
+    await fs.writeFile(path.join(projDir, 'CLAUDE.md'), 'CUSTOM CLAUDE\n');
+    await fs.writeFile(path.join(projDir, 'docs', 'note.md'), 'my note\n');
+    await fs.writeFile(path.join(projDir, '.gitignore'), 'custom ignore\n');
+
+    await createProject({
+      name: 'inplace-mono',
+      platform: 'next',
+      structure: 'monorepo',
+      appName: 'web',
+      inPlace: true,
+      yes: true,
+      gitInit: false,
+    });
+
+    // 보존 — 이미 있던 파일은 템플릿 값으로 덮이지 않는다.
+    expect(await fs.readFile(path.join(projDir, 'CLAUDE.md'), 'utf-8')).toBe('CUSTOM CLAUDE\n');
+    expect(await fs.readFile(path.join(projDir, 'docs', 'note.md'), 'utf-8')).toBe('my note\n');
+    expect(await fs.readFile(path.join(projDir, '.gitignore'), 'utf-8')).toBe('custom ignore\n');
+
+    // 생성 — 없던 파일은 새로 채워진다.
+    expect(await fs.pathExists(path.join(projDir, 'apps', 'web', 'package.json'))).toBe(true);
+    expect(await fs.pathExists(path.join(projDir, 'packages', 'ui', 'ui-core'))).toBe(true);
+    expect(await fs.pathExists(path.join(projDir, 'turbo.json'))).toBe(true);
+    // npm 이 strip 하는 .npmrc 도 정상 emit.
+    expect(await fs.pathExists(path.join(projDir, '.npmrc'))).toBe(true);
+
+    // 임시 작업 디렉토리는 머지 후 정리된다 (tmpdir 누수 가드).
+    const leftover = (await fs.readdir(os.tmpdir())).filter((n) => n.startsWith('sh-ui-inplace-'));
+    expect(leftover).toEqual([]);
   });
   it('scenario 4 — addApp in monorepo', async () => {
     // minimal monorepo fixture: pnpm-workspace.yaml 만 필요
@@ -638,6 +689,86 @@ describe('sh-ui create smoke tests', () => {
     expect(
       await fs.pathExists(path.join(tmpDir, 'packages', 'ui', 'ui-apps', 'ui-admin', 'src', 'components')),
     ).toBe(false);
+  });
+  it('scenario 4d — addApp: ui-core 가 공유 theme 호스팅 시 새 ui-app 은 theme 상속 (v0.111.0+)', async () => {
+    // v0.111.0: ui-core 의 theme 블록(특히 extraTokens) 을 공유 디자인 시스템으로
+    // 인식. 새 ui-app 추가 시 사용자가 --theme 미지정이면 새 ui-app 의 theme 블록을
+    // 제거 → ui-core 로부터 묵시적 상속 → 다중 앱이 토큰을 중복 정의하지 않음.
+    await fs.writeFile(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'apps/*'\n  - 'packages/*'\n",
+    );
+    // ui-core 셋업 + 공유 theme 박기 (extraTokens 포함)
+    const uiCoreDir = path.join(tmpDir, 'packages', 'ui', 'ui-core');
+    await fs.ensureDir(uiCoreDir);
+    await fs.writeJson(path.join(uiCoreDir, 'sh-ui.config.json'), {
+      platform: 'react',
+      cssFramework: 'tailwind',
+      paths: { components: 'src/components' },
+      theme: {
+        base: 'neutral',
+        radius: 'md',
+        mode: 'light-dark',
+        extraTokens: {
+          light: { 'accent-soft': '#E7EFEB', surface: '#FFFFFF' },
+          dark:  { 'accent-soft': '#1F3F35', surface: '#1C1B17' },
+          root:  { 'cta-bg': '#1A332C' },
+        },
+      },
+    }, { spaces: 2 });
+
+    await addApp({
+      name: 'second-app',
+      port: '3002',
+      plugins: [],
+      css: 'tailwind',
+      platform: 'next',
+    });
+
+    // 새 ui-app 의 config 가 생성됐는지 + theme 블록이 제거됐는지 (= 상속)
+    const newUiAppCfgPath = path.join(
+      tmpDir, 'packages', 'ui', 'ui-apps', 'ui-second-app', 'sh-ui.config.json',
+    );
+    expect(await fs.pathExists(newUiAppCfgPath)).toBe(true);
+    const newCfg = await fs.readJson(newUiAppCfgPath);
+    expect(newCfg.theme).toBeUndefined();    // 핵심 — theme 블록 없음 (상속)
+    expect(newCfg.role).toBe('tokens-only'); // 다른 필드는 유지
+
+    // ui-core 의 공유 theme 은 그대로 보존
+    const coreCfg = await fs.readJson(path.join(uiCoreDir, 'sh-ui.config.json'));
+    expect(coreCfg.theme.extraTokens.light['accent-soft']).toBe('#E7EFEB');
+  });
+  it('scenario 4e — addApp: ui-core theme 없으면 새 ui-app 은 본인 theme 유지 (회귀 가드)', async () => {
+    // v0.111.0 의 공유-theme 감지가 ui-core 가 theme 을 호스팅하지 않는 경우엔
+    // 동작하지 않아야 함 (backward-compat). 새 ui-app 은 템플릿 기본 theme 을 유지.
+    await fs.writeFile(
+      path.join(tmpDir, 'pnpm-workspace.yaml'),
+      "packages:\n  - 'apps/*'\n  - 'packages/*'\n",
+    );
+    // ui-core 셋업하지만 theme 블록 없음
+    const uiCoreDir = path.join(tmpDir, 'packages', 'ui', 'ui-core');
+    await fs.ensureDir(uiCoreDir);
+    await fs.writeJson(path.join(uiCoreDir, 'sh-ui.config.json'), {
+      platform: 'react',
+      cssFramework: 'tailwind',
+      paths: { components: 'src/components' },
+      // theme 필드 없음
+    }, { spaces: 2 });
+
+    await addApp({
+      name: 'standalone-app',
+      port: '3003',
+      plugins: [],
+      css: 'tailwind',
+      platform: 'next',
+    });
+
+    const newCfg = await fs.readJson(path.join(
+      tmpDir, 'packages', 'ui', 'ui-apps', 'ui-standalone-app', 'sh-ui.config.json',
+    ));
+    // 템플릿 기본 theme 이 유지되어야 (ui-core 가 호스팅 안 하니 상속할 게 없음)
+    expect(newCfg.theme).toBeDefined();
+    expect(newCfg.theme.base).toBe('neutral');
   });
   it('scenario 4b — addApp 옵션 객체 (비대화형 — MCP/CI 경로)', async () => {
     // v0.66: addApp 이 옵션 객체를 받아 MCP sh_ui_add_app 와 CLI 양쪽이 같은 진입점 사용.
@@ -1355,6 +1486,150 @@ describe('sh-ui create smoke tests', () => {
 
       expect(await fs.pathExists(path.join(tmpDir, 'dry-git'))).toBe(false);
     });
+
+    // v0.102.0+ nested .git 자동감지 회귀 가드.
+    //
+    // 기존 git tree 안에서 `sh-ui create` 호출 시 parent 의 .git 과 충돌하는 nested
+    // .git 이 생기지 않아야 한다. parent 가 `git init` 으로 트리화돼 있으면 스킵.
+    it('nested git tree — parent 가 git tree 안이면 .git 자동 스킵', async () => {
+      // tmpDir 자체를 git tree 로 만든다 — sh-ui 사용자가 기존 repo 안에서 호출하는 시나리오 재현.
+      const { execSync } = await import('node:child_process');
+      execSync('git init -q', { cwd: tmpDir, stdio: 'ignore' });
+      // -c init.defaultBranch 없는 환경에서도 안전하도록 첫 커밋은 skip — `--is-inside-work-tree`
+      // 는 빈 repo 도 true 를 반환한다.
+
+      await createProject({
+        name: 'nested-git',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+      });
+
+      const projectDir = path.join(tmpDir, 'nested-git');
+      expect(await fs.pathExists(path.join(projectDir, '.gitignore'))).toBe(true);
+      // 핵심: nested .git/ 디렉토리가 생기면 안 된다.
+      expect(await fs.pathExists(path.join(projectDir, '.git'))).toBe(false);
+    });
+
+    it('nested + gitInit:true — 명시 force 시 nested 라도 .git 생성', async () => {
+      const { execSync } = await import('node:child_process');
+      execSync('git init -q', { cwd: tmpDir, stdio: 'ignore' });
+
+      await createProject({
+        name: 'force-nested',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+        gitInit: true,
+      });
+
+      expect(await fs.pathExists(path.join(tmpDir, 'force-nested', '.git'))).toBe(true);
+    });
+
+    it('gitInit:false — git tree 밖이어도 명시 스킵 시 .git 생성 안 함', async () => {
+      // tmpDir 는 git tree 밖 (mktemp). 평소엔 auto = init 인데 false 면 무조건 스킵.
+      await createProject({
+        name: 'skip-git',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        yes: true,
+        gitInit: false,
+      });
+
+      const projectDir = path.join(tmpDir, 'skip-git');
+      // .gitignore 는 rename 되어야 함 (gitignore → .gitignore)
+      expect(await fs.pathExists(path.join(projectDir, '.gitignore'))).toBe(true);
+      // 단 .git 디렉토리는 만들면 안 됨
+      expect(await fs.pathExists(path.join(projectDir, '.git'))).toBe(false);
+    });
+  });
+
+  // v0.103.0+ — locale=ko 시 Pretendard 자동 적용 회귀 가드.
+  //
+  // 한국어 사용자가 init 직후 거의 100% 첫 작업이라 (Aifice 피드백 3.1) --locale ko 한 옵션으로
+  // globals.css 에 CDN @import + body font-family rule 을 자동 inject.
+  describe('locale=ko Pretendard 자동 적용', () => {
+    it('next standalone — Pretendard CDN @import + body font-family 자동 적용', async () => {
+      await createProject({
+        name: 'ko-pret',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        css: 'tailwind',
+        yes: true,
+        locale: 'ko',
+      });
+
+      const globalsCss = await fs.readFile(
+        path.join(tmpDir, 'ko-pret', 'app', 'globals.css'),
+        'utf-8',
+      );
+      expect(globalsCss).toContain(
+        "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard",
+      );
+      expect(globalsCss).toContain("'Pretendard Variable'");
+      expect(globalsCss).toContain('sh-ui:locale=ko');
+      // 실제 @import 라인 (주석 안 예시 제외) 만 라인 시작으로 매칭. Pretendard 는 Tailwind 보다
+      // 앞 라인에 와야 함 (CSS spec — @import 는 다른 rule 보다 앞).
+      const lines = globalsCss.split('\n');
+      const pretLineIdx = lines.findIndex((l) => l.startsWith("@import url('https://cdn.jsdelivr"));
+      const tailwindLineIdx = lines.findIndex((l) => l.startsWith("@import 'tailwindcss'"));
+      expect(pretLineIdx).toBeGreaterThan(-1);
+      expect(tailwindLineIdx).toBeGreaterThan(-1);
+      expect(pretLineIdx).toBeLessThan(tailwindLineIdx);
+    });
+
+    it('locale 미지정 — Pretendard 자동 적용 안 함 (기존 주석 가이드만 유지)', async () => {
+      await createProject({
+        name: 'no-locale',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        css: 'tailwind',
+        yes: true,
+      });
+
+      const globalsCss = await fs.readFile(
+        path.join(tmpDir, 'no-locale', 'app', 'globals.css'),
+        'utf-8',
+      );
+      // 실제 @import 라인 (주석 안 예시 제외) 으로 Pretendard 가 활성화되면 안 된다.
+      // 주석 안에는 예시로 'pretendard' 가 등장 가능하므로 'Pretendard Variable' rule 로 확인.
+      expect(globalsCss).not.toContain("'Pretendard Variable'");
+      expect(globalsCss).not.toContain('sh-ui:locale=ko');
+    });
+
+    it('idempotent — locale=ko 이미 적용된 파일에 재적용 시 중복 없음', async () => {
+      // 한 번 생성 후, 같은 디렉토리에 force 로 재생성. injectLocaleFont 단독 검증을 위해
+      // globals.css 만 수동으로 살피는 것보다, 실제 fixture 를 두 번 거쳐 중복 라인이 없음을 확인.
+      const dir = path.join(tmpDir, 'idem-ko');
+      await createProject({
+        name: 'idem-ko',
+        platform: 'next',
+        structure: 'standalone',
+        plugins: [],
+        css: 'tailwind',
+        yes: true,
+        locale: 'ko',
+      });
+      // 사용자가 동일 옵션으로 force 재생성 시뮬레이션 (template 가 재복사되므로 idempotent 의미가 약하지만,
+      // 같은 css 가 두 번 injectLocaleFont 거쳐도 안전한지를 보장).
+      const css1 = await fs.readFile(path.join(dir, 'app', 'globals.css'), 'utf-8');
+      // 주석 안 예시도 cdn.jsdelivr 를 포함하므로 라인 시작 패턴으로만 카운트 (실제 emit 만).
+      const importLines = css1
+        .split('\n')
+        .filter((l) => l.startsWith("@import url('https://cdn.jsdelivr"));
+      expect(importLines.length).toBe(1);
+      // body rule 의 font-family — 우리 inject 만 'Pretendard Variable' 등장.
+      const fontFamilyMatches = (css1.match(/font-family: 'Pretendard Variable'/g) || []).length;
+      expect(fontFamilyMatches).toBe(1);
+      // 우리 마커 코멘트도 한 번만.
+      const markerCount = (css1.match(/sh-ui:locale=ko/g) || []).length;
+      expect(markerCount).toBe(1);
+    });
   });
 
   // ─── arch=flat 매트릭스 ───
@@ -1464,6 +1739,14 @@ describe('sh-ui create smoke tests', () => {
       expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'routing.ts'))).toBe(true);
       expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'request.ts'))).toBe(true);
       expect(await fs.pathExists(path.join(dir, 'lib', 'config', 'i18n', 'messages', 'ko.json'))).toBe(true);
+
+      // v0.105.0+ — routing.ts 의 localePrefix 가 'as-needed' 디폴트.
+      // 한국 사용자 베이스 + 영문 prefix 가 흔한 패턴 (ko 는 prefix 없이 '/', en 만 '/en/...').
+      const routingTs = await fs.readFile(
+        path.join(dir, 'lib', 'config', 'i18n', 'routing.ts'),
+        'utf-8',
+      );
+      expect(routingTs).toContain("localePrefix: 'as-needed'");
 
       // [locale]/layout.tsx 는 flat alias 로 RootLayout import
       const localeLayout = await fs.readFile(
