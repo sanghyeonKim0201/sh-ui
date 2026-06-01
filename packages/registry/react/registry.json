@@ -8,70 +8,50 @@
         {
           "src": "components/button/index.tsx",
           "dest": "{components}/button/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/button/styles.css",
           "dest": "{components}/button/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/button/index.tailwind.tsx",
           "dest": "{components}/button/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/button/index.module.tsx",
           "dest": "{components}/button/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/button/styles.module.css",
           "dest": "{components}/button/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/button/index.vanilla-extract.tsx",
           "dest": "{components}/button/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         },
         {
           "src": "components/button/styles.css.ts",
           "dest": "{components}/button/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         }
       ],
       "dependencies": [
         {
           "name": "class-variance-authority",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "card": {
       "name": "card",
@@ -80,64 +60,46 @@
         {
           "src": "components/card/index.tsx",
           "dest": "{components}/card/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/card/styles.css",
           "dest": "{components}/card/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/card/index.tailwind.tsx",
           "dest": "{components}/card/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/card/index.module.tsx",
           "dest": "{components}/card/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/card/styles.module.css",
           "dest": "{components}/card/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/card/index.vanilla-extract.tsx",
           "dest": "{components}/card/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         },
         {
           "src": "components/card/styles.css.ts",
           "dest": "{components}/card/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         }
       ],
       "dependencies": [
         {
           "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "input": {
       "name": "input",
@@ -146,64 +108,46 @@
         {
           "src": "components/input/index.tsx",
           "dest": "{components}/input/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/input/styles.css",
           "dest": "{components}/input/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/input/index.tailwind.tsx",
           "dest": "{components}/input/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/input/index.module.tsx",
           "dest": "{components}/input/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/input/styles.module.css",
           "dest": "{components}/input/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/input/index.vanilla-extract.tsx",
           "dest": "{components}/input/index.tsx",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         },
         {
           "src": "components/input/styles.css.ts",
           "dest": "{components}/input/styles.css.ts",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         }
       ],
       "dependencies": [
         {
           "name": "@vanilla-extract/css",
-          "frameworks": [
-            "vanilla-extract"
-          ]
+          "frameworks": ["vanilla-extract"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "numeric-input": {
       "name": "numeric-input",
@@ -212,43 +156,31 @@
         {
           "src": "components/numeric-input/index.tsx",
           "dest": "{components}/numeric-input/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/numeric-input/styles.css",
           "dest": "{components}/numeric-input/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/numeric-input/index.tailwind.tsx",
           "dest": "{components}/numeric-input/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/numeric-input/index.module.tsx",
           "dest": "{components}/numeric-input/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/numeric-input/styles.module.css",
           "dest": "{components}/numeric-input/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "file-upload": {
       "name": "file-upload",
@@ -257,43 +189,31 @@
         {
           "src": "components/file-upload/index.tsx",
           "dest": "{components}/file-upload/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/file-upload/styles.css",
           "dest": "{components}/file-upload/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/file-upload/index.tailwind.tsx",
           "dest": "{components}/file-upload/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/file-upload/index.module.tsx",
           "dest": "{components}/file-upload/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/file-upload/styles.module.css",
           "dest": "{components}/file-upload/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "form": {
       "name": "form",
@@ -302,23 +222,17 @@
         {
           "src": "components/form/index.tsx",
           "dest": "{components}/form/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/form/form.tsx",
           "dest": "{components}/form/form.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/form/field.tsx",
           "dest": "{components}/form/field.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/form/steps.tsx",
@@ -355,50 +269,36 @@
         {
           "src": "components/form/styles.css",
           "dest": "{components}/form/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/form/index.tailwind.tsx",
           "dest": "{components}/form/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/form/form.tailwind.tsx",
           "dest": "{components}/form/form.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/form/field.tailwind.tsx",
           "dest": "{components}/form/field.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/form/index.module.tsx",
           "dest": "{components}/form/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/form/styles.module.css",
           "dest": "{components}/form/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "form-yup": {
       "name": "form-yup",
@@ -410,9 +310,7 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "form"
-      ]
+      "registryDependencies": ["form"]
     },
     "code-panel": {
       "name": "code-panel",
@@ -421,52 +319,36 @@
         {
           "src": "components/code-panel/index.tsx",
           "dest": "{components}/code-panel/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/code-panel/copy.tsx",
           "dest": "{components}/code-panel/copy.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/code-panel/styles.css",
           "dest": "{components}/code-panel/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/code-panel/index.tailwind.tsx",
           "dest": "{components}/code-panel/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/code-panel/index.module.tsx",
           "dest": "{components}/code-panel/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/code-panel/styles.module.css",
           "dest": "{components}/code-panel/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "shiki"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["shiki"],
+      "registryDependencies": ["utils"]
     },
     "code-tabs": {
       "name": "code-tabs",
@@ -478,10 +360,7 @@
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "tabs",
-        "code-panel"
-      ]
+      "registryDependencies": ["tabs", "code-panel"]
     },
     "page-toc": {
       "name": "page-toc",
@@ -490,43 +369,31 @@
         {
           "src": "components/page-toc/index.tsx",
           "dest": "{components}/page-toc/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/page-toc/styles.css",
           "dest": "{components}/page-toc/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/page-toc/index.tailwind.tsx",
           "dest": "{components}/page-toc/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/page-toc/index.module.tsx",
           "dest": "{components}/page-toc/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/page-toc/styles.module.css",
           "dest": "{components}/page-toc/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "code-editor": {
       "name": "code-editor",
@@ -535,37 +402,27 @@
         {
           "src": "components/code-editor/index.tsx",
           "dest": "{components}/code-editor/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/code-editor/styles.css",
           "dest": "{components}/code-editor/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/code-editor/index.tailwind.tsx",
           "dest": "{components}/code-editor/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/code-editor/index.module.tsx",
           "dest": "{components}/code-editor/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/code-editor/styles.module.css",
           "dest": "{components}/code-editor/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [
@@ -579,9 +436,7 @@
         "@codemirror/lang-markdown",
         "@codemirror/lang-yaml"
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "markdown-editor": {
       "name": "markdown-editor",
@@ -590,47 +445,31 @@
         {
           "src": "components/markdown-editor/index.tsx",
           "dest": "{components}/markdown-editor/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/markdown-editor/styles.css",
           "dest": "{components}/markdown-editor/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/markdown-editor/index.tailwind.tsx",
           "dest": "{components}/markdown-editor/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/markdown-editor/index.module.tsx",
           "dest": "{components}/markdown-editor/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/markdown-editor/styles.module.css",
           "dest": "{components}/markdown-editor/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "react-markdown",
-        "remark-gfm"
-      ],
-      "registryDependencies": [
-        "code-editor",
-        "utils"
-      ]
+      "dependencies": ["react-markdown", "remark-gfm"],
+      "registryDependencies": ["code-editor", "utils"]
     },
     "rich-text-editor": {
       "name": "rich-text-editor",
@@ -639,37 +478,27 @@
         {
           "src": "components/rich-text-editor/index.tsx",
           "dest": "{components}/rich-text-editor/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/rich-text-editor/styles.css",
           "dest": "{components}/rich-text-editor/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/rich-text-editor/index.tailwind.tsx",
           "dest": "{components}/rich-text-editor/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/rich-text-editor/index.module.tsx",
           "dest": "{components}/rich-text-editor/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/rich-text-editor/styles.module.css",
           "dest": "{components}/rich-text-editor/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [
@@ -678,11 +507,10 @@
         "@tiptap/starter-kit",
         "@tiptap/extension-placeholder",
         "@tiptap/extension-link",
+        "@tiptap/extension-text-style",
         "lucide-react"
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "select": {
       "name": "select",
@@ -691,45 +519,31 @@
         {
           "src": "components/select/index.tsx",
           "dest": "{components}/select/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/select/styles.css",
           "dest": "{components}/select/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/select/index.tailwind.tsx",
           "dest": "{components}/select/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/select/index.module.tsx",
           "dest": "{components}/select/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/select/styles.module.css",
           "dest": "{components}/select/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "sidebar": {
       "name": "sidebar",
@@ -738,46 +552,31 @@
         {
           "src": "components/sidebar/index.tsx",
           "dest": "{components}/sidebar/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/sidebar/styles.css",
           "dest": "{components}/sidebar/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/sidebar/index.tailwind.tsx",
           "dest": "{components}/sidebar/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/sidebar/index.module.tsx",
           "dest": "{components}/sidebar/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/sidebar/styles.module.css",
           "dest": "{components}/sidebar/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "popover",
-        "utils"
-      ]
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["popover", "utils"]
     },
     "header": {
       "name": "header",
@@ -786,43 +585,31 @@
         {
           "src": "components/header/index.tsx",
           "dest": "{components}/header/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/header/styles.css",
           "dest": "{components}/header/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/header/index.tailwind.tsx",
           "dest": "{components}/header/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/header/index.module.tsx",
           "dest": "{components}/header/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/header/styles.module.css",
           "dest": "{components}/header/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "base": {
       "name": "base",
@@ -927,43 +714,31 @@
         {
           "src": "components/label/index.tsx",
           "dest": "{components}/label/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/label/styles.css",
           "dest": "{components}/label/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/label/index.tailwind.tsx",
           "dest": "{components}/label/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/label/index.module.tsx",
           "dest": "{components}/label/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/label/styles.module.css",
           "dest": "{components}/label/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "color-picker": {
       "name": "color-picker",
@@ -972,43 +747,31 @@
         {
           "src": "components/color-picker/index.tsx",
           "dest": "{components}/color-picker/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/color-picker/styles.css",
           "dest": "{components}/color-picker/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/color-picker/index.tailwind.tsx",
           "dest": "{components}/color-picker/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/color-picker/index.module.tsx",
           "dest": "{components}/color-picker/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/color-picker/styles.module.css",
           "dest": "{components}/color-picker/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "slider": {
       "name": "slider",
@@ -1017,43 +780,31 @@
         {
           "src": "components/slider/index.tsx",
           "dest": "{components}/slider/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/slider/styles.css",
           "dest": "{components}/slider/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/slider/index.tailwind.tsx",
           "dest": "{components}/slider/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/slider/index.module.tsx",
           "dest": "{components}/slider/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/slider/styles.module.css",
           "dest": "{components}/slider/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "tabs": {
       "name": "tabs",
@@ -1062,45 +813,31 @@
         {
           "src": "components/tabs/index.tsx",
           "dest": "{components}/tabs/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/tabs/styles.css",
           "dest": "{components}/tabs/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/tabs/index.tailwind.tsx",
           "dest": "{components}/tabs/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/tabs/index.module.tsx",
           "dest": "{components}/tabs/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/tabs/styles.module.css",
           "dest": "{components}/tabs/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "combobox": {
       "name": "combobox",
@@ -1109,45 +846,31 @@
         {
           "src": "components/combobox/index.tsx",
           "dest": "{components}/combobox/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/combobox/styles.css",
           "dest": "{components}/combobox/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/combobox/index.tailwind.tsx",
           "dest": "{components}/combobox/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/combobox/index.module.tsx",
           "dest": "{components}/combobox/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/combobox/styles.module.css",
           "dest": "{components}/combobox/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "popover": {
       "name": "popover",
@@ -1156,45 +879,31 @@
         {
           "src": "components/popover/index.tsx",
           "dest": "{components}/popover/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/popover/styles.css",
           "dest": "{components}/popover/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/popover/index.tailwind.tsx",
           "dest": "{components}/popover/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/popover/index.module.tsx",
           "dest": "{components}/popover/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/popover/styles.module.css",
           "dest": "{components}/popover/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "dialog": {
       "name": "dialog",
@@ -1203,45 +912,31 @@
         {
           "src": "components/dialog/index.tsx",
           "dest": "{components}/dialog/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/dialog/styles.css",
           "dest": "{components}/dialog/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/dialog/index.tailwind.tsx",
           "dest": "{components}/dialog/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/dialog/index.module.tsx",
           "dest": "{components}/dialog/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/dialog/styles.module.css",
           "dest": "{components}/dialog/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "dropdown-menu": {
       "name": "dropdown-menu",
@@ -1250,45 +945,31 @@
         {
           "src": "components/dropdown-menu/index.tsx",
           "dest": "{components}/dropdown-menu/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/dropdown-menu/styles.css",
           "dest": "{components}/dropdown-menu/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/dropdown-menu/index.tailwind.tsx",
           "dest": "{components}/dropdown-menu/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/dropdown-menu/index.module.tsx",
           "dest": "{components}/dropdown-menu/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/dropdown-menu/styles.module.css",
           "dest": "{components}/dropdown-menu/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "context-menu": {
       "name": "context-menu",
@@ -1297,45 +978,31 @@
         {
           "src": "components/context-menu/index.tsx",
           "dest": "{components}/context-menu/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/context-menu/styles.css",
           "dest": "{components}/context-menu/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/context-menu/index.tailwind.tsx",
           "dest": "{components}/context-menu/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/context-menu/index.module.tsx",
           "dest": "{components}/context-menu/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/context-menu/styles.module.css",
           "dest": "{components}/context-menu/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "menubar": {
       "name": "menubar",
@@ -1344,46 +1011,31 @@
         {
           "src": "components/menubar/index.tsx",
           "dest": "{components}/menubar/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/menubar/styles.css",
           "dest": "{components}/menubar/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/menubar/index.tailwind.tsx",
           "dest": "{components}/menubar/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/menubar/index.module.tsx",
           "dest": "{components}/menubar/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/menubar/styles.module.css",
           "dest": "{components}/menubar/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "dropdown-menu",
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["dropdown-menu", "utils"]
     },
     "tooltip": {
       "name": "tooltip",
@@ -1392,45 +1044,31 @@
         {
           "src": "components/tooltip/index.tsx",
           "dest": "{components}/tooltip/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/tooltip/styles.css",
           "dest": "{components}/tooltip/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/tooltip/index.tailwind.tsx",
           "dest": "{components}/tooltip/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/tooltip/index.module.tsx",
           "dest": "{components}/tooltip/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/tooltip/styles.module.css",
           "dest": "{components}/tooltip/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "breadcrumb": {
       "name": "breadcrumb",
@@ -1439,43 +1077,31 @@
         {
           "src": "components/breadcrumb/index.tsx",
           "dest": "{components}/breadcrumb/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/breadcrumb/styles.css",
           "dest": "{components}/breadcrumb/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/breadcrumb/index.tailwind.tsx",
           "dest": "{components}/breadcrumb/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/breadcrumb/index.module.tsx",
           "dest": "{components}/breadcrumb/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/breadcrumb/styles.module.css",
           "dest": "{components}/breadcrumb/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "pagination": {
       "name": "pagination",
@@ -1484,43 +1110,31 @@
         {
           "src": "components/pagination/index.tsx",
           "dest": "{components}/pagination/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/pagination/styles.css",
           "dest": "{components}/pagination/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/pagination/index.tailwind.tsx",
           "dest": "{components}/pagination/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/pagination/index.module.tsx",
           "dest": "{components}/pagination/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/pagination/styles.module.css",
           "dest": "{components}/pagination/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "avatar": {
       "name": "avatar",
@@ -1529,51 +1143,37 @@
         {
           "src": "components/avatar/index.tsx",
           "dest": "{components}/avatar/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/avatar/styles.css",
           "dest": "{components}/avatar/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/avatar/index.tailwind.tsx",
           "dest": "{components}/avatar/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/avatar/index.module.tsx",
           "dest": "{components}/avatar/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/avatar/styles.module.css",
           "dest": "{components}/avatar/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [
         "@base-ui/react",
         {
           "name": "class-variance-authority",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "badge": {
       "name": "badge",
@@ -1582,50 +1182,36 @@
         {
           "src": "components/badge/index.tsx",
           "dest": "{components}/badge/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/badge/styles.css",
           "dest": "{components}/badge/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/badge/index.tailwind.tsx",
           "dest": "{components}/badge/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/badge/index.module.tsx",
           "dest": "{components}/badge/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/badge/styles.module.css",
           "dest": "{components}/badge/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [
         {
           "name": "class-variance-authority",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "progress": {
       "name": "progress",
@@ -1634,43 +1220,31 @@
         {
           "src": "components/progress/index.tsx",
           "dest": "{components}/progress/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/progress/styles.css",
           "dest": "{components}/progress/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/progress/index.tailwind.tsx",
           "dest": "{components}/progress/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/progress/index.module.tsx",
           "dest": "{components}/progress/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/progress/styles.module.css",
           "dest": "{components}/progress/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "spinner": {
       "name": "spinner",
@@ -1679,50 +1253,36 @@
         {
           "src": "components/spinner/index.tsx",
           "dest": "{components}/spinner/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/spinner/styles.css",
           "dest": "{components}/spinner/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/spinner/index.tailwind.tsx",
           "dest": "{components}/spinner/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/spinner/index.module.tsx",
           "dest": "{components}/spinner/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/spinner/styles.module.css",
           "dest": "{components}/spinner/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [
         {
           "name": "class-variance-authority",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "separator": {
       "name": "separator",
@@ -1731,43 +1291,31 @@
         {
           "src": "components/separator/index.tsx",
           "dest": "{components}/separator/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/separator/styles.css",
           "dest": "{components}/separator/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/separator/index.tailwind.tsx",
           "dest": "{components}/separator/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/separator/index.module.tsx",
           "dest": "{components}/separator/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/separator/styles.module.css",
           "dest": "{components}/separator/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "checkbox": {
       "name": "checkbox",
@@ -1776,45 +1324,31 @@
         {
           "src": "components/checkbox/index.tsx",
           "dest": "{components}/checkbox/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/checkbox/styles.css",
           "dest": "{components}/checkbox/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/checkbox/index.tailwind.tsx",
           "dest": "{components}/checkbox/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/checkbox/index.module.tsx",
           "dest": "{components}/checkbox/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/checkbox/styles.module.css",
           "dest": "{components}/checkbox/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "radio": {
       "name": "radio",
@@ -1823,45 +1357,31 @@
         {
           "src": "components/radio/index.tsx",
           "dest": "{components}/radio/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/radio/styles.css",
           "dest": "{components}/radio/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/radio/index.tailwind.tsx",
           "dest": "{components}/radio/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/radio/index.module.tsx",
           "dest": "{components}/radio/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/radio/styles.module.css",
           "dest": "{components}/radio/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "switch": {
       "name": "switch",
@@ -1870,51 +1390,37 @@
         {
           "src": "components/switch/index.tsx",
           "dest": "{components}/switch/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/switch/styles.css",
           "dest": "{components}/switch/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/switch/index.tailwind.tsx",
           "dest": "{components}/switch/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/switch/index.module.tsx",
           "dest": "{components}/switch/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/switch/styles.module.css",
           "dest": "{components}/switch/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [
         "@base-ui/react",
         {
           "name": "class-variance-authority",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "toggle": {
       "name": "toggle",
@@ -1923,51 +1429,37 @@
         {
           "src": "components/toggle/index.tsx",
           "dest": "{components}/toggle/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/toggle/styles.css",
           "dest": "{components}/toggle/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/toggle/index.tailwind.tsx",
           "dest": "{components}/toggle/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/toggle/index.module.tsx",
           "dest": "{components}/toggle/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/toggle/styles.module.css",
           "dest": "{components}/toggle/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [
         "@base-ui/react",
         {
           "name": "class-variance-authority",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         }
       ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "textarea": {
       "name": "textarea",
@@ -1976,43 +1468,31 @@
         {
           "src": "components/textarea/index.tsx",
           "dest": "{components}/textarea/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/textarea/styles.css",
           "dest": "{components}/textarea/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/textarea/index.tailwind.tsx",
           "dest": "{components}/textarea/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/textarea/index.module.tsx",
           "dest": "{components}/textarea/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/textarea/styles.module.css",
           "dest": "{components}/textarea/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "toast": {
       "name": "toast",
@@ -2021,43 +1501,31 @@
         {
           "src": "components/toast/index.tsx",
           "dest": "{components}/toast/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/toast/styles.css",
           "dest": "{components}/toast/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/toast/index.tailwind.tsx",
           "dest": "{components}/toast/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/toast/index.module.tsx",
           "dest": "{components}/toast/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/toast/styles.module.css",
           "dest": "{components}/toast/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "calendar": {
       "name": "calendar",
@@ -2066,44 +1534,31 @@
         {
           "src": "components/calendar/index.tsx",
           "dest": "{components}/calendar/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/calendar/styles.css",
           "dest": "{components}/calendar/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/calendar/index.tailwind.tsx",
           "dest": "{components}/calendar/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/calendar/index.module.tsx",
           "dest": "{components}/calendar/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/calendar/styles.module.css",
           "dest": "{components}/calendar/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "select",
-        "utils"
-      ]
+      "registryDependencies": ["select", "utils"]
     },
     "date-picker": {
       "name": "date-picker",
@@ -2112,46 +1567,31 @@
         {
           "src": "components/date-picker/index.tsx",
           "dest": "{components}/date-picker/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/date-picker/styles.css",
           "dest": "{components}/date-picker/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/date-picker/index.tailwind.tsx",
           "dest": "{components}/date-picker/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/date-picker/index.module.tsx",
           "dest": "{components}/date-picker/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/date-picker/styles.module.css",
           "dest": "{components}/date-picker/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "calendar",
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["calendar", "utils"]
     },
     "skeleton": {
       "name": "skeleton",
@@ -2160,43 +1600,31 @@
         {
           "src": "components/skeleton/index.tsx",
           "dest": "{components}/skeleton/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/skeleton/styles.css",
           "dest": "{components}/skeleton/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/skeleton/index.tailwind.tsx",
           "dest": "{components}/skeleton/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/skeleton/index.module.tsx",
           "dest": "{components}/skeleton/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/skeleton/styles.module.css",
           "dest": "{components}/skeleton/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "accordion": {
       "name": "accordion",
@@ -2205,45 +1633,31 @@
         {
           "src": "components/accordion/index.tsx",
           "dest": "{components}/accordion/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/accordion/styles.css",
           "dest": "{components}/accordion/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/accordion/index.tailwind.tsx",
           "dest": "{components}/accordion/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/accordion/index.module.tsx",
           "dest": "{components}/accordion/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/accordion/styles.module.css",
           "dest": "{components}/accordion/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "carousel": {
       "name": "carousel",
@@ -2252,43 +1666,31 @@
         {
           "src": "components/carousel/index.tsx",
           "dest": "{components}/carousel/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/carousel/styles.css",
           "dest": "{components}/carousel/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/carousel/index.tailwind.tsx",
           "dest": "{components}/carousel/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/carousel/index.module.tsx",
           "dest": "{components}/carousel/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/carousel/styles.module.css",
           "dest": "{components}/carousel/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
       "dependencies": [],
-      "registryDependencies": [
-        "utils"
-      ]
+      "registryDependencies": ["utils"]
     },
     "form-rhf": {
       "name": "form-rhf",
@@ -2299,12 +1701,8 @@
           "dest": "{components}/form-rhf/index.tsx"
         }
       ],
-      "dependencies": [
-        "react-hook-form"
-      ],
-      "registryDependencies": [
-        "form"
-      ]
+      "dependencies": ["react-hook-form"],
+      "registryDependencies": ["form"]
     },
     "form-tanstack": {
       "name": "form-tanstack",
@@ -2315,12 +1713,8 @@
           "dest": "{components}/form-tanstack/index.tsx"
         }
       ],
-      "dependencies": [
-        "@tanstack/react-form"
-      ],
-      "registryDependencies": [
-        "form"
-      ]
+      "dependencies": ["@tanstack/react-form"],
+      "registryDependencies": ["form"]
     },
     "scroll-area": {
       "name": "scroll-area",
@@ -2329,45 +1723,31 @@
         {
           "src": "components/scroll-area/index.tsx",
           "dest": "{components}/scroll-area/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/scroll-area/styles.css",
           "dest": "{components}/scroll-area/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/scroll-area/index.tailwind.tsx",
           "dest": "{components}/scroll-area/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/scroll-area/index.module.tsx",
           "dest": "{components}/scroll-area/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/scroll-area/styles.module.css",
           "dest": "{components}/scroll-area/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "sheet": {
       "name": "sheet",
@@ -2376,45 +1756,31 @@
         {
           "src": "components/sheet/index.tsx",
           "dest": "{components}/sheet/index.tsx",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/sheet/styles.css",
           "dest": "{components}/sheet/styles.css",
-          "frameworks": [
-            "plain"
-          ]
+          "frameworks": ["plain"]
         },
         {
           "src": "components/sheet/index.tailwind.tsx",
           "dest": "{components}/sheet/index.tsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "src": "components/sheet/index.module.tsx",
           "dest": "{components}/sheet/index.tsx",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         },
         {
           "src": "components/sheet/styles.module.css",
           "dest": "{components}/sheet/styles.module.css",
-          "frameworks": [
-            "css-modules"
-          ]
+          "frameworks": ["css-modules"]
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ]
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
     },
     "utils": {
       "name": "utils",
@@ -2423,32 +1789,22 @@
         {
           "src": "lib/cn.ts",
           "dest": "{utils}",
-          "frameworks": [
-            "plain",
-            "css-modules",
-            "vanilla-extract"
-          ]
+          "frameworks": ["plain", "css-modules", "vanilla-extract"]
         },
         {
           "src": "lib/cn.tailwind.ts",
           "dest": "{utils}",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         }
       ],
       "dependencies": [
         {
           "name": "clsx",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         },
         {
           "name": "tailwind-merge",
-          "frameworks": [
-            "tailwind"
-          ]
+          "frameworks": ["tailwind"]
         }
       ],
       "registryDependencies": []

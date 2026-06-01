@@ -1,3 +1,25 @@
+/* 본문 텍스트 색 팔레트 — 라이트/다크 추종 (RTE Color 확장이 var() 로 저장) */
+:root {
+  --sh-ui-rte-c-moss: #2f5d4f;
+  --sh-ui-rte-c-red: #c0392b;
+  --sh-ui-rte-c-orange: #c2410c;
+  --sh-ui-rte-c-blue: #1d4ed8;
+}
+.dark {
+  --sh-ui-rte-c-moss: #5ba886;
+  --sh-ui-rte-c-red: #f1736a;
+  --sh-ui-rte-c-orange: #f0935a;
+  --sh-ui-rte-c-blue: #6ba2f2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    --sh-ui-rte-c-moss: #5ba886;
+    --sh-ui-rte-c-red: #f1736a;
+    --sh-ui-rte-c-orange: #f0935a;
+    --sh-ui-rte-c-blue: #6ba2f2;
+  }
+}
+
 .rte {
   display: flex;
   flex-direction: column;
@@ -18,13 +40,15 @@
 
 /* ─── Toolbar ─── */
 .rte__toolbar {
+  background: var(--background-muted);
+  border-bottom: 1px solid var(--border);
+}
+.rte__toolbar-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.125rem;
   padding: var(--space-1) var(--space-2);
-  background: var(--background-muted);
-  border-bottom: 1px solid var(--border);
 }
 .rte__btn {
   display: inline-flex;
@@ -70,6 +94,64 @@
   background: var(--border);
 }
 
+/* ─── Secondary panel (color · link) ─── */
+.rte__panel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-top: 1px solid var(--border);
+}
+.rte__panel--swatches {
+  flex-wrap: wrap;
+}
+.rte__swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color var(--duration-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.rte__swatch:hover {
+  border-color: var(--border-strong);
+}
+.rte__swatch:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+  outline-offset: 1px;
+}
+.rte__swatch.is-active {
+  border-color: var(--foreground);
+}
+.rte__swatch-a {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--foreground-muted);
+}
+.rte__link-input {
+  flex: 1;
+  min-width: 0;
+  height: 1.75rem;
+  padding: 0 var(--space-2);
+  font-size: 0.875rem;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  outline: none;
+}
+.rte__link-input:focus {
+  border-color: var(--foreground);
+}
+.rte__link-input:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+  outline-offset: 1px;
+}
+
 /* ─── Content ─── */
 .rte__viewport {
   display: flex;
@@ -108,14 +190,26 @@
   font-weight: 600;
   line-height: 1.3;
 }
-.rte__content h1 { font-size: 1.5rem; }
-.rte__content h2 { font-size: 1.25rem; }
-.rte__content h3 { font-size: 1.125rem; }
+.rte__content h1 {
+  font-size: 1.5rem;
+}
+.rte__content h2 {
+  font-size: 1.25rem;
+}
+.rte__content h3 {
+  font-size: 1.125rem;
+}
 
 .rte__content ul,
 .rte__content ol {
   margin: 0 0 var(--space-3);
   padding-inline-start: var(--space-5);
+}
+.rte__content ul {
+  list-style: disc;
+}
+.rte__content ol {
+  list-style: decimal;
 }
 .rte__content li {
   margin-bottom: var(--space-1);
@@ -173,6 +267,10 @@
 }
 .rte__content a:hover {
   text-decoration-thickness: 2px;
+}
+.rte__content u {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Placeholder (Tiptap extension) */
