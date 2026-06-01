@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "prettier": "^3.8.3",
-    "turbo": "^2.9.14",
+    "turbo": "^2.9.16",
     "typescript": "^5.9.0",
     "zod": "^4.4.3"
   },
