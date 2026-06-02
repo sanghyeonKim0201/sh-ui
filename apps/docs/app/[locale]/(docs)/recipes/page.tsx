@@ -42,6 +42,11 @@ export default function Recipes() {
           <Link href="/recipes/async-boundary">AsyncBoundary 패턴</Link> —
           Suspense + ErrorBoundary 묶기, Skeleton·Error 폴더 컨벤션, 재시도.
         </li>
+        <li>
+          <Link href="/recipes/permission-gating">권한별 비활성화</Link> — 공용
+          Button 을 dumb 하게 두고 권한(RBAC)을 <code>can</code> 함수로 주입,
+          role × resource 매트릭스, aria-disabled 어포던스.
+        </li>
       </ul>
 
       <h2>테스트 / 배포</h2>
