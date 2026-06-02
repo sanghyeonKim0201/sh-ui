@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
@@ -226,5 +226,110 @@ describe("validateOn blur → change on error", () => {
     await screen.findByText("bad");
     await user.type(input, "@x.com");
     expect(screen.queryByText("bad")).not.toBeInTheDocument();
+  });
+});
+
+// ─────────────────────────────────────────────
+// Render prop (function-as-child) — v0.114+
+// ─────────────────────────────────────────────
+describe("Form.Field render prop", () => {
+  it("passes field API to function children + wires handleChange", async () => {
+    const user = userEvent.setup();
+    let receivedField: any = null;
+
+    render(
+      <Form>
+        <Field name="email">
+          {(field) => {
+            receivedField = field;
+            return (
+              <input
+                data-testid="i"
+                value={(field.value as string) ?? ""}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+              />
+            );
+          }}
+        </Field>
+      </Form>
+    );
+
+    expect(receivedField).toBeTruthy();
+    expect(receivedField.name).toBe("email");
+    expect(typeof receivedField.handleChange).toBe("function");
+    expect(typeof receivedField.handleBlur).toBe("function");
+
+    const input = screen.getByTestId("i") as HTMLInputElement;
+    await user.type(input, "kim@studio");
+    expect(input.value).toBe("kim@studio");
+  });
+
+  it("ariaInvalid + ariaDescribedBy reflect error state", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Form>
+        <Field name="email" validate={(v) => (String(v).includes("@") ? undefined : "bad")}>
+          {(field) => (
+            <>
+              <input
+                data-testid="i"
+                value={(field.value as string) ?? ""}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                aria-invalid={field.ariaInvalid}
+                aria-describedby={field.ariaDescribedBy}
+              />
+              <FormError />
+            </>
+          )}
+        </Field>
+      </Form>
+    );
+
+    const input = screen.getByTestId("i") as HTMLInputElement;
+    await user.type(input, "abc");
+    input.blur();
+    await screen.findByText("bad");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    expect(input.getAttribute("aria-describedby")).toContain("error");
+  });
+
+  it("does not wrap in sh-ui-form-field div when using render prop", () => {
+    const { container } = render(
+      <Form>
+        <Field name="email">
+          {() => <input data-testid="i" />}
+        </Field>
+      </Form>
+    );
+    expect(container.querySelector(".sh-ui-form-field")).toBeNull();
+  });
+});
+
+// ─────────────────────────────────────────────
+// Form.Control — chain merge (v0.114+: 자식 onChange 보존)
+// ─────────────────────────────────────────────
+describe("Form.Control chain merge", () => {
+  it("preserves child onChange while syncing store", async () => {
+    const user = userEvent.setup();
+    const childOnChange = vi.fn();
+
+    render(
+      <Form>
+        <Field name="email">
+          <FormControl>
+            <input data-testid="i" onChange={childOnChange} />
+          </FormControl>
+        </Field>
+      </Form>
+    );
+
+    const input = screen.getByTestId("i") as HTMLInputElement;
+    await user.type(input, "x");
+    expect(childOnChange).toHaveBeenCalled();
+    // store sync 도 작동 (입력값이 input 에 반영)
+    expect(input.value).toBe("x");
   });
 });

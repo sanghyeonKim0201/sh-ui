@@ -1,7 +1,6 @@
+/* 기본 — typography + 인터랙션만. display 는 label 의 native (inline) 유지.
+   사용자가 `inline-flex items-center gap-2` 같이 가로 정렬을 명시할 수 있다. */
 .sh-ui-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   line-height: 1.4;
@@ -10,8 +9,13 @@
   user-select: none;
 }
 
-.sh-ui-label:not(:has(.sh-ui-label__title, .sh-ui-label__subtitle, .sh-ui-label__description, .sh-ui-label__caption)) {
-  display: block;
+/* sub-part (Title/Subtitle/Description/Caption) 가 자식에 있을 때만 세로 stack.
+   사용자가 `<Label><LabelTitle .../><LabelDescription .../></Label>` 형태로
+   쓸 때 자동으로 정렬. */
+.sh-ui-label:has(.sh-ui-label__title, .sh-ui-label__subtitle, .sh-ui-label__description, .sh-ui-label__caption) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
 }
 
 /* ───── 텍스트 계층 ───── */

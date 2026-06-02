@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+function cn(...args: (string | undefined | false | null)[]) {
+  return args.filter(Boolean).join(" ");
+}
 import {
   FormContext,
   FieldContext,
@@ -9,8 +12,50 @@ import {
   DisabledContext,
   useFormField,
 } from "./context";
-import type { FieldValidate, ValidateOn } from "./types";
+import type { FieldError, FieldValidate, ValidateOn } from "./types";
 import { scopedPath } from "./utils";
+
+// ─────────────────────────────────────────────
+// FieldRenderProps — render prop 으로 노출되는 필드 API
+// ─────────────────────────────────────────────
+
+/**
+ * <Form.Field name="x">{(field) => ...}</Form.Field> 의 `field` 객체.
+ *
+ * 값/상태 + 액션 + a11y 메타. 사용자는 `field.value` 읽고
+ * `field.handleChange(next)` / `field.handleBlur()` 호출, 필요하면
+ * `field.id` / `field.name` / `field.ariaInvalid` / `field.ariaDescribedBy`
+ * 를 자체 input element 에 spread.
+ *
+ * `handleChange` 는 **next value 자체** 를 받는다 (event 객체 아님) — input,
+ * select, checkbox, custom (color picker · emoji picker 등) 모두 같은 시그니처.
+ * input 의 경우 사용자가 `onChange={(e) => field.handleChange(e.target.value)}`
+ * 로 wire.
+ */
+export interface FieldRenderProps {
+  // ── 값/상태 ──────────────────────────────
+  value: unknown;
+  errors: FieldError[];
+  /** 첫 에러 (편의). 여러 에러면 errors 배열을 직접 사용. */
+  error: FieldError | undefined;
+  hasError: boolean;
+  touched: boolean;
+  isValidating: boolean;
+
+  // ── 액션 ────────────────────────────────
+  /** next value 자체를 받는다. event 객체 아님. */
+  handleChange: (next: unknown) => void;
+  handleBlur: () => void;
+
+  // ── a11y / DOM 메타 ──────────────────────
+  name: string;
+  id: string;
+  ariaInvalid: true | undefined;
+  ariaDescribedBy: string | undefined;
+  disabled: boolean | undefined;
+  readOnly: boolean | undefined;
+  required: boolean | undefined;
+}
 
 // ─────────────────────────────────────────────
 // Field
@@ -24,7 +69,15 @@ export interface FieldProps
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-  children?: React.ReactNode;
+  /**
+   * children. 함수면 render prop 으로 호출되어 `field` API 노출 (TanStack /
+   * RHF Controller 와 같은 패턴). 함수가 아니면 일반 children 으로 렌더 +
+   * div wrap.
+   *
+   * 권장: render prop 통일 — 입력 종류 무관 동일 패턴.
+   * 단순 input 한 칸도 `{(field) => <Input value={field.value} ... />}` 로.
+   */
+  children?: React.ReactNode | ((field: FieldRenderProps) => React.ReactNode);
 }
 
 export function Field({
@@ -58,23 +111,41 @@ export function Field({
       sectionPath: section.path || undefined,
       required,
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store, path]);
 
   const effectiveDisabled = disabled || formDisabled;
 
+  const ctxValue = React.useMemo(
+    () => ({
+      path,
+      id,
+      descId,
+      errorId,
+      disabled: effectiveDisabled,
+      readOnly,
+      required,
+    }),
+    [path, id, descId, errorId, effectiveDisabled, readOnly, required]
+  );
+
+  // children 이 함수면 render prop 패턴 — FieldContext 만 제공하고 wrap 없음.
+  // 사용자가 JSX 모양 (label/input/error 배치, wrapper 등) 을 100% 결정.
+  if (typeof children === "function") {
+    return (
+      <FieldContext.Provider value={ctxValue}>
+        <FieldRenderBridge>
+          {(field) =>
+            (children as (f: FieldRenderProps) => React.ReactNode)(field)
+          }
+        </FieldRenderBridge>
+      </FieldContext.Provider>
+    );
+  }
+
+  // 일반 children — 기존 div wrap (cloneElement 기반 Form.Control 경로용).
   return (
-    <FieldContext.Provider
-      value={{
-        path,
-        id,
-        descId,
-        errorId,
-        disabled: effectiveDisabled,
-        readOnly,
-        required,
-      }}
-    >
+    <FieldContext.Provider value={ctxValue}>
       <div
         className={`sh-ui-form-field${className ? ` ${className}` : ""}`}
         data-disabled={effectiveDisabled || undefined}
@@ -85,6 +156,51 @@ export function Field({
       </div>
     </FieldContext.Provider>
   );
+}
+
+// Render prop bridge — FieldContext 안에서 store/field state 를 읽어 `field`
+// 객체 구성. 별도 컴포넌트로 분리하는 이유: store subscribe 가 hook 이라
+// Field 본체에서 conditional 호출 불가 (Rules of Hooks).
+function FieldRenderBridge({
+  children,
+}: {
+  children: (field: FieldRenderProps) => React.ReactNode;
+}) {
+  const ctx = React.useContext(FieldContext);
+  if (!ctx) return null;
+  const store = React.useContext(FormContext)!;
+  const state = useFormField(ctx.path);
+
+  const describedBy =
+    cn(ctx.descId, state.hasError ? ctx.errorId : null) || undefined;
+
+  const field: FieldRenderProps = {
+    value: state.value,
+    errors: state.errors,
+    error: state.error,
+    hasError: state.hasError,
+    touched: state.touched,
+    isValidating: state.isValidating,
+    handleChange: (next) => {
+      store.setFieldValue(ctx.path, next);
+      if (store.getState().revalidateOnChange.has(ctx.path)) {
+        void store.validateField(ctx.path);
+      }
+    },
+    handleBlur: () => {
+      store.setFieldTouched(ctx.path, true);
+      void store.validateField(ctx.path);
+    },
+    name: ctx.path,
+    id: ctx.id,
+    ariaInvalid: state.hasError ? true : undefined,
+    ariaDescribedBy: describedBy,
+    disabled: ctx.disabled,
+    readOnly: ctx.readOnly,
+    required: ctx.required,
+  };
+
+  return <>{children(field)}</>;
 }
 
 // ─────────────────────────────────────────────
@@ -160,7 +276,7 @@ export function FormError({
 }
 
 // ─────────────────────────────────────────────
-// Control
+// Control (DEPRECATED — render prop 사용 권장)
 // ─────────────────────────────────────────────
 
 export interface ControlProps {
@@ -168,7 +284,9 @@ export interface ControlProps {
   name: string;
   value?: unknown;
   checked?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => void;
   onBlur: () => void;
   "aria-invalid"?: true;
   "aria-describedby"?: string;
@@ -184,6 +302,24 @@ export interface FormControlProps {
   render?: (ctrl: ControlProps) => React.ReactElement;
 }
 
+/**
+ * @deprecated v0.114+ 부터는 `<Form.Field>` 의 render prop 패턴을 권장한다.
+ *
+ *   // 권장 (TanStack / RHF Controller 와 같은 idiom):
+ *   <Form.Field name="email">
+ *     {(field) => (
+ *       <Input
+ *         value={field.value as string}
+ *         onChange={(e) => field.handleChange(e.target.value)}
+ *         onBlur={field.handleBlur}
+ *       />
+ *     )}
+ *   </Form.Field>
+ *
+ * 본 Form.Control 은 cloneElement 패턴 잔존성 호환 — 자식 1개 제한, custom
+ * value (event 객체 외) 미지원, 자식의 기존 onChange/onBlur 가 chain merge
+ * 됨 (이전엔 override). 한 메이저 release 뒤 제거 예정.
+ */
 export function FormControl({
   children,
   valueAs = "value",
@@ -195,11 +331,9 @@ export function FormControl({
   const field = useFormField(ctx.path);
 
   const describedBy =
-    [ctx.descId, field.hasError ? ctx.errorId : null]
-      .filter(Boolean)
-      .join(" ") || undefined;
+    cn(ctx.descId, field.hasError ? ctx.errorId : null) || undefined;
 
-  const ctrl: ControlProps = {
+  const baseCtrl: ControlProps = {
     id: ctx.id,
     name: ctx.path,
     onChange: (e) => {
@@ -220,17 +354,40 @@ export function FormControl({
     required: ctx.required,
   };
 
-  if (field.hasError) ctrl["aria-invalid"] = true;
-  if (ctx.required) ctrl["aria-required"] = true;
+  if (field.hasError) baseCtrl["aria-invalid"] = true;
+  if (ctx.required) baseCtrl["aria-required"] = true;
 
   if (valueAs === "checked") {
-    ctrl.checked = Boolean(field.value);
+    baseCtrl.checked = Boolean(field.value);
   } else {
-    ctrl.value = field.value ?? "";
+    baseCtrl.value = field.value ?? "";
   }
 
-  if (render) return render(ctrl);
+  if (render) return render(baseCtrl);
   if (!children) return null;
   const child = React.Children.only(children);
-  return React.cloneElement(child, ctrl as unknown as Record<string, unknown>);
+
+  // chain merge — 자식의 기존 onChange/onBlur 가 있으면 store sync 와 함께
+  // 둘 다 호출 (이전 버전의 silent override 함정 fix).
+  const childProps = (child.props ?? {}) as Partial<ControlProps> & {
+    onChange?: ControlProps["onChange"];
+    onBlur?: ControlProps["onBlur"];
+  };
+
+  const mergedCtrl: ControlProps = {
+    ...baseCtrl,
+    onChange: (e) => {
+      baseCtrl.onChange(e);
+      childProps.onChange?.(e);
+    },
+    onBlur: () => {
+      baseCtrl.onBlur();
+      childProps.onBlur?.();
+    },
+  };
+
+  return React.cloneElement(
+    child,
+    mergedCtrl as unknown as Record<string, unknown>
+  );
 }

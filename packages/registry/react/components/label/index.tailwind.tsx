@@ -17,7 +17,11 @@ export const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
     <label
       ref={ref}
       className={cn(
-        "flex flex-col gap-0.5 text-[length:var(--text-sm)] font-medium leading-snug text-foreground cursor-pointer select-none not-has-[[data-sh-ui-label-part]]:block",
+        // 기본 — typography + 인터랙션만. display 는 label 의 native(inline) 유지.
+        // sub-part(LabelTitle/Subtitle/Description/Caption) 가 자식에 있을 때만
+        // 자동으로 flex-col stack — 사용자가 가로 정렬(inline-flex items-center)
+        // 을 명시할 수 있도록 기본 display 를 강제하지 않는다.
+        "text-[length:var(--text-sm)] font-medium leading-snug text-foreground cursor-pointer select-none has-[[data-sh-ui-label-part]]:flex has-[[data-sh-ui-label-part]]:flex-col has-[[data-sh-ui-label-part]]:gap-0.5",
         // 필수 표시 — title 이 있으면 title 뒤, 없으면 label 뒤에 * 부착
         isRequired &&
           "has-[[data-sh-ui-label-part='title']]:[&>[data-sh-ui-label-part='title']]:after:content-['_*'] has-[[data-sh-ui-label-part='title']]:[&>[data-sh-ui-label-part='title']]:after:text-danger has-[[data-sh-ui-label-part='title']]:[&>[data-sh-ui-label-part='title']]:after:font-semibold not-has-[[data-sh-ui-label-part='title']]:after:content-['_*'] not-has-[[data-sh-ui-label-part='title']]:after:text-danger not-has-[[data-sh-ui-label-part='title']]:after:font-semibold",

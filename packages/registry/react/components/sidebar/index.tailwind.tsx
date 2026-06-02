@@ -445,7 +445,18 @@ export function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUL
 }
 
 export function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
-  return <li className={cn("relative m-0", className)} {...props} />;
+  return (
+    <li
+      className={cn(
+        // group/menu-item — SidebarMenuAction 의 showOnHover hover 타겟.
+        // trailing slot(badge/action)이 있으면 내부 button/anchor 에 우측 패딩을
+        // 확보해 라벨이 trailing 요소 밑으로 들어가지 않게 한다.
+        "group/menu-item relative m-0 has-[[data-sidebar=menu-badge]]:[&>a]:pr-8 has-[[data-sidebar=menu-badge]]:[&>button]:pr-8 has-[[data-sidebar=menu-action]]:[&>a]:pr-8 has-[[data-sidebar=menu-action]]:[&>button]:pr-8",
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 
 export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -505,6 +516,62 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
       <button ref={ref} type="button" className={cls} data-active={resolvedIsActive || undefined} onClick={handleClick} {...props}>
         {children}
       </button>
+    );
+  }
+);
+
+/**
+ * SidebarMenuItem 의 우측 trailing 배지 (안 읽음 수 등). SidebarMenuButton 의
+ * 형제로 둔다 — button 의 `[&>span]:flex-1` 흐름 밖(absolute)이라 라벨을 밀어내지
+ * 않는다. 클릭 통과(pointer-events-none) — 행 전체 클릭이 button 으로 간다.
+ *
+ *   <SidebarMenuItem>
+ *     <SidebarMenuButton render={<Link href='/x'>채팅</Link>} />
+ *     <SidebarMenuBadge>8</SidebarMenuBadge>
+ *   </SidebarMenuItem>
+ */
+export function SidebarMenuBadge({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-sidebar="menu-badge"
+      className={cn(
+        "pointer-events-none absolute right-[var(--space-2)] top-1/2 flex h-5 min-w-5 -translate-y-1/2 select-none items-center justify-center px-1 text-[length:var(--text-xs)] font-medium tabular-nums text-[var(--sidebar-fg)] [[data-state=collapsed][data-collapsible=icon]_&]:hidden",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+/**
+ * SidebarMenuItem 의 우측 trailing 액션 버튼 (… 메뉴, 추가 등). badge 와 달리
+ * 클릭 가능. `showOnHover` 면 행 hover/포커스 시에만 노출.
+ *
+ *   <SidebarMenuItem>
+ *     <SidebarMenuButton render={<Link href='/x'>채널</Link>} />
+ *     <SidebarMenuAction showOnHover aria-label='채널 설정'><MoreIcon /></SidebarMenuAction>
+ *   </SidebarMenuItem>
+ */
+export interface SidebarMenuActionProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  showOnHover?: boolean;
+}
+
+export const SidebarMenuAction = React.forwardRef<HTMLButtonElement, SidebarMenuActionProps>(
+  function SidebarMenuAction({ className, showOnHover, ...props }, ref) {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        data-sidebar="menu-action"
+        className={cn(
+          "absolute right-[var(--space-1)] top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-[calc(var(--radius)-2px)] border-none bg-transparent text-[var(--foreground-muted)] cursor-pointer transition-[background-color,color] duration-[var(--duration-fast)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-fg)] focus-visible:outline-[length:var(--border-width-strong)] focus-visible:outline-ring [&>svg]:h-4 [&>svg]:w-4 [&>svg]:shrink-0 [[data-state=collapsed][data-collapsible=icon]_&]:hidden motion-reduce:transition-none",
+          showOnHover &&
+            "opacity-0 focus-visible:opacity-100 group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[active]:opacity-100",
+          className,
+        )}
+        {...props}
+      />
     );
   }
 );
