@@ -3,6 +3,20 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.115.0",
+      "date": "2026-06-01",
+      "title": "rich-text-editor — 밑줄·텍스트 컬러·인라인 링크 편집 + compact·focus 툴바 + i18n 라벨",
+      "type": "minor",
+      "highlights": [
+        "**밑줄 + 텍스트 컬러** — Underline 버튼(v3 StarterKit 내장)과 글자색 팔레트를 툴바에 추가. 색은 하드 hex 가 아니라 CSS 변수(`var(--sh-ui-rte-c-moss|red|orange|blue)`)로 저장돼 라이트/다크 테마를 추종한다. 변수 정의부는 `styles.css`/`styles.module.css`(plain·css-modules) 와 런타임 주입 스타일(tailwind) — 세 variant 모두 동일하게 동작. moss 는 accent 토큰과 맞춘 톤.",
+        "**인라인 링크 편집** — 기존 `window.prompt` 를 제거하고 툴바 아래로 펼쳐지는 인라인 입력 행으로 교체(URL 입력 + 적용/제거/취소 아이콘, Enter 적용·Esc 취소). 메일 클라이언트식 UX. 읽기 전용일 때만 링크가 클릭으로 열리고(`openOnClick`), 편집 중엔 이탈 방지.",
+        "**`compact` + `toolbarMode=\"focus\"`** — `compact` 는 핵심 버튼(굵게·기울임·밑줄·취소선·글자색·링크·목록)만 노출해 좁은 패널에 맞춘다. `toolbarMode=\"focus\"` 는 포커스 전 툴바를 숨겨 인라인 입력처럼 보이게 한다. 포커스 추적은 래퍼의 `focusin`/`focusout`(relatedTarget 가드)으로 처리 — 링크 입력·컬러 스와치로 포커스가 옮겨가도 패널이 닫히지 않는다.",
+        "**활성표시 반응성 + i18n** — 툴바를 `useEditorState` 로 트랜잭션마다 구독해 굵게/밑줄 등 활성 상태가 즉시 반영된다(v3 `useEditor` 는 기본적으로 트랜잭션마다 리렌더하지 않음). `labels` prop(`RichTextEditorLabels`)으로 모든 버튼 라벨/툴팁을 현지화 가능 — 누락 키는 영어 기본값으로 폴백.",
+        "**의존성** — `@tiptap/extension-text-style` 추가(`TextStyle` + `Color` 제공). 설치: `pnpm add @tiptap/extension-text-style`. 기존 RTE 사용처는 변경 없이 동작(신규 props 전부 optional)."
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.115.0"
+    },
+    {
       "version": "0.114.0",
       "date": "2026-05-27",
       "title": "form — render prop 통일 + useReactHookFormAdapter hook + onChange chain merge",

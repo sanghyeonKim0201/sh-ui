@@ -1,14 +1,21 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
-import { useEditor, EditorContent, type Editor } from "@tiptap/react";
+import { useEffect, useState } from "react";
+import {
+  useEditor,
+  useEditorState,
+  EditorContent,
+  type Editor,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
+import { TextStyle, Color } from "@tiptap/extension-text-style";
 import { cn } from "@SH_UI_UTILS@";
 import {
   BoldIcon,
   ItalicIcon,
+  UnderlineIcon,
   StrikethroughIcon,
   Heading1Icon,
   Heading2Icon,
@@ -18,12 +25,75 @@ import {
   QuoteIcon,
   CodeIcon,
   Code2Icon,
+  BaselineIcon,
   LinkIcon,
+  UnlinkIcon,
   MinusIcon,
   Undo2Icon,
   Redo2Icon,
+  CheckIcon,
+  XIcon,
 } from "lucide-react";
 import "./styles.css";
+
+/** 툴바 a11y 라벨/툴팁 — 기본 영어. `labels` prop 으로 부분 덮어쓰기(i18n). */
+export interface RichTextEditorLabels {
+  bold: string;
+  italic: string;
+  underline: string;
+  strike: string;
+  code: string;
+  h1: string;
+  h2: string;
+  h3: string;
+  bulletList: string;
+  orderedList: string;
+  blockquote: string;
+  codeBlock: string;
+  textColor: string;
+  link: string;
+  horizontalRule: string;
+  undo: string;
+  redo: string;
+  colorDefault: string;
+  colorMoss: string;
+  colorRed: string;
+  colorOrange: string;
+  colorBlue: string;
+  linkUrl: string;
+  apply: string;
+  removeLink: string;
+  cancel: string;
+}
+
+const DEFAULT_LABELS: RichTextEditorLabels = {
+  bold: "Bold",
+  italic: "Italic",
+  underline: "Underline",
+  strike: "Strikethrough",
+  code: "Inline code",
+  h1: "Heading 1",
+  h2: "Heading 2",
+  h3: "Heading 3",
+  bulletList: "Bulleted list",
+  orderedList: "Ordered list",
+  blockquote: "Blockquote",
+  codeBlock: "Code block",
+  textColor: "Text color",
+  link: "Link",
+  horizontalRule: "Horizontal rule",
+  undo: "Undo",
+  redo: "Redo",
+  colorDefault: "Default",
+  colorMoss: "Moss",
+  colorRed: "Red",
+  colorOrange: "Orange",
+  colorBlue: "Blue",
+  linkUrl: "Link URL",
+  apply: "Apply",
+  removeLink: "Remove link",
+  cancel: "Cancel",
+};
 
 export interface RichTextEditorProps {
   /**
@@ -44,6 +114,12 @@ export interface RichTextEditorProps {
   readOnly?: boolean;
   /** 상단 툴바 숨기기. 본문 영역만 렌더. */
   hideToolbar?: boolean;
+  /** 핵심 버튼만 노출(좁은 패널용). 제목/코드블록/목록 일부를 생략한다. */
+  compact?: boolean;
+  /** "always"(기본) 항상 노출 · "focus" 포커스/편집 중에만 노출(인라인 느낌). */
+  toolbarMode?: "always" | "focus";
+  /** 툴바 라벨/툴팁 i18n. 누락 키는 영어 기본값. */
+  labels?: Partial<RichTextEditorLabels>;
   /** 본문 영역의 최소 높이. */
   minHeight?: string;
   /** 본문 영역의 최대 높이. 초과 시 내부 스크롤. */
@@ -52,6 +128,45 @@ export interface RichTextEditorProps {
   "aria-label"?: string;
 }
 
+/**
+ * 본문 텍스트 색 — CSS 변수로 저장(`var(--sh-ui-rte-c-*)`)해 라이트/다크 테마를
+ * 추종한다(하드 hex 가 아님). 변수 정의부는 styles.css. moss 는 accent.
+ */
+const COLOR_SWATCHES = [
+  { key: "moss", cssVar: "--sh-ui-rte-c-moss", labelKey: "colorMoss" },
+  { key: "red", cssVar: "--sh-ui-rte-c-red", labelKey: "colorRed" },
+  { key: "orange", cssVar: "--sh-ui-rte-c-orange", labelKey: "colorOrange" },
+  { key: "blue", cssVar: "--sh-ui-rte-c-blue", labelKey: "colorBlue" },
+] as const;
+
+const colorValue = (cssVar: string) => `var(${cssVar})`;
+
+/** 선택 영역(없으면 URL 텍스트 삽입)에 링크를 적용. */
+function applyLink(editor: Editor, rawUrl: string) {
+  const url = rawUrl.trim();
+  if (url === "") {
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    return;
+  }
+  const { empty } = editor.state.selection;
+  const inLink = editor.isActive("link");
+  if (empty && !inLink) {
+    // 선택 없이 호출되면 URL 자체를 anchor 텍스트로 삽입 — 빈 링크 마크가 남는 걸 방지
+    editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: "text",
+        text: url,
+        marks: [{ type: "link", attrs: { href: url } }],
+      })
+      .run();
+    return;
+  }
+  editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+}
+
+type ToolbarPanel = "none" | "link" | "color";
 
 /**
  * Tiptap 기반 리치 텍스트 에디터.
@@ -59,7 +174,8 @@ export interface RichTextEditorProps {
  * Controlled (value/onChange) · Uncontrolled (defaultValue) 모두 지원. 라우터·외부 상태와
  * 동기화할 게 없는 단일 입력 폼이라면 defaultValue 한 줄로 끝 — useState 불필요.
  *
- * 기본 toolbar 는 StarterKit 의 표준 마크업(헤딩·리스트·인용·코드·링크 등) 을 다룬다.
+ * 툴바: 굵게/기울임/밑줄/취소선/코드 · 글자색 · 링크 · 헤딩 · 리스트 · 인용 · 코드블록 ·
+ * 구분선 · 실행취소/다시실행. compact 로 핵심만, toolbarMode="focus" 로 인라인 느낌.
  */
 export function RichTextEditor({
   value: valueProp,
@@ -68,24 +184,35 @@ export function RichTextEditor({
   placeholder,
   readOnly = false,
   hideToolbar = false,
+  compact = false,
+  toolbarMode = "always",
+  labels,
   minHeight,
   maxHeight,
   className,
   "aria-label": ariaLabel = "Rich text editor",
 }: RichTextEditorProps) {
   const isControlled = valueProp !== undefined;
+  const [isFocused, setIsFocused] = useState(false);
+  const [panel, setPanel] = useState<ToolbarPanel>("none");
+  const L = labels ? { ...DEFAULT_LABELS, ...labels } : DEFAULT_LABELS;
+
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      // Link/Underline 은 v3 StarterKit 에 포함 — Link 는 따로 설정하려 끄고 별도 등록(중복 경고 회피).
+      StarterKit.configure({ link: false }),
       Placeholder.configure({
         placeholder: placeholder ?? "",
         emptyEditorClass: "sh-ui-rte__is-empty",
       }),
       Link.configure({
-        openOnClick: false,
+        // 편집 중엔 클릭으로 이탈 방지, 읽기 전용일 때만 클릭 시 열림.
+        openOnClick: readOnly,
         autolink: true,
         HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
       }),
+      TextStyle,
+      Color.configure({ types: ["textStyle"] }),
     ],
     content: valueProp ?? defaultValue ?? "",
     editable: !readOnly,
@@ -113,10 +240,23 @@ export function RichTextEditor({
     editor?.setEditable(!readOnly);
   }, [readOnly, editor]);
 
+  const showToolbar =
+    !hideToolbar && (toolbarMode === "always" || isFocused || panel !== "none");
+
+  // 포커스 추적(toolbarMode="focus" 노출 판정용) — 래퍼의 focusin/focusout(버블).
+  // 에디터·툴바 버튼·링크 입력·컬러 스와치 어디로 포커스가 옮겨가도 컨테이너 안이면
+  // "포커스 중"을 유지(focusout 의 relatedTarget 가 컨테이너 내부면 무시).
+  const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+    setIsFocused(false);
+  };
+
   return (
     <div
       className={cn("sh-ui-rte", className)}
       data-readonly={readOnly || undefined}
+      onFocus={() => setIsFocused(true)}
+      onBlur={handleBlur}
       style={
         {
           "--sh-ui-rte-min-height": minHeight,
@@ -124,7 +264,16 @@ export function RichTextEditor({
         } as React.CSSProperties
       }
     >
-      {!hideToolbar && <Toolbar editor={editor} disabled={readOnly} />}
+      {showToolbar && (
+        <Toolbar
+          editor={editor}
+          disabled={readOnly}
+          compact={compact}
+          panel={panel}
+          setPanel={setPanel}
+          labels={L}
+        />
+      )}
       <EditorContent editor={editor} className="sh-ui-rte__viewport" />
     </div>
   );
@@ -133,198 +282,401 @@ export function RichTextEditor({
 interface ToolbarProps {
   editor: Editor | null;
   disabled: boolean;
+  compact: boolean;
+  panel: ToolbarPanel;
+  setPanel: (next: ToolbarPanel) => void;
+  labels: RichTextEditorLabels;
 }
 
-function Toolbar({ editor, disabled }: ToolbarProps) {
-  const promptLink = useCallback(() => {
-    if (!editor) return;
-    const previous = editor.getAttributes("link").href as string | undefined;
-    const url = window.prompt("URL", previous ?? "https://");
-    if (url === null) return;
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      return;
-    }
-    const { empty } = editor.state.selection;
-    const inLink = editor.isActive("link");
-    if (empty && !inLink) {
-      // 선택 없이 호출되면 URL 자체를 anchor 텍스트로 삽입 — 빈 링크 마크가 남는 걸 방지
-      editor
-        .chain()
-        .focus()
-        .insertContent({
-          type: "text",
-          text: url,
-          marks: [{ type: "link", attrs: { href: url } }],
-        })
-        .run();
-      return;
-    }
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-  }, [editor]);
+/** 활성/실행가능 상태 스냅샷 — useEditorState 로 트랜잭션마다 구독(버튼 강조 즉시 반영). */
+function Toolbar({
+  editor,
+  disabled,
+  compact,
+  panel,
+  setPanel,
+  labels: L,
+}: ToolbarProps) {
+  const flags = useEditorState({
+    editor,
+    selector: ({ editor: e }) =>
+      e
+        ? {
+            bold: e.isActive("bold"),
+            canBold: e.can().toggleBold(),
+            italic: e.isActive("italic"),
+            canItalic: e.can().toggleItalic(),
+            underline: e.isActive("underline"),
+            canUnderline: e.can().toggleUnderline(),
+            strike: e.isActive("strike"),
+            canStrike: e.can().toggleStrike(),
+            code: e.isActive("code"),
+            canCode: e.can().toggleCode(),
+            h1: e.isActive("heading", { level: 1 }),
+            h2: e.isActive("heading", { level: 2 }),
+            h3: e.isActive("heading", { level: 3 }),
+            bulletList: e.isActive("bulletList"),
+            orderedList: e.isActive("orderedList"),
+            blockquote: e.isActive("blockquote"),
+            codeBlock: e.isActive("codeBlock"),
+            link: e.isActive("link"),
+            color: e.getAttributes("textStyle").color as string | undefined,
+            canUndo: e.can().undo(),
+            canRedo: e.can().redo(),
+          }
+        : null,
+  });
+
+  const togglePanel = (next: Exclude<ToolbarPanel, "none">) =>
+    setPanel(panel === next ? "none" : next);
+
+  const f = flags;
+  const editorReady = !!editor && !!f;
+  const colorActive = Boolean(f?.color) || panel === "color";
 
   return (
-    <div className="sh-ui-rte__toolbar" role="toolbar" aria-label="Formatting" aria-disabled={disabled || undefined}>
-      <ToolbarButton
-        editor={editor}
-        label="Bold"
-        icon={<BoldIcon size={16} />}
-        isActive={editor?.isActive("bold")}
-        canRun={() => !!editor?.can().toggleBold()}
-        run={() => editor?.chain().focus().toggleBold().run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Italic"
-        icon={<ItalicIcon size={16} />}
-        isActive={editor?.isActive("italic")}
-        canRun={() => !!editor?.can().toggleItalic()}
-        run={() => editor?.chain().focus().toggleItalic().run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Strikethrough"
-        icon={<StrikethroughIcon size={16} />}
-        isActive={editor?.isActive("strike")}
-        canRun={() => !!editor?.can().toggleStrike()}
-        run={() => editor?.chain().focus().toggleStrike().run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Inline code"
-        icon={<CodeIcon size={16} />}
-        isActive={editor?.isActive("code")}
-        canRun={() => !!editor?.can().toggleCode()}
-        run={() => editor?.chain().focus().toggleCode().run()}
-        disabled={disabled}
-      />
+    <div
+      className="sh-ui-rte__toolbar"
+      role="toolbar"
+      aria-label="Formatting"
+      aria-disabled={disabled || undefined}
+    >
+      <div className="sh-ui-rte__toolbar-row">
+        <ToolbarButton
+          label={L.bold}
+          icon={<BoldIcon size={16} />}
+          isActive={f?.bold}
+          disabled={disabled || !editorReady || !f?.canBold}
+          onClick={() => editor?.chain().focus().toggleBold().run()}
+        />
+        <ToolbarButton
+          label={L.italic}
+          icon={<ItalicIcon size={16} />}
+          isActive={f?.italic}
+          disabled={disabled || !editorReady || !f?.canItalic}
+          onClick={() => editor?.chain().focus().toggleItalic().run()}
+        />
+        <ToolbarButton
+          label={L.underline}
+          icon={<UnderlineIcon size={16} />}
+          isActive={f?.underline}
+          disabled={disabled || !editorReady || !f?.canUnderline}
+          onClick={() => editor?.chain().focus().toggleUnderline().run()}
+        />
+        <ToolbarButton
+          label={L.strike}
+          icon={<StrikethroughIcon size={16} />}
+          isActive={f?.strike}
+          disabled={disabled || !editorReady || !f?.canStrike}
+          onClick={() => editor?.chain().focus().toggleStrike().run()}
+        />
+        {!compact && (
+          <ToolbarButton
+            label={L.code}
+            icon={<CodeIcon size={16} />}
+            isActive={f?.code}
+            disabled={disabled || !editorReady || !f?.canCode}
+            onClick={() => editor?.chain().focus().toggleCode().run()}
+          />
+        )}
 
-      <ToolbarSeparator />
+        <ToolbarSeparator />
 
-      <ToolbarButton
-        editor={editor}
-        label="Heading 1"
-        icon={<Heading1Icon size={16} />}
-        isActive={editor?.isActive("heading", { level: 1 })}
-        run={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Heading 2"
-        icon={<Heading2Icon size={16} />}
-        isActive={editor?.isActive("heading", { level: 2 })}
-        run={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Heading 3"
-        icon={<Heading3Icon size={16} />}
-        isActive={editor?.isActive("heading", { level: 3 })}
-        run={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
-        disabled={disabled}
-      />
+        <ToolbarButton
+          label={L.textColor}
+          icon={<BaselineIcon size={16} />}
+          isActive={colorActive}
+          disabled={disabled || !editorReady}
+          onClick={() => togglePanel("color")}
+        />
+        <ToolbarButton
+          label={L.link}
+          icon={<LinkIcon size={16} />}
+          isActive={f?.link || panel === "link"}
+          disabled={disabled || !editorReady}
+          onClick={() => togglePanel("link")}
+        />
 
-      <ToolbarSeparator />
+        {!compact && (
+          <>
+            <ToolbarSeparator />
+            <ToolbarButton
+              label={L.h1}
+              icon={<Heading1Icon size={16} />}
+              isActive={f?.h1}
+              disabled={disabled || !editorReady}
+              onClick={() =>
+                editor?.chain().focus().toggleHeading({ level: 1 }).run()
+              }
+            />
+            <ToolbarButton
+              label={L.h2}
+              icon={<Heading2Icon size={16} />}
+              isActive={f?.h2}
+              disabled={disabled || !editorReady}
+              onClick={() =>
+                editor?.chain().focus().toggleHeading({ level: 2 }).run()
+              }
+            />
+            <ToolbarButton
+              label={L.h3}
+              icon={<Heading3Icon size={16} />}
+              isActive={f?.h3}
+              disabled={disabled || !editorReady}
+              onClick={() =>
+                editor?.chain().focus().toggleHeading({ level: 3 }).run()
+              }
+            />
+          </>
+        )}
 
-      <ToolbarButton
-        editor={editor}
-        label="Bulleted list"
-        icon={<ListIcon size={16} />}
-        isActive={editor?.isActive("bulletList")}
-        run={() => editor?.chain().focus().toggleBulletList().run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Ordered list"
-        icon={<ListOrderedIcon size={16} />}
-        isActive={editor?.isActive("orderedList")}
-        run={() => editor?.chain().focus().toggleOrderedList().run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Blockquote"
-        icon={<QuoteIcon size={16} />}
-        isActive={editor?.isActive("blockquote")}
-        run={() => editor?.chain().focus().toggleBlockquote().run()}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Code block"
-        icon={<Code2Icon size={16} />}
-        isActive={editor?.isActive("codeBlock")}
-        run={() => editor?.chain().focus().toggleCodeBlock().run()}
-        disabled={disabled}
-      />
+        <ToolbarSeparator />
 
-      <ToolbarSeparator />
+        <ToolbarButton
+          label={L.bulletList}
+          icon={<ListIcon size={16} />}
+          isActive={f?.bulletList}
+          disabled={disabled || !editorReady}
+          onClick={() => editor?.chain().focus().toggleBulletList().run()}
+        />
+        {!compact && (
+          <>
+            <ToolbarButton
+              label={L.orderedList}
+              icon={<ListOrderedIcon size={16} />}
+              isActive={f?.orderedList}
+              disabled={disabled || !editorReady}
+              onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+            />
+            <ToolbarButton
+              label={L.blockquote}
+              icon={<QuoteIcon size={16} />}
+              isActive={f?.blockquote}
+              disabled={disabled || !editorReady}
+              onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+            />
+            <ToolbarButton
+              label={L.codeBlock}
+              icon={<Code2Icon size={16} />}
+              isActive={f?.codeBlock}
+              disabled={disabled || !editorReady}
+              onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
+            />
 
-      <ToolbarButton
-        editor={editor}
-        label="Link"
-        icon={<LinkIcon size={16} />}
-        isActive={editor?.isActive("link")}
-        run={promptLink}
-        disabled={disabled}
-      />
-      <ToolbarButton
-        editor={editor}
-        label="Horizontal rule"
-        icon={<MinusIcon size={16} />}
-        run={() => editor?.chain().focus().setHorizontalRule().run()}
-        disabled={disabled}
-      />
+            <ToolbarSeparator />
 
-      <ToolbarSeparator />
+            <ToolbarButton
+              label={L.horizontalRule}
+              icon={<MinusIcon size={16} />}
+              disabled={disabled || !editorReady}
+              onClick={() => editor?.chain().focus().setHorizontalRule().run()}
+            />
+          </>
+        )}
 
-      <ToolbarButton
-        editor={editor}
-        label="Undo"
-        icon={<Undo2Icon size={16} />}
-        canRun={() => !!editor?.can().undo()}
-        run={() => editor?.chain().focus().undo().run()}
-        disabled={disabled}
+        <ToolbarSeparator />
+
+        <ToolbarButton
+          label={L.undo}
+          icon={<Undo2Icon size={16} />}
+          disabled={disabled || !editorReady || !f?.canUndo}
+          onClick={() => editor?.chain().focus().undo().run()}
+        />
+        <ToolbarButton
+          label={L.redo}
+          icon={<Redo2Icon size={16} />}
+          disabled={disabled || !editorReady || !f?.canRedo}
+          onClick={() => editor?.chain().focus().redo().run()}
+        />
+      </div>
+
+      {panel === "color" && editor && (
+        <ColorRow
+          editor={editor}
+          current={f?.color}
+          onClose={() => setPanel("none")}
+          labels={L}
+        />
+      )}
+      {panel === "link" && editor && (
+        <LinkRow
+          editor={editor}
+          hasLink={!!f?.link}
+          onClose={() => setPanel("none")}
+          labels={L}
+        />
+      )}
+    </div>
+  );
+}
+
+/** 텍스트 색 선택 행 — 스와치 클릭 시 적용 후 닫힘. mousedown preventDefault 로 에디터 포커스 유지. */
+function ColorRow({
+  editor,
+  current,
+  onClose,
+  labels: L,
+}: {
+  editor: Editor;
+  current: string | undefined;
+  onClose: () => void;
+  labels: RichTextEditorLabels;
+}) {
+  const choose = (value: string | null) => {
+    if (value === null) editor.chain().focus().unsetColor().run();
+    else editor.chain().focus().setColor(value).run();
+    onClose();
+  };
+  return (
+    <div className="sh-ui-rte__panel sh-ui-rte__panel--swatches">
+      <Swatch
+        label={L.colorDefault}
+        onChoose={() => choose(null)}
+        isActive={!current}
+      >
+        <span className="sh-ui-rte__swatch-a">A</span>
+      </Swatch>
+      {COLOR_SWATCHES.map((c) => {
+        const value = colorValue(c.cssVar);
+        return (
+          <Swatch
+            key={c.key}
+            label={L[c.labelKey]}
+            color={value}
+            isActive={current === value}
+            onChoose={() => choose(value)}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function Swatch({
+  label,
+  color,
+  isActive,
+  onChoose,
+  children,
+}: {
+  label: string;
+  color?: string;
+  isActive?: boolean;
+  onChoose: () => void;
+  children?: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      className={cn("sh-ui-rte__swatch", isActive && "is-active")}
+      style={color ? { backgroundColor: color } : undefined}
+      aria-label={label}
+      aria-pressed={isActive || undefined}
+      title={label}
+      onMouseDown={(e) => {
+        e.preventDefault();
+      }}
+      onClick={onChoose}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** 인라인 링크 편집 행 — window.prompt 대체. 적용/제거/취소(아이콘). Enter 적용, Esc 취소. */
+function LinkRow({
+  editor,
+  hasLink,
+  onClose,
+  labels: L,
+}: {
+  editor: Editor;
+  hasLink: boolean;
+  onClose: () => void;
+  labels: RichTextEditorLabels;
+}) {
+  const [url, setUrl] = useState(
+    () =>
+      (editor.getAttributes("link").href as string | undefined) ?? "https://",
+  );
+
+  const apply = () => {
+    applyLink(editor, url);
+    onClose();
+  };
+  const remove = () => {
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    onClose();
+  };
+
+  return (
+    <div className="sh-ui-rte__panel">
+      <input
+        type="url"
+        value={url}
+        autoFocus
+        onChange={(e) => setUrl(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            apply();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            onClose();
+          }
+        }}
+        placeholder="https://"
+        aria-label={L.linkUrl}
+        className="sh-ui-rte__link-input"
       />
-      <ToolbarButton
-        editor={editor}
-        label="Redo"
-        icon={<Redo2Icon size={16} />}
-        canRun={() => !!editor?.can().redo()}
-        run={() => editor?.chain().focus().redo().run()}
-        disabled={disabled}
-      />
+      <button
+        type="button"
+        className="sh-ui-rte__btn"
+        aria-label={L.apply}
+        title={L.apply}
+        onClick={apply}
+      >
+        <CheckIcon size={16} />
+      </button>
+      {hasLink && (
+        <button
+          type="button"
+          className="sh-ui-rte__btn"
+          aria-label={L.removeLink}
+          title={L.removeLink}
+          onClick={remove}
+        >
+          <UnlinkIcon size={16} />
+        </button>
+      )}
+      <button
+        type="button"
+        className="sh-ui-rte__btn"
+        aria-label={L.cancel}
+        title={L.cancel}
+        onClick={onClose}
+      >
+        <XIcon size={16} />
+      </button>
     </div>
   );
 }
 
 interface ToolbarButtonProps {
-  editor: Editor | null;
   label: string;
   icon: React.ReactNode;
   isActive?: boolean;
-  /** false 를 반환하면 비활성. */
-  canRun?: () => boolean;
-  run: () => void;
-  disabled: boolean;
+  disabled?: boolean;
+  onClick: () => void;
 }
 
 function ToolbarButton({
-  editor,
   label,
   icon,
   isActive,
-  canRun,
-  run,
   disabled,
+  onClick,
 }: ToolbarButtonProps) {
-  const isDisabled = disabled || !editor || (canRun ? !canRun() : false);
   return (
     <button
       type="button"
@@ -332,11 +684,11 @@ function ToolbarButton({
       aria-label={label}
       aria-pressed={isActive || undefined}
       title={label}
-      disabled={isDisabled}
+      disabled={disabled}
       onMouseDown={(e) => {
         e.preventDefault();
       }}
-      onClick={run}
+      onClick={onClick}
     >
       {icon}
     </button>
