@@ -56,6 +56,16 @@ const COMPONENTS = [
 // - form / theme — non-styled 로직 컴포넌트, 시각 회귀 의미 없음
 // - page-toc — 페이지 자체에 Preview 가 없음
 
+// calendar / date-picker 등은 `new Date()` 로 "오늘" 을 렌더하므로 캡쳐 시점에 따라
+// 그리드/선택일이 바뀌어 스냅샷이 비결정적이 된다 (월이 넘어가면 항상 실패).
+// 시계를 고정 시각으로 박아 결정적으로 만든다. 시각은 기존 baseline 캡쳐 날짜에 맞춤
+// (2026-05-15). noon UTC 라 KST(로컬)·UTC(CI) 어디서 돌려도 같은 날짜(5/15)를 렌더한다.
+const FROZEN_NOW = new Date("2026-05-15T12:00:00Z");
+
+test.beforeEach(async ({ page }) => {
+  await page.clock.setFixedTime(FROZEN_NOW);
+});
+
 for (const name of COMPONENTS) {
   test(`/components/${name} preview snapshot`, async ({ page }) => {
     await page.goto(`/ko/components/${name}`);
