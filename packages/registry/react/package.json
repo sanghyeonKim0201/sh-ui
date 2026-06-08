@@ -9,8 +9,8 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@base-ui/react": "^1.5.0",
@@ -18,19 +18,19 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
-    "@types/node": "^25.9.1",
-    "@types/react": "^19.2.15",
+    "@types/node": "^25.9.2",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.0.0",
     "@vanilla-extract/css": "^1.20.1",
     "@vanilla-extract/vite-plugin": "^5.2.2",
-    "@vitest/coverage-v8": "^4.1.7",
+    "@vitest/coverage-v8": "^4.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jsdom": "^29.1.1",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-hook-form": "^7.77.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-hook-form": "^7.78.0",
     "tailwind-merge": "^3.6.0",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.8"
   }
 }
