@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "fs-extra": "^11.3.5",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.8"
   },
   "publishConfig": {
     "access": "public"
