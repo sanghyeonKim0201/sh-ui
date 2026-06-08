@@ -11,4 +11,4 @@ packages:
 packageExtensions:
   tiptap-markdown:
     peerDependencies:
-      "@tiptap/pm": "^3.24.0"
+      "@tiptap/pm": "^3.26.0"
