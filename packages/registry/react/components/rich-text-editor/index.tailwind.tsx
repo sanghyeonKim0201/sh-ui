@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   useEditor,
   useEditorState,
   EditorContent,
   type Editor,
 } from "@tiptap/react";
+import type { AnyExtension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import { TextStyle, Color } from "@tiptap/extension-text-style";
+import { Markdown } from "tiptap-markdown";
 import { cn } from "@SH_UI_UTILS@";
 import {
   BoldIcon,
@@ -95,9 +98,20 @@ const DEFAULT_LABELS: RichTextEditorLabels = {
 };
 
 export interface RichTextEditorProps {
+  /** 입출력 포맷. 기본 'html'(하위호환). 'markdown' 이면 value/defaultValue/onChange 가 markdown 문자열. */
+  format?: "html" | "markdown";
   value?: string;
   defaultValue?: string;
-  onChange?: (html: string) => void;
+  /** format='html' 이면 HTML, format='markdown' 이면 markdown 문자열을 넘긴다. */
+  onChange?: (value: string) => void;
+  /** Enter 로 제출. true 면 Enter=onSubmit, Shift+Enter=줄바꿈. 기본 false. */
+  submitOnEnter?: boolean;
+  /** 제출 콜백(submitOnEnter 또는 외부 버튼). */
+  onSubmit?: () => void;
+  /** StarterKit·기본 확장 뒤에 append 할 추가 TipTap 확장(멘션 등). */
+  extensions?: AnyExtension[];
+  /** 에디터 생성 시 콜백(외부에서 인스턴스 제어). */
+  onCreate?: (editor: Editor) => void;
   placeholder?: string;
   readOnly?: boolean;
   hideToolbar?: boolean;
@@ -127,6 +141,14 @@ const COLOR_SWATCHES = [
 
 const colorValue = (cssVar: string) => `var(${cssVar})`;
 
+/** tiptap-markdown storage 로 현재 doc 을 markdown 문자열로 직렬화. */
+function readMarkdown(editor: Editor): string {
+  const storage = editor.storage as {
+    markdown?: { getMarkdown(): string };
+  };
+  return storage.markdown?.getMarkdown() ?? editor.getHTML();
+}
+
 /** 선택 영역(없으면 URL 텍스트 삽입)에 링크를 적용. */
 function applyLink(editor: Editor, rawUrl: string) {
   const url = rawUrl.trim();
@@ -154,9 +176,14 @@ function applyLink(editor: Editor, rawUrl: string) {
 type ToolbarPanel = "none" | "link" | "color";
 
 export function RichTextEditor({
+  format = "html",
   value: valueProp,
   defaultValue,
   onChange,
+  submitOnEnter = false,
+  onSubmit,
+  extensions,
+  onCreate,
   placeholder,
   readOnly = false,
   hideToolbar = false,
@@ -172,6 +199,17 @@ export function RichTextEditor({
   const [isFocused, setIsFocused] = useState(false);
   const [panel, setPanel] = useState<ToolbarPanel>("none");
   const L = labels ? { ...DEFAULT_LABELS, ...labels } : DEFAULT_LABELS;
+
+  // onSubmit/submitOnEnter 를 ref 로 잡아 handleKeyDown 이 stale closure 가 되지 않게
+  // 한다(에디터를 매 렌더마다 재생성하지 않으려고 콜백은 useEditor deps 에서 제외).
+  const onSubmitRef = useRef(onSubmit);
+  onSubmitRef.current = onSubmit;
+  const submitOnEnterRef = useRef(submitOnEnter);
+  submitOnEnterRef.current = submitOnEnter;
+
+  /** format 에 맞춰 에디터의 현재 본문을 직렬화(html/markdown). */
+  const readValue = (ed: Editor): string =>
+    format === "markdown" ? readMarkdown(ed) : ed.getHTML();
 
   const editor = useEditor({
     extensions: [
@@ -189,24 +227,45 @@ export function RichTextEditor({
       }),
       TextStyle,
       Color.configure({ types: ["textStyle"] }),
+      // markdown 모드에서만 직렬화 확장 등록 — html 모드(기본)는 기존과 동일.
+      ...(format === "markdown" ? [Markdown.configure({ html: false })] : []),
+      ...(extensions ?? []),
     ],
+    // markdown 모드에서 tiptap-markdown 은 문자열을 markdown 으로 파싱한다.
     content: valueProp ?? defaultValue ?? "",
     editable: !readOnly,
     immediatelyRender: false,
+    onCreate: ({ editor }) => {
+      onCreate?.(editor);
+    },
     onUpdate: ({ editor }) => {
-      onChange?.(editor.getHTML());
+      onChange?.(readValue(editor));
     },
     editorProps: {
       attributes: { class: "sh-ui-rte__content", "aria-label": ariaLabel },
+      handleKeyDown: (_view, event) => {
+        if (
+          submitOnEnterRef.current &&
+          event.key === "Enter" &&
+          !event.shiftKey
+        ) {
+          event.preventDefault();
+          onSubmitRef.current?.();
+          return true;
+        }
+        return false;
+      },
     },
   });
 
   useEffect(() => {
     if (!isControlled) return;
     if (!editor) return;
-    if (editor.getHTML() === valueProp) return;
+    if (readValue(editor) === valueProp) return;
     editor.commands.setContent(valueProp ?? "", { emitUpdate: false });
-  }, [isControlled, valueProp, editor]);
+    // readValue 는 format 에 의존 — format 변경 시 재동기화.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isControlled, valueProp, editor, format]);
 
   useEffect(() => {
     editor?.setEditable(!readOnly);
