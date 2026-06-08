@@ -104,6 +104,10 @@ export interface RichTextEditorProps {
   /**
    * 입출력 포맷. 기본 'html'(하위호환). 'markdown' 이면 value/defaultValue/onChange 가
    * markdown 문자열로 동작한다(tiptap-markdown 직렬화).
+   *
+   * 주의: 이 값은 **마운트 시점에만** 읽힌다 — 내부 `useEditor` 는 한 번만 생성되므로
+   * 런타임에 format 을 바꾸려면 에디터를 리마운트해야 한다(예: key prop 교체).
+   * 동일 제약이 `extensions` 에도 적용된다.
    * @default "html"
    */
   format?: "html" | "markdown";
@@ -127,7 +131,10 @@ export interface RichTextEditorProps {
   submitOnEnter?: boolean;
   /** 제출 콜백(submitOnEnter 또는 외부 버튼). */
   onSubmit?: () => void;
-  /** StarterKit·기본 확장 뒤에 append 할 추가 TipTap 확장(멘션 등). */
+  /**
+   * StarterKit·기본 확장 뒤에 append 할 추가 TipTap 확장(멘션 등).
+   * 주의: `format` 과 마찬가지로 마운트 시점에만 읽힌다 — 런타임 변경은 리마운트 필요.
+   */
   extensions?: AnyExtension[];
   /** 에디터 생성 시 콜백(외부에서 인스턴스 제어). */
   onCreate?: (editor: Editor) => void;
@@ -169,7 +176,9 @@ function readMarkdown(editor: Editor): string {
   const storage = editor.storage as {
     markdown?: { getMarkdown(): string };
   };
-  return storage.markdown?.getMarkdown() ?? editor.getHTML();
+  // markdown storage 가 없으면(직렬화 확장 미등록) HTML 을 흘려보내면 포맷이 어긋난다 —
+  // markdown 을 기대한 호출자에게 HTML 을 주지 않도록 빈 문자열로 폴백.
+  return storage.markdown?.getMarkdown() ?? "";
 }
 
 /** 선택 영역(없으면 URL 텍스트 삽입)에 링크를 적용. */
@@ -240,6 +249,12 @@ export function RichTextEditor({
   const submitOnEnterRef = useRef(submitOnEnter);
   submitOnEnterRef.current = submitOnEnter;
 
+  // 마지막으로 onChange 로 흘려보냈거나(우리 echo) controlled-sync 로 주입한 value.
+  // controlled-sync 가 자기 자신의 emit 을 다시 setContent 하는 루프(커서 점프)를 막는다.
+  // 비교는 정규화된 직렬화 형태가 아니라 "우리가 마지막으로 본 문자열" 기준이라
+  // markdown 정규화(`**hi**` vs `**hi**\n`)로도 깨지지 않는다.
+  const lastSyncedRef = useRef<string | undefined>(undefined);
+
   /** format 에 맞춰 에디터의 현재 본문을 직렬화(html/markdown). */
   const readValue = (ed: Editor): string =>
     format === "markdown" ? readMarkdown(ed) : ed.getHTML();
@@ -272,7 +287,10 @@ export function RichTextEditor({
       onCreate?.(editor);
     },
     onUpdate: ({ editor }) => {
-      onChange?.(readValue(editor));
+      const output = readValue(editor);
+      // 우리가 방금 emit 한 값을 controlled-sync 가 다시 주입하지 않도록 기록.
+      lastSyncedRef.current = output;
+      onChange?.(output);
     },
     editorProps: {
       attributes: {
@@ -283,7 +301,11 @@ export function RichTextEditor({
         if (
           submitOnEnterRef.current &&
           event.key === "Enter" &&
-          !event.shiftKey
+          !event.shiftKey &&
+          // IME 조합 확정 Enter 는 제출이 아님(한글 등 — 조합 확정을 잘못 제출하면
+          // 입력이 날아간다). isComposing + 레거시 keyCode 229 둘 다 가드.
+          !event.isComposing &&
+          event.keyCode !== 229
         ) {
           event.preventDefault();
           onSubmitRef.current?.();
@@ -294,15 +316,17 @@ export function RichTextEditor({
     },
   });
 
-  // controlled 모드에서만 외부 value 를 에디터 doc 에 동기화
+  // controlled 모드에서만 외부 value 를 에디터 doc 에 동기화.
+  // 직렬화 결과(readValue) 와 비교하면 markdown 정규화로 영원히 불일치 → 매 렌더 setContent
+  // → 커서 점프가 난다. 대신 "마지막으로 우리가 주고받은 문자열"(lastSyncedRef) 과 비교해
+  // 자기 echo 만 건너뛰고, 진짜 외부 변경(예: 채널 전환)은 항상 로드한다.
   useEffect(() => {
     if (!isControlled) return;
     if (!editor) return;
-    if (readValue(editor) === valueProp) return;
+    if (valueProp === lastSyncedRef.current) return;
+    lastSyncedRef.current = valueProp;
     editor.commands.setContent(valueProp ?? "", { emitUpdate: false });
-    // readValue 는 format 에 의존 — format 변경 시 재동기화.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isControlled, valueProp, editor, format]);
+  }, [isControlled, valueProp, editor]);
 
   useEffect(() => {
     editor?.setEditable(!readOnly);
