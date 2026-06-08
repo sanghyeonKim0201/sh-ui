@@ -504,10 +504,12 @@
       "dependencies": [
         "@tiptap/react",
         "@tiptap/pm",
+        "@tiptap/core",
         "@tiptap/starter-kit",
         "@tiptap/extension-placeholder",
         "@tiptap/extension-link",
         "@tiptap/extension-text-style",
+        "tiptap-markdown",
         "lucide-react"
       ],
       "registryDependencies": ["utils"]

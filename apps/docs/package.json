@@ -28,6 +28,7 @@
     "@codesandbox/sandpack-react": "^2.20.0",
     "@monaco-editor/react": "^4.7.0",
     "@tanstack/react-form": "^1.32.0",
+    "@tiptap/core": "^3.24.0",
     "@tiptap/extension-link": "^3.24.0",
     "@tiptap/extension-placeholder": "^3.24.0",
     "@tiptap/extension-text-style": "^3.24.0",
@@ -52,6 +53,7 @@
     "remark-gfm": "^4.0.1",
     "sh-ui-cli": "workspace:*",
     "shiki": "latest",
+    "tiptap-markdown": "0.9.0",
     "yup": "^1.7.1",
     "zod": "^4.4.3"
   },

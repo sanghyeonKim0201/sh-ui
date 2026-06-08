@@ -42,7 +42,7 @@
     "page-toc": "페이지 자동 목차 — 헤딩 스캔 · slugify · IntersectionObserver active 추적 · smooth scroll. routeKey 로 라우트 변경 자동 재스캔, levels/excludeSelector 커스터마이즈.",
     "code-editor": "CodeMirror 6 기반 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
     "markdown-editor": "마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
-    "rich-text-editor": "Tiptap 3 기반 WYSIWYG 에디터 — HTML 입출력, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
+    "rich-text-editor": "Tiptap 3 기반 WYSIWYG 에디터 — format='html'(기본) 또는 format='markdown'(tiptap-markdown 직렬화) I/O, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder. submitOnEnter+onSubmit(Enter 전송·Shift+Enter 줄바꿈), extensions(추가 확장 주입)·onCreate(에디터 인스턴스 접근). controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
     "base": "CSS 리셋 — base.css.",
     "breakpoints": "반응형 미디어 쿼리 토큰 — breakpoints.css.",
     "focus-ring": "공용 포커스 링 스타일 — focus-ring.css.",
