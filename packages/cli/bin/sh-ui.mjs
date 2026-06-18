@@ -38,6 +38,9 @@ const usage = `사용법:
   sh-ui mcp                        MCP 서버(stdio) 시작 — IDE-내 AI용
   sh-ui mcp init --client <name>   IDE MCP 설정 파일에 sh-ui 엔트리 자동 추가
                                    (claude-code | cursor | claude-desktop | codex)
+
+  각 명령의 상세 옵션은 \`sh-ui <command> --help\` 로 확인.
+
   옵션:
     --skip-install                 (add, rename-app) 외부 패키지 자동 설치 생략
     --diff                         (add) 파일을 쓰지 않고 변경 내역만 출력
