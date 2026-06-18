@@ -678,6 +678,10 @@ async function inferMonorepoPlatform(cwd) {
  * @param {string} [options.onConflict]           'prompt' | 'keep' | 'overwrite'
  */
 export async function addComponent(options = {}) {
+  // monorepo 라우팅은 컴포넌트별 registry 조회를 직접 하지 않고 add() 로 위임한다.
+  // 따라서 not-found 처리(오타 추천 포함)는 add.mjs 의 addComponent 가 공유 헬퍼
+  // buildNotFoundMessage 로 던지는 메시지를 그대로 쓴다 — standalone 경로와 동일,
+  // 메시지 로직 중복 없음 (DRY).
   const { add } = await import('../add.mjs');
 
   const cwd = options.cwd ? path.resolve(options.cwd) : process.cwd();
