@@ -17,6 +17,18 @@ import { THEME_BASES } from "./constants.js";
 import { parseBlocks, diffBlocks, applyAdditions } from "./tokens-diff.mjs";
 import { parseDartTokens, diffDartTokens } from "./tokens-diff-dart.mjs";
 
+export const HELP_TEXT = `sh-ui tokens — tokens.css 비교/업그레이드
+
+사용법:
+  sh-ui tokens diff                    tokens.css 와 buildTokens 결과 비교
+  sh-ui tokens upgrade --apply         추가된 변수만 적용 (사용자 편집 보존)
+  sh-ui tokens upgrade --replace       buildTokens 결과로 통째 덮어쓰기
+
+예:
+  sh-ui tokens diff
+  sh-ui tokens upgrade --apply
+`;
+
 async function loadTokensBuilder() {
   const url = pathToFileURL(resolve(getTokensRoot(), "build.mjs")).href;
   return import(url);

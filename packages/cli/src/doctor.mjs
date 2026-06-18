@@ -18,6 +18,20 @@ import {
   findMissingTokens,
 } from "./tokens-validate.mjs";
 
+export const HELP_TEXT = `sh-ui doctor — 프로젝트 정합성 점검
+
+사용법:
+  sh-ui doctor
+
+점검 항목:
+  config    sh-ui.config.json 존재·필드 유효성
+  tokens    tokens.css 정의·필요 변수 누락 여부
+  설치된 컴포넌트   소스/스타일 파일 정합성
+
+예:
+  sh-ui doctor
+`;
+
 const ICON = { ok: "✓", warn: "⚠", fail: "✗" };
 
 class Report {

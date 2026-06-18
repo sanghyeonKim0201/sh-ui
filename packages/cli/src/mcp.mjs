@@ -56,6 +56,20 @@ import { THEME_PRESET_NAMES } from "./create/theme/presets.js";
 import { decodeTheme } from "./create/theme/decode.js";
 import { encodeTheme } from "./create/theme/encode.js";
 
+export const HELP_TEXT = `sh-ui mcp — IDE-내 AI 용 MCP 서버 / 설정
+
+사용법:
+  sh-ui mcp                          MCP 서버(stdio) 시작
+  sh-ui mcp init --client <name>     IDE MCP 설정 파일에 sh-ui 엔트리 자동 추가
+
+옵션 (mcp init):
+  --client <name>   claude-code | cursor | claude-desktop | codex
+
+예:
+  sh-ui mcp
+  sh-ui mcp init --client claude-code
+`;
+
 const PLATFORMS = INIT_PLATFORMS;
 const BASES = THEME_BASES;
 const RADII = THEME_RADII;

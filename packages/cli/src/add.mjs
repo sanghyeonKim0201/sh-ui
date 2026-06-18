@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { select } from "@inquirer/prompts";
 import { formatUnifiedDiff } from "./diff.mjs";
+import { suggest } from "./levenshtein.mjs";
 import { getRegistryRoot, getTokensRoot, getPeerVersionsPath } from "./paths.mjs";
 import { THEME_BASES } from "./constants.js";
 import {
@@ -19,6 +20,25 @@ import {
   hasCrossComponentImport,
   rewriteCrossComponentImports,
 } from "./css-bundle.mjs";
+
+export const HELP_TEXT = `sh-ui add — 컴포넌트 소스를 프로젝트로 복사 + 필요한 패키지 자동 설치
+
+사용법:
+  sh-ui add <component...>
+  sh-ui add tokens          설정 기반 토큰 파일 생성 (특수값)
+
+옵션:
+  --skip-install   외부 패키지 자동 설치 생략
+  --diff           파일을 쓰지 않고 변경 내역(unified diff)만 출력
+  --force          기존 파일을 모두 덮어쓰기 (prompt 없음)
+  --keep           기존 파일을 모두 유지 (prompt 없음)
+  --app <name>     monorepo 라우팅 시 대상 ui-{name} 명시
+
+예:
+  sh-ui add button
+  sh-ui add button card --diff
+  sh-ui add tokens
+`;
 
 /**
  * 기존 파일과 registry 파일 내용이 다를 때 keep/overwrite 결정.
@@ -336,6 +356,16 @@ function effectiveFramework(entry, cssFramework) {
   return hasVariant ? cssFramework : "plain";
 }
 
+/** 컴포넌트 not-found 에러 메시지. 가까운 후보가 있으면 "혹시 …?" 를 덧붙인다. */
+export function buildNotFoundMessage(name, platform, candidates) {
+  const hits = suggest(name, candidates);
+  const hint = hits.length ? ` 혹시 ${hits.join(", ")}?` : "";
+  return (
+    `'${name}' 컴포넌트를 ${platform} 레지스트리에서 찾을 수 없습니다.${hint}` +
+    ` 전체 목록: sh-ui list --all`
+  );
+}
+
 async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, validationCtx) {
   const registryRoot = getRegistryRoot(config.platform);
   const registry = JSON.parse(
@@ -344,7 +374,7 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   const entry = registry.components?.[name];
   if (!entry) {
     throw new Error(
-      `'${name}' 컴포넌트를 ${config.platform} 레지스트리에서 찾을 수 없습니다.`,
+      buildNotFoundMessage(name, config.platform, Object.keys(registry.components ?? {})),
     );
   }
 
