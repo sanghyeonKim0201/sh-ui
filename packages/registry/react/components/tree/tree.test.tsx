@@ -1,0 +1,43 @@
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import * as React from "react";
+import { Tree } from "./index";
+import type { TreeNode } from "./types";
+
+const nodes: TreeNode[] = [
+  { id: "a", label: "Apple", children: [{ id: "a1", label: "Ant" }] },
+  { id: "b", label: "Banana" },
+];
+
+describe("Tree 렌더 + 상태", () => {
+  it("role=tree 와 최상위 treeitem 을 렌더", () => {
+    render(<Tree nodes={nodes} />);
+    expect(screen.getByRole("tree")).toBeTruthy();
+    const items = screen.getAllByRole("treeitem");
+    expect(items.length).toBe(2);
+  });
+
+  it("부모 toggle 클릭으로 비제어 확장 → 자식 노출", () => {
+    render(<Tree nodes={nodes} />);
+    fireEvent.click(screen.getByText("Apple"));
+    expect(screen.getByText("Ant")).toBeTruthy();
+    expect(screen.getByRole("treeitem", { name: /Apple/ }).getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("제어 selectedId 가 aria-selected 로 반영", () => {
+    render(<Tree nodes={nodes} selectedId="b" />);
+    expect(screen.getByRole("treeitem", { name: /Banana/ }).getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("노드 클릭이 onSelect 를 호출", () => {
+    const onSelect = vi.fn();
+    render(<Tree nodes={nodes} onSelect={onSelect} />);
+    fireEvent.click(screen.getByText("Banana"));
+    expect(onSelect).toHaveBeenCalledWith("b");
+  });
+
+  it("aria-level 이 깊이를 반영", () => {
+    render(<Tree nodes={nodes} defaultExpandedIds={["a"]} />);
+    expect(screen.getByRole("treeitem", { name: /Ant/ }).getAttribute("aria-level")).toBe("2");
+  });
+});
