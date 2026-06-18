@@ -40,4 +40,22 @@ describe("Tree 렌더 + 상태", () => {
     render(<Tree nodes={nodes} defaultExpandedIds={["a"]} />);
     expect(screen.getByRole("treeitem", { name: /Ant/ }).getAttribute("aria-level")).toBe("2");
   });
+
+  it("제어 expandedIds 는 외부 값이 우선 (클릭 무관)", () => {
+    const { rerender } = render(<Tree nodes={nodes} expandedIds={["a"]} />);
+    expect(screen.getByText("Ant")).toBeTruthy();
+    rerender(<Tree nodes={nodes} expandedIds={[]} />);
+    expect(screen.queryByText("Ant")).toBeNull();
+  });
+
+  it("disabled 노드 클릭은 onSelect 를 호출하지 않는다", () => {
+    const onSelect = vi.fn();
+    const dnodes = [
+      { id: "x", label: "Xenon", disabled: true },
+      { id: "y", label: "Yttrium" },
+    ];
+    render(<Tree nodes={dnodes} onSelect={onSelect} />);
+    fireEvent.click(screen.getByText("Xenon"));
+    expect(onSelect).not.toHaveBeenCalled();
+  });
 });

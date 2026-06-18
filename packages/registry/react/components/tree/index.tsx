@@ -52,7 +52,14 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
   };
 
   const visible = flattenVisible(nodes, expanded);
+  const visibleMap = React.useMemo(() => new Map(visible.map((v) => [v.id, v])), [visible]);
   const [focusId, setFocusId] = React.useState<string | null>(visible[0]?.id ?? null);
+
+  React.useEffect(() => {
+    if (focusId && !visibleMap.has(focusId)) {
+      setFocusId(visible[0]?.id ?? null);
+    }
+  }, [visibleMap, focusId, visible]);
 
   const toggle = (id: string) => {
     const next = new Set(expanded);
@@ -73,7 +80,7 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
       {siblings.map((n) => {
         const hasChildren = !!n.children?.length;
         const isExpanded = hasChildren && expanded.has(n.id);
-        const meta = visible.find((v) => v.id === n.id);
+        const meta = visibleMap.get(n.id);
         const depth = meta?.level ?? level;
         return (
           <div key={n.id} className="sh-ui-tree__node">
