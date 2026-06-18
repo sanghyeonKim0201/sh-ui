@@ -151,7 +151,7 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
         const meta = visibleMap.get(n.id);
         const depth = meta?.level ?? level;
         return (
-          <div key={n.id} className={styles.tree__node}>
+          <div key={n.id}>
             <div
               role="treeitem"
               ref={(el) => {
