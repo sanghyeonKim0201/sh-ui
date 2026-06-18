@@ -49,6 +49,10 @@ describe("nextFocusable / prevFocusable", () => {
   it("처음에서 이전은 null", () => {
     expect(prevFocusable(v, "a")).toBeNull();
   });
+  it("fromId 가 없으면 next/prev 모두 null", () => {
+    expect(nextFocusable(v, "nonexistent")).toBeNull();
+    expect(prevFocusable(v, "nonexistent")).toBeNull();
+  });
 });
 
 describe("findByTypeahead", () => {
@@ -61,5 +65,8 @@ describe("findByTypeahead", () => {
   });
   it("disabled 는 typeahead 대상에서 제외", () => {
     expect(findByTypeahead(v, "arc", "a")).toBeNull();
+  });
+  it("빈 prefix 는 null", () => {
+    expect(findByTypeahead(v, "", "a")).toBeNull();
   });
 });

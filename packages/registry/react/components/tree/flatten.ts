@@ -1,5 +1,10 @@
 import type { TreeNode, VisibleNode } from "./types";
 
+/**
+ * 노드 label 을 typeahead 비교용 문자열로 변환한다.
+ * label 이 string 이면 그 값을, JSX 등 비문자열 ReactNode 면 "" 를 반환한다
+ * (비문자열 라벨 노드는 typeahead 검색 대상에서 제외됨).
+ */
 function labelText(node: TreeNode): string {
   return typeof node.label === "string" ? node.label : "";
 }
