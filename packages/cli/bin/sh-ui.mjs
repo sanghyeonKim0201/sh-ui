@@ -66,6 +66,11 @@ try {
       await init({ cwd: process.cwd(), args: rest });
       break;
     case "add": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/add.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const skipInstall = rest.includes("--skip-install");
       const diffMode = rest.includes("--diff");
       const force = rest.includes("--force");
@@ -113,11 +118,21 @@ try {
       break;
     }
     case "list": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/list.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const all = rest.includes("--all");
       await list({ cwd: process.cwd(), all });
       break;
     }
     case "doctor": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/doctor.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const { doctor } = await import("../src/doctor.mjs");
       const { existsSync, readdirSync } = await import("node:fs");
       const { resolve } = await import("node:path");
@@ -163,12 +178,22 @@ try {
       break;
     }
     case "upgrade-cli": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/upgrade-cli.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const apply = rest.includes("--apply");
       const { runUpgradeCli } = await import("../src/upgrade-cli.mjs");
       await runUpgradeCli({ cwd: process.cwd(), apply });
       break;
     }
     case "theme": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/theme-extract.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const sub = rest[0];
       const flags = rest.slice(1);
       if (sub === "extract") {
@@ -183,6 +208,11 @@ try {
       break;
     }
     case "tokens": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/tokens-cmd.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       // sh-ui tokens diff
       // sh-ui tokens upgrade --apply | --replace
       const sub = rest[0];
@@ -216,6 +246,12 @@ try {
     case "mcp": {
       // `sh-ui mcp init ...` → 설정 파일에 엔트리 추가
       // `sh-ui mcp`         → MCP 서버 시작
+      // 단, `sh-ui mcp --help` 는 mcp HELP_TEXT 출력 (mcp init 의 인자 처리는 mcp-init.mjs 가 담당).
+      if (rest[0] !== "init" && (rest.includes("--help") || rest.includes("-h"))) {
+        const { HELP_TEXT } = await import("../src/mcp.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       if (rest[0] === "init") {
         const { mcpInit } = await import("../src/mcp-init.mjs");
         await mcpInit({ cwd: process.cwd(), args: rest.slice(1) });
@@ -226,6 +262,11 @@ try {
       break;
     }
     case "rename-app": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/rename-app.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const yes = rest.includes("--yes");
       const dryRun = rest.includes("--dry-run");
       const skipInstall = rest.includes("--skip-install");
@@ -241,6 +282,11 @@ try {
       break;
     }
     case "migrate": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/migrate-bundled.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       // sh-ui migrate bundled [--apply] [--bundle <path>]
       const sub = rest[0];
       const flags = rest.slice(1);
@@ -257,6 +303,11 @@ try {
       break;
     }
     case "migrate-v065": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/migrate-v065.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const apply = rest.includes("--apply");
       const skipImportRewrite = rest.includes("--skip-import-rewrite");
       const { migrateToV065 } = await import("../src/migrate-v065.mjs");
@@ -270,6 +321,11 @@ try {
     }
     case "remove":
     case "rm": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/remove.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const force = rest.includes("--force");
       const dryRun = rest.includes("--dry-run");
       const names = rest.filter((a) => !a.startsWith("--"));

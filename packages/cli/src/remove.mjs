@@ -2,6 +2,21 @@ import { readFile, rm, rmdir, readdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, resolve, relative } from "node:path";
 import { getRegistryRoot } from "./paths.mjs";
+
+export const HELP_TEXT = `sh-ui remove — 설치된 컴포넌트 파일 삭제
+
+사용법:
+  sh-ui remove <component...>
+
+옵션:
+  --force     사용자가 수정한 파일도 삭제
+  --dry-run   변경 대상만 출력하고 실제로는 삭제하지 않음
+
+예:
+  sh-ui remove button
+  sh-ui remove button card --dry-run
+`;
+
 import {
   removeSection,
   isStyleFile,

@@ -23,7 +23,7 @@ export const HELP_TEXT = `sh-ui init — sh-ui.config.json 생성 (기존 프로
   --base <neutral|zinc|...>    색 베이스
   --radius <none|sm|md|lg|xl|full>  모서리 반경
   --mode <light|dark|light-dark>    색 모드
-  --cssFramework <plain|tailwind|css-modules|vanilla-extract>  CSS 전략
+  --cssFramework <plain|tailwind|css-modules>  CSS 전략 (vanilla-extract 예정)
   --force                      기존 sh-ui.config.json 덮어쓰기
   --yes                        대화형 프롬프트 생략 (기본값 채택)
 

@@ -3,6 +3,19 @@ import { existsSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { getRegistryRoot } from "./paths.mjs";
 
+export const HELP_TEXT = `sh-ui list — 현재 설치된 컴포넌트 목록 표시
+
+사용법:
+  sh-ui list
+
+옵션:
+  --all   설치되지 않은 컴포넌트까지 모두 표시
+
+예:
+  sh-ui list
+  sh-ui list --all
+`;
+
 function resolveDest(template, config) {
   return template.replace(/\{([a-zA-Z0-9_]+)\}/g, (m, key) => {
     const v = config.paths?.[key];

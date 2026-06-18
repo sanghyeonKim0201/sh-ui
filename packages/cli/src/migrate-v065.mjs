@@ -14,6 +14,20 @@ import * as fsp from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 
+export const HELP_TEXT = `sh-ui migrate-v065 — v0.64.x → v0.65 자동 마이그레이션
+
+사용법:
+  sh-ui migrate-v065             ui-app 컴포넌트를 ui-core 단일 SoT 로 dedup 이동
+
+옵션:
+  --dry-run   변경 plan 만 출력 (기본값 — 미지정 시 동작)
+  --apply     실제 적용
+
+예:
+  sh-ui migrate-v065
+  sh-ui migrate-v065 --apply
+`;
+
 const COMPONENT_KINDS = ["components", "hooks", "lib"];
 
 async function fileExists(p) {

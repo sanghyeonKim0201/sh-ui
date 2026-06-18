@@ -17,6 +17,19 @@ import { resolve, relative } from "node:path";
 import { parseBlocks } from "./tokens-diff.mjs";
 import { encodeTheme } from "./create/theme/encode.js";
 
+export const HELP_TEXT = `sh-ui theme — 현재 토큰을 테마 코드로 추출
+
+사용법:
+  sh-ui theme extract            tokens.css 의 색·radius 를 base64 로 추출 (stdout)
+
+옵션:
+  --out <path>   추출 결과를 stdout 대신 파일로 저장
+
+예:
+  sh-ui theme extract
+  sh-ui theme extract --out theme.txt
+`;
+
 /**
  * Dart 의 ShUiColorTokens 필드명 ↔ TOKEN_KEYS (hyphen) 매핑.
  * inject.js 의 DART_FIELD_SOURCES 와 같은 매핑을 reverse 로 사용.
