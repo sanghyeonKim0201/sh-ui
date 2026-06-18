@@ -4,6 +4,8 @@ import { add } from "../src/add.mjs";
 import { list } from "../src/list.mjs";
 import { remove } from "../src/remove.mjs";
 import { findShUiContext } from "../src/resolve-context.mjs";
+import { suggest } from "../src/levenshtein.mjs";
+import { KNOWN_COMMANDS } from "../src/commands.mjs";
 
 const [, , cmd, ...rest] = process.argv;
 
@@ -280,10 +282,12 @@ try {
     case "--help":
       console.log(usage);
       break;
-    default:
-      console.error(`알 수 없는 명령: ${cmd}\n`);
+    default: {
+      const hits = suggest(cmd, KNOWN_COMMANDS);
+      console.error(`알 수 없는 명령: ${cmd}` + (hits.length ? ` — 혹시 ${hits.join(", ")}?` : "") + "\n");
       console.error(usage);
       process.exit(1);
+    }
   }
 } catch (err) {
   console.error(`✗ ${err.message}`);

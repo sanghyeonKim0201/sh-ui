@@ -19,3 +19,17 @@ describe('buildNotFoundMessage (add)', () => {
     expect(msg).toContain('sh-ui list --all');
   });
 });
+
+describe('명령 추천', () => {
+  it('KNOWN_COMMANDS 가 노출되고 add 를 포함', async () => {
+    const { KNOWN_COMMANDS } = await import('../src/commands.mjs');
+    expect(KNOWN_COMMANDS).toContain('add');
+    expect(KNOWN_COMMANDS).toContain('create');
+  });
+
+  it('오타 명령에 가까운 후보를 제안', async () => {
+    const { suggest } = await import('../src/levenshtein.mjs');
+    const { KNOWN_COMMANDS } = await import('../src/commands.mjs');
+    expect(suggest('ad', KNOWN_COMMANDS)).toContain('add');
+  });
+});
