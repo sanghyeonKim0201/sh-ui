@@ -366,6 +366,12 @@ ShUiTree(
             default: `"md"`,
             description: "밀도. sm은 좁은 사이드바용 컴팩트 변형.",
           },
+          {
+            prop: "className",
+            type: "string",
+            default: "—",
+            description: "루트 요소 클래스. .sh-ui-tree__item 등 셀렉터로 스타일을 덮어쓸 때 사용.",
+          },
         ]}
       />
 
