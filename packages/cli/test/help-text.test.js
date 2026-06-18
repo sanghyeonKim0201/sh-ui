@@ -1,4 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import os from 'node:os';
+import fs from 'node:fs';
+import path from 'node:path';
 
 describe('HELP_TEXT — init', () => {
   it('핵심 플래그를 포함', async () => {
@@ -29,5 +34,38 @@ describe('HELP_TEXT — 전체 명령', () => {
     const { HELP_TEXT } = await import(mod);
     expect(HELP_TEXT, `${mod} 에 HELP_TEXT export 필요`).toBeTypeOf('string');
     for (const t of tokens) expect(HELP_TEXT).toContain(t);
+  });
+});
+
+describe('bin --help 통합', () => {
+  const binPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../bin/sh-ui.mjs');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sh-ui-help-'));
+
+  const cases = [
+    ['add', 'sh-ui add'],
+    ['doctor', 'sh-ui doctor'],
+    ['tokens', 'sh-ui tokens'],
+    ['mcp', 'sh-ui mcp'],
+    ['list', 'sh-ui list'],
+    ['remove', 'sh-ui remove'],
+    ['rename-app', 'sh-ui rename-app'],
+  ];
+
+  it.each(cases)('%s --help 가 컨텍스트 없이 help 를 출력하고 exit 0', (cmd, marker) => {
+    const out = execFileSync('node', [binPath, cmd, '--help'], { cwd: tmp, encoding: 'utf8' });
+    expect(out).toContain(marker);
+  });
+
+  it('-h 단축도 동작 (add)', () => {
+    const out = execFileSync('node', [binPath, 'add', '-h'], { cwd: tmp, encoding: 'utf8' });
+    expect(out).toContain('sh-ui add');
+  });
+
+  afterAll(() => {
+    try {
+      fs.rmSync(tmp, { recursive: true });
+    } catch {
+      // 정리 실패는 무시 (임시 디렉토리는 OS가 회수)
+    }
   });
 });
