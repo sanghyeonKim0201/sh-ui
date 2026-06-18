@@ -82,17 +82,16 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
   };
 
   const onItemKeyDown = (e: React.KeyboardEvent, n: TreeNode, hasChildren: boolean) => {
-    const vis = flattenVisible(nodes, expanded);
     switch (e.key) {
       case "ArrowDown": {
         e.preventDefault();
-        const nx = nextFocusable(vis, n.id);
+        const nx = nextFocusable(visible, n.id);
         if (nx) focusNode(nx.id);
         break;
       }
       case "ArrowUp": {
         e.preventDefault();
-        const pv = prevFocusable(vis, n.id);
+        const pv = prevFocusable(visible, n.id);
         if (pv) focusNode(pv.id);
         break;
       }
@@ -109,22 +108,22 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
         e.preventDefault();
         if (hasChildren && expanded.has(n.id)) toggle(n.id);
         else {
-          const meta = vis.find((v) => v.id === n.id);
+          const meta = visibleMap.get(n.id);
           if (meta?.parentId) focusNode(meta.parentId);
         }
         break;
       }
       case "Home": {
         e.preventDefault();
-        const first = vis.find((v) => !v.disabled);
+        const first = visible.find((v) => !v.disabled);
         if (first) focusNode(first.id);
         break;
       }
       case "End": {
         e.preventDefault();
-        for (let i = vis.length - 1; i >= 0; i--)
-          if (!vis[i].disabled) {
-            focusNode(vis[i].id);
+        for (let i = visible.length - 1; i >= 0; i--)
+          if (!visible[i].disabled) {
+            focusNode(visible[i].id);
             break;
           }
         break;
@@ -137,7 +136,7 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
       }
       default: {
         if (e.key.length === 1 && /\S/.test(e.key)) {
-          const hit = findByTypeahead(vis, e.key, n.id);
+          const hit = findByTypeahead(visible, e.key, n.id);
           if (hit) focusNode(hit.id);
         }
       }
