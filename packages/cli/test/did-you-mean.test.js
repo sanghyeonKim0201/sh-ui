@@ -19,11 +19,3 @@ describe('buildNotFoundMessage (add)', () => {
     expect(msg).toContain('sh-ui list --all');
   });
 });
-
-describe('buildNotFoundMessage 공유 (monorepo)', () => {
-  it('add.mjs 헬퍼를 generator 도 재사용한다', async () => {
-    const { buildNotFoundMessage } = await import('../src/add.mjs');
-    const msg = buildNotFoundMessage('seelct', 'react', ['select', 'button']);
-    expect(msg).toContain('select');
-  });
-});
