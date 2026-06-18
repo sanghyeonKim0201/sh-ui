@@ -115,6 +115,7 @@ const components: { title: string; href: string }[] = [
   { title: "Toast", href: "/components/toast" },
   { title: "Toggle", href: "/components/toggle" },
   { title: "Tooltip", href: "/components/tooltip" },
+  { title: "Tree", href: "/components/tree" },
 ];
 
 export function AppSidebar() {
