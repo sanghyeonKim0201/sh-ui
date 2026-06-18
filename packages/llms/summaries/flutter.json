@@ -37,6 +37,7 @@
     "progress": "ShUiProgress — 선형 진행률, indeterminate.",
     "spinner": "ShUiSpinner — 원형 로딩.",
     "separator": "ShUiSeparator — 구분선 (horizontal/vertical).",
-    "skeleton": "ShUiSkeleton — 로딩 플레이스홀더."
+    "skeleton": "ShUiSkeleton — 로딩 플레이스홀더.",
+    "tree": "ShUiTree — 계층 데이터 트리. 확장/축소 + 단일 선택(제어·비제어). ShUiTreeNode(id/label/children/icon/disabled) 재귀. 키보드(화살표·Home/End·Enter/Space)·Semantics. ShUiTreeSize sm/md."
   }
 }
