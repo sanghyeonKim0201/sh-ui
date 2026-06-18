@@ -15,6 +15,19 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 
+export const HELP_TEXT = `sh-ui upgrade-cli — sh-ui-cli 자체를 최신으로 업그레이드
+
+사용법:
+  sh-ui upgrade-cli              최신 버전 확인 + 변경 내역 미리보기
+
+옵션:
+  --apply   실제 설치 후 진단 (미지정 시 미리보기만)
+
+예:
+  sh-ui upgrade-cli
+  sh-ui upgrade-cli --apply
+`;
+
 const CLI_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REGISTRY_URL = "https://registry.npmjs.org/sh-ui-cli/latest";
 

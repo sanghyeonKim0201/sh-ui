@@ -19,6 +19,21 @@ import { spawn } from "node:child_process";
 import { join, relative, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 
+export const HELP_TEXT = `sh-ui rename-app — monorepo 의 앱 이름 일괄 변경
+
+사용법:
+  sh-ui rename-app <old> <new>   apps/<old>/, ui-<old>/ 디렉토리 + 모든 import/path 패턴
+
+옵션:
+  --yes            대화형 확인 생략
+  --dry-run        변경 대상만 출력하고 실제로는 변경하지 않음
+  --skip-install   변경 후 pnpm install 생략
+
+예:
+  sh-ui rename-app web admin
+  sh-ui rename-app web admin --dry-run
+`;
+
 /** 텍스트 파일로 처리할 확장자 (전체 파일을 읽어 치환). */
 const TEXT_EXT = new Set([
   ".ts", ".tsx", ".js", ".mjs", ".cjs",

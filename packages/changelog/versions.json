@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.116.0",
+      "date": "2026-06-17",
+      "title": "CLI 발견성 — 서브명령 --help + 오타 추천",
+      "type": "minor",
+      "highlights": [
+        "모든 서브명령에 --help — init·add·remove·doctor·tokens·theme·migrate·rename-app·upgrade-cli·mcp 전용 도움말",
+        "did-you-mean — 없는 컴포넌트/명령 입력 시 가까운 후보를 '혹시 …?' 로 제안",
+        "의존성 없는 levenshtein 유틸 내장 (packages/cli/src/levenshtein.mjs)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.116.0"
+    },
+    {
       "version": "0.115.0",
       "date": "2026-06-01",
       "title": "rich-text-editor — 밑줄·텍스트 컬러·인라인 링크 편집 + compact·focus 툴바 + i18n 라벨",

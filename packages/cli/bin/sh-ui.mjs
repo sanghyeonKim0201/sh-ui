@@ -1,9 +1,11 @@
 #!/usr/bin/env node
-import { init } from "../src/init.mjs";
+import { init, HELP_TEXT as INIT_HELP } from "../src/init.mjs";
 import { add } from "../src/add.mjs";
 import { list } from "../src/list.mjs";
 import { remove } from "../src/remove.mjs";
 import { findShUiContext } from "../src/resolve-context.mjs";
+import { suggest } from "../src/levenshtein.mjs";
+import { KNOWN_COMMANDS } from "../src/commands.mjs";
 
 const [, , cmd, ...rest] = process.argv;
 
@@ -36,6 +38,9 @@ const usage = `사용법:
   sh-ui mcp                        MCP 서버(stdio) 시작 — IDE-내 AI용
   sh-ui mcp init --client <name>   IDE MCP 설정 파일에 sh-ui 엔트리 자동 추가
                                    (claude-code | cursor | claude-desktop | codex)
+
+  각 명령의 상세 옵션은 \`sh-ui <command> --help\` 로 확인.
+
   옵션:
     --skip-install                 (add, rename-app) 외부 패키지 자동 설치 생략
     --diff                         (add) 파일을 쓰지 않고 변경 내역만 출력
@@ -57,9 +62,18 @@ try {
       break;
     }
     case "init":
+      if (rest.includes("--help") || rest.includes("-h")) {
+        console.log(INIT_HELP);
+        break;
+      }
       await init({ cwd: process.cwd(), args: rest });
       break;
     case "add": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/add.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const skipInstall = rest.includes("--skip-install");
       const diffMode = rest.includes("--diff");
       const force = rest.includes("--force");
@@ -107,11 +121,21 @@ try {
       break;
     }
     case "list": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/list.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const all = rest.includes("--all");
       await list({ cwd: process.cwd(), all });
       break;
     }
     case "doctor": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/doctor.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const { doctor } = await import("../src/doctor.mjs");
       const { existsSync, readdirSync } = await import("node:fs");
       const { resolve } = await import("node:path");
@@ -157,12 +181,22 @@ try {
       break;
     }
     case "upgrade-cli": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/upgrade-cli.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const apply = rest.includes("--apply");
       const { runUpgradeCli } = await import("../src/upgrade-cli.mjs");
       await runUpgradeCli({ cwd: process.cwd(), apply });
       break;
     }
     case "theme": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/theme-extract.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const sub = rest[0];
       const flags = rest.slice(1);
       if (sub === "extract") {
@@ -177,6 +211,11 @@ try {
       break;
     }
     case "tokens": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/tokens-cmd.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       // sh-ui tokens diff
       // sh-ui tokens upgrade --apply | --replace
       const sub = rest[0];
@@ -210,6 +249,12 @@ try {
     case "mcp": {
       // `sh-ui mcp init ...` → 설정 파일에 엔트리 추가
       // `sh-ui mcp`         → MCP 서버 시작
+      // 단, `sh-ui mcp --help` 는 mcp HELP_TEXT 출력 (mcp init 의 인자 처리는 mcp-init.mjs 가 담당).
+      if (rest[0] !== "init" && (rest.includes("--help") || rest.includes("-h"))) {
+        const { HELP_TEXT } = await import("../src/mcp.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       if (rest[0] === "init") {
         const { mcpInit } = await import("../src/mcp-init.mjs");
         await mcpInit({ cwd: process.cwd(), args: rest.slice(1) });
@@ -220,6 +265,11 @@ try {
       break;
     }
     case "rename-app": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/rename-app.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const yes = rest.includes("--yes");
       const dryRun = rest.includes("--dry-run");
       const skipInstall = rest.includes("--skip-install");
@@ -235,6 +285,11 @@ try {
       break;
     }
     case "migrate": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/migrate-bundled.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       // sh-ui migrate bundled [--apply] [--bundle <path>]
       const sub = rest[0];
       const flags = rest.slice(1);
@@ -251,6 +306,11 @@ try {
       break;
     }
     case "migrate-v065": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/migrate-v065.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const apply = rest.includes("--apply");
       const skipImportRewrite = rest.includes("--skip-import-rewrite");
       const { migrateToV065 } = await import("../src/migrate-v065.mjs");
@@ -264,6 +324,11 @@ try {
     }
     case "remove":
     case "rm": {
+      if (rest.includes("--help") || rest.includes("-h")) {
+        const { HELP_TEXT } = await import("../src/remove.mjs");
+        console.log(HELP_TEXT);
+        break;
+      }
       const force = rest.includes("--force");
       const dryRun = rest.includes("--dry-run");
       const names = rest.filter((a) => !a.startsWith("--"));
@@ -280,10 +345,12 @@ try {
     case "--help":
       console.log(usage);
       break;
-    default:
-      console.error(`알 수 없는 명령: ${cmd}\n`);
+    default: {
+      const hits = suggest(cmd, KNOWN_COMMANDS);
+      console.error(`알 수 없는 명령: ${cmd}` + (hits.length ? ` — 혹시 ${hits.join(", ")}?` : "") + "\n");
       console.error(usage);
       process.exit(1);
+    }
   }
 } catch (err) {
   console.error(`✗ ${err.message}`);

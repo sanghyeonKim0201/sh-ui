@@ -16,6 +16,20 @@ import { existsSync } from "node:fs";
 import { resolve, relative, dirname, join } from "node:path";
 import { upsertSection, stripStylesImport } from "./css-bundle.mjs";
 
+export const HELP_TEXT = `sh-ui migrate bundled — cssStrategy=bundled 로 전환
+
+사용법:
+  sh-ui migrate bundled          per-component styles.css → 단일 sh-ui-components.css
+
+옵션:
+  --apply             실제 적용 (미지정 시 미리보기)
+  --bundle <path>     번들 CSS 파일 경로 명시
+
+예:
+  sh-ui migrate bundled
+  sh-ui migrate bundled --apply
+`;
+
 async function loadConfig(cwd) {
   const configPath = resolve(cwd, "sh-ui.config.json");
   if (!existsSync(configPath)) {
