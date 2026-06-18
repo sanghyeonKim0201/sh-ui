@@ -50,6 +50,7 @@ const groups: Group[] = [
       { name: "Card", slug: "card", description: "카드 컨테이너 — Header/Body/Footer." },
       { name: "Separator", slug: "separator", description: "수평/수직 구분선." },
       { name: "ScrollArea", slug: "scroll-area", description: "커스텀 스크롤 컨테이너 — orientation · viewportClassName." },
+      { name: "Tree", slug: "tree", description: "계층 데이터 — 확장·선택·키보드 네비." },
     ],
   },
   {

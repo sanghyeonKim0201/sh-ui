@@ -9,28 +9,37 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@base-ui/react": "^1.4.1",
-    "@tanstack/react-form": "^1.32.0",
+    "@base-ui/react": "^1.5.0",
+    "@tanstack/react-form": "^1.33.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
-    "@types/node": "^25.8.0",
-    "@types/react": "^19.0.0",
+    "@tiptap/core": "^3.26.1",
+    "@tiptap/extension-link": "^3.26.1",
+    "@tiptap/extension-placeholder": "^3.26.1",
+    "@tiptap/extension-text-style": "^3.26.1",
+    "@tiptap/pm": "^3.26.1",
+    "@tiptap/react": "^3.26.1",
+    "@tiptap/starter-kit": "^3.26.1",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.0.0",
     "@vanilla-extract/css": "^1.20.1",
     "@vanilla-extract/vite-plugin": "^5.2.2",
-    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/coverage-v8": "^4.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jsdom": "^29.1.1",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-hook-form": "^7.75.0",
+    "lucide-react": "^1.18.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-hook-form": "^7.79.0",
     "tailwind-merge": "^3.6.0",
-    "vitest": "^3.2.4"
+    "tiptap-markdown": "0.9.0",
+    "vitest": "^4.1.8"
   }
 }

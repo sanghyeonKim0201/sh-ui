@@ -2,3 +2,13 @@ packages:
   - "apps/*"
   - "packages/*"
   - "packages/registry/*"
+
+# tiptap-markdown@0.9.0 은 @tiptap/pm/{model,state} 를 import 하지만 매니페스트에
+# peer 로 선언하지 않아(undeclared peer) pnpm strict 레이아웃에서 해당 위치에서
+# @tiptap/pm 이 안 보인다 — Next 번들·테스트가 'Module not found' 로 실패한다.
+# 누락된 peer 를 보강해 pnpm 이 tiptap-markdown 의 node_modules 에 @tiptap/pm 을
+# 주입하도록 한다(소비 패키지가 @tiptap/pm 을 직접 의존하면 정상 해소됨).
+packageExtensions:
+  tiptap-markdown:
+    peerDependencies:
+      "@tiptap/pm": "^3.26.0"

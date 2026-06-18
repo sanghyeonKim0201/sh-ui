@@ -42,7 +42,7 @@
     "page-toc": "페이지 자동 목차 — 헤딩 스캔 · slugify · IntersectionObserver active 추적 · smooth scroll. routeKey 로 라우트 변경 자동 재스캔, levels/excludeSelector 커스터마이즈.",
     "code-editor": "CodeMirror 6 기반 코드 에디터 — js/ts/jsx/tsx/json/css/html/markdown, sh-ui 토큰 테마, readOnly·placeholder·minHeight/maxHeight. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
     "markdown-editor": "마크다운 에디터 — CodeEditor + react-markdown 라이브 프리뷰 합성, GFM 지원, raw HTML 차단으로 XSS 방어. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
-    "rich-text-editor": "Tiptap 3 기반 WYSIWYG 에디터 — HTML 입출력, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder. controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
+    "rich-text-editor": "Tiptap 3 기반 WYSIWYG 에디터 — format='html'(기본) 또는 format='markdown'(tiptap-markdown 직렬화) I/O, 기본 toolbar(헤딩·리스트·인용·코드·링크·강조), readOnly·placeholder. submitOnEnter+onSubmit(Enter 전송·Shift+Enter 줄바꿈), extensions(추가 확장 주입)·onCreate(에디터 인스턴스 접근). controlled(value/onChange) · uncontrolled(defaultValue) 모두 지원.",
     "base": "CSS 리셋 — base.css.",
     "breakpoints": "반응형 미디어 쿼리 토큰 — breakpoints.css.",
     "focus-ring": "공용 포커스 링 스타일 — focus-ring.css.",
@@ -57,6 +57,7 @@
     "form-tanstack": "TanStack Form 인스턴스 → sh-ui FormStore 어댑터. `adaptTanstackForm(tanstackInstance, config)` — TanStack Form 이 state owner. @tanstack/react-form 은 peerDependency.",
     "calendar": "내부 캘린더 위젯 (DatePicker 가 사용). single / multiple / range 모드. CalendarMessages 로 a11y 텍스트 override. 일반적으로 직접 사용보다 DatePicker / DateRangePicker 권장.",
     "scroll-area": "커스텀 스크롤 컨테이너 — composite export ScrollArea (Base UI). 내부에서 viewport + scrollbar + thumb + corner 를 자동 구성하며 OS-native 스크롤바를 대체한다. orientation: \"vertical\" | \"horizontal\" | \"both\" (기본 vertical). 외부 height/width 가 정해진 컨테이너 안에서 사용. viewportClassName 으로 viewport 의 패딩/레이아웃 분리 적용. 스크롤바는 hover/scrolling 시 fade in, prefers-reduced-motion 존중.",
+    "tree": "계층 데이터 트리 뷰 — Tree 단일 export + TreeNode 타입(`@/components/ui/tree/types`). nodes(TreeNode[]: id/label/children/icon/disabled) 를 평탄화해 role=tree 로 렌더. 확장: expandedIds/onExpandedChange(controlled) 또는 defaultExpandedIds(uncontrolled). 선택: selectedId/onSelect(controlled) 또는 defaultSelectedId(uncontrolled). 키보드 네비(화살표·Home/End·Enter·typeahead), renderLabel 커스텀 렌더러, size(sm/md). Base UI 비의존 자체 구현.",
     "sheet": "화면 가장자리에서 슬라이드 인 하는 side drawer — separate exports: Sheet / SheetTrigger / SheetClose / SheetContent / SheetTitle / SheetDescription / SheetHeader / SheetFooter / SheetCloseX (Base UI Drawer 래핑, 포커스 트랩). 글로벌 알림함 · 작업 큐 · 보조 패널 같은 사이드바 무관 모달 시트용. 사이드바 인근 detail 패널은 SidebarPanel, 중앙 강제 모달은 Dialog 권장. SheetContent 의 side: \"right\" | \"left\" | \"top\" | \"bottom\" (기본 right) 으로 진입 방향 지정. SheetTrigger·SheetClose 는 자체 button — 다른 엘리먼트 슬롯은 `render` prop. ESC/바깥 클릭/포커스 복귀 자동, prefers-reduced-motion 시 transform 트랜지션 제거."
   }
 }

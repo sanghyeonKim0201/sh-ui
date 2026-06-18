@@ -331,6 +331,15 @@
       ],
       "dependencies": [],
       "registryDependencies": ["tokens"]
+    },
+    "tree": {
+      "name": "tree",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_tree.dart", "dest": "{widgets}/sh_ui_tree.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
     }
   }
 }

@@ -59,7 +59,7 @@ function extractExports(...sources) {
   const names = new Set();
   const patterns = [
     /\bexport\s+(?:const|let|var|function|class|interface|type|enum)\s+([A-Za-z_$][\w$]*)/g,
-    /\bexport\s+\{\s*([^}]+)\s*\}/g,
+    /\bexport\s+(?:type\s+)?\{\s*([^}]+)\s*\}/g,
   ];
   for (const src of sources) {
     if (!src) continue;

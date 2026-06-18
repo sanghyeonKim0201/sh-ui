@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.117.0",
+      "date": "2026-06-18",
+      "title": "Tree 컴포넌트 — 계층 데이터 확장·선택·키보드 네비",
+      "type": "minor",
+      "highlights": [
+        "신규 Tree — 데이터 주도(nodes 배열) 계층 트리. 확장/축소 + 단일 선택(제어·비제어)",
+        "WAI-ARIA Tree 패턴 — role=tree/treeitem/group, 화살표·Home/End·Enter·typeahead 키보드 네비",
+        "React(plain·tailwind·css-modules) + Flutter(ShUiTree) 동시 제공. 풀 기능(다중선택·DnD·lazy·인라인편집)은 후속"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.117.0"
+    },
+    {
       "version": "0.116.0",
       "date": "2026-06-17",
       "title": "CLI 발견성 — 서브명령 --help + 오타 추천",

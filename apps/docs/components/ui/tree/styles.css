@@ -1,0 +1,69 @@
+.sh-ui-tree {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: var(--foreground);
+  font-size: 0.9375rem;
+}
+.sh-ui-tree[data-size="sm"] {
+  font-size: var(--text-xs);
+}
+
+.sh-ui-tree__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.sh-ui-tree__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.sh-ui-tree__item:not([data-disabled]):hover {
+  background: var(--background-muted);
+}
+.sh-ui-tree__item:focus-visible {
+  outline: var(--border-width-strong) solid var(--ring);
+  outline-offset: -2px;
+}
+.sh-ui-tree__item--selected {
+  background: var(--background-muted);
+  font-weight: var(--weight-medium);
+}
+.sh-ui-tree__item[data-disabled] {
+  color: var(--foreground-muted);
+  cursor: not-allowed;
+}
+
+.sh-ui-tree__chevron {
+  display: inline-flex;
+  width: var(--space-4);
+  justify-content: center;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.sh-ui-tree__chevron[data-expanded] {
+  transform: rotate(90deg);
+}
+.sh-ui-tree__chevron--leaf {
+  visibility: hidden;
+}
+
+.sh-ui-tree__icon {
+  display: inline-flex;
+}
+.sh-ui-tree__label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-ui-tree__item,
+  .sh-ui-tree__chevron {
+    transition: none;
+  }
+}

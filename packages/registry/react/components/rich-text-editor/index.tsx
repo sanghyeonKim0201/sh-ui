@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   useEditor,
   useEditorState,
   EditorContent,
   type Editor,
 } from "@tiptap/react";
+import type { AnyExtension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 import { TextStyle, Color } from "@tiptap/extension-text-style";
+import { Markdown } from "tiptap-markdown";
 import { cn } from "@SH_UI_UTILS@";
 import {
   BoldIcon,
@@ -97,17 +100,42 @@ const DEFAULT_LABELS: RichTextEditorLabels = {
 
 export interface RichTextEditorProps {
   /**
-   * Controlled — 현재 HTML. 명시 시 외부 상태가 진실원천이 되고 onChange 로 갱신한다.
+   * 입출력 포맷. 기본 'html'(하위호환). 'markdown' 이면 value/defaultValue/onChange 가
+   * markdown 문자열로 동작한다(tiptap-markdown 직렬화).
+   *
+   * 주의: 이 값은 **마운트 시점에만** 읽힌다 — 내부 `useEditor` 는 한 번만 생성되므로
+   * 런타임에 format 을 바꾸려면 에디터를 리마운트해야 한다(예: key prop 교체).
+   * 동일 제약이 `extensions` 에도 적용된다.
+   * @default "html"
+   */
+  format?: "html" | "markdown";
+  /**
+   * Controlled — 현재 본문(format 에 따라 HTML 또는 markdown 문자열).
+   * 명시 시 외부 상태가 진실원천이 되고 onChange 로 갱신한다.
    * 미지정이면 uncontrolled — Tiptap editor 가 자체 doc 으로 동작.
    */
   value?: string;
   /**
-   * Uncontrolled 초기 HTML. value 미지정 시에만 사용.
+   * Uncontrolled 초기 본문(format 에 따라 HTML 또는 markdown 문자열). value 미지정 시에만 사용.
    * @default ""
    */
   defaultValue?: string;
-  /** 본문이 바뀔 때마다 호출 (controlled · uncontrolled 모두). HTML 문자열을 그대로 넘긴다. */
-  onChange?: (html: string) => void;
+  /**
+   * 본문이 바뀔 때마다 호출 (controlled · uncontrolled 모두).
+   * format='html' 이면 HTML, format='markdown' 이면 markdown 문자열을 넘긴다.
+   */
+  onChange?: (value: string) => void;
+  /** Enter 로 제출. true 면 Enter=onSubmit, Shift+Enter=줄바꿈. 기본 false. */
+  submitOnEnter?: boolean;
+  /** 제출 콜백(submitOnEnter 또는 외부 버튼). */
+  onSubmit?: () => void;
+  /**
+   * StarterKit·기본 확장 뒤에 append 할 추가 TipTap 확장(멘션 등).
+   * 주의: `format` 과 마찬가지로 마운트 시점에만 읽힌다 — 런타임 변경은 리마운트 필요.
+   */
+  extensions?: AnyExtension[];
+  /** 에디터 생성 시 콜백(외부에서 인스턴스 제어). */
+  onCreate?: (editor: Editor) => void;
   /** 비어 있을 때 표시할 placeholder. */
   placeholder?: string;
   /** 읽기 전용. 키 입력·툴바 차단. */
@@ -140,6 +168,16 @@ const COLOR_SWATCHES = [
 ] as const;
 
 const colorValue = (cssVar: string) => `var(${cssVar})`;
+
+/** tiptap-markdown storage 로 현재 doc 을 markdown 문자열로 직렬화. */
+function readMarkdown(editor: Editor): string {
+  const storage = editor.storage as {
+    markdown?: { getMarkdown(): string };
+  };
+  // markdown storage 가 없으면(직렬화 확장 미등록) HTML 을 흘려보내면 포맷이 어긋난다 —
+  // markdown 을 기대한 호출자에게 HTML 을 주지 않도록 빈 문자열로 폴백.
+  return storage.markdown?.getMarkdown() ?? "";
+}
 
 /** 선택 영역(없으면 URL 텍스트 삽입)에 링크를 적용. */
 function applyLink(editor: Editor, rawUrl: string) {
@@ -178,9 +216,14 @@ type ToolbarPanel = "none" | "link" | "color";
  * 구분선 · 실행취소/다시실행. compact 로 핵심만, toolbarMode="focus" 로 인라인 느낌.
  */
 export function RichTextEditor({
+  format = "html",
   value: valueProp,
   defaultValue,
   onChange,
+  submitOnEnter = false,
+  onSubmit,
+  extensions,
+  onCreate,
   placeholder,
   readOnly = false,
   hideToolbar = false,
@@ -196,6 +239,23 @@ export function RichTextEditor({
   const [isFocused, setIsFocused] = useState(false);
   const [panel, setPanel] = useState<ToolbarPanel>("none");
   const L = labels ? { ...DEFAULT_LABELS, ...labels } : DEFAULT_LABELS;
+
+  // onSubmit/submitOnEnter 를 ref 로 잡아 handleKeyDown 이 stale closure 가 되지 않게
+  // 한다(에디터를 매 렌더마다 재생성하지 않으려고 콜백은 useEditor deps 에서 제외).
+  const onSubmitRef = useRef(onSubmit);
+  onSubmitRef.current = onSubmit;
+  const submitOnEnterRef = useRef(submitOnEnter);
+  submitOnEnterRef.current = submitOnEnter;
+
+  // 마지막으로 onChange 로 흘려보냈거나(우리 echo) controlled-sync 로 주입한 value.
+  // controlled-sync 가 자기 자신의 emit 을 다시 setContent 하는 루프(커서 점프)를 막는다.
+  // 비교는 정규화된 직렬화 형태가 아니라 "우리가 마지막으로 본 문자열" 기준이라
+  // markdown 정규화(`**hi**` vs `**hi**\n`)로도 깨지지 않는다.
+  const lastSyncedRef = useRef<string | undefined>(undefined);
+
+  /** format 에 맞춰 에디터의 현재 본문을 직렬화(html/markdown). */
+  const readValue = (ed: Editor): string =>
+    format === "markdown" ? readMarkdown(ed) : ed.getHTML();
 
   const editor = useEditor({
     extensions: [
@@ -213,26 +273,56 @@ export function RichTextEditor({
       }),
       TextStyle,
       Color.configure({ types: ["textStyle"] }),
+      // markdown 모드에서만 직렬화 확장 등록 — html 모드(기본)는 기존과 동일.
+      ...(format === "markdown" ? [Markdown.configure({ html: false })] : []),
+      ...(extensions ?? []),
     ],
+    // markdown 모드에서 tiptap-markdown 은 문자열을 markdown 으로 파싱한다.
     content: valueProp ?? defaultValue ?? "",
     editable: !readOnly,
     immediatelyRender: false,
+    onCreate: ({ editor }) => {
+      onCreate?.(editor);
+    },
     onUpdate: ({ editor }) => {
-      onChange?.(editor.getHTML());
+      const output = readValue(editor);
+      // 우리가 방금 emit 한 값을 controlled-sync 가 다시 주입하지 않도록 기록.
+      lastSyncedRef.current = output;
+      onChange?.(output);
     },
     editorProps: {
       attributes: {
         class: "sh-ui-rte__content",
         "aria-label": ariaLabel,
       },
+      handleKeyDown: (_view, event) => {
+        if (
+          submitOnEnterRef.current &&
+          event.key === "Enter" &&
+          !event.shiftKey &&
+          // IME 조합 확정 Enter 는 제출이 아님(한글 등 — 조합 확정을 잘못 제출하면
+          // 입력이 날아간다). isComposing + 레거시 keyCode 229 둘 다 가드.
+          !event.isComposing &&
+          event.keyCode !== 229
+        ) {
+          event.preventDefault();
+          onSubmitRef.current?.();
+          return true;
+        }
+        return false;
+      },
     },
   });
 
-  // controlled 모드에서만 외부 value 를 에디터 doc 에 동기화
+  // controlled 모드에서만 외부 value 를 에디터 doc 에 동기화.
+  // 직렬화 결과(readValue) 와 비교하면 markdown 정규화로 영원히 불일치 → 매 렌더 setContent
+  // → 커서 점프가 난다. 대신 "마지막으로 우리가 주고받은 문자열"(lastSyncedRef) 과 비교해
+  // 자기 echo 만 건너뛰고, 진짜 외부 변경(예: 채널 전환)은 항상 로드한다.
   useEffect(() => {
     if (!isControlled) return;
     if (!editor) return;
-    if (editor.getHTML() === valueProp) return;
+    if (valueProp === lastSyncedRef.current) return;
+    lastSyncedRef.current = valueProp;
     editor.commands.setContent(valueProp ?? "", { emitUpdate: false });
   }, [isControlled, valueProp, editor]);
 

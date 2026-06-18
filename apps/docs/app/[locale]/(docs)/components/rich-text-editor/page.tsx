@@ -7,6 +7,7 @@ import { BasicDemo } from "./_demos/basic";
 import { WithOutputDemo } from "./_demos/with-output";
 import { ReadOnlyDemo } from "./_demos/readonly";
 import { InlineDemo } from "./_demos/inline";
+import { MarkdownSubmitDemo } from "./_demos/markdown-submit";
 import { VariantSource } from "@/components/variant-source";
 
 export default function RichTextEditorPage() {
@@ -144,6 +145,32 @@ export function Demo() {
   compact
   toolbarMode="focus"
   labels={{ bold: "굵게", italic: "기울임", link: "링크" }}
+/>`}
+        />
+      </Preview>
+
+      <h3>markdown 입출력 · Enter 전송</h3>
+      <p className="muted">
+        <code>format=&quot;markdown&quot;</code> 으로 두면{" "}
+        <code>value</code>/<code>onChange</code> 가 HTML 대신 markdown 문자열로
+        동작한다(<code>tiptap-markdown</code> 직렬화). <code>submitOnEnter</code>{" "}
+        + <code>onSubmit</code> 을 함께 쓰면 Enter 로 전송, Shift+Enter 로
+        줄바꿈 — Slack 식 채팅 composer 에 맞는 조합이다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <MarkdownSubmitDemo />
+        </Preview.Demo>
+        <CodePanel
+          language="tsx"
+          code={`<RichTextEditor
+  format="markdown"
+  value={md}
+  onChange={setMd}
+  submitOnEnter
+  onSubmit={send}
+  compact
+  toolbarMode="focus"
 />`}
         />
       </Preview>
