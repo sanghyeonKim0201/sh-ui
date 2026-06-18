@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { select } from "@inquirer/prompts";
 import { formatUnifiedDiff } from "./diff.mjs";
+import { suggest } from "./levenshtein.mjs";
 import { getRegistryRoot, getTokensRoot, getPeerVersionsPath } from "./paths.mjs";
 import { THEME_BASES } from "./constants.js";
 import {
@@ -336,6 +337,16 @@ function effectiveFramework(entry, cssFramework) {
   return hasVariant ? cssFramework : "plain";
 }
 
+/** 컴포넌트 not-found 에러 메시지. 가까운 후보가 있으면 "혹시 …?" 를 덧붙인다. */
+export function buildNotFoundMessage(name, platform, candidates) {
+  const hits = suggest(name, candidates);
+  const hint = hits.length ? ` 혹시 ${hits.join(", ")}?` : "";
+  return (
+    `'${name}' 컴포넌트를 ${platform} 레지스트리에서 찾을 수 없습니다.${hint}` +
+    ` 전체 목록: sh-ui list --all`
+  );
+}
+
 async function addComponent(name, config, cwd, installed, pendingDeps, diffMode, summary, conflictResolver, validationCtx) {
   const registryRoot = getRegistryRoot(config.platform);
   const registry = JSON.parse(
@@ -344,7 +355,7 @@ async function addComponent(name, config, cwd, installed, pendingDeps, diffMode,
   const entry = registry.components?.[name];
   if (!entry) {
     throw new Error(
-      `'${name}' 컴포넌트를 ${config.platform} 레지스트리에서 찾을 수 없습니다.`,
+      buildNotFoundMessage(name, config.platform, Object.keys(registry.components ?? {})),
     );
   }
 
