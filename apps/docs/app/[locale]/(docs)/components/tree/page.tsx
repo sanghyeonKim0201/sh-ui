@@ -20,7 +20,8 @@ export default function TreePage() {
         Home/End·Enter·typeahead)을 지원한다. React는 <code>nodes</code> 배열을
         받아 평탄화해 렌더하며, Flutter는 <code>ShUiTree</code>에{" "}
         <code>nodes</code>·<code>expandedIds</code>·<code>selectedId</code>를
-        넘겨 구성한다.
+        넘겨 구성한다. Flutter Phase-1 키보드는 화살표·Enter/Space까지
+        지원하며 typeahead는 React 전용이다.
       </p>
 
       <Preview>

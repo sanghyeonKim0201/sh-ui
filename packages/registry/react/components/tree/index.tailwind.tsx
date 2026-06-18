@@ -158,6 +158,8 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
                 else itemRefs.current.delete(n.id);
               }}
               aria-level={depth + 1}
+              aria-setsize={meta?.setSize}
+              aria-posinset={meta?.posInSet}
               aria-expanded={hasChildren ? isExpanded : undefined}
               aria-selected={selected === n.id}
               aria-disabled={n.disabled || undefined}

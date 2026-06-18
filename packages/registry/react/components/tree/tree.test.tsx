@@ -41,6 +41,15 @@ describe("Tree 렌더 + 상태", () => {
     expect(screen.getByRole("treeitem", { name: /Ant/ }).getAttribute("aria-level")).toBe("2");
   });
 
+  it("aria-setsize / aria-posinset 가 형제 집합을 반영", () => {
+    render(<Tree nodes={nodes} />);
+    const apple = screen.getByRole("treeitem", { name: /Apple/ });
+    const banana = screen.getByRole("treeitem", { name: /Banana/ });
+    expect(apple.getAttribute("aria-setsize")).toBe("2");
+    expect(apple.getAttribute("aria-posinset")).toBe("1");
+    expect(banana.getAttribute("aria-posinset")).toBe("2");
+  });
+
   it("제어 expandedIds 는 외부 값이 우선 (클릭 무관)", () => {
     const { rerender } = render(<Tree nodes={nodes} expandedIds={["a"]} />);
     expect(screen.getByText("Ant")).toBeTruthy();
