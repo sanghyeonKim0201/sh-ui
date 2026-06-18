@@ -2,7 +2,7 @@ import * as React from "react";
 import "./styles.css";
 import { cn } from "@SH_UI_UTILS@";
 import type { TreeNode, TreeProps } from "./types";
-import { flattenVisible } from "./flatten";
+import { flattenVisible, nextFocusable, prevFocusable, findByTypeahead } from "./flatten";
 
 function useControllableSet(
   controlled: string[] | undefined,
@@ -75,6 +75,75 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
     selectNode(n.id);
   };
 
+  const itemRefs = React.useRef<Map<string, HTMLDivElement>>(new Map());
+  const focusNode = (id: string) => {
+    setFocusId(id);
+    itemRefs.current.get(id)?.focus();
+  };
+
+  const onItemKeyDown = (e: React.KeyboardEvent, n: TreeNode, hasChildren: boolean) => {
+    const vis = flattenVisible(nodes, expanded);
+    switch (e.key) {
+      case "ArrowDown": {
+        e.preventDefault();
+        const nx = nextFocusable(vis, n.id);
+        if (nx) focusNode(nx.id);
+        break;
+      }
+      case "ArrowUp": {
+        e.preventDefault();
+        const pv = prevFocusable(vis, n.id);
+        if (pv) focusNode(pv.id);
+        break;
+      }
+      case "ArrowRight": {
+        e.preventDefault();
+        if (hasChildren && !expanded.has(n.id)) toggle(n.id);
+        else if (hasChildren) {
+          const first = n.children!.find((c) => !c.disabled);
+          if (first) focusNode(first.id);
+        }
+        break;
+      }
+      case "ArrowLeft": {
+        e.preventDefault();
+        if (hasChildren && expanded.has(n.id)) toggle(n.id);
+        else {
+          const meta = vis.find((v) => v.id === n.id);
+          if (meta?.parentId) focusNode(meta.parentId);
+        }
+        break;
+      }
+      case "Home": {
+        e.preventDefault();
+        const first = vis.find((v) => !v.disabled);
+        if (first) focusNode(first.id);
+        break;
+      }
+      case "End": {
+        e.preventDefault();
+        for (let i = vis.length - 1; i >= 0; i--)
+          if (!vis[i].disabled) {
+            focusNode(vis[i].id);
+            break;
+          }
+        break;
+      }
+      case "Enter":
+      case " ": {
+        e.preventDefault();
+        if (!n.disabled) selectNode(n.id);
+        break;
+      }
+      default: {
+        if (e.key.length === 1 && /\S/.test(e.key)) {
+          const hit = findByTypeahead(vis, e.key, n.id);
+          if (hit) focusNode(hit.id);
+        }
+      }
+    }
+  };
+
   const renderNodes = (siblings: TreeNode[], level: number): React.ReactNode => (
     <div role={level === 0 ? undefined : "group"} className="sh-ui-tree__group">
       {siblings.map((n) => {
@@ -86,6 +155,10 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
           <div key={n.id} className="sh-ui-tree__node">
             <div
               role="treeitem"
+              ref={(el) => {
+                if (el) itemRefs.current.set(n.id, el);
+                else itemRefs.current.delete(n.id);
+              }}
               aria-level={depth + 1}
               aria-expanded={hasChildren ? isExpanded : undefined}
               aria-selected={selected === n.id}
@@ -98,6 +171,7 @@ export const Tree = React.forwardRef<HTMLDivElement, TreeProps>(function Tree(
                 selected === n.id && "sh-ui-tree__item--selected",
               )}
               onClick={() => onItemClick(n, hasChildren)}
+              onKeyDown={(e) => onItemKeyDown(e, n, hasChildren)}
             >
               <span
                 className="sh-ui-tree__indent"

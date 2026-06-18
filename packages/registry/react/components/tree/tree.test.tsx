@@ -59,3 +59,43 @@ describe("Tree 렌더 + 상태", () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 });
+
+describe("Tree 키보드", () => {
+  function setup() {
+    render(<Tree nodes={nodes} defaultExpandedIds={["a"]} defaultSelectedId="a" />);
+    return screen.getByRole("tree");
+  }
+
+  it("ArrowDown 이 다음 가시 노드로 포커스 이동", () => {
+    setup();
+    const a = screen.getByRole("treeitem", { name: /Apple/ });
+    a.focus();
+    fireEvent.keyDown(a, { key: "ArrowDown" });
+    expect(screen.getByRole("treeitem", { name: /Ant/ }).getAttribute("tabindex")).toBe("0");
+  });
+
+  it("ArrowLeft 가 열린 부모를 축소", () => {
+    setup();
+    const a = screen.getByRole("treeitem", { name: /Apple/ });
+    a.focus();
+    fireEvent.keyDown(a, { key: "ArrowLeft" });
+    expect(a.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("ArrowRight 가 닫힌 부모를 확장", () => {
+    render(<Tree nodes={nodes} />);
+    const a = screen.getByRole("treeitem", { name: /Apple/ });
+    a.focus();
+    fireEvent.keyDown(a, { key: "ArrowRight" });
+    expect(a.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("Enter 가 포커스 노드를 선택", () => {
+    const onSelect = vi.fn();
+    render(<Tree nodes={nodes} onSelect={onSelect} />);
+    const b = screen.getByRole("treeitem", { name: /Banana/ });
+    b.focus();
+    fireEvent.keyDown(b, { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledWith("b");
+  });
+});
