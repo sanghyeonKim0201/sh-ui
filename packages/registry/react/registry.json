@@ -1661,6 +1661,49 @@
       "dependencies": ["@base-ui/react"],
       "registryDependencies": ["utils"]
     },
+    "tree": {
+      "name": "tree",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/tree/index.tsx",
+          "dest": "{components}/tree/index.tsx",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/tree/types.ts",
+          "dest": "{components}/tree/types.ts",
+          "frameworks": ["plain", "tailwind", "css-modules"]
+        },
+        {
+          "src": "components/tree/flatten.ts",
+          "dest": "{components}/tree/flatten.ts",
+          "frameworks": ["plain", "tailwind", "css-modules"]
+        },
+        {
+          "src": "components/tree/styles.css",
+          "dest": "{components}/tree/styles.css",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/tree/index.tailwind.tsx",
+          "dest": "{components}/tree/index.tsx",
+          "frameworks": ["tailwind"]
+        },
+        {
+          "src": "components/tree/index.module.tsx",
+          "dest": "{components}/tree/index.tsx",
+          "frameworks": ["css-modules"]
+        },
+        {
+          "src": "components/tree/styles.module.css",
+          "dest": "{components}/tree/styles.module.css",
+          "frameworks": ["css-modules"]
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["utils"]
+    },
     "carousel": {
       "name": "carousel",
       "type": "component",
