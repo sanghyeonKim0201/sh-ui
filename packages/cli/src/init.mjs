@@ -13,6 +13,25 @@ import {
   CSS_FRAMEWORKS_PLANNED,
 } from "./constants.js";
 
+export const HELP_TEXT = `sh-ui init — sh-ui.config.json 생성 (기존 프로젝트에 sh-ui 얹기)
+
+사용법:
+  sh-ui init [options]
+
+옵션:
+  --platform <react|flutter>   타겟 플랫폼
+  --base <neutral|zinc|...>    색 베이스
+  --radius <none|sm|md|lg|xl|full>  모서리 반경
+  --mode <light|dark|light-dark>    색 모드
+  --cssFramework <plain|tailwind|css-modules|vanilla-extract>  CSS 전략
+  --force                      기존 sh-ui.config.json 덮어쓰기
+  --yes                        대화형 프롬프트 생략 (기본값 채택)
+
+예:
+  sh-ui init
+  sh-ui init --platform react --base neutral --mode light-dark --yes
+`;
+
 const CHOICES = {
   platform: INIT_PLATFORMS,
   base: THEME_BASES,

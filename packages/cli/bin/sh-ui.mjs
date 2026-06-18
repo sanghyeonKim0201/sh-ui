@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { init } from "../src/init.mjs";
+import { init, HELP_TEXT as INIT_HELP } from "../src/init.mjs";
 import { add } from "../src/add.mjs";
 import { list } from "../src/list.mjs";
 import { remove } from "../src/remove.mjs";
@@ -59,6 +59,10 @@ try {
       break;
     }
     case "init":
+      if (rest.includes("--help") || rest.includes("-h")) {
+        console.log(INIT_HELP);
+        break;
+      }
       await init({ cwd: process.cwd(), args: rest });
       break;
     case "add": {
