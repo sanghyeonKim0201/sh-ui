@@ -95,6 +95,10 @@ class _ShUiTreeState extends State<ShUiTree> {
   final FocusNode _focusNode = FocusNode();
   String? _focusedId;
 
+  /// build에서 한 번 계산해 둔, 현재 보이는 행들. 키 이벤트는 build 이후에
+  /// 발생하므로 키 핸들러가 이 값을 그대로 재사용해 _flatten() 중복 호출을 피한다.
+  List<_FlatRow> _visibleRows = const [];
+
   bool get _expandedControlled => widget.expandedIds != null;
   bool get _selectedControlled => widget.selectedId != null;
 
@@ -178,7 +182,7 @@ class _ShUiTreeState extends State<ShUiTree> {
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
     }
-    final rows = _flatten();
+    final rows = _visibleRows;
     final navigable = _navigableRows(rows);
     if (navigable.isEmpty) return KeyEventResult.ignored;
 
@@ -206,8 +210,9 @@ class _ShUiTreeState extends State<ShUiTree> {
         if (!_effectiveExpanded.contains(row.node.id)) {
           _setExpanded(row.node.id, true);
         } else {
-          // 이미 확장됨 → 첫 자식으로 이동.
-          final after = _navigableRows(_flatten());
+          // 이미 확장됨 → 첫 자식으로 이동. 확장 상태 변경이 없으므로
+          // build에서 계산한 _visibleRows가 그대로 유효하다.
+          final after = _navigableRows(_visibleRows);
           final idx = after.indexWhere((r) => r.node.id == row.node.id);
           if (idx >= 0 && idx + 1 < after.length &&
               after[idx + 1].level > row.level) {
@@ -255,6 +260,7 @@ class _ShUiTreeState extends State<ShUiTree> {
   @override
   Widget build(BuildContext context) {
     final rows = _flatten();
+    _visibleRows = rows;
 
     return Focus(
       focusNode: _focusNode,
