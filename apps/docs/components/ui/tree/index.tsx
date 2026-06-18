@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./styles.css";
 import type { TreeNode, TreeProps } from "./types";
+export type { TreeNode, TreeProps, TreeSize } from "./types";
 import { flattenVisible, nextFocusable, prevFocusable, findByTypeahead } from "./flatten";
 
 function cx(...args: (string | undefined | false | null)[]) {
