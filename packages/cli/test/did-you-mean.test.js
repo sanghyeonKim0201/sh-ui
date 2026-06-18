@@ -32,4 +32,24 @@ describe('명령 추천', () => {
     const { KNOWN_COMMANDS } = await import('../src/commands.mjs');
     expect(suggest('ad', KNOWN_COMMANDS)).toContain('add');
   });
+
+  it('KNOWN_COMMANDS 가 bin switch case 와 동기화돼 있다', async () => {
+    const { readFileSync } = await import('node:fs');
+    const { fileURLToPath } = await import('node:url');
+    const path = await import('node:path');
+    const { KNOWN_COMMANDS } = await import('../src/commands.mjs');
+
+    const binPath = path.default.resolve(
+      path.default.dirname(fileURLToPath(import.meta.url)),
+      '../bin/sh-ui.mjs'
+    );
+    const src = readFileSync(binPath, 'utf8');
+
+    // Extract all string case labels from switch statement
+    const labels = [...src.matchAll(/case "([^"]+)":/g)]
+      .map((m) => m[1])
+      .filter((l) => l !== '-h' && l !== '--help');
+
+    expect(new Set(labels)).toEqual(new Set(KNOWN_COMMANDS));
+  });
 });
