@@ -1,6 +1,7 @@
 {
   "$description": "React 컴포넌트 summary — llms.txt 생성용. key는 registry.json의 name과 동일.",
   "summaries": {
+    "command": "Cmd+K 명령 팔레트 — cmdk 위 sh-ui. Command/CommandDialog/CommandInput/CommandList/CommandEmpty/CommandGroup/CommandItem/CommandSeparator/CommandShortcut. CommandDialog=sh-ui Dialog+Command(open/onOpenChange), 검색 필터·키보드 네비는 cmdk. CommandItem value/keywords/onSelect — 한국어 라벨엔 keywords 필요.",
     "button": "기본 버튼 — variant(primary/secondary/ghost/danger/link) + size(sm/md/lg).",
     "card": "카드 컨테이너 — separate exports: Card / CardHeader / CardTitle / CardDescription / CardAction / CardContent / CardFooter. dot syntax(`Card.Header`) 아님.",
     "input": "단일 행 텍스트 입력 — hasError 지원. 같은 모듈에 NumberInput / PhoneInput / BusinessNumberInput 변형 포함. 비밀번호 토글은 InputGroup + InputAdornment 레시피로 조립.",

@@ -36,6 +36,7 @@
     "@tiptap/pm": "^3.26.1",
     "@tiptap/react": "^3.26.1",
     "@tiptap/starter-kit": "^3.26.1",
+    "cmdk": "^1.1.1",
     "codemirror": "^6.0.2",
     "embla-carousel": "^8.6.0",
     "embla-carousel-auto-scroll": "^8.6.0",

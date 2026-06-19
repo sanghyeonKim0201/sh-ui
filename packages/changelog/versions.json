@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.119.0",
+      "date": "2026-06-19",
+      "title": "Command 컴포넌트 — Cmd+K 명령 팔레트",
+      "type": "minor",
+      "highlights": [
+        "신규 Command — cmdk 위 sh-ui 명령 팔레트(9 컴포넌트). CommandDialog 로 Cmd+K 팝업(sh-ui Dialog 기반)",
+        "검색 필터·키보드 네비·접근성은 cmdk 에 위임, sh-ui 토큰 스타일. CommandItem value/keywords/onSelect 로 액션 실행",
+        "shadcn command 모델. docs dogfooding·액션 자동화는 후속 phase. Flutter 별도"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.119.0"
+    },
+    {
       "version": "0.118.0",
       "date": "2026-06-18",
       "title": "Table 컴포넌트 — TanStack 데이터 테이블 (정렬·선택·페이지)",

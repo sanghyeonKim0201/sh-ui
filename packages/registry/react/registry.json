@@ -874,6 +874,39 @@
       "dependencies": ["@base-ui/react"],
       "registryDependencies": ["utils"]
     },
+    "command": {
+      "name": "command",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/command/index.tsx",
+          "dest": "{components}/command/index.tsx",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/command/styles.css",
+          "dest": "{components}/command/styles.css",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/command/index.tailwind.tsx",
+          "dest": "{components}/command/index.tsx",
+          "frameworks": ["tailwind"]
+        },
+        {
+          "src": "components/command/index.module.tsx",
+          "dest": "{components}/command/index.tsx",
+          "frameworks": ["css-modules"]
+        },
+        {
+          "src": "components/command/styles.module.css",
+          "dest": "{components}/command/styles.module.css",
+          "frameworks": ["css-modules"]
+        }
+      ],
+      "dependencies": ["cmdk"],
+      "registryDependencies": ["utils", "dialog"]
+    },
     "popover": {
       "name": "popover",
       "type": "component",

@@ -27,4 +27,19 @@ if (typeof document !== "undefined") {
         }) as DOMRect;
     }
   }
+  // jsdom 은 Element.scrollIntoView 를 구현하지 않는다. cmdk(Command) 가 선택된
+  // 아이템을 viewport 로 스크롤하려 호출하므로 no-op 으로 채운다.
+  if (typeof Element !== "undefined" && typeof Element.prototype.scrollIntoView !== "function") {
+    Element.prototype.scrollIntoView = () => {};
+  }
+}
+
+// jsdom 은 ResizeObserver 를 구현하지 않는다. cmdk(Command) 가 리스트 높이를
+// 추적하려 사용하므로 no-op 구현을 전역에 등록한다.
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
 }
