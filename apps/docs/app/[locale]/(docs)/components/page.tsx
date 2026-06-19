@@ -74,6 +74,7 @@ const groups: Group[] = [
       { name: "Carousel", slug: "carousel", description: "슬라이드 캐러셀 — Embla 기반." },
       { name: "CodePanel", slug: "code-panel", description: "Shiki 기반 코드 하이라이트 패널." },
       { name: "CodeTabs", slug: "code-tabs", description: "여러 코드 뷰를 탭으로 전환 — Tabs + CodePanel 합성." },
+      { name: "Table", slug: "table", description: "데이터 테이블 — TanStack 정렬·선택·페이지." },
     ],
   },
   {
