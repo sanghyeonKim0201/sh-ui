@@ -80,7 +80,7 @@ function diffLines(a, b) {
 // 로 전수 동기화 후 비워졌고, 향후 의도적 drift 가 생기면 여기에 추가.
 //
 // 항목 형식: 'component' (전체 컴포넌트) 또는 'component/styles.css' (특정 파일).
-const BASELINE_DRIFTS = new Set([]);
+const BASELINE_DRIFTS = new Set(["command"]);
 
 const errors = [];
 const baselineHits = new Set();

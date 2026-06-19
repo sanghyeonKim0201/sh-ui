@@ -1,6 +1,6 @@
 {
   "$description": "컴포넌트별 토큰 의존성 (var(--*) 추출). build-registry-tokens.mjs 가 자동 생성.",
-  "$generated": "2026-06-19T00:56:42.605Z",
+  "$generated": "2026-06-19T05:19:57.653Z",
   "components": {
     "button": {
       "plain": [
@@ -1078,6 +1078,50 @@
         "--weight-medium",
         "--weight-semibold",
         "--z-popover"
+      ],
+      "vanilla-extract": []
+    },
+    "command": {
+      "plain": [
+        "--background",
+        "--background-muted",
+        "--border",
+        "--control-md",
+        "--foreground",
+        "--foreground-muted",
+        "--radius",
+        "--space-1",
+        "--space-2",
+        "--space-3",
+        "--space-4",
+        "--text-sm",
+        "--text-xs"
+      ],
+      "tailwind": [
+        "--background",
+        "--control-md",
+        "--radius",
+        "--space-1",
+        "--space-2",
+        "--space-3",
+        "--space-4",
+        "--text-sm",
+        "--text-xs"
+      ],
+      "css-modules": [
+        "--background",
+        "--background-muted",
+        "--border",
+        "--control-md",
+        "--foreground",
+        "--foreground-muted",
+        "--radius",
+        "--space-1",
+        "--space-2",
+        "--space-3",
+        "--space-4",
+        "--text-sm",
+        "--text-xs"
       ],
       "vanilla-extract": []
     },
