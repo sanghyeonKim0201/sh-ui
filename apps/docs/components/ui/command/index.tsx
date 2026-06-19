@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Command as CommandPrimitive } from "cmdk";
 import "./styles.css";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "../dialog";
 
 function cx(...args: (string | undefined | false | null)[]) {
   return args.filter(Boolean).join(" ");
