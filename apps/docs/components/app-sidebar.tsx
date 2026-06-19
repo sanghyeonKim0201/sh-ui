@@ -83,6 +83,7 @@ const components: { title: string; href: string }[] = [
   { title: "CodeTabs", href: "/components/code-tabs" },
   { title: "ColorPicker", href: "/components/color-picker" },
   { title: "Combobox", href: "/components/combobox" },
+  { title: "Command", href: "/components/command" },
   { title: "ContextMenu", href: "/components/context-menu" },
   { title: "DatePicker", href: "/components/date-picker" },
   { title: "Dialog", href: "/components/dialog" },
