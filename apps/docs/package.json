@@ -28,6 +28,7 @@
     "@codesandbox/sandpack-react": "^2.20.0",
     "@monaco-editor/react": "^4.7.0",
     "@tanstack/react-form": "^1.33.0",
+    "@tanstack/react-table": "^8.21.3",
     "@tiptap/core": "^3.26.1",
     "@tiptap/extension-link": "^3.26.1",
     "@tiptap/extension-placeholder": "^3.26.1",

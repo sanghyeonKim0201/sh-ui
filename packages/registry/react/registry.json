@@ -1704,6 +1704,39 @@
       "dependencies": [],
       "registryDependencies": ["utils"]
     },
+    "table": {
+      "name": "table",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/table/index.tsx",
+          "dest": "{components}/table/index.tsx",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/table/styles.css",
+          "dest": "{components}/table/styles.css",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/table/index.tailwind.tsx",
+          "dest": "{components}/table/index.tsx",
+          "frameworks": ["tailwind"]
+        },
+        {
+          "src": "components/table/index.module.tsx",
+          "dest": "{components}/table/index.tsx",
+          "frameworks": ["css-modules"]
+        },
+        {
+          "src": "components/table/styles.module.css",
+          "dest": "{components}/table/styles.module.css",
+          "frameworks": ["css-modules"]
+        }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["utils"]
+    },
     "carousel": {
       "name": "carousel",
       "type": "component",

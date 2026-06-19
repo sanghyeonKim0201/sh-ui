@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.118.0",
+      "date": "2026-06-18",
+      "title": "Table 컴포넌트 — TanStack 데이터 테이블 (정렬·선택·페이지)",
+      "type": "minor",
+      "highlights": [
+        "신규 Table — presentational 프리미티브(Table/TableHeader/TableBody/TableRow/TableHead/TableCell/TableFooter/TableCaption). 네이티브 <table> + sh-ui 토큰, 의존성 0",
+        "TanStack Table v8 통합 예제 — 정렬·행 선택·페이지네이션이 동작하는 데이터 테이블(docs). 컬럼/셀 렌더는 100% 자유",
+        "shadcn 모델(headless 엔진 + presentational 레이어). 풀 기능(필터·고정·그룹화·DnD)은 후속 phase"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.118.0"
+    },
+    {
       "version": "0.117.0",
       "date": "2026-06-18",
       "title": "Tree 컴포넌트 — 계층 데이터 확장·선택·키보드 네비",
