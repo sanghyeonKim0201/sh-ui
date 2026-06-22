@@ -8,6 +8,7 @@ import { SubComponents } from "@/components/sub-components";
 import { DataTableDemo } from "./_demos/data-table";
 import { DataTableFilterDemo } from "./_demos/data-table-filter";
 import { DataTablePinResizeDemo } from "./_demos/data-table-pin-resize";
+import { DataTableColumnDndDemo } from "./_demos/data-table-column-dnd";
 
 export default function TablePage() {
   return (
@@ -192,6 +193,79 @@ function pinnedStyle(column: Column<Person>): React.CSSProperties {
 
 // 열 고정 토글
 column.pin("left"); // "right" | false`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>열 순서 변경 (드래그앤드롭)</h2>
+      <p className="muted">
+        TanStack <code>columnOrder</code> state 와 <code>@dnd-kit</code>을 조합해 헤더
+        그립(<code>⠿</code>)을 끌어 열 순서를 바꾼다. 바디 셀은{" "}
+        <code>columnOrder</code>를 자동으로 따라간다. 키보드도 지원한다 — 핸들에
+        포커스 후 Space로 잡고 <code>←</code>/<code>→</code>로 이동, Space로 놓는다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableColumnDndDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `// 열 순서 변경 — TanStack columnOrder + @dnd-kit
+const [columnOrder, setColumnOrder] = React.useState<string[]>(
+  () => columns.map((c) => c.accessorKey),
+);
+
+const table = useReactTable({
+  data,
+  columns,
+  state: { columnOrder },
+  onColumnOrderChange: setColumnOrder,
+  getCoreRowModel: getCoreRowModel(),
+});
+
+const sensors = useSensors(
+  useSensor(PointerSensor),
+  useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+);
+
+function onDragEnd({ active, over }: DragEndEvent) {
+  if (over && active.id !== over.id) {
+    setColumnOrder((prev) =>
+      arrayMove(prev, prev.indexOf(active.id), prev.indexOf(over.id)),
+    );
+  }
+}
+
+// 헤더 셀 — useSortable 로 드래그, 그립 핸들에 listeners
+function DraggableHead({ header }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: header.column.id });
+  return (
+    <TableHead ref={setNodeRef} style={{ transform: CSS.Translate.toString(transform), transition }}>
+      <button {...attributes} {...listeners} style={{ cursor: "grab" }}>⠿</button>
+      {flexRender(header.column.columnDef.header, header.getContext())}
+    </TableHead>
+  );
+}
+
+// 렌더 트리
+<DndContext sensors={sensors} modifiers={[restrictToHorizontalAxis]} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <SortableContext items={columnOrder} strategy={horizontalListSortingStrategy}>
+          {headerGroup.headers.map((h) => <DraggableHead key={h.id} header={h} />)}
+        </SortableContext>
+      </TableRow>
+    </TableHeader>
+    {/* 바디 셀은 columnOrder 자동 반영 */}
+  </Table>
+</DndContext>`,
             },
           ]}
         />
