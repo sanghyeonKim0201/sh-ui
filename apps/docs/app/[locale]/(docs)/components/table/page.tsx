@@ -9,6 +9,7 @@ import { DataTableDemo } from "./_demos/data-table";
 import { DataTableFilterDemo } from "./_demos/data-table-filter";
 import { DataTablePinResizeDemo } from "./_demos/data-table-pin-resize";
 import { DataTableColumnDndDemo } from "./_demos/data-table-column-dnd";
+import { DataTableGroupingDemo } from "./_demos/data-table-grouping";
 
 export default function TablePage() {
   return (
@@ -266,6 +267,69 @@ function DraggableHead({ header }) {
     {/* 바디 셀은 columnOrder 자동 반영 */}
   </Table>
 </DndContext>`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>그룹화·확장</h2>
+      <p className="muted">
+        <code>getGroupedRowModel</code>로 행을 그룹화하고{" "}
+        <code>getExpandedRowModel</code>로 펼친다. 토글 버튼으로 팀/역할 기준을
+        바꾸고, 숫자 컬럼은 <code>aggregationFn: &quot;mean&quot;</code>으로 그룹
+        평균을 집계한다. 셀은 <code>getIsGrouped</code> /{" "}
+        <code>getIsAggregated</code> / <code>getIsPlaceholder</code>로 렌더를
+        분기한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableGroupingDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `// 그룹화 + 확장 + 집계
+const [grouping, setGrouping] = React.useState<GroupingState>([]);
+const [expanded, setExpanded] = React.useState<ExpandedState>({});
+
+const columns: ColumnDef<Person>[] = [
+  { accessorKey: "team", header: "팀" },
+  { accessorKey: "age", header: "나이", aggregationFn: "mean",
+    aggregatedCell: ({ getValue }) => \`평균 \${Math.round(Number(getValue()))}\` },
+  // …
+];
+
+const table = useReactTable({
+  data,
+  columns,
+  state: { grouping, expanded },
+  onGroupingChange: setGrouping,
+  onExpandedChange: setExpanded,
+  getCoreRowModel: getCoreRowModel(),
+  getGroupedRowModel: getGroupedRowModel(),
+  getExpandedRowModel: getExpandedRowModel(),
+});
+
+// 그룹 기준 토글
+setGrouping(["team"]); // ["role"] | []
+
+// 셀 렌더 분기
+if (cell.getIsGrouped()) {
+  // 토글(▶/▼) + 그룹값 + 하위 개수
+  <button onClick={row.getToggleExpandedHandler()} aria-expanded={row.getIsExpanded()}>
+    {row.getIsExpanded() ? "▼" : "▶"} {value} ({row.subRows.length})
+  </button>
+} else if (cell.getIsAggregated()) {
+  // 집계값(평균)
+  flexRender(cell.column.columnDef.aggregatedCell, cell.getContext())
+} else if (cell.getIsPlaceholder()) {
+  // 빈 셀
+} else {
+  // 일반 셀
+}`,
             },
           ]}
         />
