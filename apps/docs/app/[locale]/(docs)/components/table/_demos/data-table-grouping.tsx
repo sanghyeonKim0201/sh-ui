@@ -66,6 +66,9 @@ export function DataTableGroupingDemo() {
     getCoreRowModel: getCoreRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    // 자동 리셋(expanded/페이지 등)을 끈다. TanStack 의 자동 리셋은 첫 하이드레이션
+    // 마운트 직전에 setState 를 트리거해 "hasn't mounted yet" React 경고를 낸다.
+    autoResetAll: false,
   });
 
   const current = grouping[0] ?? "";
