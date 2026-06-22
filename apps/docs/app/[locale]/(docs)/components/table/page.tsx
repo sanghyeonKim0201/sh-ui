@@ -15,6 +15,7 @@ import { DataTableRowPinningDemo } from "./_demos/data-table-row-pinning";
 import { DataTableFacetingDemo } from "./_demos/data-table-faceting";
 import { DataTableFuzzyDemo } from "./_demos/data-table-fuzzy";
 import { DataTableVirtualizedDemo } from "./_demos/data-table-virtualized";
+import { DataTableRowDndDemo } from "./_demos/data-table-row-dnd";
 
 export default function TablePage() {
   return (
@@ -541,6 +542,69 @@ const paddingBottom = virtualRows.length
     </TableBody>
   </Table>
 </div>`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>행 순서 변경 (드래그앤드롭)</h2>
+      <p className="muted">
+        행 그립(<code>⠿</code>)을 끌어 순서를 바꾼다. 행 순서 state는 TanStack에
+        없으므로 데이터 배열을 직접 <code>arrayMove</code>로 재정렬한다.{" "}
+        <code>@dnd-kit</code>의 세로 정렬(<code>verticalListSortingStrategy</code> +{" "}
+        <code>restrictToVerticalAxis</code>)을 쓰고 키보드도 지원한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableRowDndDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `// 행 순서 — 데이터 배열을 직접 재정렬 (행에는 columnOrder 같은 state 가 없음)
+const [rows, setRows] = React.useState<Person[]>(initialData);
+const rowIds = React.useMemo(() => rows.map((r) => r.id), [rows]);
+
+const table = useReactTable({
+  data: rows,
+  columns,
+  getRowId: (r) => r.id,
+  getCoreRowModel: getCoreRowModel(),
+});
+
+function onDragEnd({ active, over }: DragEndEvent) {
+  if (over && active.id !== over.id) {
+    setRows((prev) =>
+      arrayMove(prev, prev.findIndex((r) => r.id === active.id), prev.findIndex((r) => r.id === over.id)),
+    );
+  }
+}
+
+// 행 셀 — useSortable, 그립 핸들에 listeners
+function DraggableRow({ row }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: row.id });
+  return (
+    <TableRow ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }}>
+      <TableCell><button {...attributes} {...listeners} style={{ cursor: "grab" }}>⠿</button></TableCell>
+      {/* … 셀 … */}
+    </TableRow>
+  );
+}
+
+<DndContext id={React.useId()} sensors={sensors} modifiers={[restrictToVerticalAxis]}
+  collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+  <Table>
+    <TableBody>
+      <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
+        {table.getRowModel().rows.map((row) => <DraggableRow key={row.id} row={row} />)}
+      </SortableContext>
+    </TableBody>
+  </Table>
+</DndContext>`,
             },
           ]}
         />
