@@ -13,6 +13,8 @@ import { DataTableGroupingDemo } from "./_demos/data-table-grouping";
 import { DataTableVisibilityDemo } from "./_demos/data-table-visibility";
 import { DataTableRowPinningDemo } from "./_demos/data-table-row-pinning";
 import { DataTableFacetingDemo } from "./_demos/data-table-faceting";
+import { DataTableFuzzyDemo } from "./_demos/data-table-fuzzy";
+import { DataTableVirtualizedDemo } from "./_demos/data-table-virtualized";
 
 export default function TablePage() {
   return (
@@ -452,6 +454,93 @@ Array.from(facets.entries()).map(([role, count]) => (
 
 // 숫자 범위
 const [min, max] = table.getColumn("age").getFacetedMinMaxValues() ?? [0, 0];`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>퍼지 검색</h2>
+      <p className="muted">
+        <code>@tanstack/match-sorter-utils</code>의 <code>rankItem</code>으로 커스텀{" "}
+        <code>filterFn</code>을 만들어 오타에 관대한 글로벌 검색을 한다. 단일
+        입력으로 전 컬럼을 점수 기반 매칭한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableFuzzyDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `import { rankItem } from "@tanstack/match-sorter-utils";
+
+const fuzzyFilter: FilterFn<Person> = (row, columnId, value, addMeta) => {
+  const itemRank = rankItem(row.getValue(columnId), value as string);
+  addMeta({ itemRank });
+  return itemRank.passed;
+};
+
+const table = useReactTable({
+  data, columns,
+  state: { globalFilter },
+  onGlobalFilterChange: setGlobalFilter,
+  globalFilterFn: fuzzyFilter,
+  getCoreRowModel: getCoreRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+});
+
+<Input value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} />`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>행 가상화</h2>
+      <p className="muted">
+        <code>@tanstack/react-virtual</code>의 <code>useVirtualizer</code>로 대량
+        데이터(1,000행)에서 화면에 보이는 행만 렌더한다. 상/하 spacer로 전체 스크롤
+        높이를 유지한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableVirtualizedDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `import { useVirtualizer } from "@tanstack/react-virtual";
+
+const parentRef = React.useRef<HTMLDivElement>(null);
+const rows = table.getRowModel().rows;
+
+const virtualizer = useVirtualizer({
+  count: rows.length,
+  getScrollElement: () => parentRef.current,
+  estimateSize: () => 41,
+  overscan: 8,
+});
+
+const virtualRows = virtualizer.getVirtualItems();
+const paddingTop = virtualRows.length ? virtualRows[0].start : 0;
+const paddingBottom = virtualRows.length
+  ? virtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end
+  : 0;
+
+<div ref={parentRef} style={{ height: "20rem", overflow: "auto" }}>
+  <Table>
+    <TableBody>
+      {paddingTop > 0 && <tr style={{ height: paddingTop }} />}
+      {virtualRows.map((v) => { const row = rows[v.index]; return <TableRow>…</TableRow>; })}
+      {paddingBottom > 0 && <tr style={{ height: paddingBottom }} />}
+    </TableBody>
+  </Table>
+</div>`,
             },
           ]}
         />
