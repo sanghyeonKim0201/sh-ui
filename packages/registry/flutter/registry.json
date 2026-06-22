@@ -340,6 +340,15 @@
       ],
       "dependencies": [],
       "registryDependencies": ["tokens"]
+    },
+    "table": {
+      "name": "table",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_table.dart", "dest": "{widgets}/sh_ui_table.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
     }
   }
 }
