@@ -38,6 +38,7 @@
     "spinner": "ShUiSpinner — 원형 로딩.",
     "separator": "ShUiSeparator — 구분선 (horizontal/vertical).",
     "skeleton": "ShUiSkeleton — 로딩 플레이스홀더.",
-    "tree": "ShUiTree — 계층 데이터 트리. 확장/축소 + 단일 선택(제어·비제어). ShUiTreeNode(id/label/children/icon/disabled) 재귀. 키보드(화살표·Home/End·Enter/Space)·Semantics. ShUiTreeSize sm/md."
+    "tree": "ShUiTree — 계층 데이터 트리. 확장/축소 + 단일 선택(제어·비제어). ShUiTreeNode(id/label/children/icon/disabled) 재귀. 키보드(화살표·Home/End·Enter/Space)·Semantics. ShUiTreeSize sm/md.",
+    "table": "ShUiTable<T> — 정렬 내장 데이터 테이블. ShUiTableColumn(id/header/cell/sortKey/align) 정의 + rows. 헤더 탭 정렬(▲/▼, asc/desc), 밀도 sm/md, zebra, caption, Semantics. sortKey 있는 컬럼만 정렬 가능."
   }
 }
