@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.120.0",
+      "date": "2026-06-22",
+      "title": "Flutter ShUiTable — 정렬 데이터 테이블 위젯",
+      "type": "minor",
+      "highlights": [
+        "신규 Flutter ShUiTable<T> — ShUiTableColumn(id/header/cell/sortKey/align) 정의 + 행 데이터로 렌더하는 데이터 테이블",
+        "헤더 탭 정렬(▲/▼, asc/desc) 내장, 밀도 sm/md, zebra, caption, Semantics. sortKey 있는 컬럼만 정렬 가능",
+        "sh-ui 토큰 테마. 설치: sh-ui add table (flutter)"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.120.0"
+    },
+    {
       "version": "0.119.0",
       "date": "2026-06-19",
       "title": "Command 컴포넌트 — Cmd+K 명령 팔레트",
