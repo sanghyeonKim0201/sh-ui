@@ -37,3 +37,4 @@ packages/cli/data/
 # Playwright 시각 회귀 — 결과/리포트만 ignore, 기준 스냅샷(*.png) 은 commit
 apps/docs/playwright-report/
 apps/docs/test-results/
+.gstack/
