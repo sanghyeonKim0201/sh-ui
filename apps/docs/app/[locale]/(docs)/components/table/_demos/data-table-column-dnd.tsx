@@ -121,6 +121,10 @@ export function DataTableColumnDndDemo() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
+  // @dnd-kit 은 기본적으로 내부 카운터로 aria-describedby id 를 만들어 SSR↔클라이언트
+  // 하이드레이션 미스매치를 일으킨다. React.useId 로 안정적인 id 를 주입해 일치시킨다.
+  const dndContextId = React.useId();
+
   function onDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (over && active.id !== over.id) {
@@ -134,6 +138,7 @@ export function DataTableColumnDndDemo() {
 
   return (
     <DndContext
+      id={dndContextId}
       sensors={sensors}
       collisionDetection={closestCenter}
       modifiers={[restrictToHorizontalAxis]}
