@@ -62,122 +62,12 @@
   }
 }
 
-/* ── 검색 다이얼로그 ── 단정한 cmd-K 팔레트 톤 ── */
-
-.sh-ui-search-dialog {
-  width: min(36rem, 100%);
-  max-width: 36rem;
-  max-height: min(30rem, calc(100dvh - 4rem));
-  padding: 0;
-  gap: 0;
-  overflow: hidden;
-}
-
-/* input 영역 — 다이얼로그 상단 슬롯 */
-.sh-ui-search-dialog .sh-ui-input-wrap {
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  border-radius: 0;
-  height: 3rem;
-  flex: none;
-  padding: 0;
-}
-.sh-ui-search-dialog .sh-ui-input-wrap .sh-ui-input {
-  border: 0;
-  border-radius: 0;
-  height: 100%;
-  padding-left: var(--space-10);
-  padding-right: var(--space-4);
-  font-size: var(--text-base);
-  background: transparent;
-}
-.sh-ui-search-dialog .sh-ui-input-wrap .sh-ui-input__affix--prefix {
-  left: var(--space-4);
-  color: var(--foreground-muted);
-}
-.sh-ui-search-dialog .sh-ui-input:focus,
-.sh-ui-search-dialog .sh-ui-input-wrap:focus-within {
-  box-shadow: none;
-  outline: none;
-  border-color: var(--border);
-}
-
-.sh-ui-search-dialog__empty {
-  margin: 0;
-  padding: var(--space-8) var(--space-4);
-  color: var(--foreground-muted);
-  font-size: var(--text-sm);
-  text-align: center;
-}
-
-.sh-ui-search-dialog__list {
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  flex: 1;
-  min-height: 0;
-}
-
-.sh-ui-search-dialog__group {
-  padding: var(--space-3) 0;
-}
-.sh-ui-search-dialog__group + .sh-ui-search-dialog__group {
-  border-top: 1px solid var(--border);
-}
-
-.sh-ui-search-dialog__group-label {
-  padding: 0 var(--space-4) var(--space-2);
-  font-size: 0.6875rem;
-  font-weight: var(--weight-semibold);
-  color: var(--foreground-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  line-height: 1.4;
-}
-
-.sh-ui-search-dialog__group-list {
-  list-style: none;
-  margin: 0;
-  padding: 0 var(--space-2);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
+/* ── 검색 결과 항목 ── CommandItem 위에 title + sub 세로 스택 ── */
 
 .sh-ui-search-dialog__item {
-  position: relative;
-  display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 0;
-  border-radius: calc(var(--radius) - 2px);
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color var(--duration-fast);
-}
-.sh-ui-search-dialog__item:hover {
-  background: var(--background-subtle);
-}
-.sh-ui-search-dialog__item[data-active="true"] {
-  background: var(--background-muted);
-}
-.sh-ui-search-dialog__item[data-active="true"]::before {
-  content: "";
-  position: absolute;
-  left: -2px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 1.25rem;
-  width: 3px;
-  background: var(--foreground);
-  border-radius: 0 2px 2px 0;
-}
-.sh-ui-search-dialog__item:focus-visible {
-  outline: none;
+  align-items: flex-start;
+  gap: 2px;
 }
 
 .sh-ui-search-dialog__item-title {
@@ -191,9 +81,10 @@
   font-size: var(--text-xs);
   color: var(--foreground-muted);
   line-height: 1.4;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 /* mark 하이라이트 — 박스 대신 폰트 강조로 단정하게 */
@@ -205,57 +96,4 @@
 }
 .sh-ui-search-dialog__item-sub mark {
   color: var(--foreground);
-}
-
-/* 푸터 — 컴팩트, 단정 */
-.sh-ui-search-dialog__footer {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  flex: none;
-  padding: 0.625rem var(--space-4);
-  border-top: 1px solid var(--border);
-  background: var(--background-subtle);
-  color: var(--foreground-muted);
-  font-size: 0.6875rem;
-  line-height: 1.4;
-}
-.sh-ui-search-dialog__hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-}
-.sh-ui-search-dialog__hint-keys {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.1875rem;
-}
-.sh-ui-search-dialog__footer kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.125rem;
-  height: 1.125rem;
-  padding: 0 0.3125rem;
-  border: 1px solid var(--border);
-  border-radius: calc(var(--radius) - 3px);
-  background: var(--background);
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-  font-size: 0.625rem;
-  line-height: 1;
-  color: var(--foreground-muted);
-}
-
-/* sr-only — 시각적으로 숨기지만 스크린리더에는 노출 */
-.sh-ui-search-dialog .sr-only,
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
