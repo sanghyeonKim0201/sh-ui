@@ -10,6 +10,9 @@ import { DataTableFilterDemo } from "./_demos/data-table-filter";
 import { DataTablePinResizeDemo } from "./_demos/data-table-pin-resize";
 import { DataTableColumnDndDemo } from "./_demos/data-table-column-dnd";
 import { DataTableGroupingDemo } from "./_demos/data-table-grouping";
+import { DataTableVisibilityDemo } from "./_demos/data-table-visibility";
+import { DataTableRowPinningDemo } from "./_demos/data-table-row-pinning";
+import { DataTableFacetingDemo } from "./_demos/data-table-faceting";
 
 export default function TablePage() {
   return (
@@ -330,6 +333,125 @@ if (cell.getIsGrouped()) {
 } else {
   // 일반 셀
 }`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>열 표시 토글</h2>
+      <p className="muted">
+        <code>columnVisibility</code> state 와{" "}
+        <code>column.toggleVisibility()</code>로 열을 표시/숨김한다. 헤더·셀은{" "}
+        <code>getVisibleCells</code>가 자동 반영한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableVisibilityDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+
+const table = useReactTable({
+  data, columns,
+  state: { columnVisibility },
+  onColumnVisibilityChange: setColumnVisibility,
+  getCoreRowModel: getCoreRowModel(),
+});
+
+// 열 토글 체크박스
+table.getAllLeafColumns().filter((c) => c.getCanHide()).map((column) => (
+  <Checkbox checked={column.getIsVisible()}
+    onCheckedChange={(v) => column.toggleVisibility(v === true)} />
+));
+// 모두 표시
+table.toggleAllColumnsVisible(true);`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>행 고정</h2>
+      <p className="muted">
+        <code>enableRowPinning</code> + <code>rowPinning</code> state로 행을 상단(
+        <code>⤒</code>)/하단(<code>⤓</code>)에 고정한다.{" "}
+        <code>getTopRows</code> / <code>getCenterRows</code> /{" "}
+        <code>getBottomRows</code> 3구역으로 렌더하고 고정 행은 sticky 처리한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableRowPinningDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const [rowPinning, setRowPinning] = React.useState<RowPinningState>({ top: [], bottom: [] });
+
+const table = useReactTable({
+  data, columns,
+  state: { rowPinning },
+  onRowPinningChange: setRowPinning,
+  enableRowPinning: true,
+  keepPinnedRows: true,
+  getCoreRowModel: getCoreRowModel(),
+});
+
+// 행 고정 토글
+row.pin("top");    // "bottom" | false
+row.getIsPinned(); // false | "top" | "bottom"
+
+// 3구역 렌더 + sticky
+table.getTopRows()    // position: sticky; top: 0
+table.getCenterRows()
+table.getBottomRows() // position: sticky; bottom: 0`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>패싯(값·개수)</h2>
+      <p className="muted">
+        <code>getFacetedRowModel</code> + <code>getFacetedUniqueValues</code>로
+        역할별 고유값과 <strong>개수</strong>를,{" "}
+        <code>getFacetedMinMaxValues</code>로 나이 범위를 얻는다. 패싯 값은 다른
+        필터에 반응한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableFacetingDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `const table = useReactTable({
+  data, columns,
+  state: { columnFilters },
+  onColumnFiltersChange: setColumnFilters,
+  getCoreRowModel: getCoreRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  getFacetedRowModel: getFacetedRowModel(),
+  getFacetedUniqueValues: getFacetedUniqueValues(),
+  getFacetedMinMaxValues: getFacetedMinMaxValues(),
+});
+
+// 값별 개수 (다른 필터에 반응)
+const facets = table.getColumn("role").getFacetedUniqueValues(); // Map<value, count>
+Array.from(facets.entries()).map(([role, count]) => (
+  <label><Checkbox … /> {role} ({count})</label>
+));
+
+// 숫자 범위
+const [min, max] = table.getColumn("age").getFacetedMinMaxValues() ?? [0, 0];`,
             },
           ]}
         />
