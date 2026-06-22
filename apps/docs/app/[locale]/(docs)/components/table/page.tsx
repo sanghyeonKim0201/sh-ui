@@ -7,6 +7,7 @@ import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { DataTableDemo } from "./_demos/data-table";
 import { DataTableFilterDemo } from "./_demos/data-table-filter";
+import { DataTablePinResizeDemo } from "./_demos/data-table-pin-resize";
 
 export default function TablePage() {
   return (
@@ -121,6 +122,76 @@ const roleCol = table.getColumn("role");
 const selectedRoles = (roleCol?.getFilterValue() as string[]) ?? [];
 const next = on ? [...selectedRoles, role] : selectedRoles.filter((r) => r !== role);
 roleCol?.setFilterValue(next.length ? next : undefined);`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>열 고정·리사이즈</h2>
+      <p className="muted">
+        <code>enableColumnPinning</code>으로 열을 좌/우에 sticky 고정하고(헤더의{" "}
+        <code>⇤</code>/<code>⇥</code> 버튼), <code>enableColumnResizing</code> +{" "}
+        <code>columnResizeMode: &quot;onChange&quot;</code>로 헤더 우측 핸들을 드래그해
+        폭을 조절한다. 고정 위치는 <code>column.getStart(&quot;left&quot;)</code> /{" "}
+        <code>getAfter(&quot;right&quot;)</code>로 계산하고, 폭은{" "}
+        <code>table.getTotalSize()</code> / <code>column.getSize()</code>를{" "}
+        <code>table-layout: fixed</code>와 함께 적용한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTablePinResizeDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `// 열 고정 + 리사이즈
+const [columnPinning, setColumnPinning] = React.useState<ColumnPinningState>({
+  left: ["name"],
+  right: [],
+});
+
+const columns: ColumnDef<Person>[] = [
+  { accessorKey: "name", header: "이름", size: 140 },
+  { accessorKey: "email", header: "이메일", size: 220 },
+  // …
+];
+
+const table = useReactTable({
+  data,
+  columns,
+  state: { columnPinning },
+  onColumnPinningChange: setColumnPinning,
+  enableColumnPinning: true,
+  enableColumnResizing: true,
+  columnResizeMode: "onChange",
+  getCoreRowModel: getCoreRowModel(),
+});
+
+// 고정 열의 sticky 위치 — 같은 쪽에 여러 열이 고정되면 offset 누적
+function pinnedStyle(column: Column<Person>): React.CSSProperties {
+  const pinned = column.getIsPinned();
+  if (!pinned) return {};
+  return {
+    position: "sticky",
+    left: pinned === "left" ? \`\${column.getStart("left")}px\` : undefined,
+    right: pinned === "right" ? \`\${column.getAfter("right")}px\` : undefined,
+    background: "var(--background)", // 스크롤된 비고정 셀을 가림
+    zIndex: 1,
+  };
+}
+
+// 테이블/셀 폭 — table-layout: fixed 와 함께
+<Table style={{ width: table.getTotalSize(), tableLayout: "fixed" }}>
+  <th style={{ width: header.getSize(), ...pinnedStyle(header.column) }}>
+    {/* 헤더 우측 리사이즈 핸들 */}
+    <div onMouseDown={header.getResizeHandler()} onTouchStart={header.getResizeHandler()} />
+  </th>
+
+// 열 고정 토글
+column.pin("left"); // "right" | false`,
             },
           ]}
         />
