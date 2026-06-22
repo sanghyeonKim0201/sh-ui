@@ -82,6 +82,7 @@ function PinControls({ column }: { column: Column<Person> }) {
       <button
         type="button"
         style={{ ...btn, opacity: pinned === "left" ? 1 : 0.7 }}
+        title={pinned === "left" ? "고정 해제" : "왼쪽 고정"}
         aria-label={`${label} 열 왼쪽 고정`}
         aria-pressed={pinned === "left"}
         onClick={() => column.pin(pinned === "left" ? false : "left")}
@@ -91,6 +92,7 @@ function PinControls({ column }: { column: Column<Person> }) {
       <button
         type="button"
         style={{ ...btn, opacity: pinned === "right" ? 1 : 0.7 }}
+        title={pinned === "right" ? "고정 해제" : "오른쪽 고정"}
         aria-label={`${label} 열 오른쪽 고정`}
         aria-pressed={pinned === "right"}
         onClick={() => column.pin(pinned === "right" ? false : "right")}
