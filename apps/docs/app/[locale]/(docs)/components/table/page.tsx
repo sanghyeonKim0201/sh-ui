@@ -6,6 +6,7 @@ import { CodePanel } from "@/components/ui/code-panel";
 import { Preview } from "@/components/preview";
 import { SubComponents } from "@/components/sub-components";
 import { DataTableDemo } from "./_demos/data-table";
+import { DataTableFilterDemo } from "./_demos/data-table-filter";
 
 export default function TablePage() {
   return (
@@ -68,6 +69,58 @@ const table = useReactTable({
     ))}
   </TableBody>
 </Table>`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h2>필터</h2>
+      <p className="muted">
+        전체 검색(<code>globalFilter</code>)과 역할 faceted 필터(체크박스 다중
+        선택)를 <code>getFilteredRowModel</code>로 조합한다. 역할 컬럼은{" "}
+        <code>filterFn: &quot;arrIncludesSome&quot;</code>로 선택된 값 중 하나라도
+        일치하면 통과시킨다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DataTableFilterDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `// 전체 검색 + 역할 faceted 필터
+const [globalFilter, setGlobalFilter] = React.useState("");
+const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+
+const columns: ColumnDef<Person>[] = [
+  { accessorKey: "name", header: "이름" },
+  { accessorKey: "role", header: "역할", filterFn: "arrIncludesSome" },
+  { accessorKey: "age", header: "나이" },
+];
+
+const table = useReactTable({
+  data,
+  columns,
+  state: { sorting, globalFilter, columnFilters },
+  onGlobalFilterChange: setGlobalFilter,
+  onColumnFiltersChange: setColumnFilters,
+  getCoreRowModel: getCoreRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(), // 필터 활성화
+  getPaginationRowModel: getPaginationRowModel(),
+});
+
+// 전체 검색 input
+<Input value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} />
+
+// 역할 faceted 체크박스 — 선택된 값 배열을 컬럼 필터로 전달
+const roleCol = table.getColumn("role");
+const selectedRoles = (roleCol?.getFilterValue() as string[]) ?? [];
+const next = on ? [...selectedRoles, role] : selectedRoles.filter((r) => r !== role);
+roleCol?.setFilterValue(next.length ? next : undefined);`,
             },
           ]}
         />
