@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "predev": "node scripts/build-search-index.mjs && node scripts/generate-variants.mjs",
-    "dev": "next dev",
+    "dev": "node scripts/dev.mjs",
     "prebuild": "pnpm --filter @sh-ui/llms gen && node scripts/build-search-index.mjs && node scripts/generate-variants.mjs",
     "build": "next build",
     "start": "next start",

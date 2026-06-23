@@ -33,6 +33,8 @@ import 'changelog_page.dart';
 import 'cli_page.dart';
 import 'pagination_page.dart';
 import 'progress_page.dart';
+import 'table_page.dart';
+import 'tree_page.dart';
 import 'separator_page.dart';
 import 'spinner_page.dart';
 import 'context_menu_page.dart';
@@ -148,6 +150,13 @@ class HomePage extends StatelessWidget {
           ],
         ),
         ShUiAppShellGroup(
+          label: '데이터',
+          items: const [
+            ShUiAppShellItem(icon: Icons.table_chart_outlined, label: 'Table', builder: _buildTable),
+            ShUiAppShellItem(icon: Icons.account_tree_outlined, label: 'Tree', builder: _buildTree),
+          ],
+        ),
+        ShUiAppShellGroup(
           label: '오버레이',
           items: const [
             ShUiAppShellItem(icon: Icons.more_horiz, label: 'ContextMenu', builder: _buildContextMenu),
@@ -227,6 +236,8 @@ Widget _buildChangelog(BuildContext context) => const ChangelogPage();
 Widget _buildCli(BuildContext context) => const CliPage();
 
 Widget _buildPagination(BuildContext context) => const PaginationPage();
+Widget _buildTable(BuildContext context) => const TablePage();
+Widget _buildTree(BuildContext context) => const TreePage();
 Widget _buildProgress(BuildContext context) => const ProgressPage();
 Widget _buildSeparator(BuildContext context) => const SeparatorPage();
 Widget _buildSpinner(BuildContext context) => const SpinnerPage();

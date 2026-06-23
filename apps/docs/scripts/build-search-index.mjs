@@ -4,7 +4,7 @@
 // 1차에서는 기본 로케일(ko) 인덱스만 빌드. 페이지가 useTranslations("ns") 를 쓰면
 // messages/ko/{ns→filename}.json 의 문자열 값을 본문에 합쳐서 검색 가능하게 한다.
 
-import { readdirSync, readFileSync, statSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, mkdirSync, writeFileSync, existsSync, watch as watchFs } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
@@ -232,7 +232,7 @@ function extractFromFile(filePath) {
   return { id: url, url, title: decodedTitle, headings: decodedHeadings, body };
 }
 
-function main() {
+function build() {
   const files = walkPages(PAGES_ROOT);
   const records = files.map(extractFromFile);
   // 안정 정렬 — url 알파벳 순
@@ -243,4 +243,48 @@ function main() {
   console.log(`[build-search-index] ${records.length} pages → ${relative(DOCS_ROOT, OUT_PATH)}`);
 }
 
-main();
+// 문서/메시지 파일이 바뀌면 인덱스를 자동 재생성한다(디바운스).
+// next dev 와 함께 돌려 "문서 수정 → 검색 즉시 반영"을 보장한다.
+function watch() {
+  build();
+  let timer = null;
+  const schedule = (label) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      try {
+        build();
+      } catch (err) {
+        console.error(`[build-search-index] watch 재빌드 실패 (${label}):`, err.message);
+      }
+    }, 150);
+  };
+
+  // page.tsx 변경/추가/삭제, ko 메시지 변경 시 재생성.
+  const onEvent = (root, label) => (_event, filename) => {
+    if (!filename) {
+      schedule(label);
+      return;
+    }
+    const name = String(filename);
+    if (name.endsWith("page.tsx") || name.endsWith(".json")) schedule(`${label}:${name}`);
+  };
+
+  for (const [root, label] of [
+    [PAGES_ROOT, "pages"],
+    [MESSAGES_ROOT, "messages"],
+  ]) {
+    if (!existsSync(root)) continue;
+    try {
+      watchFs(root, { recursive: true }, onEvent(root, label));
+    } catch (err) {
+      console.error(`[build-search-index] watch 등록 실패 (${label}):`, err.message);
+    }
+  }
+  console.log("[build-search-index] watch 모드 — 문서/메시지 변경 시 인덱스 재생성");
+}
+
+if (process.argv.includes("--watch")) {
+  watch();
+} else {
+  build();
+}
