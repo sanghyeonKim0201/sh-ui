@@ -13,7 +13,7 @@
 - **value 타입은 `Date`** (date-picker와 동일). 시각(시/분/초)만 의미를 가짐. 값 갱신 시 기존 value가 있으면 그 날짜 보존, 없으면 오늘 날짜 기준 생성.
 - **min/max는 하루 중 시각(자정 기준 초 offset)으로만 비교.** 날짜 부분 무시.
 - **모든 CSS 치수는 토큰 변수(`var(--space-*)`, `var(--control-md)`, `var(--text-sm)`, `var(--radius)`, `var(--z-popover)` 등) 경유.** 매직 px/rem 금지. 예외는 date-picker styles.css에 이미 있는 관용(`height: 2.75rem` coarse-pointer 오버라이드)만 그대로 따른다.
-- **듀얼 카피 필수:** `packages/registry/react/components/time-picker/*` ↔ `apps/docs/components/ui/time-picker/*` 항상 동일. Flutter도 `packages/registry/flutter/widgets/sh_ui_time_picker.dart` ↔ `apps/showcase/lib/widgets/sh_ui_time_picker.dart` 동일. `pnpm lint:dual-copy`가 강제.
+- **듀얼 카피 필수 (실제 관례 — 구현 중 확정):** docs 카피는 **`index.tsx`(plain 변형) + `styles.css` 2개만** 복사한다. module/tailwind 변형은 docs로 복사하지 않는다. `index.tsx` 복사 시 변환: `import { cn } from "@SH_UI_UTILS@";` 라인 제거 + 인라인 `cx` 함수 정의 추가 + `cn(`→`cx(`. `styles.css`는 그대로. Flutter는 `packages/registry/flutter/widgets/sh_ui_time_picker.dart` ↔ `apps/showcase/lib/widgets/sh_ui_time_picker.dart` byte-동일(변환 없음, Task 6에서 실제 확인). `pnpm lint:dual-copy`가 강제(`scripts/lint-dual-copy.mjs` 참조).
 - **레지스트리 등록:** `packages/registry/react/registry.json`의 `components["time-picker"]`, `packages/registry/flutter/registry.json`, `tokens-used.json`. `pnpm lint:drift`가 강제.
 - **컴포넌트 utils import는 placeholder `@SH_UI_UTILS@`** 사용 (CLI가 사용자 alias로 치환; 레포 내 테스트는 vitest alias가 `lib/cn.ts`로 해석). `cn`을 이 경로에서 import.
 - **컴포넌트 소스 클래스 접두사:** `sh-ui-time-picker__*`.
@@ -1000,8 +1000,10 @@ date-picker의 `index.tailwind.tsx`를 레퍼런스로, 동일한 로직/JSX에 
 
 - [ ] **Step 4: 타입 체크**
 
-Run: `cd packages/registry/react && pnpm exec tsc --noEmit`
-Expected: PASS (세 변형 모두 타입 통과).
+⚠️ `packages/registry/react`에는 tsconfig/typecheck 스크립트가 없다(타입 검증은 docs 복사본의 `apps/docs pnpm typecheck`로만 이뤄지며, 이는 Task 5에서 수행). 변형 파일은 docs가 직접 import하지 않으므로 자동 타입체크 대상이 아니다. 이 태스크에서는:
+- Run: `cd packages/registry/react && pnpm test -- time-picker` — 여전히 green(plain 변형/헬퍼 정상, import 깨짐 없음).
+- 세 변형 파일 자체를 즉시 검증하려면 scratch tsconfig로: `cd packages/registry/react && pnpm exec tsc --noEmit --jsx react-jsx --moduleResolution bundler --module esnext --target es2020 --skipLibCheck --strict components/time-picker/index.tsx components/time-picker/index.module.tsx components/time-picker/index.tailwind.tsx` (에러 없어야 함; `@SH_UI_UTILS@`/`@base-ui/react` 미해석 에러는 무시 — 런타임 alias/설치본이 해결).
+Expected: 테스트 green + 변형 파일에 신규 타입 불일치 없음.
 
 - [ ] **Step 5: 커밋**
 
@@ -1346,7 +1348,7 @@ const ShUiTimePicker(hour12: true, showSeconds: true),` },
         { prop: "value", type: "Date", description: "선택된 시각 (controlled). 시/분/초만 의미." },
         { prop: "defaultValue", type: "Date", description: "초기 시각 (uncontrolled)." },
         { prop: "onValueChange", type: "(date: Date | undefined) => void", description: "시각 변경 콜백." },
-        { prop: "hour12", type: "boolean", default: "locale 자동 추론", description: "12시간제 + AM/PM 세그먼트." },
+        { prop: "hour12", type: "boolean", default: "false (24시간제)", description: "12시간제 + AM/PM 세그먼트. 미지정 시 24시간제. inferHour12(locale)로 locale 추론값을 직접 구할 수 있음." },
         { prop: "showSeconds", type: "boolean", default: "false", description: "초(SS) 세그먼트 표시." },
         { prop: "minuteStep", type: "number", default: "1", description: "↑/↓ 분 증감 단위." },
         { prop: "secondStep", type: "number", default: "1", description: "↑/↓ 초 증감 단위." },
@@ -1636,12 +1638,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 각각 실행하고 모두 통과 확인:
 
 ```bash
-# 1) 레지스트리 단위 테스트
+# 1) 레지스트리 단위 테스트 (vitest — registry/react에는 tsconfig가 없어 vitest가 유일한 TS 검증)
 cd packages/registry/react && pnpm test -- time-picker && cd ../../..
-# 2) 레지스트리 타입체크
-cd packages/registry/react && pnpm exec tsc --noEmit && cd ../../..
-# 3) docs 타입체크
+# 2) docs 타입체크 (듀얼 카피본을 tsc --noEmit 로 검증 — 레지스트리 컴포넌트의 실질 타입 게이트)
 cd apps/docs && pnpm typecheck && cd ../..
+# 3) 전체 타입체크 (turbo → 현재 typecheck 스크립트가 있는 워크스페이스는 docs)
+pnpm typecheck
 # 4) drift lint (registry + dual-copy + tokens-used)
 pnpm lint:drift
 # 5) Flutter analyze

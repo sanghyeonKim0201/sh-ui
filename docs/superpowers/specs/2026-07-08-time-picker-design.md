@@ -37,8 +37,8 @@ locale, min/max, disabled/readOnly, aria-invalid, container, compound 서브컴�
 
 ### 2. 포맷·정밀도 props
 
-- `hour12?: boolean` — 미지정 시 **locale에서 자동 추론**(`Intl.DateTimeFormat(locale).resolvedOptions().hour12`
-  또는 동등 판정), 명시하면 override. AM/PM(오전/오후) 세그먼트 유무를 결정.
+- `hour12?: boolean` — **미지정 시 24시간제(false)**, 명시하면 override. AM/PM(오전/오후) 세그먼트 유무를 결정.
+  (구현 중 확정: `Intl`이 en-US·ko-KR 모두 12h를 반환해 "locale 자동 추론"을 기본값으로 두면 예측이 어려워 24시간제 기본으로 결정. `inferHour12(locale)`는 export 헬퍼로 남겨 사용자가 직접 추론값을 구할 수 있음.)
 - `showSeconds?: boolean` (기본 `false`) — `HH:MM` ↔ `HH:MM:SS`.
 - `minuteStep?: number` (기본 `1`) — ↑/↓ 증감 단위. 타이핑 입력값은 커밋 시 스텝에 스냅.
 - `secondStep?: number` (기본 `1`) — 초 세그먼트 증감 단위. showSeconds일 때만 유효.
