@@ -125,6 +125,7 @@ interface TimePickerContextValue {
   selected: Date | undefined;
   segments: TimeSegments;
   commit: (seg: TimeSegments) => void;
+  clear: () => void;
   open: boolean;
   setOpen: (open: boolean) => void;
   placeholder: string;
@@ -255,6 +256,11 @@ export function TimePicker({
     [selected, min, max, isControlled, onValueChange],
   );
 
+  const clear = React.useCallback(() => {
+    if (!isControlled) setInternal(undefined);
+    onValueChange?.(undefined);
+  }, [isControlled, onValueChange]);
+
   const resolvedFormat = React.useCallback(
     (d: Date) => (formatTime ? formatTime(d) : defaultFormatTime(d, { locale, showSeconds, hour12: resolvedHour12 })),
     [formatTime, locale, showSeconds, resolvedHour12],
@@ -265,6 +271,7 @@ export function TimePicker({
       selected,
       segments,
       commit,
+      clear,
       open,
       setOpen,
       placeholder: resolvedPlaceholder,
@@ -281,7 +288,7 @@ export function TimePicker({
       formatTime: resolvedFormat,
       messages: resolvedMessages,
     }),
-    [selected, segments, commit, open, resolvedPlaceholder, locale, resolvedHour12, showSeconds, minuteStep, secondStep, min, max, disabled, readOnly, ariaInvalid, resolvedFormat, resolvedMessages],
+    [selected, segments, commit, clear, open, resolvedPlaceholder, locale, resolvedHour12, showSeconds, minuteStep, secondStep, min, max, disabled, readOnly, ariaInvalid, resolvedFormat, resolvedMessages],
   );
 
   return (
@@ -575,7 +582,7 @@ export function useTimePicker() {
   const ctx = useCtx("useTimePicker");
   return {
     value: ctx.selected,
-    setValue: (d: Date | undefined) => (d ? ctx.commit(getSegments(d)) : ctx.commit({ hours: 0, minutes: 0, seconds: 0 })),
+    setValue: (d: Date | undefined) => (d ? ctx.commit(getSegments(d)) : ctx.clear()),
     open: ctx.open,
     setOpen: ctx.setOpen,
   };

@@ -71,7 +71,14 @@ describe("time helpers", () => {
 
 import { render, screen, fireEvent, within } from "@testing-library/react";
 import * as React from "react";
-import { TimePicker } from "./index";
+import {
+  TimePicker,
+  TimePickerTrigger,
+  TimePickerContent,
+  TimePickerField,
+  TimePickerFooter,
+  useTimePicker,
+} from "./index";
 
 function openPopover() {
   fireEvent.click(screen.getByRole("button"));
@@ -184,5 +191,41 @@ describe("TimePicker component", () => {
     fireEvent.keyDown(minutes, { key: "Backspace" });
     fireEvent.keyDown(minutes, { key: "5" });
     expect((onValueChange.mock.calls.at(-1)![0] as Date).getMinutes()).toBe(5);
+  });
+
+  it("useTimePicker().setValue(undefined)이 값을 비운다 (지우기)", () => {
+    const onValueChange = vi.fn();
+
+    function ClearButton() {
+      const { setValue } = useTimePicker();
+      return (
+        <button type="button" onClick={() => setValue(undefined)}>
+          지우기
+        </button>
+      );
+    }
+
+    render(
+      <TimePicker
+        defaultValue={new Date(2020, 0, 1, 10, 0, 0)}
+        onValueChange={onValueChange}
+        locale="en-US"
+      >
+        <TimePickerTrigger />
+        <TimePickerContent>
+          <TimePickerField />
+          <TimePickerFooter>
+            <ClearButton />
+          </TimePickerFooter>
+        </TimePickerContent>
+      </TimePicker>,
+    );
+
+    const trigger = screen.getByRole("button", { name: /\d/ });
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole("button", { name: "지우기" }));
+
+    expect(onValueChange).toHaveBeenCalledWith(undefined);
+    expect(trigger.textContent).toMatch(/Select time/);
   });
 });
