@@ -155,9 +155,10 @@ describe("TimePicker component", () => {
     );
     openPopover();
     fireEvent.keyDown(screen.getByRole("spinbutton", { name: /시|hour/i }), { key: "ArrowUp" });
-    // 17시가 max이므로 클램프되어 값이 17을 넘지 않음
-    const last = onValueChange.mock.calls.at(-1)?.[0] as Date | undefined;
-    if (last) expect(last.getHours()).toBeLessThanOrEqual(17);
+    // 17시가 max이므로 18로 랩되지 않고 17로 클램프
+    expect(onValueChange).toHaveBeenCalled();
+    const last = onValueChange.mock.calls.at(-1)![0] as Date;
+    expect(last.getHours()).toBe(17);
   });
 
   it("disabled면 팝오버가 열리지 않음", () => {
