@@ -114,6 +114,7 @@ const components: { title: string; href: string }[] = [
   { title: "Table", href: "/components/table" },
   { title: "Tabs", href: "/components/tabs" },
   { title: "Textarea", href: "/components/textarea" },
+  { title: "TimePicker", href: "/components/time-picker" },
   { title: "Toast", href: "/components/toast" },
   { title: "Toggle", href: "/components/toggle" },
   { title: "Tooltip", href: "/components/tooltip" },

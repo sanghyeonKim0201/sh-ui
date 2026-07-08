@@ -45,6 +45,7 @@ const COMPONENTS = [
   "switch",
   "tabs",
   "textarea",
+  "time-picker",
   "toggle",
 ];
 

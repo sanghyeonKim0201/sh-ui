@@ -30,6 +30,7 @@ import spinner from "./spinner";
 import switchShowcase from "./switch";
 import tabs from "./tabs";
 import textarea from "./textarea";
+import timePicker from "./time-picker";
 import toast from "./toast";
 import toggle from "./toggle";
 import tooltip from "./tooltip";
@@ -46,6 +47,7 @@ export const SHOWCASES: ShowcaseManifest[] = [
   select,
   combobox,
   datePicker,
+  timePicker,
   fileUpload,
   colorPicker,
   // choice
