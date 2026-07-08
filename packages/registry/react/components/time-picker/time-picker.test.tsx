@@ -163,4 +163,26 @@ describe("TimePicker component", () => {
     render(<TimePicker placeholder="x" aria-invalid locale="en-US" />);
     expect(screen.getByRole("button")).toHaveAttribute("aria-invalid", "true");
   });
+
+  it("숫자 타이핑으로 시 세그먼트가 채워지면 분 세그먼트로 auto-advance", () => {
+    render(<TimePicker value={new Date(2020, 0, 1, 10, 0, 0)} locale="en-US" />);
+    openPopover();
+    const hours = screen.getByRole("spinbutton", { name: /시|hour/i });
+    const minutes = screen.getByRole("spinbutton", { name: /분|minute/i });
+    hours.focus();
+    fireEvent.keyDown(hours, { key: "1" });
+    fireEvent.keyDown(hours, { key: "5" });
+    expect(document.activeElement).toBe(minutes);
+  });
+
+  it("Backspace가 타이핑 버퍼를 리셋해, 다음 숫자가 이어붙지 않고 새로 시작", () => {
+    const onValueChange = vi.fn();
+    render(<TimePicker value={new Date(2020, 0, 1, 10, 0, 0)} onValueChange={onValueChange} locale="en-US" />);
+    openPopover();
+    const minutes = screen.getByRole("spinbutton", { name: /분|minute/i });
+    fireEvent.keyDown(minutes, { key: "1" });
+    fireEvent.keyDown(minutes, { key: "Backspace" });
+    fireEvent.keyDown(minutes, { key: "5" });
+    expect((onValueChange.mock.calls.at(-1)![0] as Date).getMinutes()).toBe(5);
+  });
 });

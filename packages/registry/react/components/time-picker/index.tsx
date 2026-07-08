@@ -374,22 +374,28 @@ interface SegmentProps {
   valueMin: number;
   valueMax: number;
   onStep: (delta: number) => void;
-  onDigit: (digit: number) => void;
+  /** 숫자 키 입력 처리. 반환값이 true면 다음 세그먼트로 focus를 이동한다(auto-advance). */
+  onDigit: (digit: number) => boolean;
   onMeridiem?: (m: "am" | "pm") => void;
+  /** 타이핑 누적 버퍼 리셋(Backspace). 숫자 세그먼트만 제공, meridiem은 no-op. */
+  onClear?: () => void;
 }
 
-function Segment({ kind, label, display, valueNow, valueMin, valueMax, onStep, onDigit, onMeridiem }: SegmentProps) {
+function Segment({ kind, label, display, valueNow, valueMin, valueMax, onStep, onDigit, onMeridiem, onClear }: SegmentProps) {
+  const focusSibling = (e: React.KeyboardEvent<HTMLDivElement>, dir: 1 | -1) => {
+    const group = e.currentTarget.parentElement;
+    const segs = group ? Array.from(group.querySelectorAll<HTMLElement>('[role="spinbutton"]')) : [];
+    const idx = segs.indexOf(e.currentTarget);
+    const next = segs[idx + dir];
+    next?.focus();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "ArrowUp") { e.preventDefault(); onStep(1); return; }
     if (e.key === "ArrowDown") { e.preventDefault(); onStep(-1); return; }
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
       e.preventDefault();
-      const dir = e.key === "ArrowRight" ? 1 : -1;
-      const group = e.currentTarget.parentElement;
-      const segs = group ? Array.from(group.querySelectorAll<HTMLElement>('[role="spinbutton"]')) : [];
-      const idx = segs.indexOf(e.currentTarget);
-      const next = segs[idx + dir];
-      next?.focus();
+      focusSibling(e, e.key === "ArrowRight" ? 1 : -1);
       return;
     }
     if (kind === "meridiem") {
@@ -397,7 +403,12 @@ function Segment({ kind, label, display, valueNow, valueMin, valueMax, onStep, o
       if (e.key.toLowerCase() === "p") { e.preventDefault(); onMeridiem?.("pm"); }
       return;
     }
-    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); onDigit(Number(e.key)); }
+    if (e.key === "Backspace") { e.preventDefault(); onClear?.(); return; }
+    if (/^[0-9]$/.test(e.key)) {
+      e.preventDefault();
+      const advance = onDigit(Number(e.key));
+      if (advance) focusSibling(e, 1);
+    }
   };
 
   return (
@@ -439,7 +450,8 @@ export function TimePickerField() {
   const stepMinutes = (delta: number) => commit({ ...segments, minutes: wrap(segments.minutes + delta * minuteStep, 0, 59) });
   const stepSeconds = (delta: number) => commit({ ...segments, seconds: wrap(segments.seconds + delta * secondStep, 0, 59) });
 
-  const typeInto = (kind: "hours" | "minutes" | "seconds", digit: number, max: number, min = 0) => {
+  /** 숫자 타이핑 처리. 반환값은 finished(다음 세그먼트로 auto-advance 해야 하는지) 여부. */
+  const typeInto = (kind: "hours" | "minutes" | "seconds", digit: number, max: number, min = 0): boolean => {
     const t = typedRef.current;
     const buf = t.kind === kind ? t.buf + String(digit) : String(digit);
     let n = Number(buf);
@@ -456,7 +468,10 @@ export function TimePickerField() {
     } else {
       commit({ ...segments, seconds: clampedForKind });
     }
+    return finished;
   };
+
+  const clearTypedBuffer = () => { typedRef.current = { kind: null, buf: "" }; };
 
   const setMeridiem = (m: "am" | "pm") => {
     const { hour } = to12h(segments.hours);
@@ -479,6 +494,7 @@ export function TimePickerField() {
         valueMax={hour12 ? 12 : 23}
         onStep={stepHours}
         onDigit={(d) => typeInto("hours", d, hour12 ? 12 : 23, hour12 ? 1 : 0)}
+        onClear={clearTypedBuffer}
       />
       <span className="sh-ui-time-picker__separator" aria-hidden>:</span>
       <Segment
@@ -490,6 +506,7 @@ export function TimePickerField() {
         valueMax={59}
         onStep={stepMinutes}
         onDigit={(d) => typeInto("minutes", d, 59)}
+        onClear={clearTypedBuffer}
       />
       {showSeconds && (
         <>
@@ -503,6 +520,7 @@ export function TimePickerField() {
             valueMax={59}
             onStep={stepSeconds}
             onDigit={(d) => typeInto("seconds", d, 59)}
+            onClear={clearTypedBuffer}
           />
         </>
       )}
@@ -515,7 +533,7 @@ export function TimePickerField() {
           valueMin={0}
           valueMax={0}
           onStep={(delta) => setMeridiem(to12h(segments.hours).meridiem === "am" ? "pm" : "am")}
-          onDigit={() => {}}
+          onDigit={() => false}
           onMeridiem={setMeridiem}
         />
       )}
