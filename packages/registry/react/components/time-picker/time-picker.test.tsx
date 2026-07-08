@@ -68,3 +68,99 @@ describe("time helpers", () => {
     expect(hm12.toLowerCase()).toContain("pm");
   });
 });
+
+import { render, screen, fireEvent, within } from "@testing-library/react";
+import * as React from "react";
+import { TimePicker } from "./index";
+
+function openPopover() {
+  fireEvent.click(screen.getByRole("button"));
+}
+
+describe("TimePicker component", () => {
+  it("트리거에 placeholder를 표시하고, 값이 있으면 포맷된 시각을 표시", () => {
+    const { rerender } = render(<TimePicker placeholder="시간 선택" locale="en-US" />);
+    expect(screen.getByRole("button")).toHaveTextContent("시간 선택");
+    rerender(<TimePicker value={new Date(2020, 0, 1, 14, 30, 0)} locale="en-US" />);
+    expect(screen.getByRole("button").textContent).toMatch(/14[:.]30/);
+  });
+
+  it("↑ 키로 시 세그먼트를 증가시키고 onValueChange를 호출", () => {
+    const onValueChange = vi.fn();
+    render(<TimePicker value={new Date(2020, 0, 1, 10, 0, 0)} onValueChange={onValueChange} locale="en-US" />);
+    openPopover();
+    const hours = screen.getByRole("spinbutton", { name: /시|hour/i });
+    fireEvent.keyDown(hours, { key: "ArrowUp" });
+    const called = onValueChange.mock.calls.at(-1)![0] as Date;
+    expect(called.getHours()).toBe(11);
+  });
+
+  it("시 세그먼트가 23에서 ↑ 누르면 0으로 랩", () => {
+    const onValueChange = vi.fn();
+    render(<TimePicker value={new Date(2020, 0, 1, 23, 0, 0)} onValueChange={onValueChange} locale="en-US" />);
+    openPopover();
+    fireEvent.keyDown(screen.getByRole("spinbutton", { name: /시|hour/i }), { key: "ArrowUp" });
+    expect((onValueChange.mock.calls.at(-1)![0] as Date).getHours()).toBe(0);
+  });
+
+  it("숫자 타이핑으로 분 세그먼트를 설정", () => {
+    const onValueChange = vi.fn();
+    render(<TimePicker value={new Date(2020, 0, 1, 10, 0, 0)} onValueChange={onValueChange} locale="en-US" />);
+    openPopover();
+    const minutes = screen.getByRole("spinbutton", { name: /분|minute/i });
+    fireEvent.keyDown(minutes, { key: "4" });
+    fireEvent.keyDown(minutes, { key: "5" });
+    expect((onValueChange.mock.calls.at(-1)![0] as Date).getMinutes()).toBe(45);
+  });
+
+  it("minuteStep이 ↑ 증감 단위를 결정", () => {
+    const onValueChange = vi.fn();
+    render(<TimePicker value={new Date(2020, 0, 1, 10, 0, 0)} minuteStep={5} onValueChange={onValueChange} locale="en-US" />);
+    openPopover();
+    fireEvent.keyDown(screen.getByRole("spinbutton", { name: /분|minute/i }), { key: "ArrowUp" });
+    expect((onValueChange.mock.calls.at(-1)![0] as Date).getMinutes()).toBe(5);
+  });
+
+  it("showSeconds=true면 초 세그먼트 렌더", () => {
+    render(<TimePicker value={new Date(2020, 0, 1, 10, 0, 0)} showSeconds locale="en-US" />);
+    openPopover();
+    expect(screen.getByRole("spinbutton", { name: /초|second/i })).toBeInTheDocument();
+  });
+
+  it("hour12=true면 meridiem 세그먼트 렌더, a/p 키로 토글", () => {
+    const onValueChange = vi.fn();
+    render(<TimePicker value={new Date(2020, 0, 1, 9, 0, 0)} hour12 onValueChange={onValueChange} locale="en-US" />);
+    openPopover();
+    const mer = screen.getByRole("spinbutton", { name: /오전.오후|AM.PM|meridiem/i });
+    fireEvent.keyDown(mer, { key: "p" });
+    expect((onValueChange.mock.calls.at(-1)![0] as Date).getHours()).toBe(21); // 9am → 9pm
+  });
+
+  it("max를 넘는 증가는 클램프", () => {
+    const onValueChange = vi.fn();
+    render(
+      <TimePicker
+        value={new Date(2020, 0, 1, 17, 0, 0)}
+        max={new Date(2020, 0, 1, 17, 0, 0)}
+        onValueChange={onValueChange}
+        locale="en-US"
+      />,
+    );
+    openPopover();
+    fireEvent.keyDown(screen.getByRole("spinbutton", { name: /시|hour/i }), { key: "ArrowUp" });
+    // 17시가 max이므로 클램프되어 값이 17을 넘지 않음
+    const last = onValueChange.mock.calls.at(-1)?.[0] as Date | undefined;
+    if (last) expect(last.getHours()).toBeLessThanOrEqual(17);
+  });
+
+  it("disabled면 팝오버가 열리지 않음", () => {
+    render(<TimePicker placeholder="off" disabled locale="en-US" />);
+    fireEvent.click(screen.getByRole("button"));
+    expect(screen.queryByRole("spinbutton", { name: /시|hour/i })).not.toBeInTheDocument();
+  });
+
+  it("aria-invalid가 트리거에 반영", () => {
+    render(<TimePicker placeholder="x" aria-invalid locale="en-US" />);
+    expect(screen.getByRole("button")).toHaveAttribute("aria-invalid", "true");
+  });
+});
