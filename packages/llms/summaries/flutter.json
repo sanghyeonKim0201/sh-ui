@@ -15,6 +15,7 @@
     "select": "ShUiSelect<T> + ShUiSelectItem<T> / ShUiSelectGroup / ShUiSelectSeparator (모두 ShUiSelectElement). 다중 선택은 ShUiMultiSelect<T>.",
     "combobox": "ShUiCombobox<T> + ShUiComboboxItem<T> — 검색 가능 셀렉트. 다중 선택은 ShUiMultiCombobox<T>.",
     "date-picker": "ShUiDatePicker (단일) + ShUiDateRangePicker (범위) — 캘린더 팝업.",
+    "time-picker": "ShUiTimePicker — 세그먼트 스테퍼 시각 선택. hour12/showSeconds/min·max(하루 중 시각)/minuteStep·secondStep. 탭 전용 ▲/▼ 스테퍼.",
     "color-picker": "ShUiColorPicker — 색상 선택.",
     "file-upload": "ShUiFileUpload — 파일 선택/드롭.",
     "dialog": "ShUiDialog + ShUiDialogTrigger / ShUiDialogContent / ShUiDialogHeader 분리 위젯. 명령형 호출은 `ShUiDialog.show<T>(...)` static (Flutter 빌트인 `showDialog` 아님).",

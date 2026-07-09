@@ -1628,6 +1628,39 @@
       "dependencies": ["@base-ui/react"],
       "registryDependencies": ["calendar", "utils"]
     },
+    "time-picker": {
+      "name": "time-picker",
+      "type": "component",
+      "files": [
+        {
+          "src": "components/time-picker/index.tsx",
+          "dest": "{components}/time-picker/index.tsx",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/time-picker/styles.css",
+          "dest": "{components}/time-picker/styles.css",
+          "frameworks": ["plain"]
+        },
+        {
+          "src": "components/time-picker/index.tailwind.tsx",
+          "dest": "{components}/time-picker/index.tsx",
+          "frameworks": ["tailwind"]
+        },
+        {
+          "src": "components/time-picker/index.module.tsx",
+          "dest": "{components}/time-picker/index.tsx",
+          "frameworks": ["css-modules"]
+        },
+        {
+          "src": "components/time-picker/styles.module.css",
+          "dest": "{components}/time-picker/styles.module.css",
+          "frameworks": ["css-modules"]
+        }
+      ],
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["utils"]
+    },
     "skeleton": {
       "name": "skeleton",
       "type": "component",

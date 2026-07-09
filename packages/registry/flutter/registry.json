@@ -152,6 +152,15 @@
       "dependencies": [],
       "registryDependencies": ["tokens"]
     },
+    "time-picker": {
+      "name": "time-picker",
+      "type": "widget",
+      "files": [
+        { "src": "widgets/sh_ui_time_picker.dart", "dest": "{widgets}/sh_ui_time_picker.dart" }
+      ],
+      "dependencies": [],
+      "registryDependencies": ["tokens"]
+    },
     "color-picker": {
       "name": "color-picker",
       "type": "widget",
