@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.123.0",
+      "date": "2026-07-09",
+      "title": "TimePicker id prop — Label 연결 지원",
+      "type": "minor",
+      "highlights": [
+        "TimePicker 에 id prop 추가 — 트리거 <button> 의 id 로 forward",
+        "<Label htmlFor> 와 연결해 접근성 라벨을 부여할 수 있다 (기본 레이아웃에서 적용, compound 모드는 TimePickerTrigger 에 직접 id 전달)",
+        "docs 'Label과 함께' 데모의 연결되지 않던 htmlFor 수정. DatePicker(0.121.0)와 동일 패턴"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.123.0"
+    },
+    {
       "version": "0.122.0",
       "date": "2026-07-09",
       "title": "TimePicker — 세그먼트 스피너 시각 선택 (React + Flutter)",

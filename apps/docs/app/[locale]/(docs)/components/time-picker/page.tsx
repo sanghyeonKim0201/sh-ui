@@ -318,6 +318,7 @@ const ShUiTimePicker(hour12: true, showSeconds: true),`,
           { prop: "disabled", type: "boolean" },
           { prop: "readOnly", type: "boolean" },
           { prop: "aria-invalid", type: `boolean | "true"`, description: "에러 상태. 보더가 --danger로 전환." },
+          { prop: "id", type: "string", description: "트리거 <button>의 id. <Label htmlFor>와 연결해 접근성 라벨을 부여. 기본 레이아웃에서만 적용, compound 모드는 TimePickerTrigger에 직접 전달." },
           { prop: "container", type: "HTMLElement | RefObject<HTMLElement | null>", default: "document.body", description: "Portal 마운트 노드." },
           { prop: "children", type: "ReactNode", description: "조립 모드. 생략 시 Trigger + Content + Field가 자동 렌더." },
         ]}

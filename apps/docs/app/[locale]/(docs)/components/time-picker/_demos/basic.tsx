@@ -79,7 +79,7 @@ export function WithLabelDemo() {
   return (
     <div style={{ ...box, gap: "0.25rem" }}>
       <Label htmlFor="alarm" isRequired>알람 시각</Label>
-      <TimePicker placeholder="HH:MM" />
+      <TimePicker id="alarm" placeholder="HH:MM" />
     </div>
   );
 }
