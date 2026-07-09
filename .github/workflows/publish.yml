@@ -53,8 +53,10 @@ jobs:
           echo "✔ 태그 v$TAG = packages/${{ matrix.package }}/package.json $PKG"
 
       # Trusted Publishing (OIDC) 은 npm 11.5.1+ 필요. Node 20 기본 npm 은 10.x.
+      # npm@latest(12+)는 Node 20 을 드롭했으므로, Node 20 호환이면서 OIDC 를
+      # 지원하는 11.x 최신으로 핀한다.
       - name: Upgrade npm for Trusted Publishing support
-        run: npm install -g npm@latest
+        run: npm install -g npm@11
 
       - name: Install
         run: pnpm install --frozen-lockfile
