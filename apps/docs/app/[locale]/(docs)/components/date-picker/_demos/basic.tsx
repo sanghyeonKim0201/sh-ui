@@ -63,7 +63,7 @@ export function WithLabelDemo() {
   return (
     <div style={{ width: "100%", maxWidth: 280, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
       <Label htmlFor="birth" isRequired>생년월일</Label>
-      <DatePicker placeholder="YYYY-MM-DD" />
+      <DatePicker id="birth" placeholder="YYYY-MM-DD" />
     </div>
   );
 }
@@ -94,8 +94,9 @@ export function RangeControlledDemo() {
 export function RangeWithLabelDemo() {
   return (
     <div style={{ width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-      <Label isRequired>투숙 기간</Label>
+      <Label htmlFor="stay" isRequired>투숙 기간</Label>
       <DateRangePicker
+        id="stay"
         min={new Date()}
         placeholder="체크인 ~ 체크아웃"
       />

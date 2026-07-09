@@ -68,6 +68,11 @@ export interface DatePickerProps {
   placeholder?: string; locale?: string; messages?: CalendarMessages;
   disabled?: boolean; readOnly?: boolean;
   "aria-invalid"?: boolean | "true";
+  /**
+   * 트리거 `<button>`의 `id`. `<Label htmlFor>`와 연결해 접근성 라벨을 부여할 때 사용한다.
+   * 기본 레이아웃에서만 적용되며, compound 모드에서는 `DatePickerTrigger`에 직접 `id`를 넘긴다.
+   */
+  id?: string;
   className?: string; closeOnSelect?: boolean;
   container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
   children?: React.ReactNode;
@@ -76,7 +81,7 @@ export interface DatePickerProps {
 export function DatePicker({
   value, defaultValue, onValueChange, formatDate = formatDefault,
   min, max, placeholder, locale = DEFAULT_LOCALE, messages, disabled, readOnly,
-  "aria-invalid": ariaInvalid, className, closeOnSelect = true, container, children,
+  "aria-invalid": ariaInvalid, id, className, closeOnSelect = true, container, children,
 }: DatePickerProps) {
   const resolvedPlaceholder = placeholder ?? defaultDatePlaceholder(locale);
   const isControlled = value !== undefined;
@@ -108,7 +113,7 @@ export function DatePicker({
       <BasePopover.Root open={open} onOpenChange={setOpen}>
         {children ?? (
           <>
-            <DatePickerTrigger className={className} />
+            <DatePickerTrigger id={id} className={className} />
             <DatePickerContent container={container}><DatePickerCalendar /></DatePickerContent>
           </>
         )}
@@ -246,6 +251,8 @@ export interface DateRangePickerProps {
   placeholder?: string; locale?: string; messages?: CalendarMessages;
   disabled?: boolean; readOnly?: boolean;
   "aria-invalid"?: boolean | "true";
+  /** 트리거 `<button>`의 `id`. `<Label htmlFor>`와 연결해 접근성 라벨을 부여할 때 사용한다. */
+  id?: string;
   className?: string;
   container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
 }
@@ -253,7 +260,7 @@ export interface DateRangePickerProps {
 export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePickerProps>(
   function DateRangePicker(
     { value, defaultValue, onValueChange, formatDate = formatDefault, min, max,
-      placeholder, locale = DEFAULT_LOCALE, messages, disabled, readOnly, "aria-invalid": ariaInvalid, className, container },
+      placeholder, locale = DEFAULT_LOCALE, messages, disabled, readOnly, "aria-invalid": ariaInvalid, id, className, container },
     ref,
   ) {
     const resolvedPlaceholder = placeholder ?? defaultRangePlaceholder(locale);
@@ -279,6 +286,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       <BasePopover.Root open={open} onOpenChange={setOpen}>
         <BasePopover.Trigger
           ref={ref}
+          id={id}
           className={cn(triggerClasses, className)}
           disabled={disabled}
           aria-invalid={ariaInvalid}
