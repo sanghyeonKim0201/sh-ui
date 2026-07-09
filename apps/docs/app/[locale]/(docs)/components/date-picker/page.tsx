@@ -224,7 +224,7 @@ ShUiDatePicker(
               label: "React",
               language: "tsx",
               code: `<Label htmlFor="birth" isRequired>생년월일</Label>
-<DatePicker placeholder="YYYY-MM-DD" />`,
+<DatePicker id="birth" placeholder="YYYY-MM-DD" />`,
             },
             {
               value: "flutter",
@@ -392,8 +392,8 @@ Text(_range != null
               value: "react",
               label: "React",
               language: "tsx",
-              code: `<Label isRequired>투숙 기간</Label>
-<DateRangePicker min={new Date()} placeholder="체크인 ~ 체크아웃" />`,
+              code: `<Label htmlFor="stay" isRequired>투숙 기간</Label>
+<DateRangePicker id="stay" min={new Date()} placeholder="체크인 ~ 체크아웃" />`,
             },
             {
               value: "flutter",
