@@ -244,4 +244,9 @@ describe("TimePicker component", () => {
     expect(onValueChange).toHaveBeenCalledWith(undefined);
     expect(trigger.textContent).toMatch(/Select time/);
   });
+
+  it("id를 트리거 button으로 forward한다 (Label htmlFor 연결용)", () => {
+    render(<TimePicker id="alarm-time" placeholder="시간" locale="en-US" />);
+    expect(screen.getByRole("button")).toHaveAttribute("id", "alarm-time");
+  });
 });

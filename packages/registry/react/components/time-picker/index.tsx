@@ -183,6 +183,11 @@ export interface TimePickerProps {
   disabled?: boolean;
   readOnly?: boolean;
   "aria-invalid"?: boolean | "true";
+  /**
+   * 트리거 `<button>`의 `id`. `<Label htmlFor>`와 연결해 접근성 라벨을 부여할 때 사용한다.
+   * 기본 레이아웃에서만 적용되며, compound 모드에서는 `TimePickerTrigger`에 직접 `id`를 넘긴다.
+   */
+  id?: string;
   className?: string;
   container?: React.ComponentPropsWithoutRef<typeof BasePopover.Portal>["container"];
   children?: React.ReactNode;
@@ -209,6 +214,7 @@ export function TimePicker({
   disabled,
   readOnly,
   "aria-invalid": ariaInvalid,
+  id,
   className,
   container,
   children,
@@ -278,7 +284,7 @@ export function TimePicker({
       <BasePopover.Root open={open} onOpenChange={setOpen}>
         {children ?? (
           <>
-            <TimePickerTrigger className={className} />
+            <TimePickerTrigger id={id} className={className} />
             <TimePickerContent container={container}>
               <TimePickerField />
             </TimePickerContent>
