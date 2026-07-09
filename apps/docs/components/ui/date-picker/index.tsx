@@ -109,6 +109,11 @@ export interface DatePickerProps {
   /** invalid 상태. 트리거 보더가 위험색으로 바뀌고 스크린리더에 오류로 노출. */
   "aria-invalid"?: boolean | "true";
   /**
+   * 트리거 `<button>`의 `id`. `<Label htmlFor>`와 연결해 접근성 라벨을 부여할 때 사용한다.
+   * 기본 레이아웃에서만 적용되며, compound 모드에서는 `DatePickerTrigger`에 직접 `id`를 넘긴다.
+   */
+  id?: string;
+  /**
    * children 없을 때(기본 레이아웃) Trigger로 전달된다.
    * children 조립 모드에서는 `DatePickerTrigger`에 직접 className을 넘긴다.
    */
@@ -147,6 +152,7 @@ export function DatePicker({
   disabled,
   readOnly,
   "aria-invalid": ariaInvalid,
+  id,
   className,
   closeOnSelect = true,
   container,
@@ -218,7 +224,7 @@ export function DatePicker({
       <BasePopover.Root open={open} onOpenChange={setOpen}>
         {children ?? (
           <>
-            <DatePickerTrigger className={className} />
+            <DatePickerTrigger id={id} className={className} />
             <DatePickerContent container={container}>
               <DatePickerCalendar />
             </DatePickerContent>
@@ -461,6 +467,8 @@ export interface DateRangePickerProps {
   readOnly?: boolean;
   /** invalid 상태. */
   "aria-invalid"?: boolean | "true";
+  /** 트리거 `<button>`의 `id`. `<Label htmlFor>`와 연결해 접근성 라벨을 부여할 때 사용한다. */
+  id?: string;
   className?: string;
   /**
    * Portal이 마운트될 DOM 노드. 토큰 스코프(다크 모드 등) 안에 popover를 띄우려면 해당 컨테이너 ref 전달.
@@ -488,6 +496,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       disabled,
       readOnly,
       "aria-invalid": ariaInvalid,
+      id,
       className,
       container,
     },
@@ -523,6 +532,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       <BasePopover.Root open={open} onOpenChange={setOpen}>
         <BasePopover.Trigger
           ref={ref}
+          id={id}
           className={cx("sh-ui-date-picker__trigger", className)}
           disabled={disabled}
           aria-invalid={ariaInvalid}
