@@ -384,14 +384,17 @@ interface SegmentProps {
   /** 숫자 키 입력 처리. 반환값이 true면 다음 세그먼트로 focus를 이동한다(auto-advance). */
   onDigit: (digit: number) => boolean;
   onMeridiem?: (m: "am" | "pm") => void;
+  /** meridiem 토글의 현재 눌림 상태(true=PM). meridiem 세그먼트에만 전달. */
+  pressed?: boolean;
   /** 타이핑 누적 버퍼 리셋(Backspace). 숫자 세그먼트만 제공, meridiem은 no-op. */
   onClear?: () => void;
 }
 
-function Segment({ kind, label, display, valueNow, valueMin, valueMax, onStep, onDigit, onMeridiem, onClear }: SegmentProps) {
+function Segment({ kind, label, display, valueNow, valueMin, valueMax, onStep, onDigit, onMeridiem, pressed, onClear }: SegmentProps) {
   const focusSibling = (e: React.KeyboardEvent<HTMLDivElement>, dir: 1 | -1) => {
     const group = e.currentTarget.parentElement;
-    const segs = group ? Array.from(group.querySelectorAll<HTMLElement>('[role="spinbutton"]')) : [];
+    // meridiem은 role="button"이라 '[role="spinbutton"]'만으로는 형제 순회에서 빠진다 → 둘 다 포함.
+    const segs = group ? Array.from(group.querySelectorAll<HTMLElement>('[role="spinbutton"],[role="button"]')) : [];
     const idx = segs.indexOf(e.currentTarget);
     const next = segs[idx + dir];
     next?.focus();
@@ -408,6 +411,8 @@ function Segment({ kind, label, display, valueNow, valueMin, valueMax, onStep, o
     if (kind === "meridiem") {
       if (e.key.toLowerCase() === "a") { e.preventDefault(); onMeridiem?.("am"); }
       if (e.key.toLowerCase() === "p") { e.preventDefault(); onMeridiem?.("pm"); }
+      // role="button" 규약: Enter·Space는 활성화(토글). pressed(=PM)면 am, 아니면 pm으로.
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onMeridiem?.(pressed ? "am" : "pm"); }
       return;
     }
     if (e.key === "Backspace") { e.preventDefault(); onClear?.(); return; }
@@ -418,15 +423,20 @@ function Segment({ kind, label, display, valueNow, valueMin, valueMax, onStep, o
     }
   };
 
+  // meridiem은 값 범위가 없는 2-상태 AM/PM 토글이다. range 있는 spinbutton으로 노출하면
+  // 스크린리더가 min/max 없는 spinbutton으로 어색하게 읽으므로, role="button" + aria-pressed
+  // (눌림=PM)로 토글 시맨틱을 부여한다. 시/분/초는 그대로 범위 있는 spinbutton.
+  const isMeridiem = kind === "meridiem";
   return (
     <div
-      role="spinbutton"
+      role={isMeridiem ? "button" : "spinbutton"}
       tabIndex={0}
-      aria-label={label}
-      aria-valuenow={kind === "meridiem" ? undefined : valueNow}
-      aria-valuemin={kind === "meridiem" ? undefined : valueMin}
-      aria-valuemax={kind === "meridiem" ? undefined : valueMax}
-      aria-valuetext={display}
+      aria-label={isMeridiem ? `${label}, ${display}` : label}
+      aria-pressed={isMeridiem ? pressed : undefined}
+      aria-valuenow={isMeridiem ? undefined : valueNow}
+      aria-valuemin={isMeridiem ? undefined : valueMin}
+      aria-valuemax={isMeridiem ? undefined : valueMax}
+      aria-valuetext={isMeridiem ? undefined : display}
       className={styles.segment}
       onKeyDown={handleKeyDown}
     >
@@ -542,6 +552,7 @@ export function TimePickerField() {
           onStep={(delta) => setMeridiem(to12h(segments.hours).meridiem === "am" ? "pm" : "am")}
           onDigit={() => false}
           onMeridiem={setMeridiem}
+          pressed={to12h(segments.hours).meridiem === "pm"}
         />
       )}
     </div>

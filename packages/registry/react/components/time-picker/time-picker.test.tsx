@@ -134,13 +134,28 @@ describe("TimePicker component", () => {
     expect(screen.getByRole("spinbutton", { name: /초|second/i })).toBeInTheDocument();
   });
 
-  it("hour12=true면 meridiem 세그먼트 렌더, a/p 키로 토글", () => {
+  it("hour12=true면 meridiem은 role=button 토글로 렌더, a/p 키로 토글", () => {
     const onValueChange = vi.fn();
     render(<TimePicker value={new Date(2020, 0, 1, 9, 0, 0)} hour12 onValueChange={onValueChange} locale="en-US" />);
     openPopover();
-    const mer = screen.getByRole("spinbutton", { name: /오전.오후|AM.PM|meridiem/i });
+    // meridiem은 range 없는 spinbutton이 아니라 aria-pressed를 가진 토글 버튼이다.
+    const mer = screen.getByRole("button", { name: /오전.오후|AM.PM|meridiem/i });
+    expect(mer).toHaveAttribute("aria-pressed", "false"); // 9am → 눌리지 않은 상태
     fireEvent.keyDown(mer, { key: "p" });
     expect((onValueChange.mock.calls.at(-1)![0] as Date).getHours()).toBe(21); // 9am → 9pm
+  });
+
+  it("meridiem 토글: aria-pressed·동적 aria-label(현재값 포함) + Space/Enter 토글(비제어)", () => {
+    render(<TimePicker defaultValue={new Date(2020, 0, 1, 9, 0, 0)} hour12 locale="en-US" />);
+    openPopover();
+    const mer = screen.getByRole("button", { name: /오전.오후|AM.PM|meridiem/i });
+    expect(mer).toHaveAttribute("aria-pressed", "false"); // AM
+    expect(mer).toHaveAccessibleName("AM/PM, AM"); // 현재값이 accessible name에 포함
+    fireEvent.keyDown(mer, { key: " " }); // Space로 활성화(토글) → PM
+    expect(mer).toHaveAttribute("aria-pressed", "true");
+    expect(mer).toHaveAccessibleName("AM/PM, PM");
+    fireEvent.keyDown(mer, { key: "Enter" }); // Enter로 활성화(토글) → AM
+    expect(mer).toHaveAttribute("aria-pressed", "false");
   });
 
   it("max를 넘는 증가는 클램프", () => {
