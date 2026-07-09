@@ -21,6 +21,7 @@ import 'dialog_page.dart';
 import 'popover_page.dart';
 import 'toast_page.dart';
 import 'date_picker_page.dart';
+import 'time_picker_page.dart';
 import 'color_picker_page.dart';
 import 'combobox_page.dart';
 import 'file_upload_page.dart';
@@ -121,6 +122,7 @@ class HomePage extends StatelessWidget {
             ShUiAppShellItem(icon: Icons.arrow_drop_down_circle_outlined, label: 'Select', builder: _buildSelect),
             ShUiAppShellItem(icon: Icons.search, label: 'Combobox', builder: _buildCombobox),
             ShUiAppShellItem(icon: Icons.calendar_today_outlined, label: 'Date Picker', builder: _buildDatePicker),
+            ShUiAppShellItem(icon: Icons.access_time_outlined, label: 'Time Picker', builder: _buildTimePicker),
             ShUiAppShellItem(icon: Icons.palette_outlined, label: 'Color Picker', builder: _buildColorPicker),
           ],
         ),
@@ -206,6 +208,7 @@ Widget _buildLabel(BuildContext context) => const LabelPage();
 Widget _buildSelect(BuildContext context) => const SelectPage();
 Widget _buildCombobox(BuildContext context) => const ComboboxPage();
 Widget _buildDatePicker(BuildContext context) => const DatePickerPage();
+Widget _buildTimePicker(BuildContext context) => const TimePickerPage();
 Widget _buildColorPicker(BuildContext context) => const ColorPickerPage();
 
 Widget _buildAccordion(BuildContext context) => const AccordionPage();
