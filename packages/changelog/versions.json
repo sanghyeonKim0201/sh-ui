@@ -3,6 +3,18 @@
   "$description": "sh-ui 릴리즈 노트 단일 소스. docs(React)와 showcase(Flutter)가 함께 읽는다. 새 릴리즈마다 맨 앞에 추가.",
   "versions": [
     {
+      "version": "0.121.0",
+      "date": "2026-07-09",
+      "title": "DatePicker id prop — Label 연결 지원",
+      "type": "minor",
+      "highlights": [
+        "DatePicker·DateRangePicker 에 id prop 추가 — 트리거 <button> 의 id 로 forward",
+        "<Label htmlFor> 와 연결해 접근성 라벨을 부여할 수 있다 (기본 레이아웃에서 적용, compound 모드는 DatePickerTrigger 에 직접 id 전달)",
+        "docs 'Label과 함께' 데모의 연결되지 않던 htmlFor 수정"
+      ],
+      "url": "https://github.com/sanghyeonKim0201/sh-ui/releases/tag/v0.121.0"
+    },
+    {
       "version": "0.120.0",
       "date": "2026-06-22",
       "title": "Flutter ShUiTable — 정렬 데이터 테이블 위젯",
