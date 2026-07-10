@@ -11,7 +11,7 @@ import {
   useDatePicker,
 } from "@/components/ui/date-picker";
 import type { DateRange } from "@/components/ui/date-picker";
-import { TimePicker } from "@/components/ui/time-picker";
+import { TimePicker, TimePickerField } from "@/components/ui/time-picker";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
@@ -216,21 +216,33 @@ export function DateTimeDemo() {
     });
   };
 
+  // 트리거에 날짜+시간을 함께 표시.
+  const formatDateTime = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` +
+    ` ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", width: "100%", maxWidth: 360 }}>
-      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", flex: "1 1 180px" }}>
-          <Label htmlFor="dt-date">날짜</Label>
-          <DatePicker id="dt-date" value={dateTime} onValueChange={handleDateChange} placeholder="날짜 선택" />
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", flex: "1 1 140px" }}>
-          <Label htmlFor="dt-time">시간</Label>
-          <TimePicker id="dt-time" value={dateTime} onValueChange={setDateTime} placeholder="시간 선택" />
-        </div>
-      </div>
-      <p style={{ fontSize: "0.8125rem", color: "var(--foreground-muted)" }}>
-        선택: {dateTime ? dateTime.toLocaleString("ko-KR") : "미선택"}
-      </p>
+    <div style={{ width: "100%", maxWidth: 300 }}>
+      {/* closeOnSelect=false: 날짜를 골라도 팝오버가 닫히지 않아, 같은 팝오버에서 시간까지 이어서 고른다. */}
+      <DatePicker
+        value={dateTime}
+        onValueChange={handleDateChange}
+        closeOnSelect={false}
+        formatDate={formatDateTime}
+        placeholder="날짜 · 시간 선택"
+      >
+        <DatePickerTrigger />
+        <DatePickerContent>
+          <DatePickerCalendar />
+          <DatePickerFooter style={{ justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8125rem", color: "var(--foreground-muted)" }}>시간</span>
+            {/* children으로 TimePickerField만 주면 트리거·팝오버 없이 세그먼트만 인라인 렌더된다. */}
+            <TimePicker value={dateTime} onValueChange={setDateTime}>
+              <TimePickerField />
+            </TimePicker>
+          </DatePickerFooter>
+        </DatePickerContent>
+      </DatePicker>
     </div>
   );
 }
