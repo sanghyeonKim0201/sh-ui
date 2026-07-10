@@ -16,6 +16,7 @@ import {
   RangeLocaleJaDemo,
   CompoundDemo,
   CustomTriggerDemo,
+  DateTimeDemo,
 } from "./_demos/basic";
 import { VariantSource } from "@/components/variant-source";
 import { loadComponentSources } from "@/components/sandbox-code/load-component-sources";
@@ -312,6 +313,50 @@ const ShUiDatePicker(placeholder: 'YYYY-MM-DD'),`,
     <DatePickerCalendar />
   </DatePickerContent>
 </DatePicker>`,
+            },
+          ]}
+        />
+      </Preview>
+
+      <h3>날짜 + 시간 선택 (TimePicker 조합)</h3>
+      <p className="muted">
+        <code>DatePicker</code>와 <code>TimePicker</code>를 하나의 <code>Date</code> 상태로 묶으면 날짜와 시간을
+        함께 선택할 수 있다. 날짜를 바꿔도 시각은 보존되고(TimePicker가 날짜 부분을 유지), 시간을 바꿔도 날짜는
+        유지된다. <code>id</code> prop으로 각 <code>Label</code>과 연결한다.
+      </p>
+      <Preview>
+        <Preview.Demo>
+          <DateTimeDemo />
+        </Preview.Demo>
+        <CodeTabs
+          items={[
+            {
+              value: "react",
+              label: "React",
+              language: "tsx",
+              code: `import { DatePicker } from "@/components/ui/date-picker";
+import { TimePicker } from "@/components/ui/time-picker";
+
+const [dateTime, setDateTime] = useState<Date | undefined>();
+
+// 날짜를 바꾸면 기존 시각(시/분/초)을 보존
+const handleDateChange = (date: Date | undefined) => {
+  if (!date) return setDateTime(undefined);
+  setDateTime((prev) => {
+    const next = new Date(date);
+    if (prev) next.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds(), 0);
+    return next;
+  });
+};
+
+<Label htmlFor="dt-date">날짜</Label>
+<DatePicker id="dt-date" value={dateTime} onValueChange={handleDateChange} />
+
+{/* TimePicker는 값의 날짜 부분을 보존하므로 시간만 갱신 */}
+<Label htmlFor="dt-time">시간</Label>
+<TimePicker id="dt-time" value={dateTime} onValueChange={setDateTime} />
+
+<p>{dateTime ? dateTime.toLocaleString("ko-KR") : "미선택"}</p>`,
             },
           ]}
         />
