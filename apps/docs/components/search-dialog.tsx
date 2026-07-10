@@ -111,7 +111,11 @@ export function SearchDialog() {
     if (indexRef.current) return;
     if (loadingRef.current) return loadingRef.current;
     loadingRef.current = (async () => {
-      const res = await fetch("/search-index.json", { cache: "force-cache" });
+      // no-cache: 매 세션 첫 로드에 조건부 요청으로 재검증한다. force-cache 는 URL 이
+      // 배포마다 그대로(/search-index.json)여서, 인덱스 내용이 바뀌어도(새 컴포넌트 추가 등)
+      // 브라우저가 옛 캐시본을 무기한 반환 → 신규 컴포넌트가 검색에 안 잡히는 버그가 있었다.
+      // no-cache 면 서버가 변경분(200)만 내려주고 미변경 시 304 라 비용도 작다.
+      const res = await fetch("/search-index.json", { cache: "no-cache" });
       const data = (await res.json()) as { records: IndexRecord[] };
       const ms = new MiniSearch<IndexRecord>({
         idField: "id",
