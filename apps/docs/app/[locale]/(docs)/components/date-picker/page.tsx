@@ -318,11 +318,13 @@ const ShUiDatePicker(placeholder: 'YYYY-MM-DD'),`,
         />
       </Preview>
 
-      <h3>날짜 + 시간 선택 (TimePicker 조합)</h3>
+      <h3>날짜 + 시간 선택 (캘린더 팝오버 안 TimePicker)</h3>
       <p className="muted">
-        <code>DatePicker</code>와 <code>TimePicker</code>를 하나의 <code>Date</code> 상태로 묶으면 날짜와 시간을
-        함께 선택할 수 있다. 날짜를 바꿔도 시각은 보존되고(TimePicker가 날짜 부분을 유지), 시간을 바꿔도 날짜는
-        유지된다. <code>id</code> prop으로 각 <code>Label</code>과 연결한다.
+        <code>DatePicker</code>를 compound 모드로 조립하고 <code>DatePickerContent</code> 안(캘린더 아래
+        <code>DatePickerFooter</code>)에 <code>TimePicker</code>를 넣으면, <b>하나의 팝오버</b>에서 날짜와 시간을
+        이어서 선택할 수 있다. <code>TimePicker</code>의 children으로 <code>TimePickerField</code>만 주면 자체
+        트리거·팝오버 없이 세그먼트만 인라인 렌더된다. <code>closeOnSelect={"{false}"}</code>로 날짜 선택 후에도
+        팝오버가 닫히지 않으며, 날짜/시간은 하나의 <code>Date</code> 상태를 공유해 서로를 보존한다.
       </p>
       <Preview>
         <Preview.Demo>
@@ -334,12 +336,14 @@ const ShUiDatePicker(placeholder: 'YYYY-MM-DD'),`,
               value: "react",
               label: "React",
               language: "tsx",
-              code: `import { DatePicker } from "@/components/ui/date-picker";
-import { TimePicker } from "@/components/ui/time-picker";
+              code: `import {
+  DatePicker, DatePickerTrigger, DatePickerContent, DatePickerCalendar, DatePickerFooter,
+} from "@/components/ui/date-picker";
+import { TimePicker, TimePickerField } from "@/components/ui/time-picker";
 
 const [dateTime, setDateTime] = useState<Date | undefined>();
 
-// 날짜를 바꾸면 기존 시각(시/분/초)을 보존
+// 날짜를 바꿔도 기존 시각(시/분/초)을 보존
 const handleDateChange = (date: Date | undefined) => {
   if (!date) return setDateTime(undefined);
   setDateTime((prev) => {
@@ -349,14 +353,24 @@ const handleDateChange = (date: Date | undefined) => {
   });
 };
 
-<Label htmlFor="dt-date">날짜</Label>
-<DatePicker id="dt-date" value={dateTime} onValueChange={handleDateChange} />
-
-{/* TimePicker는 값의 날짜 부분을 보존하므로 시간만 갱신 */}
-<Label htmlFor="dt-time">시간</Label>
-<TimePicker id="dt-time" value={dateTime} onValueChange={setDateTime} />
-
-<p>{dateTime ? dateTime.toLocaleString("ko-KR") : "미선택"}</p>`,
+<DatePicker
+  value={dateTime}
+  onValueChange={handleDateChange}
+  closeOnSelect={false}
+  formatDate={(d) => \`\${d.toLocaleDateString()} \${d.getHours()}:\${d.getMinutes()}\`}
+>
+  <DatePickerTrigger />
+  <DatePickerContent>
+    <DatePickerCalendar />
+    <DatePickerFooter>
+      <span>시간</span>
+      {/* children=TimePickerField → 트리거·팝오버 없이 세그먼트만 인라인 */}
+      <TimePicker value={dateTime} onValueChange={setDateTime}>
+        <TimePickerField />
+      </TimePicker>
+    </DatePickerFooter>
+  </DatePickerContent>
+</DatePicker>`,
             },
           ]}
         />
