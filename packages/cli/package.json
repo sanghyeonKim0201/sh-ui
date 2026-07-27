@@ -30,7 +30,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "fs-extra": "^11.3.6",
+    "fs-extra": "^11.4.0",
     "vitest": "^4.1.10"
   },
   "publishConfig": {
