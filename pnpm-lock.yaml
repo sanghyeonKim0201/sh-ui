@@ -71,8 +71,8 @@ importers:
         specifier: ^4.7.0
         version: 4.7.0(monaco-editor@0.56.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/match-sorter-utils':
-        specifier: ^8.19.4
-        version: 8.19.4
+        specifier: ^9.0.0
+        version: 9.0.0
       '@tanstack/react-form':
         specifier: ^1.33.3
         version: 1.33.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -1725,9 +1725,9 @@ packages:
   '@tanstack/form-core@1.33.3':
     resolution: {integrity: sha512-htLxe/50GpUxbi2arJleh6uQkw72UOy+3Q0d1AadO3lfBTjs1e51GzyrKk/w8I7qXSkaSnF/JbYlyE+cwbJGNw==}
 
-  '@tanstack/match-sorter-utils@8.19.4':
-    resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
-    engines: {node: '>=12'}
+  '@tanstack/match-sorter-utils@9.0.0':
+    resolution: {integrity: sha512-6oZrlzBw/hZGFhIomyN9WyFwoaRkI/Neu2OJhYblbHNMzIbcJDDtXN2SEpICZm+fh+MALUmwOaX8YWaH+E1dMg==}
+    engines: {node: '>=20'}
 
   '@tanstack/pacer-lite@0.1.1':
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
@@ -5163,7 +5163,7 @@ snapshots:
       '@tanstack/pacer-lite': 0.1.1
       '@tanstack/store': 0.11.1
 
-  '@tanstack/match-sorter-utils@8.19.4':
+  '@tanstack/match-sorter-utils@9.0.0':
     dependencies:
       remove-accents: 0.5.0
 
