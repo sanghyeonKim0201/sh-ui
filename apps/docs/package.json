@@ -33,7 +33,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-form": "^1.33.5",
-    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-table": "^9.2.3",
     "@tanstack/react-virtual": "^3.14.10",
     "@tiptap/core": "^3.30.5",
     "@tiptap/extension-link": "^3.30.5",
