@@ -25,9 +25,9 @@
     "components"
   ],
   "dependencies": {
-    "@inquirer/prompts": "^8.7.0",
+    "@inquirer/prompts": "^8.7.1",
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "fs-extra": "^11.4.0",
