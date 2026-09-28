@@ -22,8 +22,8 @@
     "showcase:mac": "cd apps/showcase && flutter run -d macos"
   },
   "devDependencies": {
-    "prettier": "^3.9.8",
-    "turbo": "^2.10.13",
+    "prettier": "^3.9.9",
+    "turbo": "^2.11.4",
     "typescript": "^5.9.0",
     "zod": "^4.6.5"
   },
