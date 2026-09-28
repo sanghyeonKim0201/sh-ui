@@ -40,7 +40,7 @@
     "react-hook-form": "^7.88.0",
     "tailwind-merge": "^3.7.0",
     "tiptap-markdown": "0.9.0",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.1"
   },
   "dependencies": {
     "cmdk": "^1.1.1"
